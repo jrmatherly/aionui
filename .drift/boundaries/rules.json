@@ -24,7 +24,8 @@
       ],
       "allowedPaths": [
         "**/webserver/auth/**",
-        "**/process/database/**"
+        "**/process/database/**",
+        "**/utils/resetPasswordCLI.ts"
       ],
       "excludePaths": [
         "**/*.test.ts",
