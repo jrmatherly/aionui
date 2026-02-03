@@ -6,6 +6,8 @@ type AuthStatus = 'checking' | 'authenticated' | 'unauthenticated';
 export interface AuthUser {
   id: string;
   username: string;
+  role?: 'admin' | 'user' | 'viewer';
+  authMethod?: 'local' | 'oidc';
 }
 
 interface LoginParams {

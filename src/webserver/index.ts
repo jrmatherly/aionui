@@ -16,6 +16,7 @@ import { networkInterfaces } from 'os';
 import { WebSocketServer } from 'ws';
 import { initWebAdapter } from './adapter';
 import { AUTH_CONFIG, SERVER_CONFIG } from './config/constants';
+import { registerAdminRoutes } from './routes/adminRoutes';
 import { registerApiRoutes } from './routes/apiRoutes';
 import { registerAuthRoutes } from './routes/authRoutes';
 import { registerStaticRoutes } from './routes/staticRoutes';
@@ -248,6 +249,7 @@ export async function startWebServerWithInstance(port: number, allowRemote = fal
 
   // Register routes
   registerAuthRoutes(app);
+  registerAdminRoutes(app);
   registerApiRoutes(app);
   registerStaticRoutes(app);
 

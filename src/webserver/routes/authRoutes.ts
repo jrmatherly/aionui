@@ -197,7 +197,12 @@ export function registerAuthRoutes(app: Express): void {
   app.get('/api/auth/user', apiRateLimiter, AuthMiddleware.authenticateToken, authenticatedActionLimiter, (req: Request, res: Response) => {
     res.json({
       success: true,
-      user: req.user,
+      user: {
+        id: req.user!.id,
+        username: req.user!.username,
+        role: req.user!.role,
+        authMethod: req.user!.auth_method,
+      },
     });
   });
 

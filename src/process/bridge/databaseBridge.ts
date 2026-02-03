@@ -24,10 +24,13 @@ export function initDatabaseBridge(): void {
   });
 
   // Get user conversations from database with lazy migration from file storage
-  ipcBridge.database.getUserConversations.provider(async ({ page = 0, pageSize = 10000 }) => {
+  // __webUiUserId is injected by the WebSocket adapter to scope data per user
+  ipcBridge.database.getUserConversations.provider(async ({ page = 0, pageSize = 10000, __webUiUserId }: any) => {
     try {
       const db = getDatabase();
-      const result = db.getUserConversations(undefined, page, pageSize);
+      // Use the WebUI user's ID when available (multi-user mode)
+      const userId: string | undefined = __webUiUserId || undefined;
+      const result = db.getUserConversations(userId, page, pageSize);
       const dbConversations = result.data || [];
 
       // Try to get conversations from file storage

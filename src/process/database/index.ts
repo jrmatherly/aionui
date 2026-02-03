@@ -1185,6 +1185,19 @@ export class AionUIDatabase {
   }
 
   /**
+   * Update the owner of a conversation (used for multi-user assignment)
+   */
+  updateConversationUserId(conversationId: string, userId: string): IQueryResult<boolean> {
+    try {
+      const now = Date.now();
+      this.db.prepare('UPDATE conversations SET user_id = ?, updated_at = ? WHERE id = ?').run(userId, now, conversationId);
+      return { success: true, data: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
    * Vacuum database to reclaim space
    */
   vacuum(): void {

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { AuthService } from '@/webserver/auth/service/AuthService';
 import { TokenMiddleware } from '@/webserver/auth/middleware/TokenMiddleware';
 import type { IncomingMessage } from 'http';
 import type { WebSocketServer } from 'ws';
@@ -14,6 +15,8 @@ import { WEBSOCKET_CONFIG } from '../config/constants';
 interface ClientInfo {
   token: string;
   lastPing: number;
+  userId: string;
+  username: string;
 }
 
 /**
@@ -71,12 +74,15 @@ export class WebSocketManager {
   }
 
   /**
-   * Add client
+   * Add client — decode the JWT to attach userId/username metadata.
    */
   private addClient(ws: WebSocket, token: string): void {
+    const decoded = AuthService.verifyWebSocketToken(token);
     this.clients.set(ws, {
       token,
       lastPing: Date.now(),
+      userId: decoded?.userId ?? 'unknown',
+      username: decoded?.username ?? 'unknown',
     });
   }
 
@@ -214,16 +220,40 @@ export class WebSocketManager {
   }
 
   /**
-   * Broadcast message to all clients
+   * Broadcast message to all connected clients (legacy — admin/system events).
    */
   broadcast(name: string, data: any): void {
     const message = JSON.stringify({ name, data });
 
-    for (const [ws, _clientInfo] of this.clients) {
+    for (const [ws] of this.clients) {
       if (ws.readyState === WebSocket.OPEN) {
         ws.send(message);
       }
     }
+  }
+
+  /**
+   * Broadcast message only to connections belonging to a specific user.
+   */
+  broadcastToUser(userId: string, name: string, data: any): void {
+    const message = JSON.stringify({ name, data });
+
+    for (const [ws, info] of this.clients) {
+      if (info.userId === userId && ws.readyState === WebSocket.OPEN) {
+        try {
+          ws.send(message);
+        } catch (error) {
+          console.error(`[WebSocketManager] Failed to send to user ${userId}:`, error);
+        }
+      }
+    }
+  }
+
+  /**
+   * Get the userId associated with a WebSocket connection (if any).
+   */
+  getUserId(ws: WebSocket): string | undefined {
+    return this.clients.get(ws)?.userId;
   }
 
   /**
