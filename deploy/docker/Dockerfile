@@ -47,8 +47,8 @@ RUN npm exec electron-forge -- package --platform=linux --arch=${TARGETARCH}
 # Ensure .webpack output is at the expected location for electron-builder.
 # Forge may output to .webpack/{arch}/ — normalize to .webpack/main & .webpack/renderer
 RUN if [ -d ".webpack/${TARGETARCH}/main" ] && [ ! -d ".webpack/main" ]; then \
-      cp -r ".webpack/${TARGETARCH}/main" ".webpack/main"; \
-      cp -r ".webpack/${TARGETARCH}/renderer" ".webpack/renderer"; \
+    cp -r ".webpack/${TARGETARCH}/main" ".webpack/main"; \
+    cp -r ".webpack/${TARGETARCH}/renderer" ".webpack/renderer"; \
     fi
 
 # --- Step 2: electron-builder packaging ---
@@ -63,10 +63,12 @@ RUN npx electron-builder --linux dir --${TARGETARCH} --publish=never
 # linux-unpacked (x64 default) or linux-arm64-unpacked (arm64).
 # Rename to a consistent linux-unpacked for the COPY stage.
 RUN if [ -d "/app/out/linux-arm64-unpacked" ] && [ ! -d "/app/out/linux-unpacked" ]; then \
-      mv /app/out/linux-arm64-unpacked /app/out/linux-unpacked; \
+    mv /app/out/linux-arm64-unpacked /app/out/linux-unpacked; \
     fi
 
 # Verify the build produced expected output
+# Note: Using bash with pipefail for pipe safety (DL4006)
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo "=== Build verification ===" && \
     ls -la /app/out/linux-unpacked/resources/ && \
     echo "--- app.asar.unpacked ---" && \
@@ -83,10 +85,10 @@ FROM debian:bookworm-slim AS runtime
 
 # OCI Image Labels
 LABEL org.opencontainers.image.source="https://github.com/jrmatherly/aionui" \
-      org.opencontainers.image.title="AionUI" \
-      org.opencontainers.image.description="AionUI WebUI Server - Transform CLI AI agents into a modern chat interface" \
-      org.opencontainers.image.version="1.8.1" \
-      org.opencontainers.image.licenses="Apache-2.0"
+    org.opencontainers.image.title="AionUI" \
+    org.opencontainers.image.description="AionUI WebUI Server - Transform CLI AI agents into a modern chat interface" \
+    org.opencontainers.image.version="1.8.1" \
+    org.opencontainers.image.licenses="Apache-2.0"
 
 # Install Electron runtime dependencies and Xvfb for headless operation
 RUN apt-get update && apt-get install -y --no-install-recommends \
