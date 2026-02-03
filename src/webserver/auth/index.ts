@@ -16,6 +16,7 @@
 // Middleware
 export { AuthMiddleware } from './middleware/AuthMiddleware';
 export { scopeToUser } from './middleware/DataScopeMiddleware';
+export { originGuard } from './middleware/OriginGuard';
 export { requireAdmin, requireRole, requireUser } from './middleware/RoleMiddleware';
 export { TokenMiddleware, TokenUtils, createAuthMiddleware } from './middleware/TokenMiddleware';
 export type { TokenPayload } from './middleware/TokenMiddleware';

@@ -1197,6 +1197,110 @@ export class AionUIDatabase {
     }
   }
 
+  // ─── Refresh Tokens ───────────────────────────────────────────────
+
+  /**
+   * Store a refresh token hash for a user
+   */
+  storeRefreshToken(id: string, userId: string, tokenHash: string, expiresAt: number): IQueryResult<boolean> {
+    try {
+      this.db.prepare('INSERT INTO refresh_tokens (id, user_id, token_hash, expires_at, created_at) VALUES (?, ?, ?, ?, ?)').run(id, userId, tokenHash, expiresAt, Math.floor(Date.now() / 1000));
+      return { success: true, data: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Find a valid (non-revoked, non-expired) refresh token by its hash
+   */
+  findRefreshToken(tokenHash: string): IQueryResult<{ id: string; user_id: string; expires_at: number } | null> {
+    try {
+      const now = Math.floor(Date.now() / 1000);
+      const row = this.db.prepare('SELECT id, user_id, expires_at FROM refresh_tokens WHERE token_hash = ? AND revoked = 0 AND expires_at > ?').get(tokenHash, now) as { id: string; user_id: string; expires_at: number } | undefined;
+      return { success: true, data: row ?? null };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Revoke a refresh token (and record its replacement)
+   */
+  revokeRefreshToken(tokenHash: string, replacedBy?: string): IQueryResult<boolean> {
+    try {
+      this.db.prepare('UPDATE refresh_tokens SET revoked = 1, replaced_by = ? WHERE token_hash = ?').run(replacedBy ?? null, tokenHash);
+      return { success: true, data: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Revoke all refresh tokens for a user (e.g. on password change or forced logout)
+   */
+  revokeAllUserRefreshTokens(userId: string): IQueryResult<boolean> {
+    try {
+      this.db.prepare('UPDATE refresh_tokens SET revoked = 1 WHERE user_id = ? AND revoked = 0').run(userId);
+      return { success: true, data: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Clean up expired refresh tokens
+   */
+  cleanupExpiredRefreshTokens(): IQueryResult<number> {
+    try {
+      const now = Math.floor(Date.now() / 1000);
+      const result = this.db.prepare('DELETE FROM refresh_tokens WHERE expires_at < ? OR revoked = 1').run(now);
+      return { success: true, data: result.changes };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  // ─── Token Blacklist (Persistent) ──────────────────────────────────
+
+  /**
+   * Add a token hash to the persistent blacklist
+   */
+  blacklistToken(tokenHash: string, expiresAt: number): IQueryResult<boolean> {
+    try {
+      this.db.prepare('INSERT OR IGNORE INTO token_blacklist (token_hash, expires_at, created_at) VALUES (?, ?, ?)').run(tokenHash, expiresAt, Math.floor(Date.now() / 1000));
+      return { success: true, data: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Check if a token hash is blacklisted
+   */
+  isTokenBlacklisted(tokenHash: string): IQueryResult<boolean> {
+    try {
+      const now = Math.floor(Date.now() / 1000);
+      const row = this.db.prepare('SELECT 1 FROM token_blacklist WHERE token_hash = ? AND expires_at > ?').get(tokenHash, now);
+      return { success: true, data: !!row };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Clean up expired blacklist entries
+   */
+  cleanupExpiredBlacklist(): IQueryResult<number> {
+    try {
+      const now = Math.floor(Date.now() / 1000);
+      const result = this.db.prepare('DELETE FROM token_blacklist WHERE expires_at < ?').run(now);
+      return { success: true, data: result.changes };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
   /**
    * Vacuum database to reclaim space
    */

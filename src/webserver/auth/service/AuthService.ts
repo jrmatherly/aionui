@@ -20,7 +20,19 @@ interface TokenPayload {
   exp?: number;
 }
 
+interface RefreshTokenPayload {
+  userId: string;
+  type: 'refresh';
+  jti: string; // unique token ID for rotation tracking
+  iat?: number;
+  exp?: number;
+}
+
 type RawTokenPayload = Omit<TokenPayload, 'userId'> & {
+  userId: string | number;
+};
+
+type RawRefreshTokenPayload = Omit<RefreshTokenPayload, 'userId'> & {
   userId: string | number;
 };
 
@@ -53,80 +65,122 @@ const comparePasswordAsync = (password: string, hash: string): Promise<boolean> 
   });
 
 /**
+ * Get database instance lazily to avoid circular dependency
+ */
+function getDb() {
+  const { getDatabase } = require('@process/database/export');
+  return getDatabase();
+}
+
+/**
  * Authentication Service - handles password hashing, token issuance, and validation
+ *
+ * Token architecture:
+ * - Access tokens: Short-lived (15 min), used for API auth
+ * - Refresh tokens: Long-lived (7 days), stored in DB, supports rotation & revocation
+ * - Token blacklist: Persisted in SQLite, survives restarts
  */
 export class AuthService {
-  private static readonly SALT_ROUNDS = 12;
+  private static readonly SALT_ROUNDS = 13;
   private static jwtSecret: string | null = null;
-  private static readonly TOKEN_EXPIRY = AUTH_CONFIG.TOKEN.SESSION_EXPIRY;
 
-  /**
-   * Token blacklist - stores logged out tokens (in-memory, cleared on restart)
-   * Key: SHA-256 hash of token, Value: expiry timestamp
-   */
-  private static tokenBlacklist: Map<string, number> = new Map();
+  /** In-memory blacklist cache to avoid hitting SQLite on every request */
+  private static blacklistCache: Map<string, number> = new Map();
   private static readonly BLACKLIST_CLEANUP_INTERVAL = 60 * 60 * 1000; // 1 hour
   private static blacklistCleanupTimer: ReturnType<typeof setInterval> | null = null;
 
   /**
    * Add token to blacklist (called on logout)
+   * Persists to SQLite and caches in memory
    */
   public static blacklistToken(token: string): void {
-    // Use token hash as key to avoid storing the raw token
     const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
 
-    // Parse token to get expiry time
     try {
       const decoded = jwt.decode(token) as { exp?: number } | null;
-      const expiry = decoded?.exp ? decoded.exp * 1000 : Date.now() + AUTH_CONFIG.TOKEN.COOKIE_MAX_AGE;
-      this.tokenBlacklist.set(tokenHash, expiry);
+      const expiresAt = decoded?.exp ?? Math.floor(Date.now() / 1000) + Math.floor(AUTH_CONFIG.TOKEN.COOKIE_MAX_AGE / 1000);
 
-      // Start cleanup timer (if not already started)
+      // Persist to database
+      try {
+        const db = getDb();
+        db.blacklistToken(tokenHash, expiresAt);
+      } catch {
+        // DB not available (e.g. shutdown) — in-memory only
+      }
+
+      // Cache in memory
+      this.blacklistCache.set(tokenHash, expiresAt * 1000);
       this.startBlacklistCleanup();
     } catch {
-      // Even if parsing fails, add to blacklist with default expiry
-      this.tokenBlacklist.set(tokenHash, Date.now() + AUTH_CONFIG.TOKEN.COOKIE_MAX_AGE);
+      const fallbackExpiry = Math.floor(Date.now() / 1000) + Math.floor(AUTH_CONFIG.TOKEN.COOKIE_MAX_AGE / 1000);
+      try {
+        const db = getDb();
+        db.blacklistToken(tokenHash, fallbackExpiry);
+      } catch {
+        /* ignore */
+      }
+      this.blacklistCache.set(tokenHash, fallbackExpiry * 1000);
     }
   }
 
   /**
-   * Check if token is blacklisted
+   * Check if token is blacklisted (checks memory cache first, then DB)
    */
   public static isTokenBlacklisted(token: string): boolean {
     const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
-    const expiry = this.tokenBlacklist.get(tokenHash);
 
-    if (!expiry) {
-      return false;
+    // Check in-memory cache first
+    const cachedExpiry = this.blacklistCache.get(tokenHash);
+    if (cachedExpiry) {
+      if (Date.now() > cachedExpiry) {
+        this.blacklistCache.delete(tokenHash);
+        return false;
+      }
+      return true;
     }
 
-    // If expired, remove from blacklist
-    if (Date.now() > expiry) {
-      this.tokenBlacklist.delete(tokenHash);
-      return false;
+    // Check persistent store
+    try {
+      const db = getDb();
+      const result = db.isTokenBlacklisted(tokenHash);
+      if (result.success && result.data) {
+        // Warm the cache
+        const decoded = jwt.decode(token) as { exp?: number } | null;
+        if (decoded?.exp) {
+          this.blacklistCache.set(tokenHash, decoded.exp * 1000);
+        }
+        return true;
+      }
+    } catch {
+      // DB not available — rely on cache only
     }
 
-    return true;
+    return false;
   }
 
   /**
-   * Start blacklist cleanup timer
+   * Periodic cleanup of expired entries from both memory cache and DB
    */
   private static startBlacklistCleanup(): void {
-    if (this.blacklistCleanupTimer) {
-      return;
-    }
+    if (this.blacklistCleanupTimer) return;
 
     this.blacklistCleanupTimer = setInterval(() => {
+      // Clean in-memory cache
       const now = Date.now();
-      for (const [hash, expiry] of this.tokenBlacklist.entries()) {
-        if (now > expiry) {
-          this.tokenBlacklist.delete(hash);
-        }
+      for (const [hash, expiry] of this.blacklistCache.entries()) {
+        if (now > expiry) this.blacklistCache.delete(hash);
+      }
+
+      // Clean persistent store
+      try {
+        const db = getDb();
+        db.cleanupExpiredBlacklist();
+        db.cleanupExpiredRefreshTokens();
+      } catch {
+        /* ignore */
       }
     }, this.BLACKLIST_CLEANUP_INTERVAL);
 
-    // Allow the process to exit normally
     this.blacklistCleanupTimer.unref();
   }
 
@@ -215,7 +269,7 @@ export class AuthService {
   }
 
   /**
-   * Generate standard WebUI session token
+   * Generate short-lived access token (15 min)
    */
   public static generateToken(user: Pick<AuthUser, 'id' | 'username' | 'role' | 'auth_method'>): string {
     const payload: TokenPayload = {
@@ -226,10 +280,117 @@ export class AuthService {
     };
 
     return jwt.sign(payload, this.getJwtSecret(), {
-      expiresIn: this.TOKEN_EXPIRY,
+      expiresIn: AUTH_CONFIG.TOKEN.ACCESS_EXPIRY,
       issuer: 'aionui',
       audience: 'aionui-webui',
     });
+  }
+
+  /**
+   * Generate long-lived refresh token (7 days)
+   * Stored in database for revocation and rotation tracking
+   */
+  public static generateRefreshToken(userId: string): string {
+    const jti = crypto.randomBytes(16).toString('hex');
+
+    const payload: Omit<RefreshTokenPayload, 'iat' | 'exp'> = {
+      userId,
+      type: 'refresh',
+      jti,
+    };
+
+    const token = jwt.sign(payload, this.getJwtSecret(), {
+      expiresIn: AUTH_CONFIG.TOKEN.REFRESH_EXPIRY,
+      issuer: 'aionui',
+      audience: 'aionui-refresh',
+    });
+
+    // Store hash in DB for revocation
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+    const expiresAt = Math.floor(Date.now() / 1000) + AUTH_CONFIG.TOKEN.REFRESH_EXPIRY_SECONDS;
+
+    try {
+      const db = getDb();
+      db.storeRefreshToken(jti, userId, tokenHash, expiresAt);
+    } catch (error) {
+      console.error('[AuthService] Failed to store refresh token:', error);
+    }
+
+    return token;
+  }
+
+  /**
+   * Verify a refresh token — checks JWT validity and DB revocation status
+   */
+  public static verifyRefreshToken(token: string): RefreshTokenPayload | null {
+    try {
+      if (this.isTokenBlacklisted(token)) return null;
+
+      const decoded = jwt.verify(token, this.getJwtSecret(), {
+        issuer: 'aionui',
+        audience: 'aionui-refresh',
+      }) as RawRefreshTokenPayload;
+
+      if (decoded.type !== 'refresh') return null;
+
+      // Verify token exists and is not revoked in DB
+      const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+      try {
+        const db = getDb();
+        const result = db.findRefreshToken(tokenHash);
+        if (!result.success || !result.data) return null;
+      } catch {
+        // DB not available — allow if JWT is valid
+      }
+
+      return {
+        ...decoded,
+        userId: this.normalizeUserId(decoded.userId),
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Rotate a refresh token: revoke old, issue new
+   * Returns null if the old token is invalid/revoked
+   */
+  public static rotateRefreshToken(oldToken: string): { accessToken: string; refreshToken: string } | null {
+    const decoded = this.verifyRefreshToken(oldToken);
+    if (!decoded) return null;
+
+    // Look up user to get current role/auth_method for the new access token
+    const user = UserRepository.findById(decoded.userId);
+    if (!user) return null;
+
+    // Revoke old refresh token
+    const oldHash = crypto.createHash('sha256').update(oldToken).digest('hex');
+    const newRefreshToken = this.generateRefreshToken(decoded.userId);
+    const newHash = crypto.createHash('sha256').update(newRefreshToken).digest('hex');
+
+    try {
+      const db = getDb();
+      db.revokeRefreshToken(oldHash, newHash);
+    } catch {
+      /* best effort */
+    }
+
+    const accessToken = this.generateToken(user);
+
+    return { accessToken, refreshToken: newRefreshToken };
+  }
+
+  /**
+   * Revoke all refresh tokens for a user (password change, forced logout)
+   */
+  public static revokeAllUserTokens(userId: string): void {
+    try {
+      const db = getDb();
+      db.revokeAllUserRefreshTokens(userId);
+    } catch (error) {
+      console.error('[AuthService] Failed to revoke user tokens:', error);
+    }
   }
 
   /**

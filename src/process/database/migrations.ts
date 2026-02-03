@@ -408,9 +408,55 @@ const migration_v10: IMigration = {
 };
 
 /**
+ * Migration v11: Add refresh tokens and persistent token blacklist tables
+ *
+ * Supports access+refresh token pattern and survives restarts.
+ */
+const migration_v11: IMigration = {
+  version: 11,
+  name: 'add_refresh_tokens_and_blacklist',
+  up: (db) => {
+    // Refresh tokens table — stores active refresh tokens for rotation/revocation
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS refresh_tokens (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        token_hash TEXT NOT NULL UNIQUE,
+        expires_at INTEGER NOT NULL,
+        created_at INTEGER NOT NULL DEFAULT (strftime('%s', 'now')),
+        revoked INTEGER NOT NULL DEFAULT 0,
+        replaced_by TEXT,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+      CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user_id ON refresh_tokens(user_id);
+      CREATE INDEX IF NOT EXISTS idx_refresh_tokens_expires ON refresh_tokens(expires_at);
+    `);
+
+    // Persistent token blacklist — survives server restarts
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS token_blacklist (
+        token_hash TEXT PRIMARY KEY,
+        expires_at INTEGER NOT NULL,
+        created_at INTEGER NOT NULL DEFAULT (strftime('%s', 'now'))
+      );
+      CREATE INDEX IF NOT EXISTS idx_token_blacklist_expires ON token_blacklist(expires_at);
+    `);
+
+    console.log('[Migration v11] Added refresh_tokens and token_blacklist tables');
+  },
+  down: (db) => {
+    db.exec(`
+      DROP TABLE IF EXISTS token_blacklist;
+      DROP TABLE IF EXISTS refresh_tokens;
+    `);
+    console.log('[Migration v11] Rolled back: Removed refresh_tokens and token_blacklist tables');
+  },
+};
+
+/**
  * All migrations in order
  */
-export const ALL_MIGRATIONS: IMigration[] = [migration_v1, migration_v2, migration_v3, migration_v4, migration_v5, migration_v6, migration_v7, migration_v8, migration_v9, migration_v10];
+export const ALL_MIGRATIONS: IMigration[] = [migration_v1, migration_v2, migration_v3, migration_v4, migration_v5, migration_v6, migration_v7, migration_v8, migration_v9, migration_v10, migration_v11];
 
 /**
  * Get migrations needed to upgrade from one version to another

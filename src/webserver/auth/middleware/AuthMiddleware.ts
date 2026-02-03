@@ -62,6 +62,15 @@ export class AuthMiddleware {
 
     res.header('Content-Security-Policy', cspPolicy);
 
+    // HSTS: enforce HTTPS when configured (1 year, include subdomains)
+    const isHttps = process.env.AIONUI_HTTPS === 'true' || (process.env.NODE_ENV === 'production' && process.env.HTTPS === 'true');
+    if (isHttps) {
+      res.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    }
+
+    // Prevent browsers from caching sensitive responses
+    res.header('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+
     next();
   }
 

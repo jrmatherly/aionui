@@ -15,12 +15,18 @@ export const CSRF_HEADER_NAME = 'x-csrf-token';
 export const AUTH_CONFIG = {
   // Token configuration
   TOKEN: {
-    // Session JWT expiry duration
+    // Short-lived access token expiry (used for API auth)
+    ACCESS_EXPIRY: '15m' as const,
+    // Long-lived refresh token expiry (used for silent token renewal)
+    REFRESH_EXPIRY: '7d' as const,
+    // Refresh token expiry in seconds (for DB storage)
+    REFRESH_EXPIRY_SECONDS: 7 * 24 * 60 * 60,
+    // Legacy session expiry (kept for backward compatibility with existing tokens)
     SESSION_EXPIRY: '24h' as const,
     // WebSocket token expiry - Currently WebSocket reuses web login token, reserved for future independent token scheme
     WEBSOCKET_EXPIRY: '5m' as const,
-    // Cookie max-age in milliseconds
-    COOKIE_MAX_AGE: 30 * 24 * 60 * 60 * 1000,
+    // Cookie max-age in milliseconds (aligned with refresh token expiry)
+    COOKIE_MAX_AGE: 7 * 24 * 60 * 60 * 1000,
     // WebSocket token max-age - Currently unused, reserved for future independent token scheme
     WEBSOCKET_TOKEN_MAX_AGE: 5 * 60,
   },

@@ -15,6 +15,7 @@ import type { Express, Request, Response } from 'express';
 import { AUTH_CONFIG, getCookieOptions } from '../config/constants';
 import { createAppError } from '../middleware/errorHandler';
 import { apiRateLimiter, authRateLimiter, authenticatedActionLimiter } from '../middleware/security';
+import { originGuard } from '@/webserver/auth/middleware/OriginGuard';
 
 /**
  * QR login page HTML (static, no user input embedded)
@@ -120,16 +121,24 @@ export function registerAuthRoutes(app: Express): void {
         return;
       }
 
-      // Generate JWT token
-      const token = AuthService.generateToken(user);
+      // Generate access token (short-lived) + refresh token (long-lived)
+      const accessToken = AuthService.generateToken(user);
+      const refreshToken = AuthService.generateRefreshToken(user.id);
 
       // Update last login
       UserRepository.updateLastLogin(user.id);
 
-      // Set secure cookie (enable secure flag in remote mode)
-      res.cookie(AUTH_CONFIG.COOKIE.NAME, token, {
+      // Set access token cookie (short-lived, used for API auth)
+      res.cookie(AUTH_CONFIG.COOKIE.NAME, accessToken, {
         ...getCookieOptions(),
         maxAge: AUTH_CONFIG.TOKEN.COOKIE_MAX_AGE,
+      });
+
+      // Set refresh token in httpOnly cookie (long-lived, used for silent renewal)
+      res.cookie('aionui-refresh', refreshToken, {
+        ...getCookieOptions(),
+        maxAge: AUTH_CONFIG.TOKEN.COOKIE_MAX_AGE,
+        path: '/api/auth/refresh', // Only sent to refresh endpoint
       });
 
       res.json({
@@ -139,7 +148,7 @@ export function registerAuthRoutes(app: Express): void {
           id: user.id,
           username: user.username,
         },
-        token,
+        token: accessToken,
       });
     } catch (error) {
       console.error('Login error:', error);
@@ -153,13 +162,25 @@ export function registerAuthRoutes(app: Express): void {
    */
   // Authenticated endpoints reuse shared limiter keyed by user/IP
   app.post('/logout', apiRateLimiter, AuthMiddleware.authenticateToken, authenticatedActionLimiter, (req: Request, res: Response) => {
-    // Blacklist current token
+    // Blacklist current access token
     const token = TokenUtils.extractFromRequest(req);
     if (token) {
       AuthService.blacklistToken(token);
     }
 
+    // Blacklist refresh token if present
+    const refreshToken = req.cookies?.['aionui-refresh'];
+    if (refreshToken) {
+      AuthService.blacklistToken(refreshToken);
+    }
+
+    // Revoke all refresh tokens for this user (belt + suspenders)
+    if (req.user?.id) {
+      AuthService.revokeAllUserTokens(req.user.id);
+    }
+
     res.clearCookie(AUTH_CONFIG.COOKIE.NAME);
+    res.clearCookie('aionui-refresh', { path: '/api/auth/refresh' });
     res.json({ success: true, message: 'Logged out successfully' });
   });
 
@@ -256,13 +277,18 @@ export function registerAuthRoutes(app: Express): void {
       // Hash new password
       const newPasswordHash = await AuthService.hashPassword(newPassword);
 
-      // Update password
+      // Update password and invalidate all tokens
       UserRepository.updatePassword(user.id, newPasswordHash);
       AuthService.invalidateAllTokens();
+      AuthService.revokeAllUserTokens(user.id);
+
+      // Clear cookies — user must re-authenticate
+      res.clearCookie(AUTH_CONFIG.COOKIE.NAME);
+      res.clearCookie('aionui-refresh', { path: '/api/auth/refresh' });
 
       res.json({
         success: true,
-        message: 'Password changed successfully',
+        message: 'Password changed successfully. Please log in again.',
       });
     } catch (error) {
       console.error('Change password error:', error);
@@ -277,37 +303,56 @@ export function registerAuthRoutes(app: Express): void {
    * Token refresh endpoint
    * POST /api/auth/refresh
    */
-  app.post('/api/auth/refresh', apiRateLimiter, authenticatedActionLimiter, (req: Request, res: Response) => {
+  app.post('/api/auth/refresh', apiRateLimiter, originGuard, (req: Request, res: Response) => {
     try {
-      const { token } = req.body;
+      // Prefer refresh token from httpOnly cookie, fall back to body
+      const refreshToken = req.cookies?.['aionui-refresh'] || req.body?.refreshToken;
 
-      if (!token) {
-        res.status(400).json({
-          success: false,
-          error: 'Token is required',
-        });
+      if (!refreshToken) {
+        // Legacy fallback: try old-style access token refresh (body.token)
+        const { token } = req.body;
+        if (token) {
+          const newToken = AuthService.refreshToken(token);
+          if (!newToken) {
+            res.status(401).json({ success: false, error: 'Invalid or expired token' });
+            return;
+          }
+          res.json({ success: true, token: newToken });
+          return;
+        }
+
+        res.status(400).json({ success: false, error: 'Refresh token is required' });
         return;
       }
 
-      const newToken = AuthService.refreshToken(token);
-      if (!newToken) {
-        res.status(401).json({
-          success: false,
-          error: 'Invalid or expired token',
-        });
+      // Rotate refresh token: revoke old, issue new pair
+      const result = AuthService.rotateRefreshToken(refreshToken);
+      if (!result) {
+        res.clearCookie('aionui-refresh', { path: '/api/auth/refresh' });
+        res.status(401).json({ success: false, error: 'Invalid or expired refresh token' });
         return;
       }
+
+      // Set new access token cookie
+      res.cookie(AUTH_CONFIG.COOKIE.NAME, result.accessToken, {
+        ...getCookieOptions(),
+        maxAge: AUTH_CONFIG.TOKEN.COOKIE_MAX_AGE,
+      });
+
+      // Set new refresh token cookie (rotated)
+      res.cookie('aionui-refresh', result.refreshToken, {
+        ...getCookieOptions(),
+        maxAge: AUTH_CONFIG.TOKEN.COOKIE_MAX_AGE,
+        path: '/api/auth/refresh',
+      });
 
       res.json({
         success: true,
-        token: newToken,
+        token: result.accessToken,
       });
     } catch (error) {
       console.error('Token refresh error:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Internal server error',
-      });
+      res.status(500).json({ success: false, error: 'Internal server error' });
     }
   });
 
@@ -466,17 +511,24 @@ export function registerAuthRoutes(app: Express): void {
         return;
       }
 
-      // Issue a session JWT and set it as a cookie
+      // Issue access + refresh tokens
       const sessionToken = AuthService.generateToken({
         id: result.user.id,
         username: result.user.username,
         role: result.user.role,
         auth_method: result.user.auth_method,
       });
+      const refreshToken = AuthService.generateRefreshToken(result.user.id);
 
       res.cookie(AUTH_CONFIG.COOKIE.NAME, sessionToken, {
         ...getCookieOptions(),
         maxAge: AUTH_CONFIG.TOKEN.COOKIE_MAX_AGE,
+      });
+
+      res.cookie('aionui-refresh', refreshToken, {
+        ...getCookieOptions(),
+        maxAge: AUTH_CONFIG.TOKEN.COOKIE_MAX_AGE,
+        path: '/api/auth/refresh',
       });
 
       // Redirect to the originally requested page, or home
