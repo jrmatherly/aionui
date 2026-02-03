@@ -68,6 +68,21 @@ cd /path/to/aionui
 # Recreate local directory structure (does NOT overwrite config or approved patterns)
 drift init -y
 
+# IMPORTANT: Restore the tracked config (drift init resets some settings)
+git checkout .drift/config.json
+```
+
+**Why the restore?** `drift init -y` overwrites `config.json` with defaults, which resets:
+
+- `project.id` — Regenerated UUID (the tracked one is the project's canonical ID)
+- `initializedAt` — New timestamp
+- `learning.autoApproveThreshold` — Reset to `0.95` (project uses `0.85`)
+
+Always restore after init to keep team-consistent settings.
+
+### 3. Rebuild Analysis Data
+
+```bash
 # Rebuild transient analysis data (pattern indexes, call graph, etc.)
 drift scan
 
@@ -76,9 +91,6 @@ drift callgraph build
 drift test-topology build
 drift coupling build
 ```
-
-> **Note:** `drift init -y` regenerates the local project ID and timestamp in `config.json`.
-> This is expected — do not commit this change. The approved patterns remain intact.
 
 If you get a `NODE_MODULE_VERSION` error on memory init:
 
@@ -89,7 +101,7 @@ cd $(npm root -g)/driftdetect && npm rebuild better-sqlite3
 cd /path/to/aionui && drift memory init
 ```
 
-### 3. Initialize Cortex Memory (Optional)
+### 4. Initialize Cortex Memory (Optional)
 
 ```bash
 drift memory init
@@ -97,7 +109,7 @@ drift memory init
 
 See [Cortex Memory](#cortex-memory-system) below for adding institutional knowledge.
 
-### 4. Verify
+### 5. Verify
 
 ```bash
 drift status         # Should show 128+ approved patterns
