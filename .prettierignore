@@ -15,4 +15,5 @@ public/
 resources/
 docs/
 config/webpack/
-scripts/ 
+scripts/
+deploy/

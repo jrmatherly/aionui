@@ -149,6 +149,12 @@ src/
 │
 ├── shims/                      # Module shims
 └── utils/                      # Global utilities
+
+deploy/                         # Deployment configurations
+└── docker/                     # Docker containerization
+    ├── Dockerfile              # Multi-stage build
+    ├── docker-compose.yml      # Container orchestration
+    └── docker-entrypoint.sh    # Container startup script
 ```
 
 ---

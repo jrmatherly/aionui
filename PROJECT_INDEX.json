@@ -106,6 +106,7 @@
     },
     "tests": "Unit and integration tests",
     "scripts": "Build and utility scripts",
-    "config": "Webpack configuration"
+    "config": "Webpack configuration",
+    "deploy": "Deployment configurations (Docker)"
   }
 }

@@ -8,6 +8,7 @@ AionUi supports WebUI mode, allowing you to access the application through a web
 - [Windows](#windows)
 - [macOS](#macos)
 - [Linux](#linux)
+- [Docker](#docker)
 - [Android (Termux)](#android-termux)
 - [Remote Access](#remote-access)
 - [Troubleshooting](#troubleshooting)
@@ -217,6 +218,92 @@ sudo systemctl start aionui-webui.service
 # Check status
 sudo systemctl status aionui-webui.service
 ```
+
+---
+
+## Docker
+
+Run AionUI WebUI as a containerized server using Docker. This is ideal for server deployments, headless operation, and consistent environments.
+
+### Prerequisites
+
+- Docker 20.10+ and Docker Compose v2+
+- 4GB RAM minimum (8GB recommended)
+- x64 or arm64 architecture
+
+### Quick Start
+
+```bash
+# From project root
+docker-compose -f deploy/docker/docker-compose.yml up -d
+
+# View logs
+docker-compose -f deploy/docker/docker-compose.yml logs -f
+
+# Stop
+docker-compose -f deploy/docker/docker-compose.yml down
+```
+
+### Build from Source
+
+```bash
+# Clone the repository
+git clone https://github.com/iOfficeAI/AionUi.git
+cd AionUi
+
+# Build and start
+docker-compose -f deploy/docker/docker-compose.yml up -d --build
+```
+
+### Access the WebUI
+
+- **Local:** http://localhost:25808
+- **Network:** `http://<host-ip>:25808`
+
+### Default Credentials
+
+On first startup, check container logs for the initial admin password:
+
+```bash
+docker-compose -f deploy/docker/docker-compose.yml logs | grep -A5 "Initial Admin"
+```
+
+- **Username:** `admin`
+- **Password:** (displayed in logs)
+
+### Configuration
+
+Environment variables can be set in `docker-compose.yml`:
+
+| Variable              | Default      | Description                          |
+| --------------------- | ------------ | ------------------------------------ |
+| `AIONUI_PORT`         | `25808`      | WebUI server port                    |
+| `AIONUI_ALLOW_REMOTE` | `true`       | Enable network access                |
+| `JWT_SECRET`          | (auto)       | JWT signing key (set for production) |
+| `NODE_ENV`            | `production` | Environment mode                     |
+
+### Data Persistence
+
+Data is stored in a Docker volume `aionui_data`:
+
+```bash
+# Backup
+docker run --rm -v aionui_data:/data -v $(pwd):/backup \
+  alpine tar czf /backup/aionui-backup.tar.gz -C /data .
+
+# Restore
+docker run --rm -v aionui_data:/data -v $(pwd):/backup \
+  alpine tar xzf /backup/aionui-backup.tar.gz -C /data
+```
+
+### Production Recommendations
+
+1. **Set JWT_SECRET** - Use a strong, random secret
+2. **Use HTTPS** - Deploy behind nginx/Traefik with SSL
+3. **Configure resource limits** - Adjust in docker-compose.yml
+4. **Regular backups** - Backup the data volume
+
+For detailed Docker documentation, see [`deploy/README.md`](./deploy/README.md).
 
 ---
 

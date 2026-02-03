@@ -154,3 +154,9 @@ specs/**/work-*
 .spec-cache/
 .tmp/
 my-video
+
+.scratchpad/
+.local_docs/
+
+# Docker (keep deploy/ directory tracked)
+# Note: .dockerignore is intentionally tracked

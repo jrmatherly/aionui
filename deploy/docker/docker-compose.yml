@@ -1,0 +1,108 @@
+# =============================================================================
+# AionUI Docker Compose Configuration
+# Orchestrates AionUI WebUI server with persistent storage
+# =============================================================================
+#
+# Usage (from project root):
+#   docker-compose -f deploy/docker/docker-compose.yml up -d
+#   docker-compose -f deploy/docker/docker-compose.yml logs -f
+#   docker-compose -f deploy/docker/docker-compose.yml down
+#   docker-compose -f deploy/docker/docker-compose.yml up -d --build
+#
+# Or from deploy/docker directory:
+#   cd deploy/docker && docker-compose up -d
+#
+# Access:
+#   http://localhost:25808            # Local access
+#   http://<host-ip>:25808            # Network access
+#
+# =============================================================================
+
+services:
+  aionui:
+    build:
+      context: ../..
+      dockerfile: deploy/docker/Dockerfile
+      args:
+        TARGETARCH: x64
+    container_name: aionui
+    restart: unless-stopped
+
+    # Port mapping
+    ports:
+      - "${AIONUI_PORT:-25808}:25808"
+
+    # Environment configuration
+    environment:
+      # Server configuration
+      - AIONUI_PORT=25808
+      - AIONUI_ALLOW_REMOTE=true
+      - NODE_ENV=production
+      # Display configuration (for Xvfb)
+      - DISPLAY_NUM=99
+      - SCREEN_RESOLUTION=1024x768x24
+      # Security (uncomment and set for production)
+      # - JWT_SECRET=your-secure-random-secret-key
+      # - AIONUI_HTTPS=true
+
+    # Persistent storage
+    volumes:
+      # Database, config, and session data
+      - aionui_data:/home/aionui/.config/AionUi
+      # Optional: Mount custom skills (read-only)
+      # - ./custom-skills:/app/resources/skills:ro
+
+    # Shared memory for Chromium (prevents crashes)
+    shm_size: '2gb'
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:25808/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+    # Resource limits (adjust based on your needs)
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2'
+        reservations:
+          memory: 1G
+          cpus: '0.5'
+
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # Security options
+    security_opt:
+      - no-new-privileges:true
+
+# Named volumes for data persistence
+volumes:
+  aionui_data:
+    driver: local
+
+# =============================================================================
+# Production Notes:
+#
+# 1. Set JWT_SECRET environment variable for consistent auth tokens
+#
+# 2. For HTTPS, deploy behind a reverse proxy (nginx/Traefik):
+#    - Configure SSL termination at the proxy
+#    - Set AIONUI_HTTPS=true
+#
+# 3. For multi-instance deployment, ensure unique JWT_SECRET per instance
+#    or use a shared secret for session portability
+#
+# 4. Backup the aionui_data volume regularly:
+#    docker run --rm -v aionui_data:/data -v $(pwd):/backup \
+#      alpine tar czf /backup/aionui-backup.tar.gz -C /data .
+#
+# =============================================================================

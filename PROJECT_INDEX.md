@@ -42,19 +42,25 @@ src/
     ├── acp.ts            # Claude worker
     ├── codex.ts          # Codex worker
     └── gemini.ts         # Gemini worker
+
+deploy/                   # Deployment configurations
+└── docker/               # Docker containerization
+    ├── Dockerfile        # Multi-stage build
+    ├── docker-compose.yml
+    └── docker-entrypoint.sh
 ```
 
 ---
 
 ## Entry Points
 
-| Type | Path | Description |
-|------|------|-------------|
-| **Main** | `src/index.ts` | Electron main process |
-| **Renderer** | `src/renderer/main.tsx` | React app entry |
-| **Preload** | `src/preload.ts` | IPC bridge |
-| **WebUI** | `src/webserver/index.ts` | Web server |
-| **Workers** | `src/worker/*.ts` | AI agent workers |
+| Type         | Path                     | Description           |
+| ------------ | ------------------------ | --------------------- |
+| **Main**     | `src/index.ts`           | Electron main process |
+| **Renderer** | `src/renderer/main.tsx`  | React app entry       |
+| **Preload**  | `src/preload.ts`         | IPC bridge            |
+| **WebUI**    | `src/webserver/index.ts` | Web server            |
+| **Workers**  | `src/worker/*.ts`        | AI agent workers      |
 
 ---
 
@@ -62,28 +68,28 @@ src/
 
 ### AI Agents (`src/agent/`)
 
-| Agent | Class | Key Methods |
-|-------|-------|-------------|
-| **ACP** | `AcpAgent` | `start()`, `sendMessage()`, `handlePermissionRequest()` |
-| **Gemini** | `GeminiAgent` | `initialize()`, `send()`, `submitQuery()` |
-| **Codex** | `CodexAgent` | Connection, Session, Event handlers |
+| Agent      | Class         | Key Methods                                             |
+| ---------- | ------------- | ------------------------------------------------------- |
+| **ACP**    | `AcpAgent`    | `start()`, `sendMessage()`, `handlePermissionRequest()` |
+| **Gemini** | `GeminiAgent` | `initialize()`, `send()`, `submitQuery()`               |
+| **Codex**  | `CodexAgent`  | Connection, Session, Event handlers                     |
 
 ### Services (`src/process/services/`)
 
-| Service | File | Purpose |
-|---------|------|---------|
-| **CronService** | `cron/CronService.ts` | Scheduled tasks |
-| **McpService** | `mcpServices/McpService.ts` | Multi-agent protocol |
-| **Database** | `database/index.ts` | SQLite operations |
+| Service         | File                        | Purpose              |
+| --------------- | --------------------------- | -------------------- |
+| **CronService** | `cron/CronService.ts`       | Scheduled tasks      |
+| **McpService**  | `mcpServices/McpService.ts` | Multi-agent protocol |
+| **Database**    | `database/index.ts`         | SQLite operations    |
 
 ### Channels (`src/channels/`)
 
-| Component | Purpose |
-|-----------|---------|
-| `ChannelManager` | Plugin orchestration |
-| `SessionManager` | User session tracking |
+| Component        | Purpose                  |
+| ---------------- | ------------------------ |
+| `ChannelManager` | Plugin orchestration     |
+| `SessionManager` | User session tracking    |
 | `TelegramPlugin` | Telegram bot integration |
-| `ActionExecutor` | Action dispatch |
+| `ActionExecutor` | Action dispatch          |
 
 ---
 
@@ -103,13 +109,13 @@ type TMessage = IMessageText | IMessageToolCall | IMessagePlan
 
 ## Configuration
 
-| File | Purpose |
-|------|---------|
-| `package.json` | Dependencies, scripts |
-| `tsconfig.json` | TypeScript config, path aliases |
-| `forge.config.ts` | Electron Forge build |
-| `uno.config.ts` | UnoCSS styling |
-| `.eslintrc.json` | Linting rules |
+| File              | Purpose                         |
+| ----------------- | ------------------------------- |
+| `package.json`    | Dependencies, scripts           |
+| `tsconfig.json`   | TypeScript config, path aliases |
+| `forge.config.ts` | Electron Forge build            |
+| `uno.config.ts`   | UnoCSS styling                  |
+| `.eslintrc.json`  | Linting rules                   |
 
 **Path Aliases**: `@/*`, `@process/*`, `@renderer/*`, `@worker/*`
 
@@ -145,4 +151,4 @@ npm run build        # Build (macOS)
 
 ---
 
-*Generated: 2026-02-02*
+_Generated: 2026-02-02_

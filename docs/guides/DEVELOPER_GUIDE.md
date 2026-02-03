@@ -52,6 +52,11 @@ npm run build          # Build for macOS
 npm run dist:mac       # macOS distribution
 npm run dist:win       # Windows distribution
 npm run dist:linux     # Linux distribution
+
+# Docker
+docker-compose -f deploy/docker/docker-compose.yml up -d --build
+docker-compose -f deploy/docker/docker-compose.yml logs -f
+docker-compose -f deploy/docker/docker-compose.yml down
 ```
 
 ## Project Structure
@@ -70,6 +75,9 @@ src/
 ├── renderer/             # React UI
 ├── webserver/            # WebUI server
 └── worker/               # Background workers
+
+deploy/                   # Deployment configurations
+└── docker/               # Docker containerization
 ```
 
 ## Architecture Patterns
