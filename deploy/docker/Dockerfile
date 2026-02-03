@@ -1,7 +1,9 @@
 # =============================================================================
 # AionUI Docker Image
 # Multi-stage build for running AionUI WebUI server in a container
-# =============================================================================
+#
+# Uses hybrid build: Electron Forge (webpack) + electron-builder (packaging)
+# This matches the project's standard build pipeline (scripts/build-with-builder.js)
 #
 # Build from project root:
 #   docker build -f deploy/docker/Dockerfile -t aionui .
@@ -13,7 +15,7 @@
 
 # -----------------------------------------------------------------------------
 # Stage 1: Build
-# Compiles the application with all dependencies
+# Compiles webpack bundles via Forge, then packages with electron-builder
 # -----------------------------------------------------------------------------
 FROM node:22-bookworm AS builder
 
@@ -29,22 +31,49 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy package files first for better layer caching
 COPY package*.json ./
 
-# Install dependencies without running postinstall (scripts not yet copied)
-# Set CI=true to use prebuilt binaries for native modules
-ENV CI=true
+# Install dependencies (--ignore-scripts: native modules rebuilt by Forge later)
 RUN npm ci --ignore-scripts
 
 # Copy source code and build configuration
 COPY . .
 
-# Run postinstall manually after source is available
-# CI=true skips electron-builder install-app-deps (uses prebuilt binaries)
-RUN npm run postinstall
-
-# Build the application using Electron Forge
-# This creates the packaged application in out/AionUi-linux-x64/
-ARG TARGETARCH=x64
+# --- Step 1: Forge webpack compilation + native module rebuild ---
+# electron-forge compiles webpack bundles (.webpack/) and rebuilds native
+# modules against Electron's Node ABI. Do NOT set CI=true — that would skip
+# native module rebuilding (rebuildConfig.onlyModules: [] in forge.config.ts).
+ARG TARGETARCH=arm64
 RUN npm exec electron-forge -- package --platform=linux --arch=${TARGETARCH}
+
+# Ensure .webpack output is at the expected location for electron-builder.
+# Forge may output to .webpack/{arch}/ — normalize to .webpack/main & .webpack/renderer
+RUN if [ -d ".webpack/${TARGETARCH}/main" ] && [ ! -d ".webpack/main" ]; then \
+      cp -r ".webpack/${TARGETARCH}/main" ".webpack/main"; \
+      cp -r ".webpack/${TARGETARCH}/renderer" ".webpack/renderer"; \
+    fi
+
+# --- Step 2: electron-builder packaging ---
+# electron-builder reads electron-builder.yml which:
+#   - Includes native modules in the asar (files: node_modules/better-sqlite3/**)
+#   - Unpacks them to app.asar.unpacked/ (asarUnpack patterns)
+#   - Runs afterPack.js to rebuild native modules for target arch if cross-compiling
+# Output: out/linux-unpacked/
+RUN npx electron-builder --linux dir --${TARGETARCH} --publish=never
+
+# Normalize output directory name: electron-builder may produce
+# linux-unpacked (x64 default) or linux-arm64-unpacked (arm64).
+# Rename to a consistent linux-unpacked for the COPY stage.
+RUN if [ -d "/app/out/linux-arm64-unpacked" ] && [ ! -d "/app/out/linux-unpacked" ]; then \
+      mv /app/out/linux-arm64-unpacked /app/out/linux-unpacked; \
+    fi
+
+# Verify the build produced expected output
+RUN echo "=== Build verification ===" && \
+    ls -la /app/out/linux-unpacked/resources/ && \
+    echo "--- app.asar.unpacked ---" && \
+    (ls -la /app/out/linux-unpacked/resources/app.asar.unpacked/node_modules/ 2>/dev/null || echo "WARNING: no app.asar.unpacked") && \
+    echo "--- native modules ---" && \
+    find /app/out/linux-unpacked/resources/app.asar.unpacked -name "*.node" 2>/dev/null | head -20 && \
+    echo "=== Verification complete ==="
 
 # -----------------------------------------------------------------------------
 # Stage 2: Runtime
@@ -99,9 +128,8 @@ RUN useradd --create-home --shell /bin/bash --uid 1000 aionui
 WORKDIR /app
 
 # Copy built application from builder stage
-# The packaged app is in out/AionUi-linux-{arch}/
-ARG TARGETARCH=x64
-COPY --from=builder /app/out/AionUi-linux-${TARGETARCH} /app
+# electron-builder outputs to out/linux-unpacked/
+COPY --from=builder /app/out/linux-unpacked /app
 
 # Copy entrypoint script
 COPY deploy/docker/docker-entrypoint.sh /usr/local/bin/

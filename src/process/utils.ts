@@ -9,7 +9,12 @@ import { app } from 'electron';
 import { existsSync, lstatSync, mkdirSync, readlinkSync, symlinkSync, unlinkSync } from 'fs';
 import fs from 'fs/promises';
 import path from 'path';
-import { getSystemDir } from './initStorage';
+// Lazy import to break circular dependency: initStorage → utils → initStorage
+// getSystemDir is only needed at runtime (in copyFilesToDirectory), not at module load time
+const getSystemDirLazy = () => {
+  const { getSystemDir } = require('./initStorage') as { getSystemDir: () => { cacheDir: string; workDir: string; platform: string; arch: string } };
+  return getSystemDir();
+};
 export const getTempPath = () => {
   const rootPath = app.getPath('temp');
   return path.join(rootPath, 'aionui');
@@ -295,7 +300,7 @@ export async function verifyDirectoryFiles(dir1: string, dir2: string): Promise<
 export const copyFilesToDirectory = async (dir: string, files?: string[], skipCleanup = false): Promise<string[]> => {
   if (!files) return [];
 
-  const { cacheDir } = getSystemDir();
+  const { cacheDir } = getSystemDirLazy();
   const tempDir = path.join(cacheDir, 'temp');
   const copiedFiles: string[] = [];
 

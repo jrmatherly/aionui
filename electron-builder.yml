@@ -167,6 +167,7 @@ asarUnpack:
   # Required for Homebrew installations where asar paths may have issues
   - 'rules/**/*'
   - 'skills/**/*'
+  - 'assistant/**/*'
 
 compression: maximum
 removePackageScripts: true

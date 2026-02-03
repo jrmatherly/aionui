@@ -94,9 +94,8 @@ temp/
 
 # -----------------------------------------------------------------------------
 # Project-specific exclusions
-# Note: scripts/, public/, resources/ are REQUIRED for build
+# Note: scripts/, public/, resources/, assistant/, skills/ are REQUIRED for build
 # -----------------------------------------------------------------------------
-assistant/
 homebrew/
 .serena/
 .specify/
@@ -104,7 +103,6 @@ homebrew/
 .claude/
 .gemini/
 .ruby-lsp/
-skills/
 
 # -----------------------------------------------------------------------------
 # Exclude large media files from resources/ (keep only app icons)
