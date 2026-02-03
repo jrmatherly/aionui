@@ -5,6 +5,7 @@
  */
 
 import { useAuth } from '@/renderer/context/AuthContext';
+import { getAvatarColor, getInitials } from '@/renderer/utils/avatar';
 import { Dropdown, Menu, Tag, Tooltip } from '@arco-design/web-react';
 import { Logout, People, SettingTwo, User } from '@icon-park/react';
 import React, { useMemo } from 'react';
@@ -13,26 +14,6 @@ import { iconColors } from '@/renderer/theme/colors';
 
 interface UserMenuProps {
   collapsed?: boolean;
-}
-
-/** Extract initials from display name or username (max 2 chars). */
-function getInitials(displayName?: string, username?: string): string {
-  const name = displayName || username || '?';
-  const parts = name.split(/\s+/).filter(Boolean);
-  if (parts.length >= 2) {
-    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-  }
-  return name.substring(0, 2).toUpperCase();
-}
-
-/** Pick a deterministic colour from the user ID for the avatar. */
-function getAvatarColor(id: string): string {
-  const colours = ['#3370ff', '#0fc6c2', '#ff7d00', '#f53f3f', '#722ed1', '#eb2f96', '#00b42a', '#fadb14'];
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) {
-    hash = (hash * 31 + id.charCodeAt(i)) | 0;
-  }
-  return colours[Math.abs(hash) % colours.length];
 }
 
 const roleTagColor: Record<string, string> = {
@@ -70,12 +51,21 @@ const UserMenu: React.FC<UserMenuProps> = ({ collapsed = false }) => {
   const dropdownMenu = (
     <Menu onClickMenuItem={handleMenuClick} style={{ minWidth: 200 }}>
       {/* User info header */}
-      <div className='px-12px py-8px border-b border-gray-2 mb-4px'>
-        <div className='font-600 text-14px text-t-primary truncate'>{displayLabel}</div>
-        {user.email && <div className='text-12px color-gray-5 truncate'>{user.email}</div>}
-        <Tag size='small' color={roleTagColor[user.role || 'user']} className='mt-4px'>
-          {user.role || 'user'}
-        </Tag>
+      <div className='flex items-center gap-10px px-12px py-8px border-b border-gray-2 mb-4px'>
+        {user.avatarUrl ? (
+          <img src={user.avatarUrl} alt={displayLabel} className='shrink-0 size-36px rd-full object-cover' />
+        ) : (
+          <div className='shrink-0 size-36px rd-full flex items-center justify-center text-white text-14px font-600' style={{ backgroundColor: avatarBg }}>
+            {initials}
+          </div>
+        )}
+        <div className='flex-1 min-w-0'>
+          <div className='font-600 text-14px text-t-primary truncate'>{displayLabel}</div>
+          {user.email && <div className='text-12px color-gray-5 truncate'>{user.email}</div>}
+          <Tag size='small' color={roleTagColor[user.role || 'user']} className='mt-4px'>
+            {user.role || 'user'}
+          </Tag>
+        </div>
       </div>
 
       <Menu.Item key='profile'>
@@ -110,9 +100,13 @@ const UserMenu: React.FC<UserMenuProps> = ({ collapsed = false }) => {
       <Tooltip disabled={!collapsed} content={displayLabel} position='right'>
         <div className='flex items-center gap-10px px-12px py-8px hover:bg-hover rd-0.5rem cursor-pointer select-none'>
           {/* Avatar circle */}
-          <div className='shrink-0 size-24px rd-full flex items-center justify-center text-white text-11px font-600' style={{ backgroundColor: avatarBg }}>
-            {initials}
-          </div>
+          {user.avatarUrl ? (
+            <img src={user.avatarUrl} alt={displayLabel} className='shrink-0 size-24px rd-full object-cover' />
+          ) : (
+            <div className='shrink-0 size-24px rd-full flex items-center justify-center text-white text-11px font-600' style={{ backgroundColor: avatarBg }}>
+              {initials}
+            </div>
+          )}
           {/* Name + role (hidden when collapsed) */}
           <div className='collapsed-hidden flex-1 min-w-0'>
             <div className='text-13px text-t-primary truncate leading-tight'>{displayLabel}</div>

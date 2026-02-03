@@ -54,7 +54,7 @@ export function loadOidcConfig(): IOidcConfig {
     clientId: process.env.OIDC_CLIENT_ID!,
     clientSecret: process.env.OIDC_CLIENT_SECRET!,
     redirectUri: process.env.OIDC_REDIRECT_URI!,
-    scopes: (process.env.OIDC_SCOPES || 'openid profile email').split(' '),
+    scopes: (process.env.OIDC_SCOPES || 'openid profile email User.Read').split(' '),
     responseType: 'code',
     groupsClaim: process.env.OIDC_GROUPS_CLAIM || 'groups',
   };

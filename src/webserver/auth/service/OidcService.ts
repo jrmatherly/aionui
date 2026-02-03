@@ -46,6 +46,7 @@ export interface OidcCallbackResult {
     groups: string[];
     role: 'admin' | 'user' | 'viewer';
     auth_method: 'oidc';
+    avatarUrl?: string;
   };
   redirectTo?: string;
   error?: string;
@@ -156,6 +157,22 @@ export class OidcService {
 
       const role = resolveRoleFromGroups(groups, GROUP_MAPPINGS);
 
+      /* ── fetch profile photo ────────────────────────────────────── */
+      let avatarUrl: string | undefined;
+      try {
+        const photoResponse = await fetch('https://graph.microsoft.com/v1.0/me/photo/$value', {
+          headers: { Authorization: `Bearer ${tokenSet.access_token}` },
+        });
+        if (photoResponse.ok) {
+          const contentType = photoResponse.headers.get('content-type') || 'image/jpeg';
+          const buffer = Buffer.from(await photoResponse.arrayBuffer());
+          avatarUrl = `data:${contentType};base64,${buffer.toString('base64')}`;
+        }
+      } catch (e) {
+        // Photo not available — not an error, just skip
+        console.log('[OIDC] Profile photo not available');
+      }
+
       /* ── JIT provisioning ───────────────────────────────────────── */
       let user = UserRepository.findByOidcSubject(oidcSubject);
 
@@ -170,12 +187,13 @@ export class OidcService {
           email,
           role,
           groups,
+          avatarUrl,
         });
 
         console.log(`[OIDC] Created new user: ${username} (subject=${oidcSubject})`);
       } else {
-        // Returning user — sync role / groups / display name
-        UserRepository.updateOidcUserInfo(user.id, { role, groups, displayName });
+        // Returning user — sync role / groups / display name / avatar
+        UserRepository.updateOidcUserInfo(user.id, { role, groups, displayName, avatarUrl });
         console.log(`[OIDC] Updated user: ${user.username} (role=${role})`);
       }
 
@@ -192,6 +210,7 @@ export class OidcService {
           groups,
           role,
           auth_method: 'oidc',
+          avatarUrl: user.avatar_url ?? undefined,
         },
         redirectTo: stateData.redirectTo,
       };

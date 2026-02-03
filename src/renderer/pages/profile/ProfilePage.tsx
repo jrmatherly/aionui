@@ -12,18 +12,22 @@
  */
 
 import { withCsrfToken } from '@/webserver/middleware/csrfClient';
+import { getAvatarColor, getInitials } from '@/renderer/utils/avatar';
 import { Button, Card, Descriptions, Input, Message, Modal, Tag } from '@arco-design/web-react';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import SettingsPageWrapper from '../settings/components/SettingsPageWrapper';
 
 const ProfilePage: React.FC = () => {
   const { user } = useAuth();
-  const [changePwVisible, setChangePwVisible] = useState(false);
-  const [currentPw, setCurrentPw] = useState('');
-  const [newPw, setNewPw] = useState('');
-  const [confirmPw, setConfirmPw] = useState('');
-  const [saving, setSaving] = useState(false);
+  const [changePwVisible, setChangePwVisible] = React.useState(false);
+  const [currentPw, setCurrentPw] = React.useState('');
+  const [newPw, setNewPw] = React.useState('');
+  const [confirmPw, setConfirmPw] = React.useState('');
+  const [saving, setSaving] = React.useState(false);
+
+  const initials = useMemo(() => getInitials(user?.displayName, user?.username), [user]);
+  const avatarBg = useMemo(() => getAvatarColor(user?.id ?? 'default'), [user?.id]);
 
   const handleChangePassword = useCallback(async () => {
     if (!newPw || !currentPw) {
@@ -71,6 +75,21 @@ const ProfilePage: React.FC = () => {
     <SettingsPageWrapper>
       <h2 className='text-xl font-semibold m-0 mb-24px'>Profile</h2>
 
+      {/* Profile header with avatar */}
+      <div className='flex items-center gap-16px mb-24px'>
+        {user.avatarUrl ? (
+          <img src={user.avatarUrl} alt={user.displayName || user.username} className='size-64px rd-full object-cover' />
+        ) : (
+          <div className='size-64px rd-full flex items-center justify-center text-white text-22px font-600' style={{ backgroundColor: avatarBg }}>
+            {initials}
+          </div>
+        )}
+        <div>
+          <h2 className='text-xl font-semibold m-0'>{user.displayName || user.username}</h2>
+          {user.email && <div className='text-14px color-gray-5 mt-2px'>{user.email}</div>}
+        </div>
+      </div>
+
       <Card className='mb-20px'>
         <Descriptions
           column={1}
@@ -78,6 +97,8 @@ const ProfilePage: React.FC = () => {
           labelStyle={{ fontWeight: 500, width: 140 }}
           data={[
             { label: 'Username', value: user.username },
+            ...(user.displayName ? [{ label: 'Display Name', value: user.displayName }] : []),
+            ...(user.email ? [{ label: 'Email', value: user.email }] : []),
             {
               label: 'Role',
               value: (

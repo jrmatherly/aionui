@@ -276,7 +276,7 @@ const LoginPage: React.FC = () => {
                   }
                 }}
               >
-                <span>{showLocalLogin ? t('login.hideLocalLogin', 'Hide admin login') : t('login.showLocalLogin', 'Sign in with admin account')}</span>
+                <span>{showLocalLogin ? t('login.hideLocalLogin', 'Hide other options') : t('login.showLocalLogin', 'Other sign-in options')}</span>
                 <svg className={`login-page__local-toggle-chevron ${showLocalLogin ? 'login-page__local-toggle-chevron--open' : ''}`} viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' aria-hidden='true'>
                   <polyline points='6 9 12 15 18 9' />
                 </svg>
@@ -288,7 +288,7 @@ const LoginPage: React.FC = () => {
           <form className={`login-page__form ${oidcEnabled && !showLocalLogin ? 'login-page__form--hidden' : ''}`} onSubmit={handleSubmit} aria-hidden={oidcEnabled && !showLocalLogin}>
             {oidcEnabled && showLocalLogin && (
               <div className='login-page__divider'>
-                <span>{t('login.adminLogin', 'Admin Login')}</span>
+                <span>{t('login.adminLogin', 'Local Account')}</span>
               </div>
             )}
 

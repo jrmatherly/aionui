@@ -10,7 +10,7 @@ import type { AuthMethod, IQueryResult, IUser, UserRole } from '@process/databas
 /**
  * Authentication user type containing essential auth + RBAC fields
  */
-export type AuthUser = Pick<IUser, 'id' | 'username' | 'email' | 'password_hash' | 'jwt_secret' | 'role' | 'auth_method' | 'oidc_subject' | 'display_name' | 'groups' | 'created_at' | 'updated_at' | 'last_login'>;
+export type AuthUser = Pick<IUser, 'id' | 'username' | 'email' | 'password_hash' | 'jwt_secret' | 'role' | 'auth_method' | 'oidc_subject' | 'display_name' | 'groups' | 'avatar_url' | 'created_at' | 'updated_at' | 'last_login'>;
 
 /**
  * Unwrap database query result, throw error on failure
@@ -42,6 +42,7 @@ function mapUser(row: IUser): AuthUser {
     oidc_subject: row.oidc_subject ?? null,
     display_name: row.display_name ?? null,
     groups: row.groups ?? null,
+    avatar_url: row.avatar_url ?? null,
     created_at: row.created_at,
     updated_at: row.updated_at,
     last_login: row.last_login ?? null,
@@ -204,7 +205,7 @@ export const UserRepository = {
    * @param params - OIDC user parameters
    * @returns Created user
    */
-  createOidcUser(params: { username: string; oidcSubject: string; displayName?: string; email?: string; role: UserRole; groups?: string[] }): AuthUser {
+  createOidcUser(params: { username: string; oidcSubject: string; displayName?: string; email?: string; role: UserRole; groups?: string[]; avatarUrl?: string }): AuthUser {
     const db = getDatabase();
     const result = db.createOidcUser(params);
     const user = unwrap(result, 'Failed to create OIDC user');
@@ -222,6 +223,7 @@ export const UserRepository = {
       role?: UserRole;
       groups?: string[];
       displayName?: string;
+      avatarUrl?: string;
     }
   ): void {
     const db = getDatabase();

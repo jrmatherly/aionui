@@ -33,6 +33,7 @@ export interface IUser {
   email?: string;
   password_hash: string;
   avatar_path?: string;
+  avatar_url?: string | null; // Base64 data URL from Microsoft Graph
   jwt_secret?: string | null;
   role: UserRole;
   auth_method: AuthMethod;

@@ -1096,17 +1096,17 @@ export class AionUIDatabase {
   /**
    * Create a user via OIDC provisioning (JIT - Just In Time)
    */
-  createOidcUser(params: { username: string; oidcSubject: string; displayName?: string; email?: string; role: string; groups?: string[] }): IQueryResult<IUser> {
+  createOidcUser(params: { username: string; oidcSubject: string; displayName?: string; email?: string; role: string; groups?: string[]; avatarUrl?: string }): IQueryResult<IUser> {
     try {
       const userId = `user_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
       const now = Date.now();
 
       const stmt = this.db.prepare(`
-        INSERT INTO users (id, username, email, password_hash, role, auth_method, oidc_subject, display_name, groups, created_at, updated_at)
-        VALUES (?, ?, ?, '', ?, 'oidc', ?, ?, ?, ?, ?)
+        INSERT INTO users (id, username, email, password_hash, role, auth_method, oidc_subject, display_name, groups, avatar_url, created_at, updated_at)
+        VALUES (?, ?, ?, '', ?, 'oidc', ?, ?, ?, ?, ?, ?)
       `);
 
-      stmt.run(userId, params.username, params.email ?? null, params.role, params.oidcSubject, params.displayName ?? null, params.groups ? JSON.stringify(params.groups) : null, now, now);
+      stmt.run(userId, params.username, params.email ?? null, params.role, params.oidcSubject, params.displayName ?? null, params.groups ? JSON.stringify(params.groups) : null, params.avatarUrl ?? null, now, now);
 
       return {
         success: true,
@@ -1120,6 +1120,7 @@ export class AionUIDatabase {
           oidc_subject: params.oidcSubject,
           display_name: params.displayName ?? null,
           groups: params.groups ? JSON.stringify(params.groups) : null,
+          avatar_url: params.avatarUrl ?? null,
           created_at: now,
           updated_at: now,
           last_login: null,
@@ -1142,6 +1143,7 @@ export class AionUIDatabase {
       role?: string;
       groups?: string[];
       displayName?: string;
+      avatarUrl?: string;
     }
   ): IQueryResult<boolean> {
     try {
@@ -1160,6 +1162,10 @@ export class AionUIDatabase {
       if (updates.displayName !== undefined) {
         setClauses.push('display_name = ?');
         params.push(updates.displayName);
+      }
+      if (updates.avatarUrl !== undefined) {
+        setClauses.push('avatar_url = ?');
+        params.push(updates.avatarUrl);
       }
 
       params.push(userId);

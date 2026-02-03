@@ -227,6 +227,7 @@ export function registerAuthRoutes(app: Express): void {
         authMethod: req.user!.auth_method,
         displayName: fullUser?.display_name ?? undefined,
         email: fullUser?.email ?? undefined,
+        avatarUrl: fullUser?.avatar_url ?? undefined,
       },
     });
   });

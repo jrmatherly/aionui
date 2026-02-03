@@ -454,9 +454,34 @@ const migration_v11: IMigration = {
 };
 
 /**
+ * Migration v11 -> v12: Add avatar_url column to users table
+ * Store user profile photos as base64 data URLs from Microsoft Graph
+ */
+const migration_v12: IMigration = {
+  version: 12,
+  name: 'Add avatar_url to users table',
+  up: (db) => {
+    const tableInfo = db.prepare('PRAGMA table_info(users)').all() as Array<{ name: string }>;
+    const hasAvatarUrl = tableInfo.some((col) => col.name === 'avatar_url');
+
+    if (!hasAvatarUrl) {
+      db.exec(`ALTER TABLE users ADD COLUMN avatar_url TEXT;`);
+      console.log('[Migration v12] Added avatar_url column to users table');
+    } else {
+      console.log('[Migration v12] avatar_url column already exists, skipping');
+    }
+  },
+  down: (db) => {
+    // SQLite doesn't support DROP COLUMN directly before 3.35.0
+    // For rollback, just log — column will remain but won't be used
+    console.log('[Migration v12] Rolled back: avatar_url column remains (cannot drop in older SQLite)');
+  },
+};
+
+/**
  * All migrations in order
  */
-export const ALL_MIGRATIONS: IMigration[] = [migration_v1, migration_v2, migration_v3, migration_v4, migration_v5, migration_v6, migration_v7, migration_v8, migration_v9, migration_v10, migration_v11];
+export const ALL_MIGRATIONS: IMigration[] = [migration_v1, migration_v2, migration_v3, migration_v4, migration_v5, migration_v6, migration_v7, migration_v8, migration_v9, migration_v10, migration_v11, migration_v12];
 
 /**
  * Get migrations needed to upgrade from one version to another
