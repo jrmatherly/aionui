@@ -15,7 +15,17 @@ import type { IConfigStorageRefer, TChatConversation } from '@/common/storage';
  */
 
 /**
- * User account (new account system)
+ * User role for RBAC
+ */
+export type UserRole = 'admin' | 'user' | 'viewer';
+
+/**
+ * Authentication method
+ */
+export type AuthMethod = 'local' | 'oidc';
+
+/**
+ * User account (multi-user auth system)
  */
 export interface IUser {
   id: string;
@@ -24,6 +34,11 @@ export interface IUser {
   password_hash: string;
   avatar_path?: string;
   jwt_secret?: string | null;
+  role: UserRole;
+  auth_method: AuthMethod;
+  oidc_subject?: string | null;
+  display_name?: string | null;
+  groups?: string | null; // JSON array of group IDs
   created_at: number;
   updated_at: number;
   last_login?: number | null;

@@ -5,12 +5,12 @@
  */
 
 import { getDatabase } from '@process/database/export';
-import type { IQueryResult, IUser } from '@process/database/types';
+import type { AuthMethod, IQueryResult, IUser, UserRole } from '@process/database/types';
 
 /**
- * Authentication user type containing only essential auth fields
+ * Authentication user type containing essential auth + RBAC fields
  */
-export type AuthUser = Pick<IUser, 'id' | 'username' | 'password_hash' | 'jwt_secret' | 'created_at' | 'updated_at' | 'last_login'>;
+export type AuthUser = Pick<IUser, 'id' | 'username' | 'password_hash' | 'jwt_secret' | 'role' | 'auth_method' | 'oidc_subject' | 'display_name' | 'groups' | 'created_at' | 'updated_at' | 'last_login'>;
 
 /**
  * Unwrap database query result, throw error on failure
@@ -36,6 +36,11 @@ function mapUser(row: IUser): AuthUser {
     username: row.username,
     password_hash: row.password_hash,
     jwt_secret: row.jwt_secret ?? null,
+    role: row.role ?? 'user',
+    auth_method: row.auth_method ?? 'local',
+    oidc_subject: row.oidc_subject ?? null,
+    display_name: row.display_name ?? null,
+    groups: row.groups ?? null,
     created_at: row.created_at,
     updated_at: row.updated_at,
     last_login: row.last_login ?? null,
@@ -176,6 +181,65 @@ export const UserRepository = {
     const result = db.updateUserJwtSecret(userId, jwtSecret);
     if (!result.success) {
       throw new Error(result.error || 'Failed to update JWT secret');
+    }
+  },
+
+  /**
+   * Find user by OIDC subject identifier
+   * @param oidcSubject - OIDC subject (e.g., EntraID object ID)
+   * @returns User object or null
+   */
+  findByOidcSubject(oidcSubject: string): AuthUser | null {
+    const db = getDatabase();
+    const result = db.getUserByOidcSubject(oidcSubject);
+    if (!result.success || !result.data) {
+      return null;
+    }
+    return mapUser(result.data);
+  },
+
+  /**
+   * Create a user via OIDC provisioning (JIT)
+   * @param params - OIDC user parameters
+   * @returns Created user
+   */
+  createOidcUser(params: { username: string; oidcSubject: string; displayName?: string; email?: string; role: UserRole; groups?: string[] }): AuthUser {
+    const db = getDatabase();
+    const result = db.createOidcUser(params);
+    const user = unwrap(result, 'Failed to create OIDC user');
+    return mapUser(user);
+  },
+
+  /**
+   * Update OIDC user info on subsequent logins
+   * @param userId - User ID
+   * @param updates - Fields to update
+   */
+  updateOidcUserInfo(
+    userId: string,
+    updates: {
+      role?: UserRole;
+      groups?: string[];
+      displayName?: string;
+    }
+  ): void {
+    const db = getDatabase();
+    const result = db.updateOidcUserInfo(userId, updates);
+    if (!result.success) {
+      throw new Error(result.error || 'Failed to update OIDC user info');
+    }
+  },
+
+  /**
+   * Update user role (admin override)
+   * @param userId - User ID
+   * @param role - New role
+   */
+  updateRole(userId: string, role: UserRole): void {
+    const db = getDatabase();
+    const result = db.updateUserRole(userId, role);
+    if (!result.success) {
+      throw new Error(result.error || 'Failed to update user role');
     }
   },
 };

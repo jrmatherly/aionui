@@ -346,9 +346,71 @@ const migration_v9: IMigration = {
 };
 
 /**
+ * Migration v9 -> v10: Add multi-user auth columns to users table
+ * Adds role, auth_method, oidc_subject, display_name, and groups columns
+ * for OIDC SSO and RBAC support.
+ */
+const migration_v10: IMigration = {
+  version: 10,
+  name: 'Add multi-user auth columns to users table',
+  up: (db) => {
+    const tableInfo = db.prepare('PRAGMA table_info(users)').all() as Array<{ name: string }>;
+    const existingColumns = new Set(tableInfo.map((col) => col.name));
+
+    // role: admin | user | viewer (default 'user' for new users)
+    if (!existingColumns.has('role')) {
+      db.exec(`ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'user' CHECK(role IN ('admin', 'user', 'viewer'));`);
+    }
+
+    // auth_method: local | oidc (default 'local' for existing users)
+    if (!existingColumns.has('auth_method')) {
+      db.exec(`ALTER TABLE users ADD COLUMN auth_method TEXT NOT NULL DEFAULT 'local' CHECK(auth_method IN ('local', 'oidc'));`);
+    }
+
+    // oidc_subject: unique identifier from OIDC provider (e.g., EntraID object ID)
+    if (!existingColumns.has('oidc_subject')) {
+      db.exec(`ALTER TABLE users ADD COLUMN oidc_subject TEXT;`);
+    }
+
+    // display_name: human-readable name from OIDC claims
+    if (!existingColumns.has('display_name')) {
+      db.exec(`ALTER TABLE users ADD COLUMN display_name TEXT;`);
+    }
+
+    // groups: JSON array of group IDs from OIDC token
+    if (!existingColumns.has('groups')) {
+      db.exec(`ALTER TABLE users ADD COLUMN groups TEXT;`);
+    }
+
+    // Mark existing system_default_user (admin) with role='admin', auth_method='local'
+    db.exec(`UPDATE users SET role = 'admin', auth_method = 'local' WHERE id = 'system_default_user';`);
+
+    // Add unique index for OIDC subject lookups (enforces one user per OIDC subject)
+    db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_users_oidc_subject ON users(oidc_subject) WHERE oidc_subject IS NOT NULL;`);
+    // Add index for role-based queries
+    db.exec(`CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);`);
+    // Add index for auth method queries
+    db.exec(`CREATE INDEX IF NOT EXISTS idx_users_auth_method ON users(auth_method);`);
+
+    console.log('[Migration v10] Added multi-user auth columns (role, auth_method, oidc_subject, display_name, groups)');
+  },
+  down: (db) => {
+    // SQLite doesn't support DROP COLUMN before 3.35.0, so just drop indexes
+    db.exec(`
+      DROP INDEX IF EXISTS idx_users_oidc_subject;
+      DROP INDEX IF EXISTS idx_users_role;
+      DROP INDEX IF EXISTS idx_users_auth_method;
+    `);
+    // Reset admin role back (column stays but won't cause issues)
+    db.exec(`UPDATE users SET role = 'user' WHERE id = 'system_default_user';`);
+    console.log('[Migration v10] Rolled back: Removed multi-user auth indexes');
+  },
+};
+
+/**
  * All migrations in order
  */
-export const ALL_MIGRATIONS: IMigration[] = [migration_v1, migration_v2, migration_v3, migration_v4, migration_v5, migration_v6, migration_v7, migration_v8, migration_v9];
+export const ALL_MIGRATIONS: IMigration[] = [migration_v1, migration_v2, migration_v3, migration_v4, migration_v5, migration_v6, migration_v7, migration_v8, migration_v9, migration_v10];
 
 /**
  * Get migrations needed to upgrade from one version to another

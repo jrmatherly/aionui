@@ -14,6 +14,8 @@ import { UserRepository } from '../repository/UserRepository';
 interface TokenPayload {
   userId: string;
   username: string;
+  role: 'admin' | 'user' | 'viewer';
+  authMethod: 'local' | 'oidc';
   iat?: number;
   exp?: number;
 }
@@ -215,10 +217,12 @@ export class AuthService {
   /**
    * Generate standard WebUI session token
    */
-  public static generateToken(user: Pick<AuthUser, 'id' | 'username'>): string {
+  public static generateToken(user: Pick<AuthUser, 'id' | 'username' | 'role' | 'auth_method'>): string {
     const payload: TokenPayload = {
       userId: user.id,
       username: user.username,
+      role: user.role ?? 'user',
+      authMethod: user.auth_method ?? 'local',
     };
 
     return jwt.sign(payload, this.getJwtSecret(), {
@@ -309,6 +313,8 @@ export class AuthService {
     return this.generateToken({
       id: this.normalizeUserId(decoded.userId),
       username: decoded.username,
+      role: decoded.role,
+      auth_method: decoded.authMethod,
     });
   }
 
