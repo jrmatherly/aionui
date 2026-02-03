@@ -147,6 +147,11 @@ export function registerAuthRoutes(app: Express): void {
         user: {
           id: user.id,
           username: user.username,
+          role: user.role ?? 'user',
+          authMethod: user.auth_method ?? 'local',
+          displayName: user.display_name ?? undefined,
+          email: user.email ?? undefined,
+          avatarUrl: user.avatar_url ?? undefined,
         },
         token: accessToken,
       });
