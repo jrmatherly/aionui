@@ -3,6 +3,622 @@
   "category": "accessibility",
   "patterns": [
     {
+      "id": "124e52aaa10e02eb",
+      "subcategory": "semantic-html",
+      "name": "Semantic HTML Detector",
+      "description": "Learns semantic HTML patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "accessibility/semantic-html",
+          "patternId": "accessibility/semantic-html/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.19,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 8,
+        "score": 0.77,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 13,
+          "column": 31,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 19,
+          "column": 36,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 168,
+          "column": 21,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 168,
+          "column": 35,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 180,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 323,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 13,
+          "column": 31,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 156,
+          "column": 21,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 156,
+          "column": 35,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 168,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 316,
+          "column": 31,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 330,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 364,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 101,
+          "column": 14,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 10,
+          "column": 16,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 5,
+          "column": 16,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 176,
+          "column": 138,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 304,
+          "column": 29,
+          "isOutlier": false,
+          "confidence": 0.7
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 6,
+          "column": 16,
+          "isOutlier": false,
+          "confidence": 0.77
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.887Z",
+        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "source": "auto-detected",
+        "tags": [
+          "accessibility",
+          "semantic-html"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "fef56267ca252598",
+      "subcategory": "semantic-html",
+      "name": "Semantic HTML Detector",
+      "description": "Learns semantic HTML patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "accessibility/semantic-html",
+          "patternId": "accessibility/semantic-html/import"
+        }
+      },
+      "confidence": {
+        "frequency": 0.01,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.7949999999999999,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 197,
+          "column": 127,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "source": "auto-detected",
+        "tags": [
+          "accessibility",
+          "semantic-html"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "fac9e5a9e1c7968d",
+      "subcategory": "aria-roles",
+      "name": "ARIA Roles Detector",
+      "description": "Learns ARIA roles patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "accessibility/aria-roles",
+          "patternId": "accessibility/aria-roles/conditional"
+        }
+      },
+      "confidence": {
+        "frequency": 0.05,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.7651219512195122,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 62,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 62,
+          "column": 28,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 108,
+          "column": 124,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 140,
+          "column": 103,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 200,
+          "column": 68,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "source": "auto-detected",
+        "tags": [
+          "accessibility",
+          "aria-roles"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "9560b1c5e0e3476d",
+      "subcategory": "aria-roles",
+      "name": "ARIA Roles Detector",
+      "description": "Learns ARIA roles patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "accessibility/aria-roles",
+          "patternId": "accessibility/aria-roles/import"
+        }
+      },
+      "confidence": {
+        "frequency": 0.04,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.7651219512195122,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 114,
+          "column": 24,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 114,
+          "column": 67,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 130,
+          "column": 39,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 148,
+          "column": 63,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "source": "auto-detected",
+        "tags": [
+          "accessibility",
+          "aria-roles"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "e898757dfe3bac59",
+      "subcategory": "aria-roles",
+      "name": "ARIA Roles Detector",
+      "description": "Learns ARIA roles patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "accessibility/aria-roles",
+          "patternId": "accessibility/aria-roles/function_call"
+        }
+      },
+      "confidence": {
+        "frequency": 0.03,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.7651219512195122,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 142,
+          "column": 31,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 143,
+          "column": 32,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 144,
+          "column": 27,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "source": "auto-detected",
+        "tags": [
+          "accessibility",
+          "aria-roles"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "47115b4e91a3a50b",
+      "subcategory": "semantic-html",
+      "name": "Semantic HTML Detector",
+      "description": "Learns semantic HTML patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "accessibility/semantic-html",
+          "patternId": "accessibility/semantic-html/conditional"
+        }
+      },
+      "confidence": {
+        "frequency": 0.03,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.8533333333333333,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 59,
+          "column": 65,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 44,
+          "column": 35,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 497,
+          "column": 49,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "accessibility",
+          "semantic-html"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "36f469ced7410aa8",
+      "subcategory": "alt-text",
+      "name": "Alt Text Detector",
+      "description": "Learns alt text patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "accessibility/alt-text",
+          "patternId": "accessibility/alt-text/function_call"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.8533333333333333,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 297,
+          "column": 35,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 16,
+          "column": 29,
+          "isOutlier": false,
+          "confidence": 0.76
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "accessibility",
+          "alt-text"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "dc5fe60624939ffe",
+      "subcategory": "semantic-html",
+      "name": "Semantic HTML Detector",
+      "description": "Learns semantic HTML patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "accessibility/semantic-html",
+          "patternId": "accessibility/semantic-html/assignment"
+        }
+      },
+      "confidence": {
+        "frequency": 0.04,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.8999999999999999,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 200,
+          "column": 32,
+          "isOutlier": false,
+          "confidence": 0.8999999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 200,
+          "column": 73,
+          "isOutlier": false,
+          "confidence": 0.8999999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 200,
+          "column": 94,
+          "isOutlier": false,
+          "confidence": 0.8999999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 168,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.8999999999999999
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "source": "auto-detected",
+        "tags": [
+          "accessibility",
+          "semantic-html"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "473d8fd4bbb94ad1",
+      "subcategory": "alt-text",
+      "name": "Alt Text Detector",
+      "description": "Learns alt text patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "accessibility/alt-text",
+          "patternId": "accessibility/alt-text/import"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.8533333333333333,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 137,
+          "column": 62,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 132,
+          "column": 35,
+          "isOutlier": false,
+          "confidence": 0.76
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "source": "auto-detected",
+        "tags": [
+          "accessibility",
+          "alt-text"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
       "id": "1599883860ef2cf4",
       "subcategory": "alt-text",
       "name": "Alt Text Detector",
@@ -91,8 +707,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.586Z",
-        "lastSeen": "2026-02-03T22:02:56.586Z",
+        "firstSeen": "2026-02-03T22:47:07.887Z",
+        "lastSeen": "2026-02-03T22:47:07.887Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -350,8 +966,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.587Z",
-        "lastSeen": "2026-02-03T22:02:56.587Z",
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -420,8 +1036,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.587Z",
-        "lastSeen": "2026-02-03T22:02:56.587Z",
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -462,8 +1078,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.588Z",
-        "lastSeen": "2026-02-03T22:02:56.588Z",
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -504,8 +1120,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.588Z",
-        "lastSeen": "2026-02-03T22:02:56.588Z",
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -546,8 +1162,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.588Z",
-        "lastSeen": "2026-02-03T22:02:56.588Z",
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -558,6 +1174,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-03T22:02:56.611Z",
-  "checksum": "56b2a89bacd73313"
+  "lastUpdated": "2026-02-03T23:02:00.028Z",
+  "checksum": "bbb1b253c6d69d11"
 }

@@ -3,6 +3,468 @@
   "category": "performance",
   "patterns": [
     {
+      "id": "9fa3c331ecd5fb04",
+      "subcategory": "code-splitting",
+      "name": "Code Splitting Detector",
+      "description": "Learns code splitting patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "performance/code-splitting",
+          "patternId": "performance/code-splitting/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.08,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 4,
+        "score": 0.77,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 210,
+          "column": 1,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 198,
+          "column": 1,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 127,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 165,
+          "column": 22,
+          "isOutlier": false,
+          "confidence": 0.595
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.887Z",
+        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "source": "auto-detected",
+        "tags": [
+          "performance",
+          "code-splitting"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "2f04027648a688ab",
+      "subcategory": "caching-patterns",
+      "name": "Caching Patterns Detector",
+      "description": "Learns caching patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "performance/caching-patterns",
+          "patternId": "performance/caching-patterns/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.04,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.77,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 230,
+          "column": 16,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 218,
+          "column": 16,
+          "isOutlier": false,
+          "confidence": 0.77
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.887Z",
+        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "source": "auto-detected",
+        "tags": [
+          "performance",
+          "caching-patterns"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "5412af37b5f817dd",
+      "subcategory": "bundle-size",
+      "name": "Bundle Size Detector",
+      "description": "Learns bundle size optimization patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "performance/bundle-size",
+          "patternId": "performance/bundle-size/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.77,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 127,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.77
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "performance",
+          "bundle-size"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "711d14d362ea09db",
+      "subcategory": "debounce-throttle",
+      "name": "Debounce Throttle Detector",
+      "description": "Learns debounce and throttle patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "performance/debounce-throttle",
+          "patternId": "performance/debounce-throttle/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.06,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 3,
+        "score": 0.77,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 20,
+          "column": 36,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 261,
+          "column": 31,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/gemini-scheduled-triage.yml",
+          "line": 59,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.77
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "performance",
+          "debounce-throttle"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "69e38c5460a2d58f",
+      "subcategory": "code-splitting",
+      "name": "Code Splitting Detector",
+      "description": "Learns code splitting patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "performance/code-splitting",
+          "patternId": "performance/code-splitting/conditional"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.7949999999999999,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 171,
+          "column": 31,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "performance",
+          "code-splitting"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "517bf33f9001883b",
+      "subcategory": "memoization",
+      "name": "Memoization Detector",
+      "description": "Learns memoization patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "performance/memoization",
+          "patternId": "performance/memoization/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.77,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 166,
+          "column": 90,
+          "isOutlier": false,
+          "confidence": 0.77
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "source": "auto-detected",
+        "tags": [
+          "performance",
+          "memoization"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "5c046649df488506",
+      "subcategory": "debounce-throttle",
+      "name": "Debounce Throttle Detector",
+      "description": "Learns debounce and throttle patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "performance/debounce-throttle",
+          "patternId": "performance/debounce-throttle/assignment"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.7949999999999999,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 121,
+          "column": 24,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "source": "auto-detected",
+        "tags": [
+          "performance",
+          "debounce-throttle"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "8852bf066d1baeeb",
+      "subcategory": "memoization",
+      "name": "Memoization Detector",
+      "description": "Learns memoization patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "performance/memoization",
+          "patternId": "performance/memoization/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.08,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.8533333333333333,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 276,
+          "column": 47,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 277,
+          "column": 55,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 346,
+          "column": 47,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 347,
+          "column": 55,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "performance",
+          "memoization"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "dce403157d52a40c",
+      "subcategory": "caching-patterns",
+      "name": "Caching Patterns Detector",
+      "description": "Learns caching patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "performance/caching-patterns",
+          "patternId": "performance/caching-patterns/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.08,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.8533333333333333,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 276,
+          "column": 47,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 277,
+          "column": 55,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 346,
+          "column": 47,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 347,
+          "column": 55,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "performance",
+          "caching-patterns"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
       "id": "686236a2903387d0",
       "subcategory": "memoization",
       "name": "Memoization Detector",
@@ -33,8 +495,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.587Z",
-        "lastSeen": "2026-02-03T22:02:56.587Z",
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -75,8 +537,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.587Z",
-        "lastSeen": "2026-02-03T22:02:56.587Z",
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -131,8 +593,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.587Z",
-        "lastSeen": "2026-02-03T22:02:56.587Z",
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -187,8 +649,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.587Z",
-        "lastSeen": "2026-02-03T22:02:56.587Z",
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -229,8 +691,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.587Z",
-        "lastSeen": "2026-02-03T22:02:56.587Z",
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -271,8 +733,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.588Z",
-        "lastSeen": "2026-02-03T22:02:56.588Z",
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -334,8 +796,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.588Z",
-        "lastSeen": "2026-02-03T22:02:56.588Z",
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -376,8 +838,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.588Z",
-        "lastSeen": "2026-02-03T22:02:56.588Z",
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -388,6 +850,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-03T22:02:56.611Z",
-  "checksum": "e6194543bbb8ad32"
+  "lastUpdated": "2026-02-03T23:02:00.027Z",
+  "checksum": "b2f8368b21f9f4e0"
 }

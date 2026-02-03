@@ -3,6 +3,1474 @@
   "category": "styling",
   "patterns": [
     {
+      "id": "798766635cc3e7e1",
+      "subcategory": "design-tokens",
+      "name": "Design Tokens Detector",
+      "description": "Learns design token patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "styling/design-tokens",
+          "patternId": "styling/design-tokens/conditional"
+        }
+      },
+      "confidence": {
+        "frequency": 0.06,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.7472727272727272,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 113,
+          "column": 27,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 113,
+          "column": 68,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T23:01:59.934Z",
+        "source": "auto-detected",
+        "tags": [
+          "styling",
+          "design-tokens"
+        ],
+        "approvedAt": "2026-02-03T23:01:59.934Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "0f9264966e2f9180",
+      "subcategory": "design-tokens",
+      "name": "Design Tokens Detector",
+      "description": "Learns design token patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "styling/design-tokens",
+          "patternId": "styling/design-tokens/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.29,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 7,
+        "score": 0.77,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 52,
+          "column": 76,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 139,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 44,
+          "column": 76,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 131,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 145,
+          "column": 14,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 26,
+          "column": 77,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 36,
+          "column": 20,
+          "isOutlier": false,
+          "confidence": 0.56
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 36,
+          "column": 34,
+          "isOutlier": false,
+          "confidence": 0.56
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 83,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.56
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 193,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.56
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 157,
+          "column": 31,
+          "isOutlier": false,
+          "confidence": 0.56
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 31,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.56
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 119,
+          "column": 177,
+          "isOutlier": false,
+          "confidence": 0.5857894736842104
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 32,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.5857894736842104
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 112,
+          "column": 50,
+          "isOutlier": false,
+          "confidence": 0.5472727272727271
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 174,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.5472727272727271
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.887Z",
+        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "source": "auto-detected",
+        "tags": [
+          "styling",
+          "design-tokens"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "ff3d9e463e805726",
+      "subcategory": "typography",
+      "name": "Typography Detector",
+      "description": "Learns typography patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "styling/typography",
+          "patternId": "styling/typography/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.58,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 7,
+        "score": 0.77,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 29,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 72,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 146,
+          "column": 31,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 161,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 21,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 64,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 138,
+          "column": 31,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 149,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 30,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 39,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 49,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 28,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 37,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 49,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 58,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 67,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 6,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 15,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 24,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 48,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/question.yml",
+          "line": 6,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/question.yml",
+          "line": 30,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 129,
+          "column": 48,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 129,
+          "column": 267,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 186,
+          "column": 17,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 186,
+          "column": 78,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 258,
+          "column": 25,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 309,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 310,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.887Z",
+        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "source": "auto-detected",
+        "tags": [
+          "styling",
+          "typography"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "8e73b63ccd0a4744",
+      "subcategory": "class-naming",
+      "name": "Class Naming Detector",
+      "description": "Learns class naming patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "styling/class-naming",
+          "patternId": "styling/class-naming/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.38,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 7,
+        "score": 0.77,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 51,
+          "column": 26,
+          "isOutlier": false,
+          "confidence": 0.6387499999999999
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 147,
+          "column": 12,
+          "isOutlier": false,
+          "confidence": 0.6387499999999999
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 51,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.6387499999999999
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 12,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.6387499999999999
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 301,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.6387499999999999
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 43,
+          "column": 26,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 139,
+          "column": 12,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 43,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 12,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 287,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 315,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".github/pull_request_template.md",
+          "line": 25,
+          "column": 42,
+          "isOutlier": true,
+          "confidence": 0.77,
+          "outlierReason": "Value above IQR upper bound"
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 117,
+          "column": 30,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 183,
+          "column": 30,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 120,
+          "column": 29,
+          "isOutlier": true,
+          "confidence": 0.77,
+          "outlierReason": "Value above IQR upper bound"
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 107,
+          "column": 29,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 266,
+          "column": 39,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 281,
+          "column": 35,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 140,
+          "column": 57,
+          "isOutlier": true,
+          "confidence": 0.77,
+          "outlierReason": "Value above IQR upper bound"
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.887Z",
+        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "source": "auto-detected",
+        "tags": [
+          "styling",
+          "class-naming"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "28bc1ee2250a97dc",
+      "subcategory": "tailwind-patterns",
+      "name": "Tailwind Patterns Detector",
+      "description": "Learns Tailwind CSS patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "styling/tailwind-patterns",
+          "patternId": "styling/tailwind-patterns/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.22,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 6,
+        "score": 0.77,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 29,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 72,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 146,
+          "column": 31,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 161,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 21,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 64,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 138,
+          "column": 31,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 149,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 30,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 39,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 49,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 28,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 37,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 49,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 58,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 67,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 6,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 15,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 24,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 48,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/question.yml",
+          "line": 6,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/question.yml",
+          "line": 30,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.887Z",
+        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "source": "auto-detected",
+        "tags": [
+          "styling",
+          "tailwind-patterns"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "bcc19a1cc3a14283",
+      "subcategory": "z-index-scale",
+      "name": "Z-Index Scale Detector",
+      "description": "Learns z-index scale patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "styling/z-index-scale",
+          "patternId": "styling/z-index-scale/function_call"
+        }
+      },
+      "confidence": {
+        "frequency": 0.04,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.7949999999999999,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 173,
+          "column": 27,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 161,
+          "column": 27,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.887Z",
+        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "source": "auto-detected",
+        "tags": [
+          "styling",
+          "z-index-scale"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "65bf64045b683af5",
+      "subcategory": "responsive",
+      "name": "Responsive Detector",
+      "description": "Learns responsive design patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "styling/responsive",
+          "patternId": "styling/responsive/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.08,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.77,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 140,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 21,
+          "column": 56,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 30,
+          "column": 61,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 132,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.77
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.887Z",
+        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "source": "auto-detected",
+        "tags": [
+          "styling",
+          "responsive"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "8b1074d09e01c816",
+      "subcategory": "class-naming",
+      "name": "Class Naming Detector",
+      "description": "Learns class naming patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "styling/class-naming",
+          "patternId": "styling/class-naming/conditional"
+        }
+      },
+      "confidence": {
+        "frequency": 0.1,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.7949999999999999,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 209,
+          "column": 29,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 211,
+          "column": 48,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 168,
+          "column": 118,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 168,
+          "column": 164,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 168,
+          "column": 184,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "styling",
+          "class-naming"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "0cdaed2ae186f1d0",
+      "subcategory": "design-tokens",
+      "name": "Design Tokens Detector",
+      "description": "Learns design token patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "styling/design-tokens",
+          "patternId": "styling/design-tokens/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.34,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 5,
+        "score": 0.7949999999999999,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 124,
+          "column": 64,
+          "isOutlier": false,
+          "confidence": 0.76
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 124,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.76
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 204,
+          "column": 64,
+          "isOutlier": false,
+          "confidence": 0.76
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 204,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.76
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 47,
+          "column": 64,
+          "isOutlier": false,
+          "confidence": 0.76
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 47,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.76
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 48,
+          "column": 64,
+          "isOutlier": false,
+          "confidence": 0.7857894736842105
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 48,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.7857894736842105
+        },
+        {
+          "file": ".github/workflows/gemini-scheduled-triage.yml",
+          "line": 52,
+          "column": 61,
+          "isOutlier": true,
+          "confidence": 0.7949999999999999,
+          "outlierReason": "Value above IQR upper bound"
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 192,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 192,
+          "column": 64,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 192,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 226,
+          "column": 64,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 226,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 231,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 231,
+          "column": 64,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 231,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "styling",
+          "design-tokens"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "84e8bea20acf97f7",
+      "subcategory": "design-tokens",
+      "name": "Design Tokens Detector",
+      "description": "Learns design token patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "styling/design-tokens",
+          "patternId": "styling/design-tokens/import"
+        }
+      },
+      "confidence": {
+        "frequency": 0.25,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.7857894736842105,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 134,
+          "column": 72,
+          "isOutlier": false,
+          "confidence": 0.7857894736842105
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 135,
+          "column": 76,
+          "isOutlier": false,
+          "confidence": 0.7857894736842105
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 136,
+          "column": 90,
+          "isOutlier": false,
+          "confidence": 0.7857894736842105
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 53,
+          "column": 57,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 190,
+          "column": 30,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 130,
+          "column": 67,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 132,
+          "column": 62,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 134,
+          "column": 61,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 148,
+          "column": 118,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "source": "auto-detected",
+        "tags": [
+          "styling",
+          "design-tokens"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "0b3ceb8d6ea73da8",
+      "subcategory": "typography",
+      "name": "Typography Detector",
+      "description": "Learns typography patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "styling/typography",
+          "patternId": "styling/typography/import"
+        }
+      },
+      "confidence": {
+        "frequency": 0.08,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.7833333333333333,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 196,
+          "column": 90,
+          "isOutlier": false,
+          "confidence": 0.7833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 139,
+          "column": 132,
+          "isOutlier": false,
+          "confidence": 0.7833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 188,
+          "column": 71,
+          "isOutlier": false,
+          "confidence": 0.7833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 190,
+          "column": 71,
+          "isOutlier": false,
+          "confidence": 0.7833333333333333
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "source": "auto-detected",
+        "tags": [
+          "styling",
+          "typography"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "6a689bf954d402e4",
+      "subcategory": "typography",
+      "name": "Typography Detector",
+      "description": "Learns typography patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "styling/typography",
+          "patternId": "styling/typography/function_call"
+        }
+      },
+      "confidence": {
+        "frequency": 0.08,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.7833333333333333,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 121,
+          "column": 96,
+          "isOutlier": false,
+          "confidence": 0.7833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 121,
+          "column": 144,
+          "isOutlier": false,
+          "confidence": 0.7833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 121,
+          "column": 208,
+          "isOutlier": false,
+          "confidence": 0.7833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 121,
+          "column": 215,
+          "isOutlier": false,
+          "confidence": 0.7833333333333333
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "source": "auto-detected",
+        "tags": [
+          "styling",
+          "typography"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "45cfdbba95e40a3a",
+      "subcategory": "class-naming",
+      "name": "Class Naming Detector",
+      "description": "Learns class naming patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "styling/class-naming",
+          "patternId": "styling/class-naming/import"
+        }
+      },
+      "confidence": {
+        "frequency": 0.04,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.8533333333333333,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 147,
+          "column": 38,
+          "isOutlier": false,
+          "confidence": 0.83875
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 139,
+          "column": 38,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.887Z",
+        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "source": "auto-detected",
+        "tags": [
+          "styling",
+          "class-naming"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "f662ff4305a1a977",
+      "subcategory": "class-naming",
+      "name": "Class Naming Detector",
+      "description": "Learns class naming patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "styling/class-naming",
+          "patternId": "styling/class-naming/function_call"
+        }
+      },
+      "confidence": {
+        "frequency": 0.08,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.8533333333333333,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 117,
+          "column": 14,
+          "isOutlier": false,
+          "confidence": 0.83875
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 192,
+          "column": 10,
+          "isOutlier": false,
+          "confidence": 0.83875
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 109,
+          "column": 14,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 180,
+          "column": 10,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.887Z",
+        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "source": "auto-detected",
+        "tags": [
+          "styling",
+          "class-naming"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
       "id": "71906b58d48602e4",
       "subcategory": "design-tokens",
       "name": "Design Tokens Detector",
@@ -145,8 +1613,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.587Z",
-        "lastSeen": "2026-02-03T22:02:56.587Z",
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -187,8 +1655,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.588Z",
-        "lastSeen": "2026-02-03T22:02:56.588Z",
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -229,8 +1697,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.588Z",
-        "lastSeen": "2026-02-03T22:02:56.588Z",
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -271,8 +1739,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.588Z",
-        "lastSeen": "2026-02-03T22:02:56.588Z",
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -320,8 +1788,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.588Z",
-        "lastSeen": "2026-02-03T22:02:56.588Z",
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -362,8 +1830,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.588Z",
-        "lastSeen": "2026-02-03T22:02:56.588Z",
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -374,6 +1842,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-03T22:02:56.605Z",
-  "checksum": "2eac7921e52b396f"
+  "lastUpdated": "2026-02-03T23:02:00.019Z",
+  "checksum": "a8f06a9c89bb95e1"
 }

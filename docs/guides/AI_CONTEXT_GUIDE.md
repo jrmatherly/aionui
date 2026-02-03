@@ -221,9 +221,11 @@ drift memory add tribal "Description of gotcha and fix" --topic "Area"
 
 1. **Understand structure:** Serena `get_symbols_overview` and `find_referencing_symbols`.
 2. **Check patterns:** Drift patterns show established conventions.
-3. **Analyze impact:** `drift callgraph reach <file>` for blast radius.
-4. **Execute:** Serena's `replace_symbol_body`, `rename_symbol` for safe changes.
-5. **Verify:** `drift check` + `drift gate --policy strict` + Serena reference verification.
+3. **Analyze impact:** `drift callgraph impact <file>` for blast radius.
+4. **Check coupling:** `drift coupling analyze <file>` for dependencies/dependents.
+5. **Find dead code:** `drift coupling unused-exports` for removable exports.
+6. **Execute:** Serena's `replace_symbol_body`, `rename_symbol` for safe changes.
+7. **Verify:** `drift check` + `drift gate --policy strict` + Serena reference verification.
 
 ### Security Review
 
@@ -430,6 +432,54 @@ drift dna playbook   # Generate style playbook for the codebase
 Mutations don't necessarily need fixing — agent-specific config code naturally varies
 from the main app patterns. Focus on high-impact mutations in core application code.
 
+## Coupling Analysis
+
+Drift analyzes module dependencies for circular dependencies, highly coupled modules,
+and dead code.
+
+### Current State
+
+- **0 dependency cycles** — no circular imports
+- **0 coupling hotspots** — no over-coupled modules
+- **~20 unused exports** — mostly from skill scripts (Python), not actionable
+
+### Commands
+
+```bash
+drift coupling build           # Build coupling graph
+drift coupling cycles          # Find circular dependencies
+drift coupling hotspots        # Over-coupled modules
+drift coupling unused-exports  # Dead exported code
+drift coupling analyze <file>  # Module's afferent/efferent coupling
+drift coupling refactor-impact <file>  # Blast radius for refactoring
+```
+
+### When to Use
+
+- **Before refactoring** — Run `drift coupling refactor-impact <file>` to see what breaks
+- **After adding imports** — Check `drift coupling cycles` to catch new circular deps
+- **Code cleanup** — `drift coupling unused-exports` finds dead code to remove
+
+## Audit System
+
+Drift's audit system provides a higher-level view of pattern health including
+duplicate detection and false positive identification.
+
+### Current State
+
+- **Audit score:** 92/100
+- **36 duplicate groups** detected (overlapping detectors, not actionable in v0.9.48)
+- **9 likely false positives** identified
+- **61 auto-approve eligible** (all already approved)
+
+### Commands
+
+```bash
+drift audit                # Full audit with duplicates and FP detection
+drift audit --review       # Detailed review report
+drift approve --auto       # Auto-approve high-confidence patterns
+```
+
 ## When to Use Which Tool
 
 | Task | Drift | Serena |
@@ -468,6 +518,9 @@ drift memory validate --scope stale        # Find stale memories
 drift env scan                             # Refresh env var index
 drift boundaries check                     # Verify data boundaries
 drift dna mutations                        # Check for new style drift
+drift audit                                # Pattern health, duplicates, FPs
+drift coupling cycles                      # Check for circular dependencies
+drift error-handling gaps                  # Find missing error handling
 ```
 
 ### Learning from Experience

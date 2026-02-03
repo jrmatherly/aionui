@@ -3,6 +3,3224 @@
   "category": "security",
   "patterns": [
     {
+      "id": "f47cc3b6c168b96d",
+      "subcategory": "csp-headers",
+      "name": "CSP Headers Detector",
+      "description": "Learns Content Security Policy header patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/csp-headers",
+          "patternId": "security/csp-headers/import"
+        }
+      },
+      "confidence": {
+        "frequency": 0.14,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.7472727272727272,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 236,
+          "column": 142,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 236,
+          "column": 217,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 236,
+          "column": 229,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 236,
+          "column": 273,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 119,
+          "column": 311,
+          "isOutlier": false,
+          "confidence": 0.7366666666666666
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 151,
+          "column": 164,
+          "isOutlier": false,
+          "confidence": 0.7366666666666666
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 208,
+          "column": 75,
+          "isOutlier": false,
+          "confidence": 0.7366666666666666
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T23:01:59.985Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "csp-headers"
+        ],
+        "approvedAt": "2026-02-03T23:01:59.985Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "daace8a24b4f81d4",
+      "subcategory": "sql-injection",
+      "name": "SQL Injection Detector",
+      "description": "Learns SQL injection prevention patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/sql-injection",
+          "patternId": "security/sql-injection/function_call"
+        }
+      },
+      "confidence": {
+        "frequency": 0.03,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.7366666666666666,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 98,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.7366666666666666
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 157,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.7366666666666666
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 271,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.7366666666666666
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T23:02:00.000Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "sql-injection"
+        ],
+        "approvedAt": "2026-02-03T23:02:00.000Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "773265240c18b1bc",
+      "subcategory": "input-sanitization",
+      "name": "Input Sanitization Detector",
+      "description": "Learns input sanitization patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/input-sanitization",
+          "patternId": "security/input-sanitization/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.12,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 7,
+        "score": 0.77,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 39,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 31,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 171,
+          "column": 25,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 19,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 297,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 365,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 137,
+          "column": 228,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 234,
+          "column": 82,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 128,
+          "column": 62,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 137,
+          "column": 33,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 164,
+          "column": 63,
+          "isOutlier": false,
+          "confidence": 0.5366666666666666
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 119,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.5366666666666666
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.886Z",
+        "lastSeen": "2026-02-03T22:47:07.886Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "input-sanitization"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "4c443d7672acc820",
+      "subcategory": "sql-injection",
+      "name": "SQL Injection Detector",
+      "description": "Learns SQL injection prevention patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/sql-injection",
+          "patternId": "security/sql-injection/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.17,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 6,
+        "score": 0.77,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 55,
+          "column": 24,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 174,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 55,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 169,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 47,
+          "column": 24,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 162,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 47,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 157,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 18,
+          "column": 22,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 207,
+          "column": 46,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 122,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.6199999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 176,
+          "column": 103,
+          "isOutlier": false,
+          "confidence": 0.6199999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 203,
+          "column": 54,
+          "isOutlier": false,
+          "confidence": 0.6199999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 218,
+          "column": 39,
+          "isOutlier": false,
+          "confidence": 0.6199999999999999
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 112,
+          "column": 49,
+          "isOutlier": false,
+          "confidence": 0.5366666666666666
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 171,
+          "column": 49,
+          "isOutlier": false,
+          "confidence": 0.5366666666666666
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 290,
+          "column": 49,
+          "isOutlier": false,
+          "confidence": 0.5366666666666666
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.886Z",
+        "lastSeen": "2026-02-03T22:47:07.886Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "sql-injection"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "e0d706cc6e9aa1c2",
+      "subcategory": "csrf-protection",
+      "name": "CSRF Protection Detector",
+      "description": "Learns CSRF protection patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/csrf-protection",
+          "patternId": "security/csrf-protection/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.09,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 3,
+        "score": 0.77,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 32,
+          "column": 83,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 145,
+          "column": 14,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 50,
+          "column": 10,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 164,
+          "column": 12,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 555,
+          "column": 26,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 583,
+          "column": 20,
+          "isOutlier": false,
+          "confidence": 0.595
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.886Z",
+        "lastSeen": "2026-02-03T22:47:07.886Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "csrf-protection"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "caabed4a2b4e783b",
+      "subcategory": "rate-limiting",
+      "name": "Rate Limiting Detector",
+      "description": "Learns rate limiting patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/rate-limiting",
+          "patternId": "security/rate-limiting/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.26,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 11,
+        "score": 0.77,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 271,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 259,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 14,
+          "column": 55,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 153,
+          "column": 21,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 154,
+          "column": 6,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 14,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 20,
+          "column": 36,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/question.yml",
+          "line": 45,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/pull_request_template.md",
+          "line": 23,
+          "column": 17,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 94,
+          "column": 21,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 94,
+          "column": 54,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 99,
+          "column": 45,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 105,
+          "column": 21,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 105,
+          "column": 52,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 111,
+          "column": 34,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 241,
+          "column": 44,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 243,
+          "column": 13,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 247,
+          "column": 27,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 310,
+          "column": 48,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 312,
+          "column": 27,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 434,
+          "column": 8,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 435,
+          "column": 16,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 445,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 261,
+          "column": 31,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/gemini-scheduled-triage.yml",
+          "line": 59,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 144,
+          "column": 60,
+          "isOutlier": false,
+          "confidence": 0.77
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.886Z",
+        "lastSeen": "2026-02-03T22:47:07.886Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "rate-limiting"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "3b02149db010004a",
+      "subcategory": "xss-prevention",
+      "name": "XSS Prevention Detector",
+      "description": "Learns XSS prevention patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/xss-prevention",
+          "patternId": "security/xss-prevention/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.01,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.77,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 325,
+          "column": 59,
+          "isOutlier": false,
+          "confidence": 0.77
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.887Z",
+        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "xss-prevention"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "809ca05b32a75574",
+      "subcategory": "csp-headers",
+      "name": "CSP Headers Detector",
+      "description": "Learns Content Security Policy header patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/csp-headers",
+          "patternId": "security/csp-headers/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.46,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 8,
+        "score": 0.77,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 325,
+          "column": 39,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 346,
+          "column": 52,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 104,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.5366666666666666
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/config.yml",
+          "line": 9,
+          "column": 14,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/config.yml",
+          "line": 10,
+          "column": 17,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/config.yml",
+          "line": 11,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 160,
+          "column": 13,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 161,
+          "column": 13,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 162,
+          "column": 13,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 165,
+          "column": 13,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 166,
+          "column": 13,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 369,
+          "column": 13,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 137,
+          "column": 59,
+          "isOutlier": false,
+          "confidence": 0.5472727272727271
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 234,
+          "column": 43,
+          "isOutlier": false,
+          "confidence": 0.5472727272727271
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 234,
+          "column": 126,
+          "isOutlier": false,
+          "confidence": 0.5472727272727271
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 151,
+          "column": 50,
+          "isOutlier": false,
+          "confidence": 0.5366666666666666
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 259,
+          "column": 22,
+          "isOutlier": false,
+          "confidence": 0.5366666666666666
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 267,
+          "column": 46,
+          "isOutlier": false,
+          "confidence": 0.5366666666666666
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 275,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.5366666666666666
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 121,
+          "column": 65,
+          "isOutlier": false,
+          "confidence": 0.6824999999999999
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 104,
+          "column": 25,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 163,
+          "column": 25,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 277,
+          "column": 25,
+          "isOutlier": false,
+          "confidence": 0.595
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.887Z",
+        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "csp-headers"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "6bba4a56ab2014b4",
+      "subcategory": "secret-management",
+      "name": "Secret Management Detector",
+      "description": "Learns secret management patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/secret-management",
+          "patternId": "security/secret-management/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.61,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 9,
+        "score": 0.77,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 26,
+          "column": 25,
+          "isOutlier": false,
+          "confidence": 0.665
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 26,
+          "column": 65,
+          "isOutlier": false,
+          "confidence": 0.665
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 170,
+          "column": 14,
+          "isOutlier": false,
+          "confidence": 0.665
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 171,
+          "column": 41,
+          "isOutlier": false,
+          "confidence": 0.665
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 71,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.665
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 145,
+          "column": 14,
+          "isOutlier": false,
+          "confidence": 0.665
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 21,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.665
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 47,
+          "column": 30,
+          "isOutlier": false,
+          "confidence": 0.665
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 182,
+          "column": 103,
+          "isOutlier": false,
+          "confidence": 0.665
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 5,
+          "column": 17,
+          "isOutlier": false,
+          "confidence": 0.665
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 26,
+          "column": 1,
+          "isOutlier": false,
+          "confidence": 0.665
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 43,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.665
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 47,
+          "column": 6,
+          "isOutlier": false,
+          "confidence": 0.665
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 170,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.665
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/config.yml",
+          "line": 8,
+          "column": 54,
+          "isOutlier": true,
+          "confidence": 0.77,
+          "outlierReason": "High confidence outlier"
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/question.yml",
+          "line": 22,
+          "column": 11,
+          "isOutlier": true,
+          "confidence": 0.77,
+          "outlierReason": "High confidence outlier"
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 150,
+          "column": 29,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 151,
+          "column": 34,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 279,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 280,
+          "column": 24,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 281,
+          "column": 32,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 282,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 283,
+          "column": 25,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 284,
+          "column": 25,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 293,
+          "column": 25,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 334,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 336,
+          "column": 24,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 337,
+          "column": 32,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 338,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 339,
+          "column": 25,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 341,
+          "column": 25,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 362,
+          "column": 25,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 506,
+          "column": 22,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 586,
+          "column": 25,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 634,
+          "column": 25,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 161,
+          "column": 30,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 161,
+          "column": 48,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 369,
+          "column": 29,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 369,
+          "column": 44,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 132,
+          "column": 27,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 181,
+          "column": 75,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 548,
+          "column": 21,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 549,
+          "column": 21,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 576,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 577,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.6012500000000001
+        },
+        {
+          "file": ".github/workflows/bump-homebrew.yml",
+          "line": 48,
+          "column": 22,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 51,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.6475
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 164,
+          "column": 138,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 259,
+          "column": 91,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 259,
+          "column": 85,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 107,
+          "column": 108,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 119,
+          "column": 165,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 261,
+          "column": 76,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 267,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.5833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 112,
+          "column": 38,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 113,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 45,
+          "column": 29,
+          "isOutlier": false,
+          "confidence": 0.6084615384615384
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 58,
+          "column": 29,
+          "isOutlier": false,
+          "confidence": 0.6084615384615384
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 92,
+          "column": 29,
+          "isOutlier": false,
+          "confidence": 0.6084615384615384
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 152,
+          "column": 29,
+          "isOutlier": false,
+          "confidence": 0.6084615384615384
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 216,
+          "column": 29,
+          "isOutlier": false,
+          "confidence": 0.6084615384615384
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.887Z",
+        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "secret-management"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "5451a3572b488461",
+      "subcategory": "sql-injection",
+      "name": "SQL Injection Detector",
+      "description": "Learns SQL injection prevention patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/sql-injection",
+          "patternId": "security/sql-injection/assignment"
+        }
+      },
+      "confidence": {
+        "frequency": 0.05,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.7949999999999999,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 214,
+          "column": 12,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 214,
+          "column": 46,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 97,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.7366666666666666
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 156,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.7366666666666666
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 270,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.7366666666666666
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "sql-injection"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "c4d615cc5c56b196",
+      "subcategory": "sql-injection",
+      "name": "SQL Injection Detector",
+      "description": "Learns SQL injection prevention patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/sql-injection",
+          "patternId": "security/sql-injection/conditional"
+        }
+      },
+      "confidence": {
+        "frequency": 0.01,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.7949999999999999,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 215,
+          "column": 26,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "sql-injection"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "b87921bf58b513a0",
+      "subcategory": "csrf-protection",
+      "name": "CSRF Protection Detector",
+      "description": "Learns CSRF protection patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/csrf-protection",
+          "patternId": "security/csrf-protection/conditional"
+        }
+      },
+      "confidence": {
+        "frequency": 0.07,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 3,
+        "score": 0.82,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 530,
+          "column": 35,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 147,
+          "column": 156,
+          "isOutlier": false,
+          "confidence": 0.76
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 147,
+          "column": 247,
+          "isOutlier": false,
+          "confidence": 0.76
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 194,
+          "column": 41,
+          "isOutlier": false,
+          "confidence": 0.82
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "csrf-protection"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "0208b27158a4dd71",
+      "subcategory": "secret-management",
+      "name": "Secret Management Detector",
+      "description": "Learns secret management patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/secret-management",
+          "patternId": "security/secret-management/function_call"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.80125,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 365,
+          "column": 24,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 105,
+          "column": 35,
+          "isOutlier": false,
+          "confidence": 0.80125
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "secret-management"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "bd4a9e2cb162f61a",
+      "subcategory": "rate-limiting",
+      "name": "Rate Limiting Detector",
+      "description": "Learns rate limiting patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/rate-limiting",
+          "patternId": "security/rate-limiting/assignment"
+        }
+      },
+      "confidence": {
+        "frequency": 0.05,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.7949999999999999,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 109,
+          "column": 17,
+          "isOutlier": false,
+          "confidence": 0.7833333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 266,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.7833333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 289,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.7833333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 316,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.7833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 121,
+          "column": 24,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "rate-limiting"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "64e4284390f9f721",
+      "subcategory": "rate-limiting",
+      "name": "Rate Limiting Detector",
+      "description": "Learns rate limiting patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/rate-limiting",
+          "patternId": "security/rate-limiting/function_call"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.7833333333333333,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 322,
+          "column": 49,
+          "isOutlier": false,
+          "confidence": 0.7833333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 458,
+          "column": 27,
+          "isOutlier": false,
+          "confidence": 0.7833333333333333
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "rate-limiting"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "0dd35b252ca4d2d9",
+      "subcategory": "input-sanitization",
+      "name": "Input Sanitization Detector",
+      "description": "Learns input sanitization patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/input-sanitization",
+          "patternId": "security/input-sanitization/conditional"
+        }
+      },
+      "confidence": {
+        "frequency": 0.03,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 3,
+        "score": 0.7949999999999999,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/bump-homebrew.yml",
+          "line": 29,
+          "column": 80,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 127,
+          "column": 324,
+          "isOutlier": false,
+          "confidence": 0.7366666666666666
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 224,
+          "column": 29,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "input-sanitization"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "1660624611c6370d",
+      "subcategory": "sql-injection",
+      "name": "SQL Injection Detector",
+      "description": "Learns SQL injection prevention patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/sql-injection",
+          "patternId": "security/sql-injection/import"
+        }
+      },
+      "confidence": {
+        "frequency": 0.01,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.82,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 139,
+          "column": 83,
+          "isOutlier": false,
+          "confidence": 0.82
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "sql-injection"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "ab0126e23c392d51",
+      "subcategory": "sql-injection",
+      "name": "SQL Injection Detector",
+      "description": "Learns SQL injection prevention patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/sql-injection",
+          "patternId": "security/sql-injection/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.82,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 163,
+          "column": 58,
+          "isOutlier": false,
+          "confidence": 0.82
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 201,
+          "column": 20,
+          "isOutlier": false,
+          "confidence": 0.82
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "sql-injection"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "d1fe1978962e0b27",
+      "subcategory": "input-sanitization",
+      "name": "Input Sanitization Detector",
+      "description": "Learns input sanitization patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/input-sanitization",
+          "patternId": "security/input-sanitization/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.7949999999999999,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 203,
+          "column": 16,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 236,
+          "column": 16,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "input-sanitization"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "65e1e5479c085b2c",
+      "subcategory": "csp-headers",
+      "name": "CSP Headers Detector",
+      "description": "Learns Content Security Policy header patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/csp-headers",
+          "patternId": "security/csp-headers/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.1,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.7949999999999999,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 113,
+          "column": 80,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 113,
+          "column": 96,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 172,
+          "column": 80,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 172,
+          "column": 96,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 308,
+          "column": 53,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "csp-headers"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "f80853c24472c069",
+      "subcategory": "csp-headers",
+      "name": "CSP Headers Detector",
+      "description": "Learns Content Security Policy header patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/csp-headers",
+          "patternId": "security/csp-headers/conditional"
+        }
+      },
+      "confidence": {
+        "frequency": 0.12,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 4,
+        "score": 0.8533333333333333,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 59,
+          "column": 55,
+          "isOutlier": false,
+          "confidence": 0.7366666666666666
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 368,
+          "column": 14,
+          "isOutlier": true,
+          "confidence": 0.8533333333333333,
+          "outlierReason": "Value above IQR upper bound"
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 145,
+          "column": 39,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 145,
+          "column": 70,
+          "isOutlier": false,
+          "confidence": 0.7472727272727272
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 202,
+          "column": 83,
+          "isOutlier": false,
+          "confidence": 0.7366666666666666
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 202,
+          "column": 107,
+          "isOutlier": false,
+          "confidence": 0.7366666666666666
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.887Z",
+        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "csp-headers"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "81dddbf7f2d4bf56",
+      "subcategory": "secret-management",
+      "name": "Secret Management Detector",
+      "description": "Learns secret management patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/secret-management",
+          "patternId": "security/secret-management/conditional"
+        }
+      },
+      "confidence": {
+        "frequency": 0.13,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 3,
+        "score": 0.8825,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 55,
+          "column": 30,
+          "isOutlier": false,
+          "confidence": 0.865
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 59,
+          "column": 24,
+          "isOutlier": false,
+          "confidence": 0.865
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 60,
+          "column": 32,
+          "isOutlier": false,
+          "confidence": 0.865
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 149,
+          "column": 28,
+          "isOutlier": false,
+          "confidence": 0.865
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 146,
+          "column": 52,
+          "isOutlier": false,
+          "confidence": 0.865
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 144,
+          "column": 37,
+          "isOutlier": false,
+          "confidence": 0.865
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 149,
+          "column": 41,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 174,
+          "column": 89,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 368,
+          "column": 28,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 368,
+          "column": 54,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 575,
+          "column": 13,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 575,
+          "column": 53,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 41,
+          "column": 56,
+          "isOutlier": false,
+          "confidence": 0.8825
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.887Z",
+        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "secret-management"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "dd4b1a9c4254cb97",
+      "subcategory": "secret-management",
+      "name": "Secret Management Detector",
+      "description": "Learns secret management patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/secret-management",
+          "patternId": "security/secret-management/assignment"
+        }
+      },
+      "confidence": {
+        "frequency": 0.55,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 9,
+        "score": 0.8825,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 151,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 151,
+          "column": 42,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 151,
+          "column": 69,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 506,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 554,
+          "column": 60,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 582,
+          "column": 54,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 109,
+          "column": 64,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 120,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 148,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 231,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 247,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 261,
+          "column": 52,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 263,
+          "column": 52,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 265,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 330,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 585,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 594,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 633,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.80125
+        },
+        {
+          "file": ".github/workflows/bump-homebrew.yml",
+          "line": 48,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 146,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.8474999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 160,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.8474999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 174,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.8474999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 87,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.8474999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 197,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.8474999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 27,
+          "column": 6,
+          "isOutlier": false,
+          "confidence": 0.8474999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 141,
+          "column": 10,
+          "isOutlier": false,
+          "confidence": 0.8474999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 155,
+          "column": 10,
+          "isOutlier": false,
+          "confidence": 0.8474999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 169,
+          "column": 10,
+          "isOutlier": false,
+          "confidence": 0.8474999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 42,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.8474999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 95,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.8474999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 123,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.8474999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 203,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.8474999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 35,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.75125
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 24,
+          "column": 10,
+          "isOutlier": false,
+          "confidence": 0.75125
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 43,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.75125
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 36,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.7833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 25,
+          "column": 10,
+          "isOutlier": false,
+          "confidence": 0.7833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 47,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.7833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-scheduled-triage.yml",
+          "line": 90,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.8825
+        },
+        {
+          "file": ".github/workflows/gemini-scheduled-triage.yml",
+          "line": 31,
+          "column": 6,
+          "isOutlier": false,
+          "confidence": 0.8825
+        },
+        {
+          "file": ".github/workflows/gemini-scheduled-triage.yml",
+          "line": 50,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.8825
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 178,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 45,
+          "column": 10,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 76,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 184,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 225,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 272,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.8825
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 16,
+          "column": 6,
+          "isOutlier": false,
+          "confidence": 0.8825
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 269,
+          "column": 10,
+          "isOutlier": false,
+          "confidence": 0.8825
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 45,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 58,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 92,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 152,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 216,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 13,
+          "column": 1,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "secret-management"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "d6e5e1f4d23194e2",
+      "subcategory": "csrf-protection",
+      "name": "CSRF Protection Detector",
+      "description": "Learns CSRF protection patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/csrf-protection",
+          "patternId": "security/csrf-protection/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.34,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 5,
+        "score": 0.8745454545454545,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 124,
+          "column": 64,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 124,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 204,
+          "column": 64,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 204,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 47,
+          "column": 64,
+          "isOutlier": false,
+          "confidence": 0.76
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 47,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.76
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 48,
+          "column": 64,
+          "isOutlier": false,
+          "confidence": 0.82
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 48,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.82
+        },
+        {
+          "file": ".github/workflows/gemini-scheduled-triage.yml",
+          "line": 52,
+          "column": 61,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 192,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.8745454545454545
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 192,
+          "column": 64,
+          "isOutlier": false,
+          "confidence": 0.8745454545454545
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 192,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.8745454545454545
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 226,
+          "column": 64,
+          "isOutlier": false,
+          "confidence": 0.8745454545454545
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 226,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.8745454545454545
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 231,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.8745454545454545
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 231,
+          "column": 64,
+          "isOutlier": false,
+          "confidence": 0.8745454545454545
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 231,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.8745454545454545
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "csrf-protection"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "dd1b457be8a78954",
+      "subcategory": "secret-management",
+      "name": "Secret Management Detector",
+      "description": "Learns secret management patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/secret-management",
+          "patternId": "security/secret-management/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.39,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 6,
+        "score": 0.8825,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 124,
+          "column": 64,
+          "isOutlier": true,
+          "confidence": 0.8474999999999999,
+          "outlierReason": "Value above IQR upper bound"
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 124,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.8474999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 204,
+          "column": 64,
+          "isOutlier": true,
+          "confidence": 0.8474999999999999,
+          "outlierReason": "Value above IQR upper bound"
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 204,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.8474999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 100,
+          "column": 37,
+          "isOutlier": true,
+          "confidence": 0.8474999999999999,
+          "outlierReason": "Value above IQR upper bound"
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 101,
+          "column": 39,
+          "isOutlier": true,
+          "confidence": 0.8474999999999999,
+          "outlierReason": "Value above IQR upper bound"
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 47,
+          "column": 64,
+          "isOutlier": true,
+          "confidence": 0.75125,
+          "outlierReason": "Value below IQR lower bound"
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 47,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.75125
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 143,
+          "column": 168,
+          "isOutlier": true,
+          "confidence": 0.75125,
+          "outlierReason": "Value below IQR lower bound"
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 48,
+          "column": 64,
+          "isOutlier": false,
+          "confidence": 0.7833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 48,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.7833333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-scheduled-triage.yml",
+          "line": 52,
+          "column": 61,
+          "isOutlier": true,
+          "confidence": 0.8825,
+          "outlierReason": "Value above IQR upper bound"
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 192,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 192,
+          "column": 64,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 192,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 226,
+          "column": 64,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 226,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 231,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 231,
+          "column": 64,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 231,
+          "column": 104,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 195,
+          "column": 46,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 201,
+          "column": 45,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 207,
+          "column": 41,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 233,
+          "column": 41,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 234,
+          "column": 45,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 74,
+          "column": 34,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 76,
+          "column": 32,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 77,
+          "column": 33,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 134,
+          "column": 34,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 136,
+          "column": 32,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 137,
+          "column": 33,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 193,
+          "column": 34,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 195,
+          "column": 32,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 196,
+          "column": 33,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 250,
+          "column": 40,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 255,
+          "column": 42,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 259,
+          "column": 42,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 316,
+          "column": 36,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 318,
+          "column": 34,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "secret-management"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "6eb5206c5136f04a",
+      "subcategory": "input-sanitization",
+      "name": "Input Sanitization Detector",
+      "description": "Learns input sanitization patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/input-sanitization",
+          "patternId": "security/input-sanitization/import"
+        }
+      },
+      "confidence": {
+        "frequency": 0.03,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.8533333333333333,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 139,
+          "column": 100,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 149,
+          "column": 24,
+          "isOutlier": false,
+          "confidence": 0.7366666666666666
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 149,
+          "column": 78,
+          "isOutlier": false,
+          "confidence": 0.7366666666666666
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "input-sanitization"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "8ed906c67cfef777",
+      "subcategory": "csrf-protection",
+      "name": "CSRF Protection Detector",
+      "description": "Learns CSRF protection patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "security/csrf-protection",
+          "patternId": "security/csrf-protection/import"
+        }
+      },
+      "confidence": {
+        "frequency": 0.04,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.8745454545454545,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 53,
+          "column": 57,
+          "isOutlier": false,
+          "confidence": 0.8745454545454545
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 190,
+          "column": 30,
+          "isOutlier": false,
+          "confidence": 0.8745454545454545
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T22:47:07.889Z",
+        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "source": "auto-detected",
+        "tags": [
+          "security",
+          "csrf-protection"
+        ]
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
       "id": "88cd5bfacc60d8a7",
       "subcategory": "secret-management",
       "name": "Secret Management Detector",
@@ -133,8 +3351,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.585Z",
-        "lastSeen": "2026-02-03T22:02:56.585Z",
+        "firstSeen": "2026-02-03T22:47:07.886Z",
+        "lastSeen": "2026-02-03T22:47:07.886Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -427,8 +3645,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.586Z",
-        "lastSeen": "2026-02-03T22:02:56.586Z",
+        "firstSeen": "2026-02-03T22:47:07.887Z",
+        "lastSeen": "2026-02-03T22:47:07.887Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -581,8 +3799,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.587Z",
-        "lastSeen": "2026-02-03T22:02:56.587Z",
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -694,8 +3912,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.587Z",
-        "lastSeen": "2026-02-03T22:02:56.587Z",
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -785,8 +4003,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:02:56.587Z",
-        "lastSeen": "2026-02-03T22:02:56.587Z",
+        "firstSeen": "2026-02-03T22:47:07.888Z",
+        "lastSeen": "2026-02-03T22:47:07.888Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -797,6 +4015,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-03T22:02:56.609Z",
-  "checksum": "1515b37e3812215d"
+  "lastUpdated": "2026-02-03T23:02:00.024Z",
+  "checksum": "c24a2dd9bf133277"
 }
