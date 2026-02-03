@@ -22,12 +22,22 @@ echo "🖥️  Starting Xvfb on display :${DISPLAY_NUM}..."
 Xvfb ":${DISPLAY_NUM}" -screen 0 "${SCREEN_RESOLUTION}" -ac +extension GLX +render -noreset &
 XVFB_PID=$!
 
-# Wait for Xvfb to be ready
-sleep 2
+# Wait for Xvfb socket to be ready (up to 5 seconds)
+echo "⏳ Waiting for Xvfb to be ready..."
+for i in {1..20}; do
+    if [ -e "/tmp/.X11-unix/X${DISPLAY_NUM}" ]; then
+        break
+    fi
+    sleep 0.25
+done
 
-# Verify Xvfb is running
+# Verify Xvfb is running and socket exists
 if ! kill -0 $XVFB_PID 2>/dev/null; then
     echo "❌ Failed to start Xvfb"
+    exit 1
+fi
+if [ ! -e "/tmp/.X11-unix/X${DISPLAY_NUM}" ]; then
+    echo "❌ Xvfb socket not found after timeout"
     exit 1
 fi
 echo "✅ Xvfb started successfully (PID: $XVFB_PID)"
@@ -60,6 +70,8 @@ fi
 
 # -----------------------------------------------------------------------------
 # Cleanup handler
+# Note: This trap handles signals received BEFORE exec replaces this shell.
+# After exec, tini handles signal forwarding to the AionUI process.
 # -----------------------------------------------------------------------------
 cleanup() {
     echo "🛑 Shutting down..."

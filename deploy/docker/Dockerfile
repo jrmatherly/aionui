@@ -46,6 +46,13 @@ RUN npm exec electron-forge -- package --platform=linux --arch=${TARGETARCH}
 # -----------------------------------------------------------------------------
 FROM debian:bookworm-slim AS runtime
 
+# OCI Image Labels
+LABEL org.opencontainers.image.source="https://github.com/jrmatherly/aionui" \
+      org.opencontainers.image.title="AionUI" \
+      org.opencontainers.image.description="AionUI WebUI Server - Transform CLI AI agents into a modern chat interface" \
+      org.opencontainers.image.version="1.8.1" \
+      org.opencontainers.image.licenses="Apache-2.0"
+
 # Install Electron runtime dependencies and Xvfb for headless operation
 RUN apt-get update && apt-get install -y --no-install-recommends \
     # Electron/Chromium dependencies

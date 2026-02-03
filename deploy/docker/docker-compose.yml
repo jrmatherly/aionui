@@ -33,17 +33,20 @@ services:
       - "${AIONUI_PORT:-25808}:25808"
 
     # Environment configuration
+    # Copy .env.example to .env and customize, or set variables here
+    env_file:
+      - path: .env
+        required: false
     environment:
-      # Server configuration
-      - AIONUI_PORT=25808
-      - AIONUI_ALLOW_REMOTE=true
-      - NODE_ENV=production
-      # Display configuration (for Xvfb)
-      - DISPLAY_NUM=99
-      - SCREEN_RESOLUTION=1024x768x24
-      # Security (uncomment and set for production)
-      # - JWT_SECRET=your-secure-random-secret-key
-      # - AIONUI_HTTPS=true
+      # Override defaults from .env if needed
+      - AIONUI_PORT=${AIONUI_PORT:-25808}
+      - AIONUI_ALLOW_REMOTE=${AIONUI_ALLOW_REMOTE:-true}
+      - NODE_ENV=${NODE_ENV:-production}
+      - DISPLAY_NUM=${DISPLAY_NUM:-99}
+      - SCREEN_RESOLUTION=${SCREEN_RESOLUTION:-1024x768x24}
+      # Security (set in .env for production)
+      # - JWT_SECRET=${JWT_SECRET}
+      # - AIONUI_HTTPS=${AIONUI_HTTPS:-false}
 
     # Persistent storage
     volumes:

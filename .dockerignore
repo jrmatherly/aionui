@@ -51,7 +51,7 @@ docs/
 .local_docs/
 
 # -----------------------------------------------------------------------------
-# CI/CD and tooling config
+# CI/CD and tooling config (keep forge.config.ts - required for build)
 # -----------------------------------------------------------------------------
 .husky/
 .eslintrc*
@@ -59,8 +59,6 @@ eslint.config.*
 .prettierrc*
 .prettierignore
 .markdownlint*
-tsconfig.json
-forge.config.ts
 
 # -----------------------------------------------------------------------------
 # Environment and secrets
