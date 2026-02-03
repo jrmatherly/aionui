@@ -1,0 +1,33 @@
+# .driftignore - Additional exclusions for Drift scanning
+# (Note: .gitignore patterns are already respected automatically)
+
+# Serena data (avoid indexing Serena's memories and state)
+.serena/
+
+# Generated/build artifacts
+*.min.js
+*.min.css
+*.bundle.js
+*.d.ts
+
+# Large data files
+*.sql
+*.csv
+*.db
+*.sqlite
+
+# Temporary scratchpad docs
+.scratchpad/
+
+# Local documentation mirrors
+.local_docs/
+
+# AI assistant tool caches
+.claude/
+.qwen/
+.gemini/
+.iflow/
+.specify/
+
+# Docker-specific sensitive configs
+deploy/docker/group-mappings.json

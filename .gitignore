@@ -158,6 +158,9 @@ my-video
 .scratchpad/
 .local_docs/
 
+# Drift Detect data (local pattern analysis)
+.drift/
+
 # Docker — real group mappings contain tenant-specific EntraID group IDs
 deploy/docker/group-mappings.json
 # Note: .dockerignore is intentionally tracked

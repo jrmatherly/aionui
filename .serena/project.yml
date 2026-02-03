@@ -36,7 +36,10 @@ ignore_all_files_in_gitignore: true
 
 # list of additional paths to ignore in all projects
 # same syntax as gitignore, so you can use * and **
-ignored_paths: []
+ignored_paths:
+  - .drift/
+  - .local_docs/
+  - .scratchpad/
 
 # whether the project is in read-only mode
 # If set to true, all editing tools will be disabled and attempts to use them will result in an error
@@ -98,6 +101,8 @@ fixed_tools: []
 # Set this to [] to disable base modes for this project.
 # Set this to a list of mode names to always include the respective modes for this project.
 base_modes:
+  - interactive
+  - editing
 
 # list of mode names that are to be activated by default.
 # The full set of modes to be activated is base_modes + default_modes.
@@ -108,4 +113,49 @@ default_modes:
 
 # initial prompt for the project. It will always be given to the LLM upon activating the project
 # (contrary to the memories, which are loaded on demand).
-initial_prompt: ''
+initial_prompt: |
+  # AionUI Project Context
+
+  AionUI is a unified AI agent graphical interface that transforms CLI AI tools into a modern chat interface.
+
+  ## Tech Stack
+  - **Desktop:** Electron 37.x (multi-process: main, renderer, workers)
+  - **UI:** React 19.x + Arco Design 2.x + UnoCSS 0.66.x
+  - **Language:** TypeScript 5.8.x (strict mode)
+  - **Server:** Express 5.x (WebUI remote access)
+  - **Database:** SQLite (better-sqlite3, offline-first)
+  - **AI SDKs:** Anthropic, Google GenAI, OpenAI
+  - **Build:** Webpack 6.x + Electron Forge 7.8.x + Electron Builder 26.x
+
+  ## Architecture Patterns
+  - Multi-process isolation: main process (DB, services), renderer (UI), workers (AI agents)
+  - IPC via contextBridge in src/preload.ts (type-safe message system)
+  - AI agents run in dedicated workers (gemini.ts, codex.ts, acp.ts) using node-pty
+  - WebUI supports remote access with JWT auth and OIDC/SSO
+
+  ## Key Conventions
+  1. **UI Components:** Use Arco Design components (Button, Modal, Form, etc.)
+  2. **IPC Communication:** Follow existing patterns in src/preload.ts
+  3. **Internationalization:** ALL user-facing strings use i18n keys via t() function
+  4. **Native Modules:** better-sqlite3, node-pty, tree-sitter are webpack externals
+  5. **Path Aliases:** Use @/* (src root), @renderer/*, @process/*, @worker/*
+  6. **Error Handling:** Use structured error types, never silent failures
+  7. **Testing:** Jest with ts-jest (tests/unit/, tests/integration/, tests/contract/)
+
+  ## Critical Constraints
+  - Never use direct require() for native modules in renderer — must be externals
+  - Avoid circular imports between src/process/initStorage.ts and src/process/utils.ts
+  - Docker builds require asar unpacking for native modules (see scripts/afterPack.js)
+  - All strings rendered to users MUST use i18n keys (no hardcoded English)
+
+  ## Project Memories
+  Detailed documentation is stored in .serena/memories/:
+  - project-architecture.md — Multi-process architecture and services
+  - branding-and-release-configuration.md — Branding customization guide
+  - i18n-configuration.md — i18n setup and workflow
+  - docker-packaging-constraints.md — Build system and native module handling
+  - auth-system.md — Multi-user authentication and RBAC
+  - code-patterns.md — IPC, worker, component, and database patterns
+  - common-pitfalls.md — Known anti-patterns and gotchas
+
+  Consult these memories for detailed information on specific subsystems.
