@@ -5,10 +5,10 @@
  */
 
 import React from 'react';
+import { useAuth } from './context/AuthContext';
 import Layout from './layout';
 import Router from './router';
 import Sider from './sider';
-import { useAuth } from './context/AuthContext';
 
 const Main = () => {
   const { ready } = useAuth();

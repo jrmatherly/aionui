@@ -10,16 +10,17 @@ Usage:
 
 import os
 import sys
+
 from pypdf import PdfReader, PdfWriter
 
 
 def parse_page_range(range_str: str, total_pages: int) -> list:
     """Parse page range string into list of page numbers (0-indexed)."""
     pages = []
-    for part in range_str.split(','):
+    for part in range_str.split(","):
         part = part.strip()
-        if '-' in part:
-            start, end = part.split('-')
+        if "-" in part:
+            start, end = part.split("-")
             start = int(start) - 1  # Convert to 0-indexed
             end = int(end)
             pages.extend(range(start, min(end, total_pages)))
@@ -39,7 +40,7 @@ def split_all_pages(input_path: str, output_dir: str) -> None:
         writer = PdfWriter()
         writer.add_page(page)
         output_path = os.path.join(output_dir, f"page_{i}.pdf")
-        with open(output_path, 'wb') as f:
+        with open(output_path, "wb") as f:
             writer.write(f)
         print(f"  Created: {output_path}")
 
@@ -55,7 +56,7 @@ def extract_pages(input_path: str, output_path: str, page_range: str) -> None:
     for page_num in pages:
         writer.add_page(reader.pages[page_num])
 
-    with open(output_path, 'wb') as f:
+    with open(output_path, "wb") as f:
         writer.write(f)
 
     print(f"Extracted {len(pages)} page(s) to {output_path}")
@@ -64,9 +65,15 @@ def extract_pages(input_path: str, output_path: str, page_range: str) -> None:
 if __name__ == "__main__":
     if len(sys.argv) < 3:
         print("Usage:")
-        print("  python split_pdf.py <input.pdf> <output_dir>              # Split all pages")
-        print("  python split_pdf.py <input.pdf> <output.pdf> 1-5          # Extract pages 1-5")
-        print("  python split_pdf.py <input.pdf> <output.pdf> 1,3,5        # Extract specific pages")
+        print(
+            "  python split_pdf.py <input.pdf> <output_dir>              # Split all pages"
+        )
+        print(
+            "  python split_pdf.py <input.pdf> <output.pdf> 1-5          # Extract pages 1-5"
+        )
+        print(
+            "  python split_pdf.py <input.pdf> <output.pdf> 1,3,5        # Extract specific pages"
+        )
         sys.exit(1)
 
     input_path = sys.argv[1]

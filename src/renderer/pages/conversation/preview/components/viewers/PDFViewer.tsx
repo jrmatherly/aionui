@@ -5,10 +5,10 @@
  */
 
 import { ipcBridge } from '@/common';
-import { usePreviewToolbarExtras } from '../../context/PreviewToolbarExtrasContext';
 import { Button, Message } from '@arco-design/web-react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { usePreviewToolbarExtras } from '../../context/PreviewToolbarExtrasContext';
 
 interface PDFPreviewProps {
   /**

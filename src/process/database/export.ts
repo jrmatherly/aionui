@@ -9,23 +9,23 @@
  * Use this file to import database functionality throughout the app
  */
 
-export { AionUIDatabase, getDatabase, closeDatabase } from './index';
-export { runMigrations, rollbackMigrations, getMigrationHistory, isMigrationApplied, type IMigration } from './migrations';
+export { AionUIDatabase, closeDatabase, getDatabase } from './index';
+export { getMigrationHistory, isMigrationApplied, rollbackMigrations, runMigrations, type IMigration } from './migrations';
 
 export type {
-  // Database-specific types
-  IUser,
-  IQueryResult,
-  IPaginatedResult,
-  // Business types (re-exported for convenience)
-  TChatConversation,
-  TMessage,
+  IConfigRow,
   IConfigStorageRefer,
   // Database row types (for advanced usage)
   IConversationRow,
   IMessageRow,
-  IConfigRow,
+  IPaginatedResult,
+  IQueryResult,
+  // Database-specific types
+  IUser,
+  // Business types (re-exported for convenience)
+  TChatConversation,
+  TMessage,
 } from './types';
 
 // Re-export conversion functions
-export { conversationToRow, rowToConversation, messageToRow, rowToMessage } from './types';
+export { conversationToRow, messageToRow, rowToConversation, rowToMessage } from './types';

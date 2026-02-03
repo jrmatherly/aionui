@@ -253,6 +253,7 @@ When you need to create a presentation that follows an existing template's desig
    - Select one option representing the **best** layout for each content section.
    - Save `outline.md` with content AND template mapping that leverages available designs
    - Example template mapping:
+
      ```
      # Template slides to use (0-based indexing)
      # WARNING: Verify indices are within range! Template with 73 slides has indices 0-72
@@ -268,18 +269,22 @@ When you need to create a presentation that follows an existing template's desig
 
 4. **Duplicate, reorder, and delete slides using `rearrange.py`**:
    - Use the `scripts/rearrange.py` script to create a new presentation with slides in the desired order:
+
      ```bash
      python scripts/rearrange.py template.pptx working.pptx 0,34,34,50,52
      ```
+
    - The script handles duplicating repeated slides, deleting unused slides, and reordering automatically
    - Slide indices are 0-based (first slide is 0, second is 1, etc.)
    - The same slide index can appear multiple times to duplicate that slide
 
 5. **Extract ALL text using the `inventory.py` script**:
    - **Run inventory extraction**:
+
      ```bash
      python scripts/inventory.py working.pptx text-inventory.json
      ```
+
    - **Read text-inventory.json**: Read the entire text-inventory.json file to understand all shapes and their properties. **NEVER set any range limits when reading this file.**
 
    - The inventory JSON structure:
@@ -480,9 +485,11 @@ To visually analyze PowerPoint slides, convert them to images using a two-step p
    ```
 
 2. **Convert PDF pages to JPEG images**:
+
    ```bash
    pdftoppm -jpeg -r 150 template.pdf slide
    ```
+
    This creates files like `slide-1.jpg`, `slide-2.jpg`, etc.
 
 Options:

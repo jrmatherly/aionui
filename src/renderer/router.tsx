@@ -4,6 +4,7 @@ import AppLoader from './components/AppLoader';
 import { useAuth } from './context/AuthContext';
 import Conversation from './pages/conversation';
 import Guid from './pages/guid';
+import LoginPage from './pages/login';
 import About from './pages/settings/About';
 import AgentSettings from './pages/settings/AgentSettings';
 import DisplaySettings from './pages/settings/DisplaySettings';
@@ -12,7 +13,6 @@ import ModeSettings from './pages/settings/ModeSettings';
 import SystemSettings from './pages/settings/SystemSettings';
 import ToolsSettings from './pages/settings/ToolsSettings';
 import WebuiSettings from './pages/settings/WebuiSettings';
-import LoginPage from './pages/login';
 import ComponentsShowcase from './pages/test/ComponentsShowcase';
 
 const ProtectedLayout: React.FC<{ layout: React.ReactElement }> = ({ layout }) => {

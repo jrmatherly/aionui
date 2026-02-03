@@ -102,5 +102,5 @@
   This prevents visual information from being lost when context resets.
 -->
 
-_Update this file after every 2 view/browser/search operations_
-_This prevents visual information from being lost_
+*Update this file after every 2 view/browser/search operations*
+*This prevents visual information from being lost*

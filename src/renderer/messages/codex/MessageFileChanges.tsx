@@ -15,31 +15,30 @@ import type { WriteFileResult } from '../types';
 
 type TurnDiffContent = Extract<CodexToolCallUpdate, { subtype: 'turn_diff' }>;
 
-// 内部文件变更信息（包含 diff 内容）/ Internal file change info (including diff content)
+// Internal file change info (including diff content)
 export interface FileChangeInfo extends FileChangeItem {
   diff: string;
 }
 
-// 支持两种数据源 / Support two data sources
+// Support two data sources
 export interface MessageFileChangesProps {
-  /** Codex turn_diff 消息列表 / Codex turn_diff messages */
+  /** Codex turn_diff messages */
   turnDiffChanges?: TurnDiffContent[];
-  /** Gemini tool_group WriteFile 结果列表 / Gemini tool_group WriteFile results */
+  /** Gemini tool_group WriteFile results */
   writeFileChanges?: WriteFileResult[];
-  /** 额外的类名 / Additional class name */
+  /** Additional class name */
   className?: string;
 
   diffsChanges?: FileChangeInfo[];
 }
 
 /**
- * 解析 unified diff 格式，提取文件信息和变更统计
  * Parse unified diff format, extract file info and change statistics
  */
 export const parseDiff = (diff: string, fileNameHint?: string): FileChangeInfo => {
   const lines = diff.split('\n');
 
-  // 提取文件名 / Extract filename
+  // Extract filename
   const gitLine = lines.find((line) => line.startsWith('diff --git'));
   let fileName = fileNameHint || 'Unknown file';
   let fullPath = fileNameHint || 'Unknown file';
@@ -56,27 +55,27 @@ export const parseDiff = (diff: string, fileNameHint?: string): FileChangeInfo =
       fullPath = parsedPath;
       fileName = parsedPath.split(/[\\/]/).pop() || parsedPath;
     } else if (fileNameHint) {
-      // 如果没有 git diff 头，使用 hint 作为文件名 / If no git diff header, use hint as filename
+      // If no git diff header, use hint as filename
       fileName = fileNameHint.split(/[\\/]/).pop() || fileNameHint;
       fullPath = fileNameHint;
     }
   }
 
-  // 计算新增和删除的行数 / Calculate insertions and deletions
+  // Calculate insertions and deletions
   let insertions = 0;
   let deletions = 0;
 
   for (const line of lines) {
-    // 跳过 diff 头部行 / Skip diff header lines
+    // Skip diff header lines
     if (line.startsWith('diff --git') || line.startsWith('index ') || line.startsWith('---') || line.startsWith('+++') || line.startsWith('@@') || line.startsWith('\\')) {
       continue;
     }
 
-    // 计算新增行（以 + 开头但不是 +++）/ Count insertions (lines starting with + but not +++)
+    // Count insertions (lines starting with + but not +++)
     if (line.startsWith('+')) {
       insertions++;
     }
-    // 计算删除行（以 - 开头但不是 ---）/ Count deletions (lines starting with - but not ---)
+    // Count deletions (lines starting with - but not ---)
     else if (line.startsWith('-')) {
       deletions++;
     }
@@ -92,27 +91,25 @@ export const parseDiff = (diff: string, fileNameHint?: string): FileChangeInfo =
 };
 
 /**
- * 文件变更消息组件
  * File changes message component
  *
- * 显示会话中所有已生成/修改的文件，点击可打开预览
  * Display all generated/modified files in the conversation, click to preview
  */
 const MessageFileChanges: React.FC<MessageFileChangesProps> = ({ turnDiffChanges = [], writeFileChanges = [], diffsChanges = [], className }) => {
   const { t } = useTranslation();
   const { launchPreview } = usePreviewLauncher();
 
-  // 解析所有文件变更 / Parse all file changes
+  // Parse all file changes
   const fileChanges = useMemo(() => {
     const filesMap = new Map<string, FileChangeInfo>();
 
-    // 处理 Codex turn_diff 消息 / Process Codex turn_diff messages
+    // Process Codex turn_diff messages
     for (const change of turnDiffChanges) {
       const fileInfo = parseDiff(change.data.unified_diff);
       filesMap.set(fileInfo.fullPath, fileInfo);
     }
 
-    // 处理 Gemini WriteFile 结果 / Process Gemini WriteFile results
+    // Process Gemini WriteFile results
     for (const change of writeFileChanges) {
       if (change.fileDiff) {
         const fileInfo = parseDiff(change.fileDiff, change.fileName);
@@ -123,10 +120,10 @@ const MessageFileChanges: React.FC<MessageFileChangesProps> = ({ turnDiffChanges
     return Array.from(filesMap.values()).concat(diffsChanges);
   }, [turnDiffChanges, writeFileChanges, diffsChanges]);
 
-  // 处理文件点击 / Handle file click
+  // Handle file click
   const handleFileClick = useCallback(
     (file: FileChangeItem) => {
-      // 找到对应的 FileChangeInfo 获取 diff / Find corresponding FileChangeInfo to get diff
+      // Find corresponding FileChangeInfo to get diff
       const fileInfo = fileChanges.find((f) => f.fullPath === file.fullPath);
       if (!fileInfo) return;
 
@@ -145,7 +142,7 @@ const MessageFileChanges: React.FC<MessageFileChangesProps> = ({ turnDiffChanges
     [fileChanges, launchPreview]
   );
 
-  // 如果没有文件变更，不渲染 / Don't render if no file changes
+  // Don't render if no file changes
   if (fileChanges.length === 0) {
     return null;
   }

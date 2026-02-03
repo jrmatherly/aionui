@@ -4,36 +4,36 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import type { IConfirmation, TMessage } from '@/common/chatLib';
 import type { IResponseMessage } from '@/common/ipcBridge';
-import type { TMessage, IConfirmation } from '@/common/chatLib';
 
 /**
- * 消息发送回调接口
- * 用于解耦各个处理器对消息分发和持久化的直接依赖
+ * Message emitter callback interface
+ * Used to decouple handlers from direct dependency on message distribution and persistence
  */
 export interface ICodexMessageEmitter {
   /**
-   * 发送消息到前端并根据需要持久化
-   * @param message 要发送的消息 (IResponseMessage 格式)
-   * @param persist 是否需要持久化，默认true
+   * Send message to frontend and persist as needed
+   * @param message The message to send (IResponseMessage format)
+   * @param persist Whether to persist, defaults to true
    */
   emitAndPersistMessage(message: IResponseMessage, persist?: boolean): void;
 
   /**
-   * 直接持久化消息到数据库（不发送到前端）
-   * @param message 要持久化的消息 (TMessage 格式)
+   * Persist message directly to database (without sending to frontend)
+   * @param message The message to persist (TMessage format)
    */
   persistMessage(message: TMessage): void;
 
   /**
-   * 添加确认项到确认列表（通过 BaseAgentManager 管理）
-   * @param data 确认项数据
+   * Add confirmation item to confirmation list (managed by BaseAgentManager)
+   * @param data Confirmation item data
    */
   addConfirmation(data: IConfirmation): void;
 
   /**
-   * 发送消息回 AI agent（用于系统响应反馈）
-   * @param content 要发送的消息内容
+   * Send message back to AI agent (for system response feedback)
+   * @param content The message content to send
    */
   sendMessageToAgent?(content: string): Promise<void>;
 

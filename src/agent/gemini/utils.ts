@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { DEFAULT_IMAGE_EXTENSION, MIME_TO_EXT_MAP } from '@/common/constants';
 import type { CompletedToolCall, Config, GeminiClient, ServerGeminiStreamEvent, ToolCallRequestInfo } from '@office-ai/aioncli-core';
-import { executeToolCall, GeminiEventType as ServerGeminiEventType } from '@office-ai/aioncli-core';
-import { parseAndFormatApiError } from './cli/errorParsing';
-import { MIME_TO_EXT_MAP, DEFAULT_IMAGE_EXTENSION } from '@/common/constants';
+import { GeminiEventType as ServerGeminiEventType, executeToolCall } from '@office-ai/aioncli-core';
 import * as fs from 'fs';
 import * as path from 'path';
-import { StreamMonitor, globalToolCallGuard, type StreamConnectionEvent, type StreamResilienceConfig, DEFAULT_STREAM_RESILIENCE_CONFIG } from './cli/streamResilience';
+import { parseAndFormatApiError } from './cli/errorParsing';
+import { DEFAULT_STREAM_RESILIENCE_CONFIG, StreamMonitor, globalToolCallGuard, type StreamConnectionEvent, type StreamResilienceConfig } from './cli/streamResilience';
 
 enum StreamProcessingStatus {
   Completed,
@@ -20,7 +20,7 @@ enum StreamProcessingStatus {
   ConnectionLost,
 }
 
-// 流监控配置
+/** Stream monitoring configuration */
 export interface StreamMonitorOptions {
   config?: Partial<StreamResilienceConfig>;
   onConnectionEvent?: (event: StreamConnectionEvent) => void;
@@ -28,7 +28,6 @@ export interface StreamMonitorOptions {
 
 /**
  * Get file extension from MIME type (e.g., 'image/png' -> '.png')
- * 从 MIME 类型获取文件扩展名
  */
 function getExtensionFromMimeType(mimeType: string): string {
   // Extract subtype from MIME type (e.g., 'image/png' -> 'png')
@@ -41,7 +40,6 @@ function getExtensionFromMimeType(mimeType: string): string {
 
 /**
  * Save inline image data to a file and return the file path
- * 将内联图片数据保存到文件并返回文件路径
  */
 async function saveInlineImage(mimeType: string, base64Data: string, workingDir: string): Promise<string> {
   const ext = getExtensionFromMimeType(mimeType);
@@ -56,25 +54,24 @@ async function saveInlineImage(mimeType: string, base64Data: string, workingDir:
 }
 
 /**
- * 处理 Gemini 流式事件（带弹性监控）
  * Process Gemini stream events with resilience monitoring
  *
- * @param stream - 原始流
- * @param config - 配置对象
- * @param onStreamEvent - 事件回调
- * @param monitorOptions - 流监控选项（可选）
+ * @param stream - Source stream
+ * @param config - Config object
+ * @param onStreamEvent - Event callback
+ * @param monitorOptions - Stream monitoring options (optional)
  */
 export const processGeminiStreamEvents = async (stream: AsyncIterable<ServerGeminiStreamEvent>, config: Config, onStreamEvent: (event: { type: ServerGeminiStreamEvent['type']; data: unknown }) => void, monitorOptions?: StreamMonitorOptions): Promise<StreamProcessingStatus> => {
-  // 创建流监控器
+  // Create stream monitor
   const monitorConfig = { ...DEFAULT_STREAM_RESILIENCE_CONFIG, ...monitorOptions?.config };
   const monitor = new StreamMonitor(monitorConfig, (event) => {
-    // 处理连接状态变化
+    // Handle connection state changes
     if (event.type === 'state_change') {
       console.debug(`[StreamMonitor] State changed to: ${event.state}`, event.reason || '');
     } else if (event.type === 'heartbeat_timeout') {
       console.warn(`[StreamMonitor] Heartbeat timeout detected, last event: ${event.lastEventTime}`);
     }
-    // 传递给外部监听器
+    // Pass to external listener
     monitorOptions?.onConnectionEvent?.(event);
   });
 
@@ -82,13 +79,13 @@ export const processGeminiStreamEvents = async (stream: AsyncIterable<ServerGemi
 
   try {
     for await (const event of stream) {
-      // 记录收到事件，更新心跳时间
+      // Record received event and update heartbeat
       monitor.recordEvent();
 
-      // 检查是否心跳超时（长时间无数据）
+      // Check for heartbeat timeout (long period without data)
       if (monitor.isHeartbeatTimeout()) {
         console.warn('[StreamMonitor] Stream heartbeat timeout, connection may be stale');
-        // 不立即中断，让上层处理决定
+        // Do not interrupt immediately; let upper layer handle it
       }
 
       switch (event.type) {
@@ -102,13 +99,11 @@ export const processGeminiStreamEvents = async (stream: AsyncIterable<ServerGemi
             const contentText = typeof contentValue === 'string' ? contentValue : '';
 
             // Check if content contains <think> tags (common in proxy services like newapi)
-            // 检查内容是否包含 <think> 标签（中转站如 newapi 常见格式）
             const thinkTagRegex = /<think>([\s\S]*?)<\/think>/gi;
             const thinkMatches = contentText.match(thinkTagRegex);
 
             if (thinkMatches && thinkMatches.length > 0) {
               // Extract thinking content and emit as thought events
-              // 提取思考内容并作为 thought 事件发送
               for (const match of thinkMatches) {
                 const thinkContent = match.replace(/<\/?think>/gi, '').trim();
                 if (thinkContent) {
@@ -120,20 +115,18 @@ export const processGeminiStreamEvents = async (stream: AsyncIterable<ServerGemi
               }
 
               // Remove <think> tags from content and emit remaining content
-              // 从内容中移除 <think> 标签，发送剩余内容
               const cleanedContent = contentText.replace(thinkTagRegex, '').trim();
               if (cleanedContent) {
                 onStreamEvent({ type: event.type, data: cleanedContent });
               }
             } else {
               // No <think> tags, emit content as-is
-              // 没有 <think> 标签，直接发送内容
               onStreamEvent({ type: event.type, data: contentValue });
             }
           }
           break;
         // InlineData: Handle inline image data from image generation models (e.g., gemini-3-pro-image)
-        // 处理来自图片生成模型的内联图片数据（使用字符串字面量以兼容旧版本 aioncli-core）
+        // Use string literal for 'inline_data' for compatibility with older aioncli-core
         case 'inline_data' as ServerGeminiEventType:
           {
             const inlineData = (event as unknown as { value: { mimeType: string; data: string } }).value;
@@ -174,7 +167,7 @@ export const processGeminiStreamEvents = async (stream: AsyncIterable<ServerGemi
           break;
         case ServerGeminiEventType.Finished:
           {
-            // 传递 Finished 事件，包含 token 使用统计
+            // Pass Finished event with token usage statistics
             onStreamEvent({ type: event.type, data: (event as unknown as { value: unknown }).value });
           }
           break;
@@ -215,14 +208,12 @@ export const processGeminiStreamEvents = async (stream: AsyncIterable<ServerGemi
         case ServerGeminiEventType.Retry:
           onStreamEvent({
             type: ServerGeminiEventType.Error,
-            data: 'Request is being retried after a temporary failure. Please wait…',
+            data: 'Request is being retried after a temporary failure. Please wait...',
           });
           break;
         case ServerGeminiEventType.InvalidStream:
           // InvalidStream indicates the model returned invalid content (empty response, no finish reason, etc.)
           // This is typically a transient issue - we emit a special event type so the caller can implement retry
-          // InvalidStream 表示模型返回了无效内容（空响应、无结束原因等）
-          // 这通常是临时问题 - 我们发出特殊事件类型，以便调用方可以实现重试
           onStreamEvent({
             type: 'invalid_stream' as ServerGeminiEventType,
             data: {
@@ -251,32 +242,31 @@ export const processGeminiStreamEvents = async (stream: AsyncIterable<ServerGemi
       }
     }
 
-    // 流正常结束
+    // Stream finished normally
     monitor.stop();
     return StreamProcessingStatus.Completed;
   } catch (error) {
-    // 流处理出错
+    // Stream processing error
     const errorMessage = error instanceof Error ? error.message : String(error);
     monitor.markFailed(errorMessage);
 
-    // 检查是否是连接相关错误
+    // Check for connection-related errors
     if (errorMessage.includes('fetch failed') || errorMessage.includes('network') || errorMessage.includes('timeout') || errorMessage.includes('ECONNRESET') || errorMessage.includes('socket hang up')) {
       console.error('[StreamMonitor] Connection error detected:', errorMessage);
       return StreamProcessingStatus.ConnectionLost;
     }
 
-    // 重新抛出其他错误
+    // Rethrow other errors
     throw error;
   } finally {
-    // 确保监控器停止
+    // Ensure monitor stops
     monitor.stop();
   }
 };
 
 /**
- * 规范化工具参数名称
- * 某些模型可能返回不同的参数名称，需要映射到工具期望的标准名称
- * Normalize tool parameter names - some models may return different param names
+ * Normalize tool parameter names
+ * Some models may return different parameter names; map them to the standard names expected by the tools.
  */
 const normalizeToolParams = (toolName: string, args: Record<string, unknown>): Record<string, unknown> => {
   const normalized = { ...args };
@@ -289,7 +279,6 @@ const normalizeToolParams = (toolName: string, args: Record<string, unknown>): R
     normalized.path = normalized.path.slice(1);
   }
 
-  // 文件操作工具：将 path 映射到 file_path
   // File operation tools: map 'path' to 'file_path'
   const fileTools = ['ReadFileTool', 'WriteFileTool', 'EditTool', 'read_file', 'write_file', 'edit'];
   if (fileTools.includes(toolName) && 'path' in normalized && !('file_path' in normalized)) {
@@ -297,7 +286,6 @@ const normalizeToolParams = (toolName: string, args: Record<string, unknown>): R
     delete normalized.path;
   }
 
-  // 目录操作相关工具：兼容旧版本模型输出的 path/directory 字段
   // Directory-related tools: normalize legacy keys (path/directory) to dir_path
   const dirPathTools = ['list_directory', 'glob', 'search_file_content', 'run_shell_command'];
   if (dirPathTools.includes(toolName)) {
@@ -313,7 +301,6 @@ const normalizeToolParams = (toolName: string, args: Record<string, unknown>): R
       }
     }
 
-    // 新版 core 要求 list_directory 必填 dir_path，这里缺省时默认当前目录
     // aioncli-core now requires dir_path; default to workspace root when missing
     if (toolName === 'list_directory' && (typeof normalized.dir_path !== 'string' || normalized.dir_path.length === 0)) {
       normalized.dir_path = '.';
@@ -328,7 +315,7 @@ export const processGeminiFunctionCalls = async (config: Config, functionCalls: 
 
   for (const fc of functionCalls) {
     const callId = fc.callId ?? `${fc.name}-${Date.now()}`;
-    // 规范化参数名称 / Normalize parameter names
+    // Normalize parameter names
     const normalizedArgs = normalizeToolParams(fc.name, fc.args ?? {});
     const requestInfo = {
       callId,
@@ -379,20 +366,18 @@ export const processGeminiFunctionCalls = async (config: Config, functionCalls: 
 };
 
 /**
- * 处理已完成的工具调用（带保护机制）
  * Handle completed tool calls with protection mechanism
  *
- * 改进点：
- * 1. 使用 globalToolCallGuard 保护正在执行的工具调用
- * 2. 受保护的工具调用不会被误判为 cancelled
- * 3. 工具完成后自动移除保护
+ * Improvement points:
+ * 1. Use globalToolCallGuard to protect active tool calls
+ * 2. Protected calls will not be incorrectly identified as cancelled
+ * 3. Protection is automatically removed when tool completes
  */
 export const handleCompletedTools = (completedToolCallsFromScheduler: CompletedToolCall[], geminiClient: GeminiClient | null, performMemoryRefresh: () => void) => {
   const completedAndReadyToSubmitTools = completedToolCallsFromScheduler.filter((tc) => {
     const isTerminalState = tc.status === 'success' || tc.status === 'error' || tc.status === 'cancelled';
     if (isTerminalState) {
       const completedOrCancelledCall = tc;
-      // 标记工具完成，移除保护
       // Mark tool as complete, remove protection
       if (tc.status === 'success' || tc.status === 'error') {
         globalToolCallGuard.complete(tc.request.callId);
@@ -424,10 +409,8 @@ export const handleCompletedTools = (completedToolCallsFromScheduler: CompletedT
     return;
   }
 
-  // 检查是否所有工具都被取消（排除受保护的工具）
   // Check if all tools were cancelled (excluding protected tools)
   const allToolsCancelled = geminiTools.every((tc) => {
-    // 如果工具仍在保护中，不认为是被取消
     // If tool is still protected, don't consider it cancelled
     if (globalToolCallGuard.isProtected(tc.request.callId)) {
       console.debug(`[ToolCallGuard] Tool ${tc.request.callId} is protected, not treating as cancelled`);

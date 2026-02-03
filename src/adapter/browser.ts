@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { bridge, logger } from '@office-ai/platform';
 import type { ElectronBridgeAPI } from '@/types/electron';
+import { bridge, logger } from '@office-ai/platform';
 
 interface CustomWindow extends Window {
   electronAPI?: ElectronBridgeAPI;
@@ -17,10 +17,11 @@ interface CustomWindow extends Window {
 const win = window as CustomWindow;
 
 /**
- * 适配electron的API到浏览器中,建立renderer和main的通信桥梁, 与preload.ts中的注入对应
- * */
+ * Adapt Electron API to browser, establishing communication bridge between renderer and main,
+ * corresponding to the injection in preload.ts
+ */
 if (win.electronAPI) {
-  // Electron 环境 - 使用 IPC 通信
+  // Electron environment - use IPC communication
   bridge.adapter({
     emit(name, data) {
       return win.electronAPI.emit(name, data);
@@ -38,8 +39,7 @@ if (win.electronAPI) {
     },
   });
 } else {
-  // Web 环境 - 使用 WebSocket 通信，并在登录后自动补上已获取 Cookie 的连接
-  // Web runtime bridge: ensure the socket reconnects after login so session cookie can be sent
+  // Web environment - use WebSocket communication, auto-reconnect after login to send session cookie
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const defaultHost = `${window.location.hostname}:25808`;
   const socketUrl = `${protocol}//${window.location.host || defaultHost}`;
@@ -54,7 +54,7 @@ if (win.electronAPI) {
 
   const messageQueue: QueuedMessage[] = [];
 
-  // 1.发送队列中积压的消息，确保在重新建立连接后不会丢事件
+  // 1. Send queued messages to ensure no events are lost after reconnection
   const flushQueue = () => {
     if (!socket || socket.readyState !== WebSocket.OPEN) {
       return;
@@ -68,7 +68,7 @@ if (win.electronAPI) {
     }
   };
 
-  // 2.简单的指数退避重连，等待服务端在登录成功后接受新连接
+  // 2. Simple exponential backoff reconnection, wait for server to accept new connection after login
   const scheduleReconnect = () => {
     if (reconnectTimer !== null || !shouldReconnect) {
       return;
@@ -81,7 +81,7 @@ if (win.electronAPI) {
     }, reconnectDelay);
   };
 
-  // 3.建立 WebSocket 连接（或复用已有的 OPEN/CONNECTING 状态）
+  // 3. Establish WebSocket connection (or reuse existing OPEN/CONNECTING state)
   const connect = () => {
     if (socket && (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING)) {
       return;
@@ -107,7 +107,6 @@ if (win.electronAPI) {
       try {
         const payload = JSON.parse(event.data as string) as { name: string; data: unknown };
 
-        // 处理服务端心跳 ping，立即回复 pong 以保持连接
         // Handle server heartbeat ping - respond with pong immediately to keep connection alive
         if (payload.name === 'ping') {
           if (socket && socket.readyState === WebSocket.OPEN) {
@@ -116,24 +115,20 @@ if (win.electronAPI) {
           return;
         }
 
-        // 处理认证过期 - 停止重连并跳转到登录页
         // Handle auth expiration - stop reconnecting and redirect to login
         if (payload.name === 'auth-expired') {
           console.warn('[WebSocket] Authentication expired, stopping reconnection');
           shouldReconnect = false;
 
-          // 清除所有待执行的重连定时器
           // Clear any pending reconnection timer
           if (reconnectTimer !== null) {
             window.clearTimeout(reconnectTimer);
             reconnectTimer = null;
           }
 
-          // 关闭 socket 并跳转到登录页
           // Close the socket and redirect to login page
           socket?.close();
 
-          // 短暂延迟后跳转到登录页，以便显示 UI 反馈
           // Redirect to login page after a short delay to show any UI feedback
           setTimeout(() => {
             window.location.href = '/login';
@@ -144,7 +139,7 @@ if (win.electronAPI) {
 
         emitterRef.emit(payload.name, payload.data);
       } catch (error) {
-        // 忽略格式错误的消息 / Ignore malformed payloads
+        // Ignore malformed payloads
       }
     });
 
@@ -158,7 +153,7 @@ if (win.electronAPI) {
     });
   };
 
-  // 4.确保在发送/订阅前已经发起连接
+  // 4. Ensure connection is initiated before sending/subscribing
   const ensureSocket = () => {
     if (!socket || socket.readyState === WebSocket.CLOSED || socket.readyState === WebSocket.CLOSING) {
       connect();

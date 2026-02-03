@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { describe, it, expect } from '@jest/globals';
+import { describe, expect, it } from '@jest/globals';
+import { createGenericSpawnConfig } from '../../src/agent/acp/AcpConnection';
 import type { AcpBackendConfig } from '../../src/types/acpTypes';
 import { ACP_BACKENDS_ALL, isValidAcpBackend } from '../../src/types/acpTypes';
-import { createGenericSpawnConfig } from '../../src/agent/acp/AcpConnection';
 
 describe('Custom ACP Agent Configuration', () => {
   describe('Type System', () => {

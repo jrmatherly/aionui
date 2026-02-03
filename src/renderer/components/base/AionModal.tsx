@@ -4,20 +4,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useThemeContext } from '@/renderer/context/ThemeContext';
 import type { ModalProps } from '@arco-design/web-react';
-import { Modal, Button } from '@arco-design/web-react';
+import { Button, Modal } from '@arco-design/web-react';
 import { Close } from '@icon-park/react';
 import classNames from 'classnames';
 import type { CSSProperties } from 'react';
 import React from 'react';
-import { useThemeContext } from '@/renderer/context/ThemeContext';
 
-// ==================== 类型定义导出 ====================
+// ==================== Type Definitions Export ====================
 
-/** 预设尺寸类型 */
+/** Preset size type */
 export type ModalSize = 'small' | 'medium' | 'large' | 'xlarge' | 'full';
 
-/** 预设尺寸配置 */
+/** Preset size configuration */
 export const MODAL_SIZES: Record<ModalSize, { width: string; height?: string }> = {
   small: { width: '400px', height: '300px' },
   medium: { width: '600px', height: '400px' },
@@ -26,74 +26,74 @@ export const MODAL_SIZES: Record<ModalSize, { width: string; height?: string }> 
   full: { width: '90vw', height: '90vh' },
 };
 
-/** Header 配置 */
+/** Header configuration */
 export interface ModalHeaderConfig {
-  /** 自定义完整 header 内容 */
+  /** Custom complete header content */
   render?: () => React.ReactNode;
-  /** 标题文本或节点 */
+  /** Title text or node */
   title?: React.ReactNode;
-  /** 是否显示关闭按钮 */
+  /** Whether to show close button */
   showClose?: boolean;
-  /** 关闭按钮图标 */
+  /** Close button icon */
   closeIcon?: React.ReactNode;
-  /** Header 额外的类名 */
+  /** Header extra class name */
   className?: string;
-  /** Header 额外的样式 */
+  /** Header extra style */
   style?: CSSProperties;
 }
 
-/** Footer 配置 */
+/** Footer configuration */
 export interface ModalFooterConfig {
-  /** 自定义完整 footer 内容 */
+  /** Custom complete footer content */
   render?: () => React.ReactNode;
-  /** Footer 额外的类名 */
+  /** Footer extra class name */
   className?: string;
-  /** Footer 额外的样式 */
+  /** Footer extra style */
   style?: CSSProperties;
 }
 
-/** Modal 内容区域样式配置 */
+/** Modal content area style configuration */
 export interface ModalContentStyleConfig {
-  /** 背景色，默认 var(--bg-1) */
+  /** Background color, default var(--bg-1) */
   background?: string;
-  /** 圆角大小，默认 16px */
+  /** Border radius, default 16px */
   borderRadius?: string | number;
-  /** 内边距，默认 0 */
+  /** Padding, default 0 */
   padding?: string | number;
-  /** 内容区域滚动行为，默认 auto */
+  /** Content area scroll behavior, default auto */
   overflow?: 'auto' | 'scroll' | 'hidden' | 'visible';
-  /** 内容区域高度（支持 number 或 px 字符串） */
+  /** Content area height (supports number or px string) */
   height?: string | number;
-  /** 内容区域最小高度 */
+  /** Content area minimum height */
   minHeight?: string | number;
-  /** 内容区域最大高度 */
+  /** Content area maximum height */
   maxHeight?: string | number;
 }
 
-/** AionModal 组件 Props */
+/** AionModal component Props */
 export interface AionModalProps extends Omit<ModalProps, 'title' | 'footer'> {
   children?: React.ReactNode;
 
-  /** 预设尺寸，会被 style 中的 width/height 覆盖 */
+  /** Preset size, can be overridden by width/height in style */
   size?: ModalSize;
 
-  /** Header 配置，可以是简单的 title 字符串或完整配置对象 */
+  /** Header config, can be a simple title string or a full config object */
   header?: React.ReactNode | ModalHeaderConfig;
 
-  /** Footer 配置，可以是 ReactNode 或配置对象 */
+  /** Footer config, can be a ReactNode or a config object */
   footer?: React.ReactNode | ModalFooterConfig | null;
 
-  /** Modal 内容区域样式配置 */
+  /** Modal content area style configuration */
   contentStyle?: ModalContentStyleConfig;
 
-  // === 向后兼容的 Props ===
-  /** @deprecated 请使用 header.title */
+  // === Backward-compatible Props ===
+  /** @deprecated Use header.title instead */
   title?: React.ReactNode;
-  /** @deprecated 请使用 header.showClose */
+  /** @deprecated Use header.showClose instead */
   showCustomClose?: boolean;
 }
 
-// ==================== 样式常量 / Style Constants ====================
+// ==================== Style Constants ====================
 
 const HEADER_BASE_CLASS = 'flex items-center justify-between pb-20px';
 const TITLE_BASE_CLASS = 'text-18px font-500 text-t-primary m-0';
@@ -101,54 +101,53 @@ const CLOSE_BUTTON_CLASS = 'w-32px h-32px flex items-center justify-center rd-8p
 const FOOTER_BASE_CLASS = 'flex-shrink-0 bg-transparent';
 
 /**
- * 自定义模态框组件 / Custom modal component
+ * Custom modal component
  *
- * 基于 Arco Design Modal 的封装，提供统一的样式主题、预设尺寸和字体缩放支持
  * Wrapper around Arco Design Modal with unified theme styling, preset sizes, and font scaling support
  *
  * @features
- * - 预设尺寸支持 / Preset size support (small/medium/large/xlarge/full)
- * - 响应字体缩放 / Responsive to font scale changes
- * - 灵活的 header/footer 配置 / Flexible header/footer configuration
- * - 向后兼容旧 API / Backward compatible with old API
- * - 自动视口适配 / Auto viewport adaptation
+ * - Preset size support (small/medium/large/xlarge/full)
+ * - Responsive to font scale changes
+ * - Flexible header/footer configuration
+ * - Backward compatible with old API
+ * - Auto viewport adaptation
  *
  * @example
  * ```tsx
- * // 基本用法 / Basic usage
- * <AionModal visible={true} onCancel={handleClose} header="标题">
- *   内容
+ * // Basic usage
+ * <AionModal visible={true} onCancel={handleClose} header="Title">
+ *   Content
  * </AionModal>
  *
- * // 预设尺寸 / Preset size
- * <AionModal visible={true} size="large" header="大型弹窗">
- *   内容
+ * // Preset size
+ * <AionModal visible={true} size="large" header="Large Modal">
+ *   Content
  * </AionModal>
  *
- * // 自定义 header / Custom header
+ * // Custom header
  * <AionModal
  *   visible={true}
  *   header={{
- *     title: "自定义标题",
+ *     title: "Custom Title",
  *     showClose: true,
  *     className: "custom-header"
  *   }}
  * >
- *   内容
+ *   Content
  * </AionModal>
  *
- * // 自定义 footer / Custom footer
+ * // Custom footer
  * <AionModal
  *   visible={true}
- *   header="标题"
+ *   header="Title"
  *   footer={
  *     <div className="flex gap-2">
- *       <Button onClick={handleCancel}>取消</Button>
- *       <Button type="primary" onClick={handleOk}>确定</Button>
+ *       <Button onClick={handleCancel}>Cancel</Button>
+ *       <Button type="primary" onClick={handleOk}>Confirm</Button>
  *     </div>
  *   }
  * >
- *   内容
+ *   Content
  * </AionModal>
  * ```
  */
@@ -166,7 +165,7 @@ const AionModal: React.FC<AionModalProps> = ({
   header,
   footer,
   contentStyle,
-  // 向后兼容
+  // Backward compatible
   title,
   showCustomClose = true,
   onCancel,
@@ -175,7 +174,7 @@ const AionModal: React.FC<AionModalProps> = ({
   ...props
 }) => {
   const { fontScale } = useThemeContext();
-  // 处理 contentStyle 配置，转换为 CSS 变量
+  // Process contentStyle config, convert to CSS variables
   const contentBg = contentStyle?.background || 'var(--bg-1)';
   const contentBorderRadius = contentStyle?.borderRadius || '16px';
   const contentPadding = contentStyle?.padding || '0';
@@ -198,14 +197,14 @@ const AionModal: React.FC<AionModalProps> = ({
     return value;
   };
 
-  // 处理尺寸缩放 / Handle size scaling
+  // Handle size scaling
   const modalSize = size ? MODAL_SIZES[size] : undefined;
   const baseStyle: CSSProperties = {
     ...modalSize,
     ...style,
   };
 
-  // 缩放尺寸相关属性（避免副作用）/ Scale size-related properties (avoid side effects)
+  // Scale size-related properties (avoid side effects)
   type DimensionStyle = Partial<Pick<CSSProperties, DimensionKey>>;
   const scaledStyle: DimensionStyle = {};
   dimensionKeys.forEach((key) => {
@@ -220,7 +219,7 @@ const AionModal: React.FC<AionModalProps> = ({
     ...scaledStyle,
   };
 
-  // 自动设置最大宽高以适应视口 / Auto set max dimensions to fit viewport
+  // Auto set max dimensions to fit viewport
   if (typeof window !== 'undefined') {
     const viewportGap = 32;
     if (!mergedStyle.maxWidth) {
@@ -252,41 +251,40 @@ const AionModal: React.FC<AionModalProps> = ({
     return style;
   }, [contentBg, paddingVal, contentOverflow, contentStyle?.height, contentStyle?.maxHeight, contentStyle?.minHeight]);
 
-  // 处理 Header 配置（向后兼容）
+  // Process Header config (backward compatible)
   const headerConfig: ModalHeaderConfig = React.useMemo(() => {
-    // 如果使用新的 header 配置
+    // If using new header config
     if (header !== undefined) {
-      // 如果是字符串或 ReactNode，转换为 title 配置
+      // If it's a string or ReactNode, convert to title config
       if (typeof header === 'string' || React.isValidElement(header)) {
         return {
           title: header,
           showClose: true,
         };
       }
-      // 如果是配置对象
+      // If it's a config object
       return header as ModalHeaderConfig;
     }
-    // 向后兼容旧的 title 和 showCustomClose
+    // Backward compatible with old title and showCustomClose
     return {
       title,
       showClose: showCustomClose,
     };
   }, [header, title, showCustomClose]);
 
-  // 处理 Footer 配置
+  // Process Footer config
   const footerConfig: ModalFooterConfig | null = React.useMemo(() => {
     if (footer === null) {
       return null;
     }
 
-    // 未提供 footer 时，使用默认模板
+    // When footer is not provided, use default template
     if (footer === undefined) {
       const cancelLabel = props.cancelText ?? 'Cancel';
       const okLabel = props.okText ?? 'Confirm';
       return {
         render: () => (
           <div className='flex justify-end gap-10px mt-10px'>
-            {/* 默认按钮提供统一圆角，文案可通过 cancelText/okText 覆盖 */}
             {/* Default buttons ship with rounded corners; text can be overridden via cancelText/okText */}
             <Button onClick={onCancel} className='px-20px min-w-80px' style={{ borderRadius: 8 }}>
               {cancelLabel}
@@ -299,7 +297,7 @@ const AionModal: React.FC<AionModalProps> = ({
       };
     }
 
-    // 如果是 ReactNode，包装为配置对象
+    // If it's a ReactNode, wrap as config object
     if (React.isValidElement(footer)) {
       return {
         render: () => footer,
@@ -308,9 +306,9 @@ const AionModal: React.FC<AionModalProps> = ({
     return footer as ModalFooterConfig;
   }, [footer, onCancel, props.cancelText, props.okText, props.onOk, props.confirmLoading]);
 
-  // 渲染 Header
+  // Render Header
   const renderHeader = () => {
-    // 如果提供了自定义 render 函数
+    // If custom render function is provided
     if (headerConfig.render) {
       return (
         <div className={headerConfig.className} style={headerConfig.style}>
@@ -319,12 +317,12 @@ const AionModal: React.FC<AionModalProps> = ({
       );
     }
 
-    // 如果没有 title 也不显示关闭按钮，不渲染 header
+    // If no title and no close button, don't render header
     if (!headerConfig.title && !headerConfig.showClose) {
       return null;
     }
 
-    // 默认 header 布局
+    // Default header layout
     const headerClassName = classNames(HEADER_BASE_CLASS, headerConfig.className);
 
     const headerStyle: CSSProperties = {
@@ -344,7 +342,7 @@ const AionModal: React.FC<AionModalProps> = ({
     );
   };
 
-  // 渲染 Footer
+  // Render Footer
   const renderFooter = () => {
     if (!footerConfig) {
       return null;

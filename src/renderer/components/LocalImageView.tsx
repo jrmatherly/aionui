@@ -1,9 +1,9 @@
 import { ipcBridge } from '@/common';
 import { joinPath } from '@/common/chatLib';
+import { iconColors } from '@/renderer/theme/colors';
 import { LoadingTwo } from '@icon-park/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { createContext } from '../utils/createContext';
-import { iconColors } from '@/renderer/theme/colors';
 
 const [useLocalImage, LocalImageProvider, useUpdateLocalImage] = createContext({ root: '' });
 

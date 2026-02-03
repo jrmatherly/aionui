@@ -5,24 +5,24 @@
  */
 
 /**
- * AionUI应用程序共用常量
+ * AionUI application shared constants
  */
 
-// ===== 文件处理相关常量 =====
+// ===== File Processing Constants =====
 
-/** 临时文件时间戳分隔符 */
+/** Temporary file timestamp separator */
 export const AIONUI_TIMESTAMP_SEPARATOR = '_aionui_';
 
-/** 用于匹配和清理时间戳后缀的正则表达式 */
+/** Regular expression for matching and cleaning timestamp suffixes */
 export const AIONUI_TIMESTAMP_REGEX = /_aionui_\d{13}(\.\w+)?$/;
 export const AIONUI_FILES_MARKER = '[[AION_FILES]]';
 
-// ===== 媒体类型相关常量 =====
+// ===== Media Type Constants =====
 
-/** 支持的图片文件扩展名 */
+/** Supported image file extensions */
 export const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.tiff', '.svg'] as const;
 
-/** 文件扩展名到MIME类型的映射 */
+/** File extension to MIME type mapping */
 export const MIME_TYPE_MAP: Record<string, string> = {
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
@@ -34,7 +34,7 @@ export const MIME_TYPE_MAP: Record<string, string> = {
   '.svg': 'image/svg+xml',
 };
 
-/** MIME类型到文件扩展名的映射 */
+/** MIME type to file extension mapping */
 export const MIME_TO_EXT_MAP: Record<string, string> = {
   jpeg: '.jpg',
   jpg: '.jpg',
@@ -46,5 +46,5 @@ export const MIME_TO_EXT_MAP: Record<string, string> = {
   'svg+xml': '.svg',
 };
 
-/** 默认图片文件扩展名 */
+/** Default image file extension */
 export const DEFAULT_IMAGE_EXTENSION = '.png';

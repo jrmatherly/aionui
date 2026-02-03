@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CodexAgentEventType, EventDataMap, type McpInvocation, McpToolInfo, OutputFormat, RendererType, ToolAvailability, ToolCapabilities, ToolCategory, ToolDefinition, ToolRenderer } from '../types';
 import i18n from '../../../renderer/i18n';
+import { CodexAgentEventType, EventDataMap, McpToolInfo, OutputFormat, RendererType, ToolAvailability, ToolCapabilities, ToolCategory, ToolDefinition, ToolRenderer, type McpInvocation } from '../types';
 
 // Re-export types for backward compatibility
-export { ToolCategory, OutputFormat, RendererType, ToolAvailability, ToolCapabilities, ToolRenderer, ToolDefinition, McpToolInfo, EventDataMap };
+export { EventDataMap, McpToolInfo, OutputFormat, RendererType, ToolAvailability, ToolCapabilities, ToolCategory, ToolDefinition, ToolRenderer };
 
 /**
- * 工具注册表 - 负责管理所有工具的注册、发现和解析
+ * Tool Registry - Manages registration, discovery and resolution of all tools
  */
 export class ToolRegistry {
   private tools = new Map<string, ToolDefinition>();
@@ -23,10 +23,10 @@ export class ToolRegistry {
   }
 
   /**
-   * 初始化内置工具
+   * Initialize built-in tools
    */
   private initializeBuiltinTools() {
-    // Shell执行工具
+    // Shell execution tool
     this.registerBuiltinTool({
       id: 'shell_exec',
       name: 'Shell',
@@ -52,7 +52,7 @@ export class ToolRegistry {
       descriptionKey: 'tools.shell.description',
     });
 
-    // 文件操作工具
+    // File operations tool
     this.registerBuiltinTool({
       id: 'file_operations',
       name: 'FileOps',
@@ -78,7 +78,7 @@ export class ToolRegistry {
       descriptionKey: 'tools.fileOps.description',
     });
 
-    // 网页搜索工具
+    // Web search tool
     this.registerBuiltinTool({
       id: 'web_search',
       name: 'WebSearch',
@@ -104,7 +104,7 @@ export class ToolRegistry {
       descriptionKey: 'tools.webSearch.description',
     });
 
-    // 设置事件类型映射
+    // Set up event type mappings
     this.eventTypeMapping.set(CodexAgentEventType.EXEC_COMMAND_BEGIN, ['shell_exec']);
     this.eventTypeMapping.set(CodexAgentEventType.EXEC_COMMAND_OUTPUT_DELTA, ['shell_exec']);
     this.eventTypeMapping.set(CodexAgentEventType.EXEC_COMMAND_END, ['shell_exec']);
@@ -116,14 +116,14 @@ export class ToolRegistry {
   }
 
   /**
-   * 注册内置工具
+   * Register a built-in tool
    */
   registerBuiltinTool(tool: ToolDefinition) {
     this.tools.set(tool.id, tool);
   }
 
   /**
-   * 注册MCP工具
+   * Register an MCP tool
    */
   registerMcpTool(mcpTool: McpToolInfo) {
     const toolDef = this.adaptMcpTool(mcpTool);
@@ -131,7 +131,7 @@ export class ToolRegistry {
   }
 
   /**
-   * 将MCP工具适配为标准工具定义
+   * Adapt an MCP tool to standard tool definition
    */
   private adaptMcpTool(mcpTool: McpToolInfo): ToolDefinition {
     const fullyQualifiedName = `${mcpTool.serverName}/${mcpTool.name}`;
@@ -141,7 +141,7 @@ export class ToolRegistry {
       name: mcpTool.name,
       displayNameKey: `tools.mcp.${mcpTool.serverName}.${mcpTool.name}.displayName`,
       category: this.inferCategory(mcpTool),
-      priority: 100, // MCP工具优先级较低
+      priority: 100, // MCP tools have lower priority
       availability: {
         platforms: ['darwin', 'linux', 'win32'],
         experimental: true,
@@ -155,7 +155,7 @@ export class ToolRegistry {
   }
 
   /**
-   * 智能推断工具类别
+   * Intelligently infer tool category
    */
   private inferCategory(mcpTool: McpToolInfo): ToolCategory {
     const name = mcpTool.name.toLowerCase();
@@ -181,10 +181,10 @@ export class ToolRegistry {
   }
 
   /**
-   * 推断工具能力
+   * Infer tool capabilities
    */
   private inferCapabilities(inputSchema?: Record<string, unknown>): ToolCapabilities {
-    // 基于Schema推断能力
+    // Infer capabilities based on schema
     const properties = inputSchema?.properties as Record<string, unknown> | undefined;
     const hasStreamParam = properties?.stream !== undefined;
     const hasImageParam = properties?.image !== undefined || properties?.img !== undefined;
@@ -192,15 +192,15 @@ export class ToolRegistry {
     return {
       supportsStreaming: hasStreamParam,
       supportsImages: hasImageParam,
-      supportsCharts: false, // 默认不支持图表
-      supportsMarkdown: true, // 默认支持markdown
-      supportsInteraction: true, // 默认支持交互
+      supportsCharts: false, // Charts not supported by default
+      supportsMarkdown: true, // Markdown supported by default
+      supportsInteraction: true, // Interaction supported by default
       outputFormats: [OutputFormat.TEXT, OutputFormat.MARKDOWN],
     };
   }
 
   /**
-   * 选择合适的渲染器
+   * Select an appropriate renderer
    */
   private selectRenderer(mcpTool: McpToolInfo): ToolRenderer {
     const category = this.inferCategory(mcpTool);
@@ -218,7 +218,7 @@ export class ToolRegistry {
   }
 
   /**
-   * 根据类别获取图标
+   * Get icon for category
    */
   private getIconForCategory(category: ToolCategory): string {
     switch (category) {
@@ -240,10 +240,10 @@ export class ToolRegistry {
   }
 
   /**
-   * 根据事件类型和数据解析对应的工具
+   * Resolve the corresponding tool based on event type and data
    */
   resolveToolForEvent(eventType: CodexAgentEventType, eventData?: EventDataMap[keyof EventDataMap]): ToolDefinition | null {
-    // 1. 特殊处理MCP工具调用
+    // 1. Special handling for MCP tool calls
     if (eventType === CodexAgentEventType.MCP_TOOL_CALL_BEGIN || eventType === CodexAgentEventType.MCP_TOOL_CALL_END) {
       const mcpData = eventData as EventDataMap[CodexAgentEventType.MCP_TOOL_CALL_BEGIN];
       if (mcpData?.invocation) {
@@ -252,14 +252,14 @@ export class ToolRegistry {
         if (mcpTool) return mcpTool;
       }
 
-      // 如果找不到具体的MCP工具，返回通用MCP工具
+      // If specific MCP tool not found, return generic MCP tool
       return this.createGenericMcpTool(mcpData?.invocation);
     }
 
-    // 2. 基于事件类型的直接映射
+    // 2. Direct mapping based on event type
     const candidateIds = this.eventTypeMapping.get(eventType) || [];
 
-    // 3. 基于优先级选择最佳匹配
+    // 3. Select best match based on priority
     const availableTools = candidateIds
       .map((id) => this.tools.get(id) || this.mcpTools.get(id))
       .filter(Boolean)
@@ -270,14 +270,14 @@ export class ToolRegistry {
   }
 
   /**
-   * 从MCP调用信息推断工具ID
+   * Infer tool ID from MCP invocation info
    */
   private inferMcpToolId(invocation: McpInvocation): string {
-    // 尝试从invocation中提取方法名
+    // Try to extract method name from invocation
     const method = this.extractMethodFromInvocation(invocation);
     if (!method) return '';
 
-    // 尝试匹配已注册的MCP工具
+    // Try to match registered MCP tools
     for (const [toolId, tool] of this.mcpTools) {
       if (toolId.endsWith(`/${method}`) || tool.name === method) {
         return toolId;
@@ -288,11 +288,11 @@ export class ToolRegistry {
   }
 
   /**
-   * 从MCP调用中提取方法名
+   * Extract method name from MCP invocation
    */
   private extractMethodFromInvocation(invocation: McpInvocation): string {
-    // 根据实际的McpInvocation类型结构来提取方法名
-    // 这里需要根据具体的类型定义来实现
+    // Extract method name based on actual McpInvocation type structure
+    // Implementation depends on specific type definition
     if ('method' in invocation && typeof invocation.method === 'string') {
       return invocation.method;
     }
@@ -303,7 +303,7 @@ export class ToolRegistry {
   }
 
   /**
-   * 创建通用MCP工具定义
+   * Create generic MCP tool definition
    */
   private createGenericMcpTool(invocation?: McpInvocation): ToolDefinition {
     const method = invocation ? this.extractMethodFromInvocation(invocation) || 'McpTool' : 'McpTool';
@@ -336,7 +336,7 @@ export class ToolRegistry {
   }
 
   /**
-   * 检查工具是否可用
+   * Check if tool is available
    */
   private isToolAvailable(tool: ToolDefinition): boolean {
     const currentPlatform = process.platform;
@@ -344,7 +344,7 @@ export class ToolRegistry {
   }
 
   /**
-   * 获取默认工具
+   * Get default tool
    */
   private getDefaultTool(eventType: CodexAgentEventType): ToolDefinition {
     return {
@@ -374,52 +374,52 @@ export class ToolRegistry {
   }
 
   /**
-   * 获取所有已注册的工具
+   * Get all registered tools
    */
   getAllTools(): ToolDefinition[] {
     return [...Array.from(this.tools.values()), ...Array.from(this.mcpTools.values())];
   }
 
   /**
-   * 根据类别获取工具
+   * Get tools by category
    */
   getToolsByCategory(category: ToolCategory): ToolDefinition[] {
     return this.getAllTools().filter((tool) => tool.category === category);
   }
 
   /**
-   * 获取工具定义
+   * Get tool definition
    */
   getTool(id: string): ToolDefinition | undefined {
     return this.tools.get(id) || this.mcpTools.get(id);
   }
 
   /**
-   * 获取工具的本地化显示名称
+   * Get localized display name for tool
    */
   getToolDisplayName(tool: ToolDefinition, fallbackParams?: Record<string, string>): string {
     try {
       return i18n.t(tool.displayNameKey, fallbackParams || {});
     } catch {
-      // 如果没有找到翻译，返回工具名称
+      // If translation not found, return tool name
       return tool.name;
     }
   }
 
   /**
-   * 获取工具的本地化描述
+   * Get localized description for tool
    */
   getToolDescription(tool: ToolDefinition, fallbackParams?: Record<string, string>): string {
     try {
       return i18n.t(tool.descriptionKey, fallbackParams || {});
     } catch {
-      // 如果没有找到翻译，返回基础描述
+      // If translation not found, return basic description
       return `Tool: ${tool.name}`;
     }
   }
 
   /**
-   * 为MCP工具生成本地化参数
+   * Generate localization parameters for MCP tool
    */
   getMcpToolI18nParams(tool: ToolDefinition): Record<string, string> {
     if (tool.id.includes('/')) {

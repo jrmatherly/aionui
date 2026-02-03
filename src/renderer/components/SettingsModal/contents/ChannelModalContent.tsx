@@ -18,9 +18,9 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 import { useSettingsViewMode } from '../settingsViewContext';
+import TelegramConfigForm from './TelegramConfigForm';
 import ChannelItem from './channels/ChannelItem';
 import type { ChannelConfig } from './channels/types';
-import TelegramConfigForm from './TelegramConfigForm';
 
 /**
  * Get available primary models for a provider (supports function calling)

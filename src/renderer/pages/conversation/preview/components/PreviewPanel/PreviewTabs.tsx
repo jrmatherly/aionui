@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { iconColors } from '@/renderer/theme/colors';
 import { IconShrink } from '@arco-design/web-react/icon';
 import { Close } from '@icon-park/react';
 import type React from 'react';
 import { useTranslation } from 'react-i18next';
-import { iconColors } from '@/renderer/theme/colors';
 import type { TabFadeState } from '../../hooks/useTabOverflow';
 
 /**

@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { execSync } from 'child_process';
+import { ProcessConfig } from '@/process/initStorage';
 import type { AcpBackendAll, PresetAgentType } from '@/types/acpTypes';
 import { POTENTIAL_ACP_CLIS } from '@/types/acpTypes';
-import { ProcessConfig } from '@/process/initStorage';
+import { execSync } from 'child_process';
 
 interface DetectedAgent {
   backend: AcpBackendAll;
@@ -22,14 +22,13 @@ interface DetectedAgent {
 }
 
 /**
- * 全局ACP检测器 - 启动时检测一次，全局共享结果
+ * Global ACP Detector - Detects once at startup, shares results globally
  */
 class AcpDetector {
   private detectedAgents: DetectedAgent[] = [];
   private isDetected = false;
 
   /**
-   * 将自定义代理添加到检测列表（追加到末尾）
    * Add custom agents to detected list if configured and enabled (appends to end).
    */
   private async addCustomAgentsToList(detected: DetectedAgent[]): Promise<void> {
@@ -37,29 +36,28 @@ class AcpDetector {
       const customAgents = await ProcessConfig.get('acp.customAgents');
       if (!customAgents || !Array.isArray(customAgents) || customAgents.length === 0) return;
 
-      // 过滤出已启用且有有效 CLI 路径或标记为预设的代理 / Filter enabled agents with valid CLI path or marked as preset
+      // Filter enabled agents with valid CLI path or marked as preset
       const enabledAgents = customAgents.filter((agent) => agent.enabled && (agent.defaultCliPath || agent.isPreset));
       if (enabledAgents.length === 0) return;
 
-      // 将所有自定义代理追加到列表末尾 / Append all custom agents to the end
+      // Append all custom agents to the end
       const customDetectedAgents: DetectedAgent[] = enabledAgents.map((agent) => ({
         backend: 'custom',
         name: agent.name || 'Custom Agent',
         cliPath: agent.defaultCliPath,
         acpArgs: agent.acpArgs,
-        customAgentId: agent.id, // 存储 UUID 用于标识 / Store the UUID for identification
+        customAgentId: agent.id, // Store the UUID for identification
         isPreset: agent.isPreset,
         context: agent.context,
         avatar: agent.avatar,
-        presetAgentType: agent.presetAgentType, // 主 Agent 类型 / Primary agent type
+        presetAgentType: agent.presetAgentType, // Primary agent type
       }));
 
       detected.push(...customDetectedAgents);
     } catch (error) {
-      // 配置读取失败时区分预期错误和非预期错误
       // Distinguish expected vs unexpected errors when reading config
       if (error instanceof Error && (error.message.includes('ENOENT') || error.message.includes('not found'))) {
-        // 未配置自定义代理 - 这是正常情况 / No custom agents configured - this is normal
+        // No custom agents configured - this is normal
         return;
       }
       console.warn('[AcpDetector] Unexpected error loading custom agents:', error);
@@ -67,7 +65,7 @@ class AcpDetector {
   }
 
   /**
-   * 启动时执行检测 - 使用 POTENTIAL_ACP_CLIS 列表检测已安装的 CLI
+   * Execute detection at startup - Detect installed CLIs using POTENTIAL_ACP_CLIS list
    */
   async initialize(): Promise<void> {
     if (this.isDetected) return;
@@ -80,7 +78,6 @@ class AcpDetector {
 
     const isCliAvailable = (cliCommand: string): boolean => {
       // Keep original behavior: prefer where/which, then fallback on Windows to Get-Command.
-      // 保持原逻辑：优先使用 where/which，Windows 下失败再回退到 Get-Command。
       try {
         execSync(`${whichCommand} ${cliCommand}`, {
           encoding: 'utf-8',
@@ -95,7 +92,6 @@ class AcpDetector {
       if (isWindows) {
         try {
           // PowerShell fallback for shim scripts like claude.ps1 (vfox)
-          // PowerShell 回退，支持 claude.ps1 这类 shim（例如 vfox）
           execSync(`powershell -NoProfile -NonInteractive -Command "Get-Command -All ${cliCommand} | Select-Object -First 1 | Out-Null"`, {
             encoding: 'utf-8',
             stdio: 'pipe',
@@ -112,7 +108,7 @@ class AcpDetector {
 
     const detected: DetectedAgent[] = [];
 
-    // 并行检测所有潜在的 ACP CLI
+    // Detect all potential ACP CLIs in parallel
     const detectionPromises = POTENTIAL_ACP_CLIS.map((cli) => {
       return Promise.resolve().then(() => {
         if (!isCliAvailable(cli.cmd)) {
@@ -130,14 +126,14 @@ class AcpDetector {
 
     const results = await Promise.allSettled(detectionPromises);
 
-    // 收集检测结果
+    // Collect detection results
     for (const result of results) {
       if (result.status === 'fulfilled' && result.value) {
         detected.push(result.value);
       }
     }
 
-    // 如果检测到ACP工具，添加内置Gemini
+    // If ACP tools detected, add built-in Gemini
     if (detected.length > 0) {
       detected.unshift({
         backend: 'gemini',
@@ -158,14 +154,14 @@ class AcpDetector {
   }
 
   /**
-   * 获取检测结果
+   * Get detection results
    */
   getDetectedAgents(): DetectedAgent[] {
     return this.detectedAgents;
   }
 
   /**
-   * 是否有可用的ACP工具
+   * Check if any ACP tools are available
    */
   hasAgents(): boolean {
     return this.detectedAgents.length > 0;
@@ -183,5 +179,5 @@ class AcpDetector {
   }
 }
 
-// 单例实例
+// Singleton instance
 export const acpDetector = new AcpDetector();

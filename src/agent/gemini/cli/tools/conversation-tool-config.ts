@@ -19,16 +19,16 @@ interface ConversationToolConfigOptions {
 }
 
 /**
- * 对话级别的工具配置
- * 类似工作目录机制：对话创建时确定，整个对话过程中不变
+ * Conversation-level tool configuration.
+ * Determines tool availability and selection at the start of a conversation.
  */
 export class ConversationToolConfig {
   private useGeminiWebSearch = false;
   private useAionuiWebFetch = false;
   private geminiModel: TProviderWithModel | null = null;
   private excludeTools: string[] = [];
-  private dedicatedGeminiClient: GeminiClient | null = null; // 缓存专门的Gemini客户端
-  private dedicatedConfig: Config | null = null; // 缓存专门的Config（用于OAuth认证）
+  private dedicatedGeminiClient: GeminiClient | null = null; // Cache for dedicated Gemini client
+  private dedicatedConfig: Config | null = null; // Cache for dedicated Config (used for OAuth auth)
   private imageGenerationModel: TProviderWithModel | undefined;
   private webSearchEngine: 'google' | 'default' = 'default';
   private proxy: string = '';
@@ -39,29 +39,28 @@ export class ConversationToolConfig {
   }
 
   /**
-   * 对话创建时决定工具配置（类似workspace确定机制）
-   * @param authType 认证类型（平台类型）
+   * Determine tool configuration when conversation is created.
+   * @param authType Authentication type (platform type)
    */
   async initializeForConversation(authType: AuthType): Promise<void> {
-    // 所有模型都使用 aionui_web_fetch 替换内置的 web_fetch
+    // All models use aionui_web_fetch instead of the built-in web_fetch
     this.useAionuiWebFetch = true;
     this.excludeTools.push('web_fetch');
 
-    // 根据 webSearchEngine 配置决定启用哪个搜索工具
+    // Decide which search tool to enable based on webSearchEngine config
     if (this.webSearchEngine === 'google' && authType === AuthType.USE_OPENAI) {
-      // 启用 Google 搜索（仅OpenAI模型需要，需要认证）
+      // Enable Google search (only for OpenAI models, requires authentication)
       this.useGeminiWebSearch = true;
-      this.excludeTools.push('google_web_search'); // 排除内置的 Google 搜索
+      this.excludeTools.push('google_web_search'); // Exclude built-in Google search
     }
-    // webSearchEngine === 'default' 时不启用 Google 搜索工具
   }
 
   /**
-   * 查找最佳可用的Gemini模型
+   * Find the best available Gemini model.
    */
   private async findBestGeminiModel(): Promise<TProviderWithModel | null> {
     try {
-      // 前端已通过 webSearchEngine 参数确认认证状态
+      // Check for Google Auth via webSearchEngine parameter
       const hasGoogleAuth = this.webSearchEngine === 'google';
       if (hasGoogleAuth) {
         return {
@@ -82,17 +81,17 @@ export class ConversationToolConfig {
   }
 
   /**
-   * 创建专门的Gemini配置
+   * Create dedicated Gemini configuration.
    */
   private createDedicatedGeminiConfig(geminiModel: TProviderWithModel): Config {
-    // 创建一个最小化的配置，只用于Gemini WebSearch
+    // Create minimal config used specifically for Gemini WebSearch
     return new Config({
       sessionId: 'gemini-websearch-' + Date.now(),
       targetDir: process.cwd(),
       cwd: process.cwd(),
       debugMode: false,
       question: '',
-      // fullContext 参数在 aioncli-core v0.18.4 中已移除
+      // parameter 'fullContext' was removed in aioncli-core v0.18.4
       userMemory: '',
       geminiMdFileCount: 0,
       model: geminiModel.useModel,
@@ -100,7 +99,7 @@ export class ConversationToolConfig {
   }
 
   /**
-   * 获取当前对话的工具配置
+   * Get tool configuration for current conversation.
    */
   getConfig() {
     return {
@@ -112,57 +111,56 @@ export class ConversationToolConfig {
   }
 
   /**
-   * 为给定的 Config 注册自定义工具
-   * 在对话初始化后调用
+   * Register custom tools for the given Config.
+   * Called after conversation initialization.
    */
   async registerCustomTools(config: Config, geminiClient: GeminiClient): Promise<void> {
     const toolRegistry = await config.getToolRegistry();
 
-    // 注册 aionui_web_fetch 工具（所有模型）
+    // Register aionui_web_fetch tool (all models)
     if (this.useAionuiWebFetch) {
       const customWebFetchTool = new WebFetchTool(geminiClient, config.getMessageBus());
       toolRegistry.registerTool(customWebFetchTool);
     }
 
     if (this.imageGenerationModel) {
-      // 注册 aionui_image_generation 工具（所有模型）
+      // Register aionui_image_generation tool (all models)
       const imageGenTool = new ImageGenerationTool(config, this.imageGenerationModel, this.proxy);
       toolRegistry.registerTool(imageGenTool);
     }
 
-    // 注册 gemini_web_search 工具（仅OpenAI模型）
+    // Register gemini_web_search tool (OpenAI models only)
     if (this.useGeminiWebSearch) {
       try {
-        // 前端已通过 webSearchEngine 参数确认认证状态，直接创建客户端
-        // 创建专门的Config（如果还没有）
+        // Create client directly if authorized via webSearchEngine parameter
+        // Create dedicated Config if it doesn't exist
         if (!this.dedicatedConfig) {
           const geminiModel = await this.findBestGeminiModel();
           if (geminiModel) {
             this.geminiModel = geminiModel;
             this.dedicatedConfig = this.createDedicatedGeminiConfig(geminiModel);
-            const authType = AuthType.LOGIN_WITH_GOOGLE; // 固定使用Google认证
+            const authType = AuthType.LOGIN_WITH_GOOGLE; // Fixed use of Google authentication
 
             await this.dedicatedConfig.initialize();
             await this.dedicatedConfig.refreshAuth(authType);
 
-            // 创建新的 GeminiClient（用于检查认证状态）
+            // Create new GeminiClient to check authentication status
             this.dedicatedGeminiClient = this.dedicatedConfig.getGeminiClient();
           }
         }
 
-        // 只有成功创建 Config 时才注册工具
+        // Only register tool if Config successfully created
         if (this.dedicatedConfig && this.dedicatedGeminiClient) {
           const customWebSearchTool = new WebSearchTool(this.dedicatedConfig, this.dedicatedConfig.getMessageBus());
           toolRegistry.registerTool(customWebSearchTool);
         }
-        // Google未登录时静默跳过，不影响其他工具
       } catch (error) {
         console.warn('Failed to register gemini_web_search tool:', error);
-        // 异常时也不影响其他工具的注册
+        // Error here doesn't affect other tool registration
       }
     }
 
-    // 同步工具到模型客户端
+    // Sync tools to model client
     await geminiClient.setTools();
   }
 }

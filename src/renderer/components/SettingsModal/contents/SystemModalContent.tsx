@@ -6,24 +6,24 @@
 
 import { ipcBridge } from '@/common';
 import LanguageSwitcher from '@/renderer/components/LanguageSwitcher';
+import AionScrollArea from '@/renderer/components/base/AionScrollArea';
 import { iconColors } from '@/renderer/theme/colors';
 import { Alert, Button, Form, Modal, Tooltip } from '@arco-design/web-react';
 import { FolderOpen } from '@icon-park/react';
+import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
-import AionScrollArea from '@/renderer/components/base/AionScrollArea';
-import classNames from 'classnames';
 import { useSettingsViewMode } from '../settingsViewContext';
 
 /**
- * 目录选择输入组件 / Directory selection input component
- * 用于选择和显示系统目录路径 / Used for selecting and displaying system directory paths
+ * Directory selection input component
+ * Used for selecting and displaying system directory paths
  */
 const DirInputItem: React.FC<{
-  /** 标签文本 / Label text */
+  /** Label text */
   label: string;
-  /** 表单字段名 / Form field name */
+  /** Form field name */
   field: string;
 }> = ({ label, field }) => {
   const { t } = useTranslation();
@@ -70,13 +70,13 @@ const DirInputItem: React.FC<{
 };
 
 /**
- * 偏好设置行组件 / Preference row component
- * 用于显示标签和对应的控件，统一的水平布局 / Used for displaying labels and corresponding controls in a unified horizontal layout
+ * Preference row component
+ * Used for displaying labels and corresponding controls in a unified horizontal layout
  */
 const PreferenceRow: React.FC<{
-  /** 标签文本 / Label text */
+  /** Label text */
   label: string;
-  /** 控件元素 / Control element */
+  /** Control element */
   children: React.ReactNode;
 }> = ({ label, children }) => (
   <div className='flex items-center justify-between gap-24px py-12px'>
@@ -86,18 +86,17 @@ const PreferenceRow: React.FC<{
 );
 
 /**
- * 系统设置内容组件 / System settings content component
+ * System settings content component
  *
- * 提供系统级配置选项，包括语言和目录配置
  * Provides system-level configuration options including language and directory config
  *
  * @features
- * - 语言设置 / Language setting
- * - 高级设置：缓存目录、工作目录配置 / Advanced: cache directory, work directory configuration
- * - 配置变更自动保存 / Auto-save on configuration changes
+ * - Language setting
+ * - Advanced: cache directory, work directory configuration
+ * - Auto-save on configuration changes
  */
 interface SystemModalContentProps {
-  /** 关闭设置弹窗 / Close settings modal */
+  /** Close settings modal */
   onRequestClose?: () => void;
 }
 
@@ -121,10 +120,10 @@ const SystemModalContent: React.FC<SystemModalContentProps> = ({ onRequestClose 
     }
   }, [systemInfo, form]);
 
-  // 偏好设置项配置 / Preference items configuration
+  // Preference items configuration
   const preferenceItems = [{ key: 'language', label: t('settings.language'), component: <LanguageSwitcher /> }];
 
-  // 目录配置保存确认 / Directory configuration save confirmation
+  // Directory configuration save confirmation
   const saveDirConfigValidate = (_values: { cacheDir: string; workDir: string }): Promise<unknown> => {
     return new Promise((resolve, reject) => {
       modal.confirm({
@@ -137,8 +136,7 @@ const SystemModalContent: React.FC<SystemModalContentProps> = ({ onRequestClose 
   };
 
   /**
-   * 保存目录配置 / Save directory configuration
-   * 如果目录发生变更，会提示用户确认并重启应用
+   * Save directory configuration
    * If directories are changed, will prompt user for confirmation and restart the app
    */
   const onSubmit = async () => {
@@ -149,7 +147,7 @@ const SystemModalContent: React.FC<SystemModalContentProps> = ({ onRequestClose 
       setLoading(true);
       setError(null);
 
-      // 检查目录是否被修改 / Check if directories are modified
+      // Check if directories are modified
       const needsRestart = cacheDir !== systemInfo?.cacheDir || workDir !== systemInfo?.workDir;
 
       if (needsRestart) {
@@ -180,7 +178,7 @@ const SystemModalContent: React.FC<SystemModalContentProps> = ({ onRequestClose 
     }
   };
 
-  // 重置表单到初始值 / Reset form to initial values
+  // Reset form to initial values
   const onReset = () => {
     if (systemInfo) {
       form.setFieldValue('cacheDir', systemInfo.cacheDir);
@@ -198,10 +196,10 @@ const SystemModalContent: React.FC<SystemModalContentProps> = ({ onRequestClose 
     <div className='flex flex-col h-full w-full'>
       {modalContextHolder}
 
-      {/* 内容区域 / Content Area */}
+      {/* Content Area */}
       <AionScrollArea className='flex-1 min-h-0 pb-16px' disableOverflow={isPageMode}>
         <div className='space-y-16px'>
-          {/* 偏好设置与高级设置合并展示 / Combined preferences and advanced settings */}
+          {/* Combined preferences and advanced settings */}
           <div className='px-[12px] md:px-[32px] py-16px bg-2 rd-16px space-y-12px'>
             <div className='w-full flex flex-col divide-y divide-border-2'>
               {preferenceItems.map((item) => (
@@ -219,7 +217,7 @@ const SystemModalContent: React.FC<SystemModalContentProps> = ({ onRequestClose 
         </div>
       </AionScrollArea>
 
-      {/* 底部操作栏 / Footer with action buttons */}
+      {/* Footer with action buttons */}
       <div className={classNames('flex-shrink-0 flex gap-10px border-t border-border-2 px-24px pt-10px', isPageMode ? 'border-none px-0 pt-10px flex-col md:flex-row md:justify-end' : 'justify-end')}>
         <Button className={classNames('rd-100px', isPageMode && 'w-full md:w-auto')} onClick={handleCancel}>
           {t('common.cancel')}

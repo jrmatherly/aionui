@@ -7,8 +7,8 @@
 import { acpDetector } from '@/agent/acp/AcpDetector';
 import { initAcpConversationBridge } from './acpConversationBridge';
 import { initApplicationBridge } from './applicationBridge';
-import { initChannelBridge } from './channelBridge';
 import { initAuthBridge } from './authBridge';
+import { initChannelBridge } from './channelBridge';
 import { initCodexConversationBridge } from './codexConversationBridge';
 import { initConversationBridge } from './conversationBridge';
 import { initCronBridge } from './cronBridge';
@@ -28,7 +28,7 @@ import { initWebuiBridge } from './webuiBridge';
 import { initWindowControlsBridge } from './windowControlsBridge';
 
 /**
- * 初始化所有IPC桥接模块
+ * Initialize all IPC bridge modules
  */
 export function initAllBridges(): void {
   initDialogBridge();
@@ -38,7 +38,7 @@ export function initAllBridges(): void {
   initConversationBridge();
   initApplicationBridge();
   initGeminiConversationBridge();
-  // 额外的 Gemini 辅助桥（订阅检测等）需要在对话桥初始化后可用 / extra helpers after core bridges
+  // Extra Gemini helper bridge (subscription detection, etc.) needs to be available after core bridges
   initGeminiBridge();
   initAcpConversationBridge();
   initCodexConversationBridge();
@@ -56,7 +56,7 @@ export function initAllBridges(): void {
 }
 
 /**
- * 初始化ACP检测器
+ * Initialize ACP detector
  */
 export async function initializeAcpDetector(): Promise<void> {
   try {
@@ -66,7 +66,7 @@ export async function initializeAcpDetector(): Promise<void> {
   }
 }
 
-// 导出初始化函数供单独使用
+// Export init functions for individual use
 export { initAcpConversationBridge, initApplicationBridge, initAuthBridge, initChannelBridge, initCodexConversationBridge, initConversationBridge, initCronBridge, initDatabaseBridge, initDialogBridge, initDocumentBridge, initFsBridge, initGeminiBridge, initGeminiConversationBridge, initMcpBridge, initModelBridge, initPreviewHistoryBridge, initShellBridge, initUpdateBridge, initWebuiBridge, initWindowControlsBridge };
-// 导出窗口控制相关工具函数
+// Export window control utility functions
 export { registerWindowMaximizeListeners } from './windowControlsBridge';

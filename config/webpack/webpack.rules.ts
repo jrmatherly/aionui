@@ -2,7 +2,6 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import path from 'path';
 import type { ModuleOptions } from 'webpack';
 export const rules: Required<ModuleOptions>['rules'] = [
-  // 忽略 tree-sitter 相关的 .wasm 文件导入，这些在 Electron 环境中通过 externals 处理
   // Ignore tree-sitter .wasm file imports, these are handled via externals in Electron
   {
     test: /\.wasm$/,
@@ -27,7 +26,7 @@ export const rules: Required<ModuleOptions>['rules'] = [
   {
     test: /[/\\]node_modules[/\\].+\.(m?js|node)$/,
     parser: { amd: false },
-    // 排除纯 JS 库，避免 relocator loader 错误地解析依赖路径 (特别是 hoisted 依赖)
+    // Exclude pure JS libraries to prevent relocator loader from incorrectly parsing dependency paths (especially hoisted dependencies)
     exclude: /[/\\]node_modules[/\\](mermaid|streamdown|marked|shiki|@shikijs)[/\\]/,
     use: {
       loader: '@vercel/webpack-asset-relocator-loader',
@@ -58,14 +57,14 @@ export const rules: Required<ModuleOptions>['rules'] = [
       },
       'postcss-loader',
     ],
-    include: [/src/, /node_modules/], // 新增 node_modules 包含
+    include: [/src/, /node_modules/], // Added node_modules inclusion
   },
-  // UnoCSS 虚拟 CSS 文件处理
+  // UnoCSS virtual CSS file handling
   {
     test: /_virtual_%2F__uno\.css$/,
     use: [MiniCssExtractPlugin.loader, 'css-loader'],
   },
-  // 添加字体文件加载规则
+  // Font file loading rules
   {
     test: /\.(woff|woff2|eot|ttf|otf)$/i,
     type: 'asset/resource',
@@ -82,20 +81,20 @@ export const rules: Required<ModuleOptions>['rules'] = [
   },
   {
     test: /\.json$/,
-    type: 'json', // 使用 Webpack 5 内置的 JSON 解析
+    type: 'json', // Use Webpack 5 built-in JSON parsing
     parser: {
       parse: (source: string) => {
-        // 添加自定义解析器
+        // Custom parser
         try {
           return JSON.parse(source);
         } catch (e) {
-          // console.error('JSON 解析失败:', e);
+          // console.error('JSON parsing failed:', e);
           return {};
         }
       },
     },
   },
-  // 添加 SVG 文件处理规则
+  // SVG file handling rules
   {
     test: /\.svg$/,
     type: 'asset/resource',

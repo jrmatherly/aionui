@@ -4,17 +4,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { TokenMiddleware } from '@/webserver/auth/middleware/TokenMiddleware';
+import { app } from 'electron';
 import type { Express, Request, Response } from 'express';
 import express from 'express';
-import path from 'path';
 import fs from 'fs';
-import { app } from 'electron';
-import { TokenMiddleware } from '@/webserver/auth/middleware/TokenMiddleware';
+import path from 'path';
 import { AUTH_CONFIG } from '../config/constants';
 import { createRateLimiter } from '../middleware/security';
 
 /**
- * 注册静态资源和页面路由
  * Register static assets and page routes
  */
 const resolveRendererPath = () => {
@@ -36,10 +35,9 @@ export function registerStaticRoutes(app: Express): void {
   const indexHtmlPath = indexHtml;
 
   // Create a lenient rate limiter for static page requests to prevent DDoS
-  // 为静态页面请求创建宽松的速率限制器以防止 DDoS 攻击
   const pageRateLimiter = createRateLimiter({
-    windowMs: 60 * 1000, // 1 minute / 1分钟
-    max: 300, // 300 requests per minute (very lenient) / 每分钟300次请求（非常宽松）
+    windowMs: 60 * 1000, // 1 minute
+    max: 300, // 300 requests per minute (very lenient)
     message: 'Too many requests, please try again later',
   });
 
@@ -64,14 +62,12 @@ export function registerStaticRoutes(app: Express): void {
   };
 
   /**
-   * 主页路由
    * Homepage
    * GET /
    */
   app.get('/', pageRateLimiter, serveApplication);
 
   /**
-   * 处理 favicon 请求
    * Handle favicon requests
    * GET /favicon.ico
    */
@@ -80,7 +76,6 @@ export function registerStaticRoutes(app: Express): void {
   });
 
   /**
-   * 处理子路径路由 (React Router)
    * Handle SPA sub-routes (React Router)
    * Exclude: api, static, main_window, and webpack chunk directories (react, arco, vendors, etc.)
    * Also exclude files with extensions (.js, .css, .map, etc.)
@@ -88,10 +83,9 @@ export function registerStaticRoutes(app: Express): void {
   app.get(/^\/(?!api|static|main_window|react|arco|vendors|markdown|codemirror)(?!.*\.[a-zA-Z0-9]+$).*/, pageRateLimiter, serveApplication);
 
   /**
-   * 静态资源
    * Static assets
    */
-  // 直接挂载编译输出目录，让 webpack 在写出文件后即可被访问
+  // Mount the compiled output directory directly so files are accessible after webpack writes them
   app.use(express.static(staticRoot));
 
   const mainWindowDir = path.join(staticRoot, 'main_window');
@@ -105,7 +99,6 @@ export function registerStaticRoutes(app: Express): void {
   }
 
   /**
-   * React Syntax Highlighter 语言包
    * React Syntax Highlighter language packs
    */
   if (fs.existsSync(staticRoot)) {

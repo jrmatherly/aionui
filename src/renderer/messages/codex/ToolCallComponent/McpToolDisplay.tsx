@@ -46,7 +46,7 @@ const McpToolDisplay: React.FC<{ content: McpToolUpdate }> = ({ content }) => {
 
   return (
     <BaseToolCallDisplay toolCallId={toolCallId} title={getDisplayTitle()} status={status} description={description} icon='🔌'>
-      {/* Display tool details if available 显示工具详情 */}
+      {/* Display tool details if available */}
       {toolDetails && (
         <div className='text-sm mb-2'>
           <div className='text-xs text-t-secondary mb-1'>{t('tools.labels.tool_details')}</div>
@@ -67,7 +67,7 @@ const McpToolDisplay: React.FC<{ content: McpToolUpdate }> = ({ content }) => {
         </div>
       )}
 
-      {/* Display result if available for end events 显示结果 */}
+      {/* Display result if available for end events */}
       {subtype === 'mcp_tool_call_end' && data?.result && (
         <div className='text-sm mb-2'>
           <div className='text-xs text-t-secondary mb-1'>{t('tools.labels.result')}</div>

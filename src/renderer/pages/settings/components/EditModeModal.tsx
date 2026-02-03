@@ -1,34 +1,33 @@
 import type { IProvider } from '@/common/storage';
+import AionModal from '@/renderer/components/base/AionModal';
 import ModalHOC from '@/renderer/utils/ModalHOC';
 import { Form, Input } from '@arco-design/web-react';
+import { LinkCloud } from '@icon-park/react';
 import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import AionModal from '@/renderer/components/base/AionModal';
-import { LinkCloud } from '@icon-park/react';
 
 // Provider Logo imports
-import GeminiLogo from '@/renderer/assets/logos/gemini.svg';
-import OpenAILogo from '@/renderer/assets/logos/openai.svg';
 import AnthropicLogo from '@/renderer/assets/logos/anthropic.svg';
-import DeepSeekLogo from '@/renderer/assets/logos/deepseek.svg';
-import OpenRouterLogo from '@/renderer/assets/logos/openrouter.svg';
-import SiliconFlowLogo from '@/renderer/assets/logos/siliconflow.svg';
-import QwenLogo from '@/renderer/assets/logos/qwen.svg';
-import KimiLogo from '@/renderer/assets/logos/kimi.svg';
-import ZhipuLogo from '@/renderer/assets/logos/zhipu.svg';
-import XaiLogo from '@/renderer/assets/logos/xai.svg';
-import VolcengineLogo from '@/renderer/assets/logos/volcengine.svg';
 import BaiduLogo from '@/renderer/assets/logos/baidu.svg';
-import TencentLogo from '@/renderer/assets/logos/tencent.svg';
-import LingyiLogo from '@/renderer/assets/logos/lingyiwanwu.svg';
-import PoeLogo from '@/renderer/assets/logos/poe.svg';
-import ModelScopeLogo from '@/renderer/assets/logos/modelscope.svg';
-import InfiniAILogo from '@/renderer/assets/logos/infiniai.svg';
 import CtyunLogo from '@/renderer/assets/logos/ctyun.svg';
+import DeepSeekLogo from '@/renderer/assets/logos/deepseek.svg';
+import GeminiLogo from '@/renderer/assets/logos/gemini.svg';
+import InfiniAILogo from '@/renderer/assets/logos/infiniai.svg';
+import KimiLogo from '@/renderer/assets/logos/kimi.svg';
+import LingyiLogo from '@/renderer/assets/logos/lingyiwanwu.svg';
+import ModelScopeLogo from '@/renderer/assets/logos/modelscope.svg';
+import OpenAILogo from '@/renderer/assets/logos/openai.svg';
+import OpenRouterLogo from '@/renderer/assets/logos/openrouter.svg';
+import PoeLogo from '@/renderer/assets/logos/poe.svg';
+import QwenLogo from '@/renderer/assets/logos/qwen.svg';
+import SiliconFlowLogo from '@/renderer/assets/logos/siliconflow.svg';
 import StepFunLogo from '@/renderer/assets/logos/stepfun.svg';
+import TencentLogo from '@/renderer/assets/logos/tencent.svg';
+import VolcengineLogo from '@/renderer/assets/logos/volcengine.svg';
+import XaiLogo from '@/renderer/assets/logos/xai.svg';
+import ZhipuLogo from '@/renderer/assets/logos/zhipu.svg';
 
 /**
- * 供应商配置（包含名称、URL、Logo）
  * Provider config (includes name, URL, logo)
  */
 const PROVIDER_CONFIGS = [
@@ -56,27 +55,26 @@ const PROVIDER_CONFIGS = [
 ];
 
 /**
- * 根据名称或 URL 获取供应商 Logo
  * Get provider logo by name or URL
  */
 const getProviderLogo = (name?: string, baseUrl?: string, platform?: string): string | null => {
   if (!name && !baseUrl && !platform) return null;
 
-  // 优先按 platform 匹配（Gemini 系列）
+  // Prioritize matching by platform (Gemini series)
   if (platform) {
     const byPlatform = PROVIDER_CONFIGS.find((p) => p.platform === platform);
     if (byPlatform) return byPlatform.logo;
   }
 
-  // 按名称精确匹配
+  // Match by exact name
   const byName = PROVIDER_CONFIGS.find((p) => p.name === name);
   if (byName) return byName.logo;
 
-  // 按名称模糊匹配（忽略大小写）
+  // Match by name case-insensitively
   const byNameLower = PROVIDER_CONFIGS.find((p) => p.name.toLowerCase() === name?.toLowerCase());
   if (byNameLower) return byNameLower.logo;
 
-  // 按 URL 匹配
+  // Match by URL
   if (baseUrl) {
     const byUrl = PROVIDER_CONFIGS.find((p) => p.url && baseUrl.includes(p.url.replace('https://', '').split('/')[0]));
     if (byUrl) return byUrl.logo;
@@ -86,7 +84,6 @@ const getProviderLogo = (name?: string, baseUrl?: string, platform?: string): st
 };
 
 /**
- * 供应商 Logo 组件
  * Provider Logo Component
  */
 const ProviderLogo: React.FC<{ logo: string | null; name: string; size?: number }> = ({ logo, name, size = 20 }) => {
@@ -101,7 +98,7 @@ const EditModeModal = ModalHOC<{ data?: IProvider; onChange(data: IProvider): vo
   const { data } = props;
   const [form] = Form.useForm();
 
-  // 获取供应商 Logo / Get provider logo
+  // Get provider logo
   const providerLogo = useMemo(() => {
     return getProviderLogo(data?.name, data?.baseUrl, data?.platform);
   }, [data?.name, data?.baseUrl, data?.platform]);
@@ -129,7 +126,7 @@ const EditModeModal = ModalHOC<{ data?: IProvider; onChange(data: IProvider): vo
     >
       <div className='py-20px'>
         <Form form={form} layout='vertical'>
-          {/* 模型供应商名称（可编辑，带 Logo）/ Model Provider name (editable, with Logo) */}
+          {/* Model Provider name (editable, with Logo) */}
           <Form.Item
             label={
               <div className='flex items-center gap-6px'>
@@ -144,7 +141,7 @@ const EditModeModal = ModalHOC<{ data?: IProvider; onChange(data: IProvider): vo
             <Input placeholder={t('settings.modelProvider')} />
           </Form.Item>
 
-          {/* Base URL - 仅 Gemini 平台显示（用于自定义代理）/ Base URL - only for Gemini platform (for custom proxy) */}
+          {/* Base URL - only for Gemini platform (for custom proxy) */}
           <Form.Item label={t('settings.baseUrl')} required={data?.platform !== 'gemini' && data?.platform !== 'gemini-vertex-ai'} rules={[{ required: data?.platform !== 'gemini' && data?.platform !== 'gemini-vertex-ai' }]} field={'baseUrl'} disabled>
             <Input></Input>
           </Form.Item>

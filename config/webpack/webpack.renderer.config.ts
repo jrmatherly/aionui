@@ -14,7 +14,7 @@ export const rendererConfig: Configuration = {
   },
   plugins: [
     ...plugins,
-    // 提供 Buffer 和 process 全局变量，仅用于渲染进程的 Node.js polyfills
+    // Provide Buffer and process global variables for renderer process Node.js polyfills
     new webpack.ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
       process: 'process/browser',
@@ -28,9 +28,9 @@ export const rendererConfig: Configuration = {
       '@renderer': path.resolve(__dirname, '../../src/renderer'),
       '@process': path.resolve(__dirname, '../../src/process'),
       '@worker': path.resolve(__dirname, '../../src/worker'),
-      // 解决 ESM 模块中 process/browser 的导入问题
+      // Resolve process/browser import issues in ESM modules
       'process/browser': require.resolve('process/browser.js'),
-      // 强制使用 Streamdown 的 ESM 版本
+      // Force use of Streamdown's ESM version
       'streamdown': path.resolve(__dirname, '../../node_modules/streamdown/dist/index.js'),
     },
     fallback: {

@@ -1,15 +1,15 @@
-import { useState, useEffect, useCallback } from 'react';
-import { ConfigStorage } from '@/common/storage';
 import type { IMcpServer } from '@/common/storage';
+import { ConfigStorage } from '@/common/storage';
+import { useCallback, useEffect, useState } from 'react';
 
 /**
- * MCP服务器状态管理Hook
- * 管理MCP服务器列表的加载、保存和状态更新
+ * MCP Server State Management Hook
+ * Manages loading, saving, and status updates for MCP server list
  */
 export const useMcpServers = () => {
   const [mcpServers, setMcpServers] = useState<IMcpServer[]>([]);
 
-  // 加载MCP服务器配置
+  // Load MCP server configuration
   useEffect(() => {
     void ConfigStorage.get('mcp.config')
       .then((data) => {
@@ -22,14 +22,14 @@ export const useMcpServers = () => {
       });
   }, []);
 
-  // 保存MCP服务器配置
+  // Save MCP server configuration
   const saveMcpServers = useCallback((serversOrUpdater: IMcpServer[] | ((prev: IMcpServer[]) => IMcpServer[])) => {
     return new Promise<void>((resolve, reject) => {
       setMcpServers((prev) => {
-        // 计算新值
+        // Calculate new value
         const newServers = typeof serversOrUpdater === 'function' ? serversOrUpdater(prev) : serversOrUpdater;
 
-        // 异步保存到存储（在微任务中执行）
+        // Async save to storage (executed in microtask)
         queueMicrotask(() => {
           ConfigStorage.set('mcp.config', newServers)
             .then(() => resolve())

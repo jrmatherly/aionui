@@ -55,7 +55,7 @@ const MessageText: React.FC<{ message: IMessageText }> = ({ message }) => {
   const [showCopyAlert, setShowCopyAlert] = useState(false);
   const isUserMessage = message.position === 'right';
 
-  // 过滤空内容，避免渲染空DOM
+  // Filter empty content to avoid rendering empty DOM
   if (!message.content.content || (typeof message.content.content === 'string' && !message.content.content.trim())) {
     return null;
   }
@@ -106,7 +106,7 @@ const MessageText: React.FC<{ message: IMessageText }> = ({ message }) => {
             'bg-aou-2 p-8px': isUserMessage,
           })}
         >
-          {/* JSON 内容使用折叠组件 Use CollapsibleContent for JSON content */}
+          {/* Use CollapsibleContent for JSON content */}
           {json ? (
             <CollapsibleContent maxHeight={200} defaultCollapsed={true}>
               <MarkdownView codeStyle={{ marginTop: 4, marginBlock: 4 }}>{`\`\`\`json\n${JSON.stringify(data, null, 2)}\n\`\`\``}</MarkdownView>

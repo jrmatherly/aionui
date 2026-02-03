@@ -5,10 +5,10 @@
  */
 
 import { afterEach, describe, expect, it, jest } from '@jest/globals';
-import { AcpConnection } from '../../src/agent/acp/AcpConnection';
 import { AcpAgent } from '../../src/agent/acp';
-import type { AcpResponse } from '../../src/types/acpTypes';
+import { AcpConnection } from '../../src/agent/acp/AcpConnection';
 import { CLAUDE_YOLO_SESSION_MODE } from '../../src/agent/acp/constants';
+import type { AcpResponse } from '../../src/types/acpTypes';
 
 describe('Claude YOLO mode', () => {
   afterEach(() => {

@@ -10,19 +10,19 @@ import type { IMessageToolGroup, TMessage } from '@/common/chatLib';
 import { transformMessage } from '@/common/chatLib';
 import type { IResponseMessage } from '@/common/ipcBridge';
 import type { IMcpServer, TProviderWithModel } from '@/common/storage';
-import { ProcessConfig, getSkillsDir } from '@/process/initStorage';
-import { buildSystemInstructions } from './agentUtils';
 import { uuid } from '@/common/utils';
+import { ProcessConfig, getSkillsDir } from '@/process/initStorage';
 import { getOauthInfoWithCache } from '@office-ai/aioncli-core';
+import { cronBusyGuard } from '@process/services/cron/CronBusyGuard';
 import { ToolConfirmationOutcome } from '../../agent/gemini/cli/tools/tools';
 import { addMessage, addOrUpdateMessage, nextTickToLocalFinish } from '../message';
-import { cronBusyGuard } from '@process/services/cron/CronBusyGuard';
 import { handlePreviewOpenEvent } from '../utils/previewUtils';
 import BaseAgentManager from './BaseAgentManager';
 import { hasCronCommands } from './CronCommandDetector';
 import { extractTextFromMessage, processCronInMessage } from './MessageMiddleware';
+import { buildSystemInstructions } from './agentUtils';
 
-// gemini agent管理器类
+// Gemini agent manager class
 type UiMcpServerConfig = {
   command: string;
   args: string[];
@@ -38,15 +38,15 @@ export class GeminiAgentManager extends BaseAgentManager<
     webSearchEngine?: 'google' | 'default';
     mcpServers?: Record<string, UiMcpServerConfig>;
     contextFileName?: string;
-    // 系统规则 / System rules
+    // System rules
     presetRules?: string;
-    contextContent?: string; // 向后兼容 / Backward compatible
+    contextContent?: string; // Backward compatible
     GOOGLE_CLOUD_PROJECT?: string;
-    /** 内置 skills 目录路径 / Builtin skills directory path */
+    /** Builtin skills directory path */
     skillsDir?: string;
-    /** 启用的 skills 列表 / Enabled skills list */
+    /** Enabled skills list */
     enabledSkills?: string[];
-    /** Yolo mode: auto-approve all tool calls / 自动允许模式 */
+    /** Yolo mode: auto-approve all tool calls */
     yoloMode?: boolean;
   },
   string
@@ -63,7 +63,7 @@ export class GeminiAgentManager extends BaseAgentManager<
     // ... (omitting injectHistoryFromDatabase for space)
   }
 
-  /** Force yolo mode (for cron jobs) / 强制 yolo 模式（用于定时任务） */
+  /** Force yolo mode (for cron jobs) */
   private forceYoloMode?: boolean;
 
   constructor(
@@ -72,12 +72,12 @@ export class GeminiAgentManager extends BaseAgentManager<
       conversation_id: string;
       webSearchEngine?: 'google' | 'default';
       contextFileName?: string;
-      // 系统规则 / System rules
+      // System rules
       presetRules?: string;
-      contextContent?: string; // 向后兼容 / Backward compatible
-      /** 启用的 skills 列表 / Enabled skills list */
+      contextContent?: string; // Backward compatible
+      /** Enabled skills list */
       enabledSkills?: string[];
-      /** Force yolo mode (for cron jobs) / 强制 yolo 模式（用于定时任务） */
+      /** Force yolo mode (for cron jobs) */
       yoloMode?: boolean;
     },
     model: TProviderWithModel
@@ -90,11 +90,10 @@ export class GeminiAgentManager extends BaseAgentManager<
     this.presetRules = data.presetRules;
     this.enabledSkills = data.enabledSkills;
     this.forceYoloMode = data.yoloMode;
-    // 向后兼容 / Backward compatible
+    // Backward compatible
     this.contextContent = data.contextContent || data.presetRules;
     this.bootstrap = Promise.all([ProcessConfig.get('gemini.config'), this.getImageGenerationModel(), this.getMcpServers()])
       .then(async ([config, imageGenerationModel, mcpServers]) => {
-        // 获取当前账号对应的 GOOGLE_CLOUD_PROJECT
         // Get GOOGLE_CLOUD_PROJECT for current account
         let projectId: string | undefined;
         try {
@@ -102,17 +101,13 @@ export class GeminiAgentManager extends BaseAgentManager<
           if (oauthInfo && oauthInfo.email && config?.accountProjects) {
             projectId = config.accountProjects[oauthInfo.email];
           }
-          // 注意：不使用旧的全局 GOOGLE_CLOUD_PROJECT 回退，因为可能属于其他账号
           // Note: Don't fall back to old global GOOGLE_CLOUD_PROJECT, it might belong to another account
         } catch {
-          // 获取账号失败时不设置 projectId，让系统使用默认值
           // If account retrieval fails, don't set projectId, let system use default
         }
 
         // Build system instructions using unified agentUtils
-        // 使用统一的 agentUtils 构建系统指令
         // Always include 'cron' as a built-in skill
-        // 始终将 'cron' 作为内置 skill 包含
         const allEnabledSkills = ['cron', ...(this.enabledSkills || [])];
         const finalPresetRules = await buildSystemInstructions({
           presetContext: this.presetRules,
@@ -120,7 +115,6 @@ export class GeminiAgentManager extends BaseAgentManager<
         });
 
         // Determine yoloMode: forceYoloMode (cron jobs) takes priority over config setting
-        // 确定 yoloMode：forceYoloMode（定时任务）优先于配置设置
         const yoloMode = this.forceYoloMode ?? config?.yoloMode ?? false;
 
         return this.start({
@@ -134,12 +128,11 @@ export class GeminiAgentManager extends BaseAgentManager<
           contextFileName: this.contextFileName,
           presetRules: finalPresetRules,
           contextContent: this.contextContent,
-          // Skills 通过 SkillManager 加载 / Skills loaded via SkillManager
+          // Skills loaded via SkillManager
           skillsDir: getSkillsDir(),
-          // 启用的 skills 列表，用于过滤 SkillManager 中的 skills
           // Enabled skills list for filtering skills in SkillManager
           enabledSkills: this.enabledSkills,
-          // Yolo mode: auto-approve all tool calls / 自动允许模式
+          // Yolo mode: auto-approve all tool calls
           yoloMode,
         });
       })
@@ -166,12 +159,12 @@ export class GeminiAgentManager extends BaseAgentManager<
         return {};
       }
 
-      // 转换为 aioncli-core 期望的格式
+      // Convert to format expected by aioncli-core
       const mcpConfig: Record<string, UiMcpServerConfig> = {};
       mcpServers
-        .filter((server: IMcpServer) => server.enabled && server.status === 'connected') // 只使用启用且连接成功的服务器
+        .filter((server: IMcpServer) => server.enabled && server.status === 'connected') // Only use enabled and connected servers
         .forEach((server: IMcpServer) => {
-          // 只处理 stdio 类型的传输方式，因为 aioncli-core 只支持这种类型
+          // Only handle stdio transport type, as aioncli-core only supports this type
           if (server.transport.type === 'stdio') {
             mcpConfig[server.name] = {
               command: server.transport.command,
@@ -209,9 +202,9 @@ export class GeminiAgentManager extends BaseAgentManager<
           data: e.message || JSON.stringify(e),
           msg_id: data.msg_id,
         });
-        // 需要同步后才返回结果
-        // 为什么需要如此?
-        // 在某些情况下，消息需要同步到本地文件中，由于是异步，可能导致前端接受响应和无法获取到最新的消息，因此需要等待同步后再返回
+        // Need to sync before returning the result
+        // Why is this necessary?
+        // In some cases, messages need to be synced to local files, and since it's async, it may cause the frontend to receive responses without getting the latest messages, so we need to wait for sync before returning
         return new Promise((_, reject) => {
           nextTickToLocalFinish(() => {
             reject(e);
@@ -328,7 +321,6 @@ export class GeminiAgentManager extends BaseAgentManager<
         const hasOptions = options && options.length > 0;
         if (!question && !hasDetails) {
           // Fallback confirmation when tool is waiting but missing details
-          // 当工具处于确认状态但缺少详情时，提供兜底确认
           this.addConfirmation({
             title: 'Awaiting Confirmation',
             id: content.callId,
@@ -357,7 +349,7 @@ export class GeminiAgentManager extends BaseAgentManager<
 
   init() {
     super.init();
-    // 接受来子进程的对话消息
+    // Receive conversation messages from child process
     this.on('gemini.message', (data) => {
       if (data.type === 'finish') {
         this.status = 'finished';
@@ -369,16 +361,14 @@ export class GeminiAgentManager extends BaseAgentManager<
         this.status = 'running';
       }
 
-      // 处理预览打开事件（chrome-devtools 导航触发）/ Handle preview open event (triggered by chrome-devtools navigation)
+      // Handle preview open event (triggered by chrome-devtools navigation)
       if (handlePreviewOpenEvent(data)) {
-        return; // 不需要继续处理 / No need to continue processing
+        return; // No need to continue processing
       }
 
       data.conversation_id = this.conversation_id;
       // Transform and persist message (skip transient UI state messages)
-      // 跳过 thought, finished 等不需要持久化的消息类型
-      // Skip transient UI state messages that don't need persistence
-      // 跳过不需要持久化的临时 UI 状态消息 (thought, finished, start, finish)
+      // Skip transient UI state messages that don't need persistence (thought, finished, start, finish)
       const skipTransformTypes = ['thought', 'finished', 'start', 'finish'];
       if (!skipTransformTypes.includes(data.type)) {
         const tMessage = transformMessage(data as IResponseMessage);
@@ -392,7 +382,6 @@ export class GeminiAgentManager extends BaseAgentManager<
 
       ipcBridge.geminiConversation.responseStream.emit(data);
 
-      // 发送到 Channel 全局事件总线（用于 Telegram 等外部平台）
       // Emit to Channel global event bus (for Telegram and other external platforms)
       channelEventBus.emitAgentMessage(this.conversation_id, data);
     });
@@ -490,7 +479,6 @@ export class GeminiAgentManager extends BaseAgentManager<
 
   confirm(id: string, callId: string, data: string) {
     super.confirm(id, callId, data);
-    // 发送确认到 worker，使用 callId 作为消息类型
     // Send confirmation to worker, using callId as message type
     return this.postMessagePromise(callId, data);
   }

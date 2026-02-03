@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Close } from "@icon-park/react";
+import { useTextSelection } from "@/renderer/hooks/useTextSelection";
+import { extractContentFromDiff } from "@/renderer/utils/diffUtils";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -12,9 +13,6 @@ import ReactMarkdown from "react-markdown";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { vs, vs2015 } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import remarkGfm from "remark-gfm";
-import { useTextSelection } from "@/renderer/hooks/useTextSelection";
-import { iconColors } from "@/renderer/theme/colors";
-import { extractContentFromDiff } from "@/renderer/utils/diffUtils";
 import type { PreviewMetadata } from "../../context/PreviewContext";
 import SelectionToolbar from "../renderers/SelectionToolbar";
 

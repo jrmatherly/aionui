@@ -60,7 +60,7 @@
 
 ### 🤖 **多代理模式 - 為您的命令列 AI 工具提供統一圖形介面**
 
-_AionUi 內建 Gemini CLI，下載即用，無需額外安裝；如果您已經安裝了 Gemini CLI、Claude Code、CodeX、Qwen Code、Goose AI、Augment Code 等命令列工具，AionUi 會自動檢測並為它們提供統一的圖形介面，體驗更豐富_
+*AionUi 內建 Gemini CLI，下載即用，無需額外安裝；如果您已經安裝了 Gemini CLI、Claude Code、CodeX、Qwen Code、Goose AI、Augment Code 等命令列工具，AionUi 會自動檢測並為它們提供統一的圖形介面，體驗更豐富*
 
 - ✅ **自動檢測 + 統一介面** - 自動識別本地 CLI 工具，提供統一的圖形介面，告別命令列
 - ✅ **本地儲存 + 多會話** - 對話儲存在本地，支援多會話並行，每個會話獨立上下文
@@ -73,7 +73,7 @@ _AionUi 內建 Gemini CLI，下載即用，無需額外安裝；如果您已經�
 
 ### 🌐 **隨時隨地存取你的AionUi**
 
-_你的 7×24 小時 AI 助手 - 從任何裝置、任何地方存取 AionUi！出差、在家、辦公室，隨時隨地透過 WebUI 或 Telegram 使用你的 AI 工具_
+*你的 7×24 小時 AI 助手 - 從任何裝置、任何地方存取 AionUi！出差、在家、辦公室，隨時隨地透過 WebUI 或 Telegram 使用你的 AI 工具*
 
 AionUi 提供兩種遠端存取方式：
 
@@ -97,7 +97,7 @@ AionUi 提供兩種遠端存取方式：
 
 ### ⏰ **定時任務 - AionUi幫你自動完成任務**
 
-_設定好定時任務後，AI 助手會按照你設定的時間自動執行，真正實現 7×24 小時無人值守_
+*設定好定時任務後，AI 助手會按照你設定的時間自動執行，真正實現 7×24 小時無人值守*
 
 - **自由對話** - 用自然語言告訴 AI 要做什麼，就像平時聊天一樣
 - **靈活設定時間** - 每天、每週、每月都可以
@@ -113,7 +113,7 @@ _設定好定時任務後，AI 助手會按照你設定的時間自動執行，�
 
 ### 📁 **智慧檔案管理 (AI Cowork)**
 
-_批次重新命名、自動整理、智慧分類、檔案合併_
+*批次重新命名、自動整理、智慧分類、檔案合併*
 
 - **自動整理**：智慧識別內容並自動分類，讓資料夾保持整潔。
 - **高效批次**：一鍵重新命名、合併檔案，徹底告別繁瑣手動作業。
@@ -126,7 +126,7 @@ _批次重新命名、自動整理、智慧分類、檔案合併_
 
 ### 📄 **預覽面板 - 快速查看 AI 生成效果**
 
-_支援 9 種以上格式的視覺化預覽（PDF、Word、Excel、PPT、程式碼、Markdown、圖片、HTML、Diff 等）_
+*支援 9 種以上格式的視覺化預覽（PDF、Word、Excel、PPT、程式碼、Markdown、圖片、HTML、Diff 等）*
 
 - ✅ **立即查看效果** - AI 生成檔案後，無需切換應用程式，立即查看預覽
 - ✅ **即時追蹤 + 可編輯** - 自動追蹤檔案變更，編輯器與預覽智慧同步；支援 Markdown、程式碼、HTML 即時編輯，所見即所得
@@ -139,7 +139,7 @@ _支援 9 種以上格式的視覺化預覽（PDF、Word、Excel、PPT、程式�
 
 ### 🎨 **AI 圖像生成與編輯**
 
-_智慧圖像生成、編輯和識別，由 Gemini 驅動_
+*智慧圖像生成、編輯和識別，由 Gemini 驅動*
 
 <p align="center">
   <img src="./resources/Image_Generation.gif" alt="AI 圖像生成示範" width="800">
@@ -149,7 +149,7 @@ _智慧圖像生成、編輯和識別，由 Gemini 驅動_
 
 ### 🤖 **多模型支援**
 
-_支援 Gemini、OpenAI、Claude、Qwen 等主流模型，以及 Ollama、LM Studio 等本地模型。靈活切換不同模型，滿足各種任務需求。_
+*支援 Gemini、OpenAI、Claude、Qwen 等主流模型，以及 Ollama、LM Studio 等本地模型。靈活切換不同模型，滿足各種任務需求。*
 
 <p align="center">
   <img src="./resources/multi-model.png" alt="多模型支援" width="800">
@@ -159,7 +159,7 @@ _支援 Gemini、OpenAI、Claude、Qwen 等主流模型，以及 Ollama、LM Stu
 
 ### 🎨 **個人化介面自訂**
 
-_自己寫 CSS 程式碼自訂，讓您的互動介面符合您的心意_
+*自己寫 CSS 程式碼自訂，讓您的互動介面符合您的心意*
 
 <p align="center">
   <img src="./resources/css with skin.gif" alt="CSS 自訂介面示範" width="800">
@@ -171,7 +171,7 @@ _自己寫 CSS 程式碼自訂，讓您的互動介面符合您的心意_
 
 ### 💬 **多任務並行處理**
 
-_開多個對話、任務不混亂、記憶獨立、效率加倍_
+*開多個對話、任務不混亂、記憶獨立、效率加倍*
 
 <details>
 <summary><strong>🎬 點擊查看演示 ▶️</strong></summary>
@@ -220,6 +220,7 @@ A: AionUi 是一款**免費開源**的 **Multi-AI Agent Desktop**。相比於只
 - **資料處理**：深度分析並自動美化 Excel 報表。
 - **文件生成**：自動編寫並排版 PPT、Word 與 Markdown 文件。
 - **即時預覽**：內建 9 種以上格式預覽面板，讓 AI 辦公協作結果即刻可見。
+
 </details>
 
 <details>
@@ -254,7 +255,7 @@ A: 所有對話資料儲存在本地 SQLite 資料庫，不會上傳到任何伺
 
 ## 🎬 看看大家如何使用 AionUi
 
-_觀看創作者們如何測評和使用 AionUi_
+*觀看創作者們如何測評和使用 AionUi*
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=yUU5E-U5B3M" target="_blank">

@@ -6,17 +6,15 @@
 
 import { ipcBridge } from '@/common';
 import type { IProvider } from '@/common/storage';
-import { Button, Divider, Message, Popconfirm, Collapse } from '@arco-design/web-react';
-import { DeleteFour, Info, Minus, Plus, Write, Down, Up } from '@icon-park/react';
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import useSWR from 'swr';
+import AionScrollArea from '@/renderer/components/base/AionScrollArea';
 import AddModelModal from '@/renderer/pages/settings/components/AddModelModal';
 import AddPlatformModal from '@/renderer/pages/settings/components/AddPlatformModal';
 import EditModeModal from '@/renderer/pages/settings/components/EditModeModal';
-import { iconColors } from '@/renderer/theme/colors';
-import AionCollapse from '@/renderer/components/base/AionCollapse';
-import AionScrollArea from '@/renderer/components/base/AionScrollArea';
+import { Button, Collapse, Divider, Message, Popconfirm } from '@arco-design/web-react';
+import { DeleteFour, Info, Minus, Plus, Write } from '@icon-park/react';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import useSWR from 'swr';
 import { useSettingsViewMode } from '../settingsViewContext';
 
 // Calculate API Key count

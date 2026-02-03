@@ -19,7 +19,7 @@ export function initAcpConversationBridge(): void {
     });
   });
 
-  // 保留旧的detectCliPath接口用于向后兼容，但使用新检测器的结果
+  // Keep the old detectCliPath interface for backward compatibility, but use the new detector's results
   ipcBridge.acpConversation.detectCliPath.provider(({ backend }) => {
     const agents = acpDetector.getDetectedAgents();
     const agent = agents.find((a) => a.backend === backend);
@@ -31,7 +31,7 @@ export function initAcpConversationBridge(): void {
     return Promise.resolve({ success: false, msg: `${backend} CLI not found. Please install it and ensure it's accessible.` });
   });
 
-  // 新的ACP检测接口 - 基于全局标记位
+  // New ACP detection interface - based on global flags
   ipcBridge.acpConversation.getAvailableAgents.provider(() => {
     try {
       const agents = acpDetector.getDetectedAgents();

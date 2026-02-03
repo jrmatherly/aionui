@@ -20,7 +20,7 @@ export function initSchema(db: Database.Database): void {
     // Continue with default journal mode if WAL fails
   }
 
-  // Users table (账户系统)
+  // Users table (account system)
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
@@ -38,7 +38,7 @@ export function initSchema(db: Database.Database): void {
     CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
   `);
 
-  // Conversations table (会话表 - 存储TChatConversation)
+  // Conversations table (stores TChatConversation)
   db.exec(`
     CREATE TABLE IF NOT EXISTS conversations (
       id TEXT PRIMARY KEY,
@@ -59,7 +59,7 @@ export function initSchema(db: Database.Database): void {
     CREATE INDEX IF NOT EXISTS idx_conversations_user_updated ON conversations(user_id, updated_at DESC);
   `);
 
-  // Messages table (消息表 - 存储TMessage)
+  // Messages table (stores TMessage)
   db.exec(`
     CREATE TABLE IF NOT EXISTS messages (
       id TEXT PRIMARY KEY,

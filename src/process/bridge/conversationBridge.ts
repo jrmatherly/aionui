@@ -11,20 +11,20 @@ import { getDatabase } from '@process/database';
 import { cronService } from '@process/services/cron/CronService';
 import { ipcBridge } from '../../common';
 import { uuid } from '../../common/utils';
+import WorkerManage from '../WorkerManage';
 import { ProcessChat } from '../initStorage';
 import { ConversationService } from '../services/conversationService';
 import type AcpAgentManager from '../task/AcpAgentManager';
 import type { GeminiAgentManager } from '../task/GeminiAgentManager';
 import { copyFilesToDirectory, readDirectoryRecursive } from '../utils';
-import WorkerManage from '../WorkerManage';
 import { migrateConversationToDatabase } from './migrationUtils';
 
 export function initConversationBridge(): void {
   ipcBridge.conversation.create.provider(async (params): Promise<TChatConversation> => {
-    // 使用 ConversationService 创建会话 / Use ConversationService to create conversation
+    // Use ConversationService to create conversation
     const result = await ConversationService.createConversation({
       ...params,
-      source: 'aionui', // AionUI 创建的会话标记为 aionui / Mark conversations created by AionUI as aionui
+      source: 'aionui', // Mark conversations created by AionUI as aionui
     });
 
     if (!result.success || !result.conversation) {
@@ -108,12 +108,12 @@ export function initConversationBridge(): void {
         console.error('[conversationBridge] Failed to create conversation in database:', result.error);
       }
 
-      // Migrate messages if sourceConversationId is provided / 如果提供了源会话ID，则迁移消息
+      // Migrate messages if sourceConversationId is provided
       if (sourceConversationId && result.success) {
         try {
-          // Fetch all messages from source conversation / 获取源会话的所有消息
-          // Using a large pageSize to get all messages, or loop if needed. / 使用较大的 pageSize 获取所有消息，必要时循环获取
-          // For now, 10000 should cover most cases. / 目前 10000 条应该能覆盖大多数情况
+          // Fetch all messages from source conversation
+          // Using a large pageSize to get all messages, or loop if needed.
+          // For now, 10000 should cover most cases.
           const pageSize = 10000;
           let page = 0;
           let hasMore = true;
@@ -123,10 +123,10 @@ export function initConversationBridge(): void {
             const messages = messagesResult.data;
 
             for (const msg of messages) {
-              // Create a copy of the message with new ID and new conversation ID / 创建消息副本，使用新 ID 和新会话 ID
+              // Create a copy of the message with new ID and new conversation ID
               const newMessage = {
                 ...msg,
-                id: uuid(), // Generate new ID / 生成新 ID
+                id: uuid(), // Generate new ID
                 conversation_id: conversation.id,
                 createdAt: msg.createdAt || Date.now(),
               };
@@ -137,13 +137,13 @@ export function initConversationBridge(): void {
             page++;
           }
 
-          // Verify integrity and remove source conversation / 校验完整性并移除源会话
+          // Verify integrity and remove source conversation
           const sourceMessages = db.getConversationMessages(sourceConversationId, 0, 1);
           const newMessages = db.getConversationMessages(conversation.id, 0, 1);
 
           if (sourceMessages.total === newMessages.total) {
-            // Verification passed, delete source conversation / 校验通过，删除源会话
-            // ON DELETE CASCADE will handle message deletion / 级联删除会自动处理消息删除
+            // Verification passed, delete source conversation
+            // ON DELETE CASCADE will handle message deletion
             const deleteResult = db.deleteConversation(sourceConversationId);
             if (deleteResult.success) {
               console.log(`[conversationBridge] Successfully migrated and deleted source conversation ${sourceConversationId}`);
@@ -155,7 +155,7 @@ export function initConversationBridge(): void {
               source: sourceMessages.total,
               new: newMessages.total,
             });
-            // Do not delete source if verification fails / 如果校验失败，不删除源会话
+            // Do not delete source if verification fails
           }
         } catch (msgError) {
           console.error('[conversationBridge] Failed to copy messages during migration:', msgError);
@@ -194,7 +194,6 @@ export function initConversationBridge(): void {
       }
 
       // If source is not 'aionui' (e.g., telegram), cleanup channel resources
-      // 如果来源不是 aionui（如 telegram），需要清理 channel 相关资源
       if (source && source !== 'aionui') {
         try {
           // Dynamic import to avoid circular dependency
@@ -234,7 +233,7 @@ export function initConversationBridge(): void {
       const modelChanged = !!nextModel && JSON.stringify(prevModel) !== JSON.stringify(nextModel);
       // model change detection for task rebuild
 
-      // 如果 mergeExtra 为 true，合并 extra 字段而不是覆盖
+      // If mergeExtra is true, merge the extra field instead of overwriting
       let finalUpdates = updates;
       if (mergeExtra && updates.extra && existing.success && existing.data) {
         finalUpdates = {
@@ -323,7 +322,7 @@ export function initConversationBridge(): void {
         root: workspace,
         fileService,
         abortController: buildLastAbortController(),
-        maxDepth: 10, // 支持更深的目录结构 / Support deeper directory structures
+        maxDepth: 10, // Support deeper directory structures
         search: {
           text: search,
           onProcess(result) {
@@ -332,7 +331,6 @@ export function initConversationBridge(): void {
         },
       }).then((res) => (res ? [res] : []));
     } catch (error) {
-      // 捕获 abort 错误，避免 unhandled rejection
       // Catch abort errors to avoid unhandled rejection
       if (error instanceof Error && error.message.includes('aborted')) {
         console.log('[Workspace] Read directory aborted:', error.message);
@@ -352,7 +350,7 @@ export function initConversationBridge(): void {
     return { success: true };
   });
 
-  // 通用 sendMessage 实现 - 自动根据 conversation 类型分发
+  // Generic sendMessage implementation - automatically dispatches based on conversation type
   ipcBridge.conversation.sendMessage.provider(async ({ conversation_id, files, ...other }) => {
     console.log(`[conversationBridge] sendMessage called: conversation_id=${conversation_id}, msg_id=${other.msg_id}`);
 
@@ -370,12 +368,11 @@ export function initConversationBridge(): void {
     }
     console.log(`[conversationBridge] sendMessage: found task type=${task.type}, status=${task.status}`);
 
-    // 复制文件到工作空间（所有 agents 统一处理）
     // Copy files to workspace (unified for all agents)
     const workspaceFiles = await copyFilesToDirectory(task.workspace, files, false);
 
     try {
-      // 根据 task 类型调用对应的 sendMessage 方法
+      // Call the corresponding sendMessage method based on task type
       if (task.type === 'gemini') {
         await (task as GeminiAgentManager).sendMessage({ ...other, files: workspaceFiles });
         return { success: true };
@@ -393,7 +390,7 @@ export function initConversationBridge(): void {
     }
   });
 
-  // 通用 confirmMessage 实现 - 自动根据 conversation 类型分发
+  // Generic confirmMessage implementation - automatically dispatches based on conversation type
 
   ipcBridge.conversation.confirmation.confirm.provider(async ({ conversation_id, msg_id, data, callId }) => {
     const task = WorkerManage.getTaskById(conversation_id);

@@ -6,11 +6,11 @@
 
 import type { IProvider, ModelType } from '@/common/storage';
 
-// 能力判断缓存
+// Capability detection cache
 const modelCapabilitiesCache = new Map<string, boolean | undefined>();
 
 /**
- * 能力匹配的正则表达式 - 参考 Cherry Studio 的做法
+ * Regex patterns for capability matching - referenced from Cherry Studio's approach
  */
 const CAPABILITY_PATTERNS: Record<ModelType, RegExp> = {
   text: /gpt|claude|gemini|qwen|llama|mistral|deepseek/i,
@@ -21,11 +21,11 @@ const CAPABILITY_PATTERNS: Record<ModelType, RegExp> = {
   reasoning: /o1-|reasoning|think/i,
   embedding: /(?:^text-|embed|bge-|e5-|LLM2Vec|retrieval|uae-|gte-|jina-clip|jina-embeddings|voyage-)/i,
   rerank: /(?:rerank|re-rank|re-ranker|re-ranking|retrieval|retriever)/i,
-  excludeFromPrimary: /dall-e|flux|stable-diffusion|midjourney|flash-image|embed|rerank/i, // 要排除的主力模型
+  excludeFromPrimary: /dall-e|flux|stable-diffusion|midjourney|flash-image|embed|rerank/i, // Models to exclude from primary
 };
 
 /**
- * 明确不支持某些能力的模型列表 - 黑名单
+ * Models that explicitly do not support certain capabilities - blacklist
  */
 const CAPABILITY_EXCLUSIONS: Record<ModelType, RegExp[]> = {
   text: [],
@@ -40,7 +40,7 @@ const CAPABILITY_EXCLUSIONS: Record<ModelType, RegExp[]> = {
 };
 
 /**
- * 特定 provider 的能力规则
+ * Capability rules for specific providers
  */
 const PROVIDER_CAPABILITY_RULES: Record<string, Record<ModelType, boolean | null>> = {
   anthropic: {
@@ -68,9 +68,9 @@ const PROVIDER_CAPABILITY_RULES: Record<string, Record<ModelType, boolean | null
 };
 
 /**
- * 获取模型名称的小写基础版本（用于匹配）
- * @param modelName - 原始模型名称
- * @returns 清理后的小写模型名称
+ * Get the lowercase base version of a model name (for matching)
+ * @param modelName - Original model name
+ * @returns Cleaned lowercase model name
  */
 const getBaseModelName = (modelName: string): string => {
   return modelName
@@ -81,10 +81,10 @@ const getBaseModelName = (modelName: string): string => {
 };
 
 /**
- * 检查用户是否手动配置了某个能力类型
- * @param model - 模型对象
- * @param type - 能力类型
- * @returns true/false 如果用户有明确配置，undefined 如果未配置
+ * Check if user has manually configured a capability type
+ * @param model - Model object
+ * @param type - Capability type
+ * @returns true/false if user has explicit configuration, undefined if not configured
  */
 const getUserSelectedCapability = (model: IProvider, type: ModelType): boolean | undefined => {
   const capability = model.capabilities?.find((cap) => cap.type === type);
@@ -92,10 +92,10 @@ const getUserSelectedCapability = (model: IProvider, type: ModelType): boolean |
 };
 
 /**
- * 根据 provider 获取特定能力的规则
- * @param provider - 提供商名称
- * @param type - 能力类型
- * @returns true/false/null (null表示使用默认逻辑)
+ * Get capability rules for a specific provider
+ * @param provider - Provider name
+ * @param type - Capability type
+ * @returns true/false/null (null means use default logic)
  */
 const getProviderCapabilityRule = (provider: string, type: ModelType): boolean | null => {
   const rules = PROVIDER_CAPABILITY_RULES[provider?.toLowerCase()];
@@ -103,50 +103,50 @@ const getProviderCapabilityRule = (provider: string, type: ModelType): boolean |
 };
 
 /**
- * 判断模型是否具有某个能力 - 参考 Cherry Studio 的三层判断逻辑
- * @param model - 模型对象
- * @param type - 能力类型
- * @returns true=支持, false=不支持, undefined=未知
+ * Check if a model has a specific capability - uses three-tier logic referenced from Cherry Studio
+ * @param model - Model object
+ * @param type - Capability type
+ * @returns true=supported, false=not supported, undefined=unknown
  */
 export const hasModelCapability = (model: IProvider, type: ModelType): boolean | undefined => {
-  // 生成缓存键（包含 capabilities 版本以避免缓存过期）
+  // Generate cache key (includes capabilities version to avoid stale cache)
   const capabilitiesHash = model.capabilities ? JSON.stringify(model.capabilities) : '';
   const cacheKey = `${model.id}-${model.platform}-${type}-${capabilitiesHash}`;
 
-  // 检查缓存
+  // Check cache
   if (modelCapabilitiesCache.has(cacheKey)) {
     return modelCapabilitiesCache.get(cacheKey);
   }
 
   let result: boolean | undefined;
 
-  // 1. 优先级1：用户手动配置
+  // 1. Priority 1: User manual configuration
   const userSelected = getUserSelectedCapability(model, type);
   if (userSelected !== undefined) {
     result = userSelected;
   } else {
-    // 2. 优先级2：特定 provider 规则
+    // 2. Priority 2: Specific provider rules
     const providerRule = getProviderCapabilityRule(model.platform, type);
     if (providerRule !== null) {
       result = providerRule;
     } else {
-      // 3. 优先级3：正则表达式匹配
-      // 检查平台下是否有任一模型支持该能力
+      // 3. Priority 3: Regex pattern matching
+      // Check if any model under the platform supports the capability
       const modelNames = model.model || [];
 
-      // 统一逻辑处理所有能力类型
-      // 检查是否有任一模型支持该能力
+      // Unified logic to handle all capability types
+      // Check if any model supports the capability
       const exclusions = CAPABILITY_EXCLUSIONS[type];
       const pattern = CAPABILITY_PATTERNS[type];
 
       const hasSupport = modelNames.some((modelName) => {
         const baseModelName = getBaseModelName(modelName);
 
-        // 检查黑名单
+        // Check blacklist
         const isExcluded = exclusions.some((excludePattern) => excludePattern.test(baseModelName));
         if (isExcluded) return false;
 
-        // 检查白名单
+        // Check whitelist
         return pattern.test(baseModelName);
       });
 
@@ -154,32 +154,32 @@ export const hasModelCapability = (model: IProvider, type: ModelType): boolean |
     }
   }
 
-  // 缓存结果
+  // Cache result
   modelCapabilitiesCache.set(cacheKey, result);
   return result;
 };
 
 /**
- * 判断平台下的具体模型是否具有某个能力
- * @param platformModel - 平台配置
- * @param modelName - 具体模型名
- * @param type - 能力类型
+ * Check if a specific model under a platform has a certain capability
+ * @param platformModel - Platform configuration
+ * @param modelName - Specific model name
+ * @param type - Capability type
  */
 export const hasSpecificModelCapability = (platformModel: IProvider, modelName: string, type: ModelType): boolean | undefined => {
   const baseModelName = getBaseModelName(modelName);
   const exclusions = CAPABILITY_EXCLUSIONS[type];
   const pattern = CAPABILITY_PATTERNS[type];
 
-  // 统一逻辑：先检查黑名单，再检查白名单
+  // Unified logic: check blacklist first, then whitelist
   const isExcluded = exclusions.some((excludePattern) => excludePattern.test(baseModelName));
   if (isExcluded) return false;
 
-  // 检查白名单
+  // Check whitelist
   return pattern.test(baseModelName) ? true : undefined;
 };
 
 /**
- * 清空能力判断缓存
+ * Clear capability detection cache
  */
 export const clearModelCapabilitiesCache = (): void => {
   modelCapabilitiesCache.clear();

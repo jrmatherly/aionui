@@ -15,8 +15,7 @@ import { mainConfig } from './config/webpack/webpack.config';
 import { rendererConfig } from './config/webpack/webpack.renderer.config';
 import packageJson from './package.json';
 
-// Allow developers to override the npm start dev-server/logging ports without touching code.
-// 允许开发者通过环境变量修改 dev server / 日志端口，无需改代码
+// Allow developers to override the npm start dev-server/logging ports without touching code
 const DEFAULT_DEV_SERVER_PORT = 3000;
 const DEFAULT_LOGGER_PORT = 9000;
 const DEV_PORT_ENV_KEYS = ['AIONUI_DEV_PORT', 'DEV_SERVER_PORT', 'PORT'] as const;
@@ -34,7 +33,6 @@ const parsePort = (value?: string | null): number | null => {
 
 const resolveDevServerPort = (): { port: number; overridden: boolean } => {
   // Check well-known env vars (priority order). Fallback to default when none provided.
-  // 依次检查常见环境变量，若未设置则退回默认端口
   for (const key of DEV_PORT_ENV_KEYS) {
     const port = parsePort(process.env[key]);
     if (port) {
@@ -56,7 +54,6 @@ const resolveLoggerPort = (devPort: number, devPortOverridden: boolean): number 
 
   if (devPortOverridden) {
     // Shift logger port away from the custom dev port to avoid conflicts.
-    // 当自定义 dev 端口时，将日志端口偏移，避免冲突
     const candidate = devPort + 1 <= 65535 ? devPort + 1 : devPort - 1;
     console.log(`[dev-server] Auto-selecting logger port ${candidate} based on dev port ${devPort}`);
     return candidate;
@@ -94,30 +91,29 @@ module.exports = {
     win32metadata: {
       CompanyName: 'aionui',
       FileDescription: 'AI Agent Desktop Interface',
-      OriginalFilename: 'AionUi.exe', // 简化文件名
+      OriginalFilename: 'AionUi.exe',
       ProductName: 'AionUi',
       InternalName: 'AionUi',
       FileVersion: packageJson.version,
       ProductVersion: packageJson.version,
     },
-    icon: path.resolve(__dirname, 'resources/app'), // 应用图标路径
-    // Windows 特定配置
+    icon: path.resolve(__dirname, 'resources/app'),
+    // Windows-specific configuration
     platform: process.env.npm_config_target_platform || process.platform,
     // Use target arch from build script, not host arch
     // This ensures .webpack/{target-arch}/ matches the final package architecture
     arch: targetArch,
   },
   rebuildConfig: {
-    // 在 CI 环境下，跳过所有原生模块的重建，使用预编译的二进制以获得更好的兼容性
     // Skip rebuilding native modules in CI to use prebuilt binaries for better compatibility
     ...(process.env.CI === 'true'
       ? {
-          onlyModules: [], // 空数组意味着"不要重建任何模块" / Empty array means "don't rebuild any modules"
+          onlyModules: [], // Empty array means "don't rebuild any modules"
         }
       : {}),
     ...(skipNativeRebuild
       ? {
-          onlyModules: [], // 开发启动时跳过原生模块重建，避免环境检查
+          onlyModules: [], // Skip native module rebuild during dev start to avoid environment checks
         }
       : {}),
   },
@@ -127,19 +123,18 @@ module.exports = {
       ? [
           new MakerSquirrel(
             {
-              name: 'AionUi', // 必须与 package.json 的 name 一致
-              authors: 'aionui', // 任意名称
+              name: 'AionUi', // Must match the name in package.json
+              authors: 'aionui',
               setupExe: apkName + '.exe',
-              // 禁用自动更新
+              // Disable auto-update
               remoteReleases: '',
-              noMsi: true, // 禁用 MSI 安装程序
+              noMsi: true, // Disable MSI installer
               // loadingGif: path.resolve(__dirname, "resources/install.gif"),
               iconUrl: path.resolve(__dirname, 'resources/app.ico'),
               setupIcon: path.resolve(__dirname, 'resources/app.ico'),
-              // 添加更多 Windows 特定设置
-              certificateFile: undefined, // 暂时禁用代码签名
+              // Additional Windows-specific settings
+              certificateFile: undefined, // Code signing temporarily disabled
               certificatePassword: undefined,
-              // 修复安装路径问题
               setupMsi: undefined,
             },
             ['win32']
@@ -177,7 +172,7 @@ module.exports = {
       ['darwin']
     ),
 
-    // Linux makers - rpm优先，然后deb
+    // Linux makers - rpm first, then deb
     {
       name: '@electron-forge/maker-rpm',
       platforms: ['linux'],
@@ -201,7 +196,7 @@ module.exports = {
   ],
   plugins: [
     new AutoUnpackNativesPlugin({
-      // 配置需要处理的 native 依赖
+      // Configure native dependencies that need processing
       include: ['node-pty', 'better-sqlite3'],
     }),
     new WebpackPlugin({
@@ -222,7 +217,7 @@ module.exports = {
         ],
       },
       devServer: {
-        // 开发服务器配置
+        // Dev server configuration
         headers: {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -230,8 +225,8 @@ module.exports = {
         },
         client: {
           overlay: {
-            errors: true, // 显示错误
-            warnings: false, // 不显示警告
+            errors: true, // Show errors
+            warnings: false, // Hide warnings
           },
         },
       },

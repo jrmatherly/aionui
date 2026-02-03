@@ -6,15 +6,15 @@
 
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import type { IMcpServer } from '../../../../common/storage';
 import type { McpOperationResult } from '../McpProtocol';
 import { AbstractMcpAgent } from '../McpProtocol';
-import type { IMcpServer } from '../../../../common/storage';
 
 const execAsync = promisify(exec);
 
 /**
- * Claude Code MCP代理实现
- * 注意：Claude CLI 目前只支持 stdio 传输类型，不支持 SSE/HTTP/streamable_http
+ * Claude Code MCP agent implementation
+ * Note: Claude CLI currently only supports stdio transport type, does not support SSE/HTTP/streamable_http
  */
 export class ClaudeMcpAgent extends AbstractMcpAgent {
   constructor() {
@@ -26,28 +26,28 @@ export class ClaudeMcpAgent extends AbstractMcpAgent {
   }
 
   /**
-   * 检测Claude Code的MCP配置
+   * Detect Claude Code MCP configuration
    */
   detectMcpServers(_cliPath?: string): Promise<IMcpServer[]> {
     const detectOperation = async () => {
       try {
-        // 使用Claude Code CLI命令获取MCP配置
+        // Use Claude Code CLI command to get MCP configuration
         const { stdout: result } = await execAsync('claude mcp list', {
           timeout: this.timeout,
-          env: { ...process.env, NODE_OPTIONS: '' }, // 清除调试选项，避免调试器附加
+          env: { ...process.env, NODE_OPTIONS: '' }, // Clear debug options to avoid debugger attachment
         });
 
-        // 如果没有配置任何MCP服务器，返回空数组
+        // If no MCP servers are configured, return empty array
         if (result.includes('No MCP servers configured') || !result.trim()) {
           return [];
         }
 
-        // 解析文本输出
+        // Parse text output
         const mcpServers: IMcpServer[] = [];
         const lines = result.split('\n');
 
         for (const line of lines) {
-          // 清除 ANSI 颜色代码 (支持多种格式)
+          // Remove ANSI color codes (supports multiple formats)
           /* eslint-disable no-control-regex */
           const cleanLine = line
             .replace(/\u001b\[[0-9;]*m/g, '')
@@ -55,8 +55,8 @@ export class ClaudeMcpAgent extends AbstractMcpAgent {
             .trim();
           /* eslint-enable no-control-regex */
 
-          // 查找格式如: "12306-mcp: npx -y 12306-mcp - ✓ Connected" 或 "12306-mcp: npx -y 12306-mcp - ✗ Failed to connect"
-          // 支持多种状态文本
+          // Match format like: "12306-mcp: npx -y 12306-mcp - ✓ Connected" or "12306-mcp: npx -y 12306-mcp - ✗ Failed to connect"
+          // Supports multiple status texts
           const match = cleanLine.match(/^([^:]+):\s+(.+?)\s*-\s*[✓✗]\s*(.+)$/);
           if (match) {
             const [, name, commandStr, statusText] = match;
@@ -64,11 +64,11 @@ export class ClaudeMcpAgent extends AbstractMcpAgent {
             const command = commandParts[0];
             const args = commandParts.slice(1);
 
-            // 解析状态：Connected, Disconnected, Failed to connect, 等
+            // Parse status: Connected, Disconnected, Failed to connect, etc.
             const isConnected = statusText.toLowerCase().includes('connected') && !statusText.toLowerCase().includes('disconnect');
             const status = isConnected ? 'connected' : 'disconnected';
 
-            // 构建transport对象
+            // Build transport object
             const transportObj = {
               type: 'stdio' as const,
               command: command,
@@ -76,7 +76,7 @@ export class ClaudeMcpAgent extends AbstractMcpAgent {
               env: {},
             };
 
-            // 尝试获取tools信息（对所有已连接的服务器）
+            // Try to get tools info (for all connected servers)
             let tools: Array<{ name: string; description?: string }> = [];
             if (isConnected) {
               try {
@@ -84,7 +84,7 @@ export class ClaudeMcpAgent extends AbstractMcpAgent {
                 tools = testResult.tools || [];
               } catch (error) {
                 console.warn(`[ClaudeMcpAgent] Failed to get tools for ${name.trim()}:`, error);
-                // 如果获取tools失败，继续使用空数组
+                // If getting tools fails, continue with empty array
               }
             }
 
@@ -123,39 +123,39 @@ export class ClaudeMcpAgent extends AbstractMcpAgent {
       }
     };
 
-    // 使用命名函数以便在日志中显示
+    // Use named function for display in logs
     Object.defineProperty(detectOperation, 'name', { value: 'detectMcpServers' });
     return this.withLock(detectOperation);
   }
 
   /**
-   * 安装MCP服务器到Claude Code agent
+   * Install MCP servers to Claude Code agent
    */
   installMcpServers(mcpServers: IMcpServer[]): Promise<McpOperationResult> {
     const installOperation = async () => {
       try {
         for (const server of mcpServers) {
           if (server.transport.type === 'stdio') {
-            // 使用Claude Code CLI添加MCP服务器到user scope（全局配置）
-            // AionUi是全局工具，MCP配置应该对所有项目可用
-            // 格式: claude mcp add -s user <name> <command> -- [args...] [env_options]
+            // Use Claude Code CLI to add MCP server to user scope (global configuration)
+            // AionUi is a global tool, MCP configuration should be available for all projects
+            // Format: claude mcp add -s user <name> <command> -- [args...] [env_options]
             const envArgs = Object.entries(server.transport.env || {})
               .map(([key, value]) => `-e ${key}=${value}`)
               .join(' ');
 
             let command = `claude mcp add -s user "${server.name}" "${server.transport.command}"`;
 
-            // 如果有参数或环境变量，使用 -- 分隔符
+            // If there are args or env vars, use -- separator
             if (server.transport.args?.length || Object.keys(server.transport.env || {}).length) {
               command += ' --';
               if (server.transport.args?.length) {
-                // 对每个参数进行适当的引用，防止包含特殊字符的参数被误解析
+                // Quote each argument properly to prevent args with special characters from being misparsed
                 const quotedArgs = server.transport.args.map((arg: string) => `"${arg}"`).join(' ');
                 command += ` ${quotedArgs}`;
               }
             }
 
-            // 环境变量在 -- 之后添加
+            // Add environment variables after --
             if (envArgs) {
               command += ` ${envArgs}`;
             }
@@ -163,12 +163,12 @@ export class ClaudeMcpAgent extends AbstractMcpAgent {
             try {
               await execAsync(command, {
                 timeout: 5000,
-                env: { ...process.env, NODE_OPTIONS: '' }, // 清除调试选项，避免调试器附加
+                env: { ...process.env, NODE_OPTIONS: '' }, // Clear debug options to avoid debugger attachment
               });
               console.log(`[ClaudeMcpAgent] Added MCP server: ${server.name}`);
             } catch (error) {
               console.warn(`Failed to add MCP ${server.name} to Claude Code:`, error);
-              // 继续处理其他服务器，不要因为一个失败就停止
+              // Continue processing other servers, don't stop for one failure
             }
           } else {
             console.warn(`Skipping ${server.name}: Claude CLI only supports stdio transport type`);
@@ -185,14 +185,14 @@ export class ClaudeMcpAgent extends AbstractMcpAgent {
   }
 
   /**
-   * 从Claude Code agent删除MCP服务器
+   * Remove MCP server from Claude Code agent
    */
   removeMcpServer(mcpServerName: string): Promise<McpOperationResult> {
     const removeOperation = async () => {
       try {
-        // 使用Claude CLI命令删除MCP服务器（尝试不同作用域）
-        // 按顺序尝试: user (AionUi默认) -> local -> project
-        // user scope优先，因为AionUi安装时使用user scope
+        // Use Claude CLI command to remove MCP server (try different scopes)
+        // Try in order: user (AionUi default) -> local -> project
+        // user scope takes priority since AionUi installs to user scope
         const scopes = ['user', 'local', 'project'] as const;
 
         for (const scope of scopes) {
@@ -200,31 +200,31 @@ export class ClaudeMcpAgent extends AbstractMcpAgent {
             const removeCommand = `claude mcp remove -s ${scope} "${mcpServerName}"`;
             const result = await execAsync(removeCommand, {
               timeout: 5000,
-              env: { ...process.env, NODE_OPTIONS: '' }, // 清除调试选项，避免调试器附加
+              env: { ...process.env, NODE_OPTIONS: '' }, // Clear debug options to avoid debugger attachment
             });
 
-            // 检查是否成功删除
+            // Check if removal was successful
             if (result.stdout && result.stdout.includes('removed')) {
               console.log(`[ClaudeMcpAgent] Removed MCP server from ${scope} scope: ${mcpServerName}`);
               return { success: true };
             }
 
-            // 如果没有"removed"消息但也没有错误，可能服务器不存在于该作用域
-            // 继续尝试下一个作用域
+            // If no "removed" message but no error either, server may not exist in this scope
+            // Continue trying next scope
           } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
 
-            // 如果是"未找到"错误，继续尝试下一个作用域
+            // If it's a "not found" error, continue trying next scope
             if (errorMessage.includes('not found') || errorMessage.includes('does not exist')) {
               continue;
             }
 
-            // 其他错误，记录但继续尝试
+            // Other errors, log but continue trying
             console.warn(`[ClaudeMcpAgent] Failed to remove from ${scope} scope:`, errorMessage);
           }
         }
 
-        // 如果所有作用域都尝试完了，认为删除成功（服务器可能本来就不存在）
+        // If all scopes have been tried, consider removal successful (server may not have existed)
         console.log(`[ClaudeMcpAgent] MCP server ${mcpServerName} not found in any scope (may already be removed)`);
         return { success: true };
       } catch (error) {

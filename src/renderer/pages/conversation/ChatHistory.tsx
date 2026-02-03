@@ -9,9 +9,9 @@ import type { TChatConversation } from '@/common/storage';
 import FlexFullContainer from '@/renderer/components/FlexFullContainer';
 import { CronJobIndicator, useCronJobsMap } from '@/renderer/pages/cron';
 import { addEventListener, emitter } from '@/renderer/utils/emitter';
-import { getActivityTime, createTimelineGrouper } from '@/renderer/utils/timeline';
-import { Empty, Popconfirm, Input, Tooltip } from '@arco-design/web-react';
-import { DeleteOne, MessageOne, EditOne } from '@icon-park/react';
+import { createTimelineGrouper, getActivityTime } from '@/renderer/utils/timeline';
+import { Empty, Input, Popconfirm, Tooltip } from '@arco-design/web-react';
+import { DeleteOne, EditOne, MessageOne } from '@icon-park/react';
 import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -73,7 +73,7 @@ const ChatHistory: React.FC<{ onSessionClick?: () => void; collapsed?: boolean }
     Promise.resolve(navigate(`/conversation/${conversation.id}`)).catch((error) => {
       console.error('Navigation failed:', error);
     });
-    // 点击session后自动隐藏sidebar
+    // Automatically hide sidebar after clicking a session
     if (onSessionClick) {
       onSessionClick();
     }

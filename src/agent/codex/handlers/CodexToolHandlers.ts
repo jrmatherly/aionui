@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import type { CodexToolCallUpdate } from '@/common/chatLib';
-import { uuid } from '@/common/utils';
-import type { FileChange, McpInvocation, CodexEventMsg } from '@/common/codex/types';
-import { ToolRegistry } from '@/common/codex/utils';
 import type { ICodexMessageEmitter } from '@/agent/codex/messaging/CodexMessageEmitter';
+import type { CodexToolCallUpdate } from '@/common/chatLib';
+import type { CodexEventMsg, FileChange, McpInvocation } from '@/common/codex/types';
+import { ToolRegistry } from '@/common/codex/utils';
 import type { IResponseMessage } from '@/common/ipcBridge';
 import { NavigationInterceptor } from '@/common/navigation';
+import { uuid } from '@/common/utils';
 
 /**
  * Metadata for exec approval requests (for ApprovalStore)
@@ -42,7 +42,7 @@ export class CodexToolHandlers {
     const callId = msg.call_id;
     const cmd = Array.isArray(msg.command) ? msg.command.join(' ') : String(msg.command);
     this.cmdBuffers.set(callId, { stdout: '', stderr: '', combined: '' });
-    // 试点启用确认流：先置为 Confirming
+    // Enable confirmation flow: set to Confirming first
     this.pendingConfirmations.add(callId);
 
     // Use new CodexToolCall approach with subtype and original data
@@ -95,11 +95,11 @@ export class CodexToolHandlers {
     const callId = msg.call_id;
     const exitCode = msg.exit_code;
 
-    // 获取累积的输出，优先使用缓存的数据，回退到消息中的数据
+    // Get accumulated output, prefer cached data, fallback to message data
     const buf = this.cmdBuffers.get(callId);
     const finalOutput = buf?.combined || msg.aggregated_output || '';
 
-    // 确定最终状态：exit_code 0 为成功，其他为错误
+    // Determine final status: exit_code 0 is success, others are errors
     const isSuccess = exitCode === 0;
     const status = isSuccess ? 'success' : 'error';
 
@@ -118,7 +118,7 @@ export class CodexToolHandlers {
       ],
     });
 
-    // 清理资源
+    // Clean up resources
     this.pendingConfirmations.delete(callId);
     this.cmdBuffers.delete(callId);
   }
@@ -131,10 +131,10 @@ export class CodexToolHandlers {
     // Cache both summary and raw changes for later application
     this.patchBuffers.set(callId, summary);
     if (msg.changes && typeof msg.changes === 'object') {
-      // msg.changes 已经有正确的类型定义，无需类型断言
+      // msg.changes already has correct type definition, no type assertion needed
       this.patchChanges.set(callId, msg.changes);
     }
-    // 对未自动批准的变更设置确认
+    // Set confirmation for changes that are not auto-approved
     if (!msg.auto_approved) this.pendingConfirmations.add(callId);
     // Use new CodexToolCall approach with subtype and original data
     this.emitCodexToolCall(callId, {
@@ -187,16 +187,13 @@ export class CodexToolHandlers {
   // MCP tool handlers
   handleMcpToolCallBegin(msg: Extract<CodexEventMsg, { type: 'mcp_tool_call_begin' }>) {
     // MCP events may or may not have call_id, generate one based on tool name if missing
-    // MCP 事件可能有也可能没有 call_id，如果缺失则根据工具名称生成
     const inv = msg.invocation || {};
     const toolName = String(inv.tool || inv.name || inv.method || 'unknown');
     // Use type assertion since call_id may exist in runtime data but not in type definition
-    // 使用类型断言，因为 call_id 可能在运行时数据中存在但不在类型定义中
     const callId = (msg as unknown as { call_id?: string }).call_id || `mcp_${toolName}_${uuid()}`;
     const title = this.formatMcpInvocation(inv);
 
     // Intercept chrome-devtools navigation tools using unified NavigationInterceptor
-    // 使用统一的 NavigationInterceptor 拦截 chrome-devtools 导航工具
     const interceptionResult = NavigationInterceptor.intercept(
       {
         toolName,
@@ -233,7 +230,7 @@ export class CodexToolHandlers {
     const title = this.formatMcpInvocation(inv);
     const result = msg.result;
 
-    // 类型安全的错误检查，使用 in 操作符进行类型保护
+    // Type-safe error check using 'in' operator for type guard
     const isError = (() => {
       if (typeof result === 'object' && result !== null) {
         return 'Err' in result || ('is_error' in result && result.is_error === true);
@@ -265,7 +262,7 @@ export class CodexToolHandlers {
   handleWebSearchBegin(msg: Extract<CodexEventMsg, { type: 'web_search_begin' }>) {
     const callId = msg.call_id;
     this.cmdBuffers.set(callId, { stdout: '', stderr: '', combined: '' });
-    // 试点启用确认流：先置为 Confirming
+    // Pilot confirmation flow: set to Confirming first
     this.pendingConfirmations.add(callId);
     // Use new CodexToolCall approach with subtype and original data
     this.emitCodexToolCall(callId, {
@@ -358,7 +355,7 @@ export class CodexToolHandlers {
       .map(([file, change]) => {
         if (typeof change === 'object' && change !== null) {
           let action: string = 'modify';
-          // FileChange 有明确的 type 结构，直接使用类型安全的访问
+          // FileChange has explicit type structure, use type-safe access directly
           if ('type' in change && typeof change.type === 'string') {
             action = change.type;
           } else if ('action' in change && typeof change.action === 'string') {

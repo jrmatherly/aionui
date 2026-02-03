@@ -252,7 +252,7 @@ const migration_v7: IMigration = {
 
 /**
  * Migration v7 -> v8: Add source column to conversations table
- * 为 conversations 表添加 source 列，标识会话来源
+ * Adds source column to identify conversation origin
  */
 const migration_v8: IMigration = {
   version: 8,

@@ -1,366 +1,366 @@
-# AionUi 功能开发规范模板
+# AionUi Feature Development Specification Template
 
-> 本模板用于规范化向 AI 描述功能开发需求，确保 AI 能够准确理解任务并遵循项目约定。
-
----
-
-## 1. 功能概述
-
-### 1.1 基本信息
-
-- **功能名称**: [简洁命名]
-- **所属模块**: [ ] Agent层 [ ] 对话系统 [ ] 预览系统 [ ] 设置系统 [ ] 工作区 [ ] 其他
-- **涉及进程**: [ ] 主进程(process) [ ] 渲染进程(renderer) [ ] WebServer [ ] Worker
-
-### 1.2 功能描述
-
-[用 1-3 句话描述功能的核心目的和价值]
-
-### 1.3 用户场景
-
-```
-触发: [用户如何触发此功能]
-过程: [系统如何响应]
-结果: [功能完成后的状态]
-```
-
-### 1.4 数据流
-
-| 方向 | 数据类型 | 说明 |
-| ---- | -------- | ---- |
-| 输入 |          |      |
-| 输出 |          |      |
+> This template is used to standardize describing feature development requirements to AI, ensuring AI can accurately understand tasks and follow project conventions.
 
 ---
 
-## 2. 开发规范
+## 1. Feature Overview
 
-### 2.1 技术栈约束
+### 1.1 Basic Information
 
-- **框架**: Electron 37 + React 19 + TypeScript 5.8
-- **UI库**: Arco Design (@arco-design/web-react)
-- **图标**: Icon Park (@icon-park/react)
-- **CSS**: UnoCSS 原子化样式
-- **状态管理**: React Context (AuthContext / ConversationContext / ThemeContext / LayoutContext)
-- **IPC通信**: @office-ai/platform bridge 系统
-- **国际化**: i18next + react-i18next
-- **数据库**: better-sqlite3
+- **Feature Name**: [Concise name]
+- **Module**: [ ] Agent Layer [ ] Conversation System [ ] Preview System [ ] Settings System [ ] Workspace [ ] Other
+- **Processes Involved**: [ ] Main Process (process) [ ] Renderer Process (renderer) [ ] WebServer [ ] Worker
 
-### 2.2 命名规范
+### 1.2 Feature Description
 
-| 类型         | 规范                  | 示例                                            |
-| ------------ | --------------------- | ----------------------------------------------- |
-| React 组件   | PascalCase            | `MessageList.tsx`, `FilePreview.tsx`            |
-| Hooks        | use 前缀 + PascalCase | `useAutoScroll.ts`, `useColorScheme.ts`         |
-| Bridge 文件  | 功能名 + Bridge       | `conversationBridge.ts`, `databaseBridge.ts`    |
-| Service 文件 | 功能名 + Service      | `WebuiService.ts`                               |
-| 接口类型     | I 前缀                | `ICreateConversationParams`, `IResponseMessage` |
-| 类型别名     | T 前缀或直接命名      | `TChatConversation`, `PresetAgentType`          |
-| 常量         | UPPER_SNAKE_CASE      | `MAX_RETRY_COUNT`                               |
-| 工具函数     | camelCase             | `formatMessage`, `parseResponse`                |
+[Describe the core purpose and value of the feature in 1-3 sentences]
 
-### 2.3 文件位置规范
+### 1.3 User Scenario
 
+```text
+Trigger: [How user triggers this feature]
+Process: [How system responds]
+Result: [State after feature completes]
 ```
-新增文件应放置于对应目录:
+
+### 1.4 Data Flow
+
+| Direction | Data Type | Description |
+| --------- | --------- | ----------- |
+| Input     |           |             |
+| Output    |           |             |
+
+---
+
+## 2. Development Guidelines
+
+### 2.1 Technology Stack Constraints
+
+- **Framework**: Electron 37 + React 19 + TypeScript 5.8
+- **UI Library**: Arco Design (@arco-design/web-react)
+- **Icons**: Icon Park (@icon-park/react)
+- **CSS**: UnoCSS atomic styles
+- **State Management**: React Context (AuthContext / ConversationContext / ThemeContext / LayoutContext)
+- **IPC Communication**: @office-ai/platform bridge system
+- **Internationalization**: i18next + react-i18next
+- **Database**: better-sqlite3
+
+### 2.2 Naming Conventions
+
+| Type           | Convention             | Example                                         |
+| -------------- | ---------------------- | ----------------------------------------------- |
+| React Component| PascalCase             | `MessageList.tsx`, `FilePreview.tsx`            |
+| Hooks          | use prefix + PascalCase| `useAutoScroll.ts`, `useColorScheme.ts`         |
+| Bridge File    | featureName + Bridge   | `conversationBridge.ts`, `databaseBridge.ts`    |
+| Service File   | featureName + Service  | `WebuiService.ts`                               |
+| Interface Type | I prefix               | `ICreateConversationParams`, `IResponseMessage` |
+| Type Alias     | T prefix or direct     | `TChatConversation`, `PresetAgentType`          |
+| Constants      | UPPER_SNAKE_CASE       | `MAX_RETRY_COUNT`                               |
+| Utility Functions | camelCase           | `formatMessage`, `parseResponse`                |
+
+### 2.3 File Location Guidelines
+
+```text
+New files should be placed in corresponding directories:
 
 src/
-├── agent/                        # AI 代理实现
-│   ├── acp/                      # ACP 协议代理
-│   ├── codex/                    # Codex 代理
-│   └── gemini/                   # Gemini 代理
+├── agent/                        # AI agent implementations
+│   ├── acp/                      # ACP protocol agent
+│   ├── codex/                    # Codex agent
+│   └── gemini/                   # Gemini agent
 │
-├── common/                       # 跨进程共享模块
-│   ├── adapters/                 # API 适配器
-│   ├── types/                    # 共享类型定义
-│   └── utils/                    # 共享工具函数
+├── common/                       # Cross-process shared modules
+│   ├── adapters/                 # API adapters
+│   ├── types/                    # Shared type definitions
+│   └── utils/                    # Shared utility functions
 │
-├── process/                      # Electron 主进程
-│   ├── bridge/                   # IPC 桥接定义 (24+ 个)
-│   ├── database/                 # SQLite 数据库操作
-│   ├── services/                 # 业务逻辑服务
-│   └── task/                     # 任务管理
+├── process/                      # Electron main process
+│   ├── bridge/                   # IPC bridge definitions (24+)
+│   ├── database/                 # SQLite database operations
+│   ├── services/                 # Business logic services
+│   └── task/                     # Task management
 │
-├── renderer/                     # React 渲染进程
-│   ├── components/               # 可复用 UI 组件
-│   │   └── base/                 # 基础组件
-│   ├── context/                  # React Context 状态
-│   ├── hooks/                    # 自定义 Hooks (31+)
-│   ├── pages/                    # 页面组件
-│   │   ├── conversation/         # 对话页面
-│   │   │   ├── preview/          # 预览面板
-│   │   │   └── workspace/        # 工作区
-│   │   ├── settings/             # 设置页面 (12+)
-│   │   └── login/                # 登录页面
-│   ├── messages/                 # 消息渲染组件
-│   ├── i18n/locales/             # 国际化文本
-│   ├── services/                 # 前端服务
-│   └── utils/                    # 前端工具函数
+├── renderer/                     # React renderer process
+│   ├── components/               # Reusable UI components
+│   │   └── base/                 # Base components
+│   ├── context/                  # React Context state
+│   ├── hooks/                    # Custom Hooks (31+)
+│   ├── pages/                    # Page components
+│   │   ├── conversation/         # Conversation page
+│   │   │   ├── preview/          # Preview panel
+│   │   │   └── workspace/        # Workspace
+│   │   ├── settings/             # Settings pages (12+)
+│   │   └── login/                # Login page
+│   ├── messages/                 # Message rendering components
+│   ├── i18n/locales/             # Internationalization text
+│   ├── services/                 # Frontend services
+│   └── utils/                    # Frontend utility functions
 │
-├── webserver/                    # Web 服务器 (WebUI 模式)
-│   ├── routes/                   # API 路由
-│   └── middleware/               # 中间件
+├── webserver/                    # Web server (WebUI mode)
+│   ├── routes/                   # API routes
+│   └── middleware/               # Middleware
 │
 ├── worker/                       # Web Worker
 │
-└── types/                        # 全局类型定义
+└── types/                        # Global type definitions
 ```
 
-### 2.4 代码风格 (Prettier 配置)
+### 2.4 Code Style (Prettier Configuration)
 
 ```json
 {
-  "semi": true, // 使用分号
-  "singleQuote": true, // 使用单引号
-  "jsxSingleQuote": true, // JSX 使用单引号
-  "trailingComma": "es5", // ES5 兼容的尾随逗号
-  "tabWidth": 2, // 2 空格缩进
-  "useTabs": false, // 不使用 Tab
-  "bracketSpacing": true, // 括号内空格
-  "arrowParens": "always", // 箭头函数始终括号
-  "endOfLine": "lf" // Unix 换行符
+  "semi": true,              // Use semicolons
+  "singleQuote": true,       // Use single quotes
+  "jsxSingleQuote": true,    // JSX uses single quotes
+  "trailingComma": "es5",    // ES5-compatible trailing commas
+  "tabWidth": 2,             // 2-space indentation
+  "useTabs": false,          // Don't use tabs
+  "bracketSpacing": true,    // Spaces inside brackets
+  "arrowParens": "always",   // Always use parentheses for arrow functions
+  "endOfLine": "lf"          // Unix line endings
 }
 ```
 
-### 2.5 质量要求
+### 2.5 Quality Requirements
 
-- [ ] TypeScript 类型完整，避免使用 `any`
-- [ ] 使用 bridge 系统进行 IPC 通信
-- [ ] 实现错误边界处理
-- [ ] 支持国际化 (使用 i18next 的 `t()` 函数)
-- [ ] 深色/浅色主题兼容
-- [ ] 响应式布局适配
+- [ ] Complete TypeScript types, avoid using `any`
+- [ ] Use bridge system for IPC communication
+- [ ] Implement error boundary handling
+- [ ] Support internationalization (use i18next `t()` function)
+- [ ] Dark/light theme compatibility
+- [ ] Responsive layout adaptation
 
-### 2.6 禁止事项
+### 2.6 Prohibited Practices
 
-- ❌ 直接使用 `ipcMain` / `ipcRenderer`，必须通过 bridge 系统
-- ❌ 在渲染进程直接访问 Node.js API
-- ❌ 硬编码中文/英文文本，需使用 i18n key
-- ❌ 使用内联样式，应使用 UnoCSS 类名
-- ❌ 在组件中直接操作 DOM，使用 React ref
-- ❌ 忽略 TypeScript 错误 (`@ts-ignore`)
+- ❌ Direct use of `ipcMain` / `ipcRenderer`, must use bridge system
+- ❌ Direct access to Node.js API in renderer process
+- ❌ Hardcoded Chinese/English text, must use i18n keys
+- ❌ Inline styles, should use UnoCSS class names
+- ❌ Direct DOM manipulation in components, use React ref
+- ❌ Ignoring TypeScript errors (`@ts-ignore`)
 
 ---
 
-## 3. 实现架构
+## 3. Implementation Architecture
 
-### 3.1 分层架构
+### 3.1 Layered Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
-│                    用户界面 (UI)                         │
-│  React 组件 / Hooks / Context                           │
+│                    User Interface (UI)                   │
+│  React Components / Hooks / Context                      │
 └─────────────────────┬───────────────────────────────────┘
                       │ IPC Bridge
 ┌─────────────────────▼───────────────────────────────────┐
-│                   主进程 (Main)                          │
-│  Bridge → Service → Database / External API             │
+│                   Main Process (Main)                    │
+│  Bridge → Service → Database / External API              │
 └─────────────────────┬───────────────────────────────────┘
                       │
 ┌─────────────────────▼───────────────────────────────────┐
-│              数据层 (Data)                               │
-│  SQLite / LocalStorage / External Services              │
+│                    Data Layer (Data)                     │
+│  SQLite / LocalStorage / External Services               │
 └─────────────────────────────────────────────────────────┘
 ```
 
-### 3.2 需要修改/新增的文件
+### 3.2 Files to Modify/Add
 
-**主进程 (src/process/)**
+**Main Process (src/process/)**
 
-| 文件路径 | 操作                | 说明 |
-| -------- | ------------------- | ---- |
-|          | [ ] 新增 / [ ] 修改 |      |
+| File Path | Operation           | Description |
+| --------- | ------------------- | ----------- |
+|           | [ ] Add / [ ] Modify|             |
 
-**渲染进程 (src/renderer/)**
+**Renderer Process (src/renderer/)**
 
-| 文件路径 | 操作                | 说明 |
-| -------- | ------------------- | ---- |
-|          | [ ] 新增 / [ ] 修改 |      |
+| File Path | Operation           | Description |
+| --------- | ------------------- | ----------- |
+|           | [ ] Add / [ ] Modify|             |
 
-**共享模块 (src/common/)**
+**Shared Modules (src/common/)**
 
-| 文件路径 | 操作                | 说明 |
-| -------- | ------------------- | ---- |
-|          | [ ] 新增 / [ ] 修改 |      |
+| File Path | Operation           | Description |
+| --------- | ------------------- | ----------- |
+|           | [ ] Add / [ ] Modify|             |
 
-**类型定义 (src/types/)**
+**Type Definitions (src/types/)**
 
-| 文件路径 | 操作                | 说明 |
-| -------- | ------------------- | ---- |
-|          | [ ] 新增 / [ ] 修改 |      |
+| File Path | Operation           | Description |
+| --------- | ------------------- | ----------- |
+|           | [ ] Add / [ ] Modify|             |
 
-### 3.3 IPC 通信设计
+### 3.3 IPC Communication Design
 
-如需新增 IPC 通道，遵循以下模式：
+When adding new IPC channels, follow this pattern:
 
 ```typescript
-// src/process/bridge/[功能]Bridge.ts
+// src/process/bridge/[feature]Bridge.ts
 import { bridge } from '@anthropic/platform';
 
-export const [功能名] = {
-  // Provider 模式: 请求-响应 (类似 HTTP 请求)
-  [方法名]: bridge.buildProvider<TResponse, TParams>('[通道名]'),
+export const [featureName] = {
+  // Provider pattern: request-response (similar to HTTP request)
+  [methodName]: bridge.buildProvider<TResponse, TParams>('[channelName]'),
 
-  // Emitter 模式: 事件流 (用于流式数据)
-  [事件名]: bridge.buildEmitter<TData>('[通道名].stream'),
+  // Emitter pattern: event stream (for streaming data)
+  [eventName]: bridge.buildEmitter<TData>('[channelName].stream'),
 };
 
-// 使用示例:
-// 渲染进程调用: const result = await [功能名].[方法名].request(params);
-// 渲染进程监听: [功能名].[事件名].on((data) => { ... });
+// Usage example:
+// Renderer process call: const result = await [featureName].[methodName].request(params);
+// Renderer process listen: [featureName].[eventName].on((data) => { ... });
 ```
 
-### 3.4 状态管理设计
+### 3.4 State Management Design
 
-- [ ] 使用现有 Context: **\*\*\*\***\_\_\_\_**\*\*\*\***
-- [ ] 需要新增 Context: **\*\*\*\***\_\_\_\_**\*\*\*\***
-- [ ] 仅组件内部状态 (useState/useReducer)
-- [ ] 需要持久化存储
+- [ ] Use existing Context: ____________
+- [ ] Need to add Context: ____________
+- [ ] Component-internal state only (useState/useReducer)
+- [ ] Requires persistent storage
 
-### 3.5 国际化 Key 设计
+### 3.5 Internationalization Key Design
 
 ```json
-// 添加到 src/renderer/i18n/locales/[lang].json
-// Key 命名规范: [模块].[功能].[描述]
+// Add to src/renderer/i18n/locales/[lang].json
+// Key naming convention: [module].[feature].[description]
 
 {
-  "conversation.export.title": "导出对话",
-  "conversation.export.success": "导出成功",
-  "conversation.export.error": "导出失败"
+  "conversation.export.title": "Export Conversation",
+  "conversation.export.success": "Export Successful",
+  "conversation.export.error": "Export Failed"
 }
 ```
 
-**支持的语言文件:**
+**Supported language files:**
 
-- `zh-CN.json` - 简体中文 (必须)
-- `en-US.json` - English (必须)
-- `zh-TW.json` - 繁體中文
-- `ja-JP.json` - 日本語
-- `ko-KR.json` - 한국어
-
----
-
-## 4. 验收标准
-
-### 4.1 功能验收
-
-- [ ] [具体功能点 1]
-- [ ] [具体功能点 2]
-- [ ] [具体功能点 3]
-
-### 4.2 边界情况
-
-- [ ] [异常场景 1 的处理]
-- [ ] [异常场景 2 的处理]
-
-### 4.3 兼容性验收
-
-- [ ] macOS 正常运行
-- [ ] Windows 正常运行
-- [ ] 深色模式显示正确
-- [ ] 浅色模式显示正确
-- [ ] 多语言切换正常
-
-### 4.4 代码质量
-
-- [ ] `npm run lint` 无错误
-- [ ] `npm run build` 构建成功
-- [ ] TypeScript 无类型错误
-- [ ] 无 console.log 遗留
+- `zh-CN.json` - Simplified Chinese (required)
+- `en-US.json` - English (required)
+- `zh-TW.json` - Traditional Chinese
+- `ja-JP.json` - Japanese
+- `ko-KR.json` - Korean
 
 ---
 
-## 5. 参考资料
+## 4. Acceptance Criteria
 
-### 5.1 类似功能参考
+### 4.1 Feature Acceptance
 
-[列出项目中可参考的类似实现]
+- [ ] [Specific feature point 1]
+- [ ] [Specific feature point 2]
+- [ ] [Specific feature point 3]
 
-| 功能 | 文件路径 | 说明 |
-| ---- | -------- | ---- |
-|      |          |      |
+### 4.2 Edge Cases
 
-### 5.2 依赖的现有模块
+- [ ] [Exception scenario 1 handling]
+- [ ] [Exception scenario 2 handling]
 
-[列出需要调用的现有接口/组件/Hook]
+### 4.3 Compatibility Acceptance
 
-| 模块 | 路径 | 用途 |
-| ---- | ---- | ---- |
-|      |      |      |
+- [ ] macOS runs normally
+- [ ] Windows runs normally
+- [ ] Dark mode displays correctly
+- [ ] Light mode displays correctly
+- [ ] Multi-language switching works
 
-### 5.3 外部依赖
+### 4.4 Code Quality
 
-[如需引入新依赖，列出并说明理由]
-
-| 依赖包 | 版本 | 用途 | 必要性说明 |
-| ------ | ---- | ---- | ---------- |
-|        |      |      |            |
-
-### 5.4 特殊注意事项
-
-[列出实现过程中需要特别注意的事项]
+- [ ] `npm run lint` has no errors
+- [ ] `npm run build` succeeds
+- [ ] No TypeScript type errors
+- [ ] No leftover console.log
 
 ---
 
-## 使用示例
+## 5. References
 
-以下是一个完整的功能需求示例：
+### 5.1 Similar Feature References
+
+[List similar implementations in the project for reference]
+
+| Feature | File Path | Description |
+| ------- | --------- | ----------- |
+|         |           |             |
+
+### 5.2 Dependent Existing Modules
+
+[List existing interfaces/components/Hooks to be called]
+
+| Module | Path | Purpose |
+| ------ | ---- | ------- |
+|        |      |         |
+
+### 5.3 External Dependencies
+
+[If new dependencies need to be introduced, list and explain reasons]
+
+| Package | Version | Purpose | Necessity |
+| ------- | ------- | ------- | --------- |
+|         |         |         |           |
+
+### 5.4 Special Notes
+
+[List items that need special attention during implementation]
+
+---
+
+## Usage Example
+
+Here is a complete feature requirement example:
 
 ```markdown
-## 1. 功能概述
+## 1. Feature Overview
 
-### 1.1 基本信息
+### 1.1 Basic Information
 
-- **功能名称**: 对话导出 PDF
-- **所属模块**: [x] 对话系统
-- **涉及进程**: [x] 主进程(process) [x] 渲染进程(renderer)
+- **Feature Name**: Export Conversation to PDF
+- **Module**: [x] Conversation System
+- **Processes Involved**: [x] Main Process (process) [x] Renderer Process (renderer)
 
-### 1.2 功能描述
+### 1.2 Feature Description
 
-允许用户将当前对话导出为 PDF 文件，保留消息格式、代码高亮和图片。
+Allow users to export current conversation to PDF file, preserving message format, code highlighting, and images.
 
-### 1.3 用户场景
+### 1.3 User Scenario
 
-触发: 用户点击对话页面右上角的"导出"按钮，选择"导出为 PDF"
-过程: 系统收集对话内容，渲染为 HTML，转换为 PDF
-结果: 弹出保存对话框，用户选择保存位置后生成 PDF 文件
+Trigger: User clicks "Export" button in top-right corner of conversation page, selects "Export as PDF"
+Process: System collects conversation content, renders to HTML, converts to PDF
+Result: Save dialog appears, user selects save location and PDF file is generated
 
-### 3.2 需要修改/新增的文件
+### 3.2 Files to Modify/Add
 
-**主进程 (src/process/)**
-| 文件路径 | 操作 | 说明 |
+**Main Process (src/process/)**
+| File Path | Operation | Description |
 |----------|------|------|
-| src/process/bridge/exportBridge.ts | [x] 新增 | PDF 导出 IPC 通道定义 |
-| src/process/services/ExportService.ts | [x] 新增 | PDF 生成逻辑 |
+| src/process/bridge/exportBridge.ts | [x] Add | PDF export IPC channel definition |
+| src/process/services/ExportService.ts | [x] Add | PDF generation logic |
 
-**渲染进程 (src/renderer/)**
-| 文件路径 | 操作 | 说明 |
+**Renderer Process (src/renderer/)**
+| File Path | Operation | Description |
 |----------|------|------|
-| src/renderer/pages/conversation/components/ChatHeader.tsx | [x] 修改 | 添加导出下拉菜单 |
-| src/renderer/hooks/useExportPdf.ts | [x] 新增 | 导出功能 Hook |
+| src/renderer/pages/conversation/components/ChatHeader.tsx | [x] Modify | Add export dropdown menu |
+| src/renderer/hooks/useExportPdf.ts | [x] Add | Export feature Hook |
 
-### 4.1 功能验收
+### 4.1 Feature Acceptance
 
-- [ ] 点击导出按钮显示导出选项菜单
-- [ ] 选择 PDF 后弹出保存对话框
-- [ ] 生成的 PDF 包含完整对话内容
-- [ ] 代码块保留语法高亮样式
-- [ ] 图片正确嵌入 PDF
+- [ ] Export button click shows export options menu
+- [ ] Selecting PDF shows save dialog
+- [ ] Generated PDF contains complete conversation content
+- [ ] Code blocks retain syntax highlighting
+- [ ] Images are correctly embedded in PDF
 
-### 5.1 类似功能参考
+### 5.1 Similar Feature References
 
-| 功能          | 文件路径                                              | 说明            |
-| ------------- | ----------------------------------------------------- | --------------- |
-| Markdown 导出 | src/renderer/hooks/useExportMarkdown.ts               | 可参考导出流程  |
-| PDF 预览      | src/renderer/pages/conversation/preview/PdfViewer.tsx | 可参考 PDF 处理 |
+| Feature           | File Path                                              | Description            |
+| ----------------- | ------------------------------------------------------ | ---------------------- |
+| Markdown Export   | src/renderer/hooks/useExportMarkdown.ts                | Reference export flow  |
+| PDF Preview       | src/renderer/pages/conversation/preview/PdfViewer.tsx  | Reference PDF handling |
 ```
 
 ---
 
-## 模板维护
+## Template Maintenance
 
-- **创建日期**: 2025-01-27
-- **适用版本**: AionUi v0.x+
-- **维护者**: [项目团队]
+- **Created**: 2025-01-27
+- **Applicable Version**: AionUi v0.x+
+- **Maintainer**: [Project Team]
 
-如需更新模板，请同步修改本文件并通知团队成员。
+If the template needs to be updated, please modify this file and notify team members.

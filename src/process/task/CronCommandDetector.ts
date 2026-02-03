@@ -74,7 +74,7 @@ export function detectCronCommands(content: string): CronCommand[] {
     commands.push({ kind: 'list' });
   }
 
-  // Detect [CRON_DELETE: xxx] - but ignore placeholder values like "任务ID", "task-id", etc.
+  // Detect [CRON_DELETE: xxx] - but ignore placeholder values like "task-id", etc.
   const deleteMatches = cleanContent.matchAll(/\[CRON_DELETE:\s*([^\]]+)\]/gi);
   for (const match of deleteMatches) {
     const jobId = match[1].trim();

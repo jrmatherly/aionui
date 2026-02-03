@@ -83,7 +83,7 @@ If the PDF has fillable form fields:
 
 # Non-fillable fields
 
-If the PDF doesn't have fillable form fields, you'll need to visually determine where the data should be added and create text annotations. Follow the below steps _exactly_. You MUST perform all of these steps to ensure that the the form is accurately completed. Details for each step are below.
+If the PDF doesn't have fillable form fields, you'll need to visually determine where the data should be added and create text annotations. Follow the below steps *exactly*. You MUST perform all of these steps to ensure that the the form is accurately completed. Details for each step are below.
 
 - Convert the PDF to PNG images and determine field bounding boxes.
 - Create a JSON file with field information and validation images showing the bounding boxes.
@@ -99,7 +99,7 @@ If the PDF doesn't have fillable form fields, you'll need to visually determine 
 
 These are some examples of form structures that you might see:
 
-_Label inside box_
+*Label inside box*
 
 ```
 ┌────────────────────────┐
@@ -109,7 +109,7 @@ _Label inside box_
 
 The input area should be to the right of the "Name" label and extend to the edge of the box.
 
-_Label before line_
+*Label before line*
 
 ```
 Email: _______________________
@@ -117,7 +117,7 @@ Email: _______________________
 
 The input area should be above the line and include its entire width.
 
-_Label under line_
+*Label under line*
 
 ```
 _________________________
@@ -126,7 +126,7 @@ Name
 
 The input area should be above the line and include the entire width of the line. This is common for signature and date fields.
 
-_Label above line_
+*Label above line*
 
 ```
 Please enter any special requests:
@@ -135,7 +135,7 @@ ________________________________________________
 
 The input area should extend from the bottom of the label to the line, and should include the entire width of the line.
 
-_Checkboxes_
+*Checkboxes*
 
 ```
 Are you a US citizen? Yes □  No □

@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import usePwaMode from '@/renderer/hooks/usePwaMode';
 import type React from 'react';
 import { useEffect } from 'react';
-import usePwaMode from '@/renderer/hooks/usePwaMode';
 
 /**
  * Lightweight pull-to-refresh for iOS PWA standalone mode.

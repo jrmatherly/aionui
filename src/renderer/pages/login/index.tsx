@@ -1,10 +1,10 @@
 import { ConfigStorage } from '@/common/storage';
+import loginLogo from '@renderer/assets/logos/app.png';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import AppLoader from '../../components/AppLoader';
 import { useAuth } from '../../context/AuthContext';
-import loginLogo from '@renderer/assets/logos/app.png';
 import './LoginPage.css';
 
 type MessageState = {

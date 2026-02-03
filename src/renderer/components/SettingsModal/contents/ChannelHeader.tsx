@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import type { IChannelPluginStatus } from '@/channels/types';
+import { iconColors } from '@/renderer/theme/colors';
 import { Switch, Tooltip } from '@arco-design/web-react';
 import { Check, CloseOne, CloseSmall, LoadingOne } from '@icon-park/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import type { IChannelPluginStatus } from '@/channels/types';
-import { iconColors } from '@/renderer/theme/colors';
 
 interface ChannelHeaderProps {
   channelId: string;

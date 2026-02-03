@@ -8,12 +8,11 @@ import type { ICreateConversationParams } from '@/common/ipcBridge';
 import type { ConversationSource, TChatConversation, TProviderWithModel } from '@/common/storage';
 import { getDatabase } from '@process/database';
 import path from 'path';
+import WorkerManage from '../WorkerManage';
 import { createAcpAgent, createCodexAgent, createGeminiAgent } from '../initAgent';
 import type AcpAgentManager from '../task/AcpAgentManager';
-import WorkerManage from '../WorkerManage';
 
 /**
- * 创建 Gemini 会话的参数
  * Parameters for creating a Gemini conversation
  */
 export interface ICreateGeminiConversationParams {
@@ -26,25 +25,23 @@ export interface ICreateGeminiConversationParams {
   presetRules?: string;
   enabledSkills?: string[];
   presetAssistantId?: string;
-  /** 会话来源 / Conversation source */
+  /** Conversation source */
   source?: ConversationSource;
-  /** 自定义会话 ID / Custom conversation ID */
+  /** Custom conversation ID */
   id?: string;
-  /** 自定义会话名称 / Custom conversation name */
+  /** Custom conversation name */
   name?: string;
 }
 
 /**
- * 创建会话的通用参数（基于 IPC 参数扩展）
  * Common parameters for creating conversation (extends IPC params)
  */
 export interface ICreateConversationOptions extends ICreateConversationParams {
-  /** 会话来源 / Conversation source */
+  /** Conversation source */
   source?: ConversationSource;
 }
 
 /**
- * 创建会话的返回结果
  * Result of creating a conversation
  */
 export interface ICreateConversationResult {
@@ -54,15 +51,12 @@ export interface ICreateConversationResult {
 }
 
 /**
- * 通用会话创建服务
  * Common conversation creation service
  *
- * 提供统一的会话创建逻辑，供 AionUI、Telegram 及其他 IM 使用
  * Provides unified conversation creation logic for AionUI, Telegram and other IMs
  */
 export class ConversationService {
   /**
-   * 创建 Gemini 会话
    * Create a Gemini conversation
    */
   static async createGeminiConversation(params: ICreateGeminiConversationParams): Promise<ICreateConversationResult> {
@@ -110,7 +104,6 @@ export class ConversationService {
   }
 
   /**
-   * 创建会话（通用方法，支持所有类型）
    * Create conversation (common method, supports all types)
    */
   static async createConversation(params: ICreateConversationOptions): Promise<ICreateConversationResult> {
@@ -187,10 +180,8 @@ export class ConversationService {
   }
 
   /**
-   * 获取或创建 Telegram 会话
    * Get or create a Telegram conversation
    *
-   * 优先复用最后一个 source='telegram' 的会话，没有则创建新会话
    * Prefers reusing the latest conversation with source='telegram', creates new if none exists
    */
   static async getOrCreateTelegramConversation(params: ICreateGeminiConversationParams): Promise<ICreateConversationResult> {

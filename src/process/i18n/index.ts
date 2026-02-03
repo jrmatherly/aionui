@@ -4,15 +4,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import i18n from 'i18next';
 import { ConfigStorage } from '@/common/storage';
+import i18n from 'i18next';
 
 // Import language resources
-import zhCN from '@/renderer/i18n/locales/zh-CN.json';
 import enUS from '@/renderer/i18n/locales/en-US.json';
 import jaJP from '@/renderer/i18n/locales/ja-JP.json';
-import zhTW from '@/renderer/i18n/locales/zh-TW.json';
 import koKR from '@/renderer/i18n/locales/ko-KR.json';
+import zhCN from '@/renderer/i18n/locales/zh-CN.json';
+import zhTW from '@/renderer/i18n/locales/zh-TW.json';
 
 const resources = {
   'zh-CN': {

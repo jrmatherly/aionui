@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import jwt from 'jsonwebtoken';
-import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
+import { AUTH_CONFIG } from '../../config/constants';
 import type { AuthUser } from '../repository/UserRepository';
 import { UserRepository } from '../repository/UserRepository';
-import { AUTH_CONFIG } from '../../config/constants';
 
 interface TokenPayload {
   userId: string;
@@ -51,7 +51,6 @@ const comparePasswordAsync = (password: string, hash: string): Promise<boolean> 
   });
 
 /**
- * 认证服务 - 提供密码哈希、Token 生成与验证等能力
  * Authentication Service - handles password hashing, token issuance, and validation
  */
 export class AuthService {
@@ -60,38 +59,35 @@ export class AuthService {
   private static readonly TOKEN_EXPIRY = AUTH_CONFIG.TOKEN.SESSION_EXPIRY;
 
   /**
-   * Token 黑名单 - 存储已登出的 token（内存存储，重启后清空）
    * Token blacklist - stores logged out tokens (in-memory, cleared on restart)
-   * Key: token 的 SHA-256 哈希, Value: 过期时间戳
+   * Key: SHA-256 hash of token, Value: expiry timestamp
    */
   private static tokenBlacklist: Map<string, number> = new Map();
   private static readonly BLACKLIST_CLEANUP_INTERVAL = 60 * 60 * 1000; // 1 hour
   private static blacklistCleanupTimer: ReturnType<typeof setInterval> | null = null;
 
   /**
-   * 将 token 加入黑名单（登出时调用）
    * Add token to blacklist (called on logout)
    */
   public static blacklistToken(token: string): void {
-    // 使用 token 的哈希作为 key，避免存储原始 token
+    // Use token hash as key to avoid storing the raw token
     const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
 
-    // 解析 token 获取过期时间
+    // Parse token to get expiry time
     try {
       const decoded = jwt.decode(token) as { exp?: number } | null;
       const expiry = decoded?.exp ? decoded.exp * 1000 : Date.now() + AUTH_CONFIG.TOKEN.COOKIE_MAX_AGE;
       this.tokenBlacklist.set(tokenHash, expiry);
 
-      // 启动清理定时器（如果还没启动）
+      // Start cleanup timer (if not already started)
       this.startBlacklistCleanup();
     } catch {
-      // 即使解析失败，也加入黑名单（使用默认过期时间）
+      // Even if parsing fails, add to blacklist with default expiry
       this.tokenBlacklist.set(tokenHash, Date.now() + AUTH_CONFIG.TOKEN.COOKIE_MAX_AGE);
     }
   }
 
   /**
-   * 检查 token 是否在黑名单中
    * Check if token is blacklisted
    */
   public static isTokenBlacklisted(token: string): boolean {
@@ -102,7 +98,7 @@ export class AuthService {
       return false;
     }
 
-    // 如果已过期，从黑名单移除
+    // If expired, remove from blacklist
     if (Date.now() > expiry) {
       this.tokenBlacklist.delete(tokenHash);
       return false;
@@ -112,7 +108,6 @@ export class AuthService {
   }
 
   /**
-   * 启动黑名单清理定时器
    * Start blacklist cleanup timer
    */
   private static startBlacklistCleanup(): void {
@@ -129,24 +124,21 @@ export class AuthService {
       }
     }, this.BLACKLIST_CLEANUP_INTERVAL);
 
-    // 允许进程正常退出
+    // Allow the process to exit normally
     this.blacklistCleanupTimer.unref();
   }
 
   /**
-   * 生成高强度的随机密钥
    * Generate a high-entropy random secret key
    */
   private static generateSecretKey(): string {
-    // 始终使用随机数确保密钥不可预测 / Always rely on randomness for unpredictability
+    // Always rely on randomness for unpredictability
     return crypto.randomBytes(64).toString('hex');
   }
 
   /**
-   * 获取或创建 JWT Secret，并缓存于内存
    * Load or create the JWT secret and cache it in memory
    *
-   * JWT secret 存储在 users 表的 admin 用户中
    * JWT secret is stored in the admin user's row in users table
    */
   public static getJwtSecret(): string {
@@ -154,14 +146,13 @@ export class AuthService {
       return this.jwtSecret;
     }
 
-    // 优先使用环境变量，方便部署覆盖 / Prefer env var for deploy-time override
+    // Prefer env var for deploy-time override
     if (process.env.JWT_SECRET) {
       this.jwtSecret = process.env.JWT_SECRET;
       return this.jwtSecret;
     }
 
     try {
-      // 从数据库读取 admin 用户的 jwt_secret
       // Read jwt_secret from admin user in database
       const adminUser = UserRepository.findByUsername(AUTH_CONFIG.DEFAULT_USER.USERNAME);
       if (adminUser && adminUser.jwt_secret) {
@@ -169,7 +160,6 @@ export class AuthService {
         return this.jwtSecret;
       }
 
-      // 生成新的 secret 并保存到 admin 用户
       // Generate new secret and save to admin user
       if (adminUser) {
         const newSecret = this.generateSecretKey();
@@ -178,7 +168,7 @@ export class AuthService {
         return this.jwtSecret;
       }
 
-      // Fallback: 如果 admin 用户不存在(不应该发生)
+      // Fallback: If admin user does not exist (should not happen)
       console.warn('[AuthService] Admin user not found, using temporary secret');
       this.jwtSecret = this.generateSecretKey();
       return this.jwtSecret;
@@ -190,7 +180,6 @@ export class AuthService {
   }
 
   /**
-   * 通过旋转密钥的方式让所有现有 Token 失效
    * Rotate the JWT secret to invalidate all existing tokens
    */
   public static invalidateAllTokens(): void {
@@ -210,7 +199,6 @@ export class AuthService {
   }
 
   /**
-   * 使用 bcrypt 进行密码哈希
    * Hash password using bcrypt
    */
   public static hashPassword(password: string): Promise<string> {
@@ -218,7 +206,6 @@ export class AuthService {
   }
 
   /**
-   * 验证密码是否与存储的哈希匹配
    * Verify whether the password matches the stored hash
    */
   public static verifyPassword(password: string, hash: string): Promise<boolean> {
@@ -226,7 +213,6 @@ export class AuthService {
   }
 
   /**
-   * 生成 WebUI 使用的标准会话 Token
    * Generate standard WebUI session token
    */
   public static generateToken(user: Pick<AuthUser, 'id' | 'username'>): string {
@@ -243,25 +229,21 @@ export class AuthService {
   }
 
   /**
-   * 将数据库中的用户 ID 统一转换为字符串格式
    * Normalize database user id into a consistent string
    *
    * Note: In new architecture, all user IDs are already strings (e.g., "auth_1234567890_abc")
    * This function simply ensures the ID is a string type.
-   * 注意：在新架构中，所有用户 ID 已经是字符串格式（如 "auth_1234567890_abc"）
-   * 此函数仅确保 ID 是字符串类型。
    */
   private static normalizeUserId(rawId: string | number): string {
     return String(rawId);
   }
 
   /**
-   * 验证 WebUI 会话 Token 是否有效
    * Verify standard WebUI session token validity
    */
   public static verifyToken(token: string): TokenPayload | null {
     try {
-      // 先检查黑名单 / Check blacklist first
+      // Check blacklist first
       if (this.isTokenBlacklisted(token)) {
         return null;
       }
@@ -285,24 +267,23 @@ export class AuthService {
   }
 
   /**
-   * 验证 WebSocket Token
    * Verify WebSocket token
    *
-   * 复用 Web 登录 token (audience: aionui-webui)
+   * Reuses Web login token (audience: aionui-webui)
    *
    * @param token - JWT token string
    * @returns Token payload if valid, null otherwise
    */
   public static verifyWebSocketToken(token: string): TokenPayload | null {
     try {
-      // 先检查黑名单 / Check blacklist first
+      // Check blacklist first
       if (this.isTokenBlacklisted(token)) {
         return null;
       }
 
       const decoded = jwt.verify(token, this.getJwtSecret(), {
         issuer: 'aionui',
-        audience: 'aionui-webui', // 使用与 Web 登录相同的 audience
+        audience: 'aionui-webui', // Uses the same audience as Web login
       }) as RawTokenPayload;
 
       return {
@@ -316,7 +297,6 @@ export class AuthService {
   }
 
   /**
-   * 刷新会话 Token（不检查原 Token 是否过期）
    * Refresh a session token without enforcing expiry check
    */
   public static refreshToken(token: string): string | null {
@@ -325,7 +305,7 @@ export class AuthService {
       return null;
     }
 
-    // 刷新时不重复检查有效期 / Skip expiry check when refreshing token
+    // Skip expiry check when refreshing token
     return this.generateToken({
       id: this.normalizeUserId(decoded.userId),
       username: decoded.username,
@@ -333,7 +313,6 @@ export class AuthService {
   }
 
   /**
-   * 生成符合复杂度要求的随机密码
    * Generate a random password with required complexity
    */
   public static generateRandomPassword(): string {
@@ -357,7 +336,7 @@ export class AuthService {
       passwordChars.push(allChars[index]);
     }
 
-    // 打乱字符顺序，避免类型排列固定 / Shuffle to avoid predictable category order
+    // Shuffle to avoid predictable category order
     for (let i = passwordChars.length - 1; i > 0; i--) {
       const j = crypto.randomInt(0, i + 1);
       [passwordChars[i], passwordChars[j]] = [passwordChars[j], passwordChars[i]];
@@ -367,11 +346,10 @@ export class AuthService {
   }
 
   /**
-   * 生成初始引导时使用的随机凭证
    * Generate random credentials for initial bootstrap
    */
   public static generateUserCredentials(): UserCredentials {
-    // 用户名长度控制在 6-8 位，便于记忆 / Username length fixed to 6-8 chars for memorability
+    // Username length fixed to 6-8 chars for memorability
     const usernameLength = crypto.randomInt(6, 9); // 6-8 chars
     const usernameChars = 'abcdefghijklmnopqrstuvwxyz0123456789';
     let username = '';
@@ -387,7 +365,6 @@ export class AuthService {
   }
 
   /**
-   * 校验密码强度并返回错误提示（简化版，适用于本地 WebUI）
    * Validate password strength (simplified for local WebUI)
    */
   public static validatePasswordStrength(password: string): {
@@ -396,7 +373,7 @@ export class AuthService {
   } {
     const errors: string[] = [];
 
-    // 仅要求最小长度 / Only require minimum length
+    // Only require minimum length
     if (password.length < 8) {
       errors.push('Password must be at least 8 characters long');
     }
@@ -405,7 +382,7 @@ export class AuthService {
       errors.push('Password must be less than 128 characters long');
     }
 
-    // 禁止明显的弱密码 / Block obvious weak passwords
+    // Block obvious weak passwords
     const weakPasswords = ['password', '12345678', '123456789', 'qwertyui', 'abcdefgh'];
     if (weakPasswords.includes(password.toLowerCase())) {
       errors.push('Password is too common, please choose a stronger one');
@@ -418,7 +395,6 @@ export class AuthService {
   }
 
   /**
-   * 校验用户名是否符合格式要求
    * Validate username format requirements
    */
   public static validateUsername(username: string): {
@@ -450,7 +426,6 @@ export class AuthService {
   }
 
   /**
-   * 生成高强度的会话 ID
    * Generate a high-entropy session identifier
    */
   public static generateSessionId(): string {
@@ -458,11 +433,10 @@ export class AuthService {
   }
 
   /**
-   * 常量时间比较，降低时序攻击风险
    * Perform constant-time comparison to mitigate timing attacks
    */
   public static async constantTimeVerify(provided: string, expected: string, hashProvided = false): Promise<boolean> {
-    // 强制执行固定时间对比 / Ensure constant-time comparison routine
+    // Ensure constant-time comparison routine
     const start = process.hrtime.bigint();
 
     let result: boolean;

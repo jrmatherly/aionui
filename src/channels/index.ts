@@ -28,7 +28,7 @@ export type { PluginMessageHandler } from './plugins/BasePlugin';
 export { TelegramPlugin } from './plugins/telegram/TelegramPlugin';
 
 // Pairing exports
-export { getPairingService, PairingService } from './pairing/PairingService';
+export { PairingService, getPairingService } from './pairing/PairingService';
 
 // Action exports
 export * from './actions';

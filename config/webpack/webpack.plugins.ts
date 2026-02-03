@@ -11,19 +11,17 @@ import unoConfig from '../../uno.config';
 const ForkTsCheckerWebpackPlugin: typeof IForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 export const plugins: WebpackPluginInstance[] = [
-  // 复制静态资源目录到 webpack 输出，用于打包后的应用
   // Copy static resource directories to webpack output for packaged app
   new CopyPlugin({
     patterns: [
-      // skills 目录：包含 SKILL.md 文件，用于 SkillManager 加载
+      // skills directory: contains SKILL.md files for SkillManager loading
       { from: path.resolve(__dirname, '../../skills'), to: 'skills', noErrorOnMissing: true },
-      // rules 目录：包含助手规则文件
+      // rules directory: contains assistant rule files
       { from: path.resolve(__dirname, '../../rules'), to: 'rules', noErrorOnMissing: true },
-      // assistant 目录：包含助手配置和技能定义
+      // assistant directory: contains assistant config and skill definitions
       { from: path.resolve(__dirname, '../../assistant'), to: 'assistant', noErrorOnMissing: true },
-      // logos 目录：包含应用 logo 等图片资源，使用 CopyPlugin 确保二进制文件不被错误编码
       // logos directory: contains app logo images, use CopyPlugin to ensure binary files are not incorrectly encoded
-      // force: true 强制覆盖 webpack asset/resource 输出的损坏文件
+      // force: true to overwrite corrupted files output by webpack asset/resource
       { from: path.resolve(__dirname, '../../src/renderer/assets/logos'), to: 'static/images', noErrorOnMissing: true, force: true },
     ],
   }),
@@ -45,7 +43,6 @@ export const plugins: WebpackPluginInstance[] = [
       UnoCSS(unoConfig).apply(compiler);
     },
   },
-  // 忽略 tree-sitter 的 ?binary wasm 导入，让 aioncli-core 的 loadWasmBinary fallback 机制从磁盘读取
   // Ignore tree-sitter ?binary wasm imports, let aioncli-core's loadWasmBinary fallback read from disk
   new webpack.IgnorePlugin({
     resourceRegExp: /\.wasm\?binary$/,

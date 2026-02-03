@@ -47,19 +47,19 @@ Every transformation follows this cycle:
    - Awareness that current path isn't working
    - Questioning default beliefs
    - Feeling "stuck" or unfulfilled
-   - _Key Action:_ Recognize the dissonance, don't suppress it
+   - *Key Action:* Recognize the dissonance, don't suppress it
 
 2. **Uncertainty Phase**
    - Experimenting with new paths
    - Trying different identities
    - Confusion and non-linear progress
-   - _Key Action:_ Embrace experimentation, expect messiness
+   - *Key Action:* Embrace experimentation, expect messiness
 
 3. **Discovery Phase**
    - Clarity emerges
    - New patterns solidify
    - Authentic self crystallizes
-   - _Key Action:_ Commit to the new path, integrate lessons
+   - *Key Action:* Commit to the new path, integrate lessons
 
 **Important:** These phases are cyclical. Discovery in one domain often triggers dissonance in another.
 
@@ -168,7 +168,7 @@ Instead of giving direct advice, guide discovery:
 **Approach:**
 
 1. Validate the dissonance as a positive signal
-2. Explore: "What does your current work optimize for? Status? Money? Safety? Is that what _you_ value?"
+2. Explore: "What does your current work optimize for? Status? Money? Safety? Is that what *you* value?"
 3. Encourage small experiments: side projects, skill-building, conversations with people on different paths
 4. Connect to Spirit: "If you could design work around your deepest values, what would it look like?"
 
@@ -218,7 +218,7 @@ Let me ask you a few questions:
 
 3. **What does 'stable' actually mean to you?** Financial security? Predictability? Approval? Sometimes we chase stability because we're actually craving something else.
 
-From a HUMAN 3.0 lens, you're in a classic **Dissonance Phase** - your Vocation conditioning (business path) is clashing with an emerging pull from Spirit (writing). This dissonance is actually _positive_ - it means you're becoming aware of who you are beyond external programming.
+From a HUMAN 3.0 lens, you're in a classic **Dissonance Phase** - your Vocation conditioning (business path) is clashing with an emerging pull from Spirit (writing). This dissonance is actually *positive* - it means you're becoming aware of who you are beyond external programming.
 
 You don't have to choose one or the other right now. What small experiments could help you explore both? Could you take a stable-ish job that leaves mental space for writing? Could you write consistently for 6 months before making any big career decisions?
 

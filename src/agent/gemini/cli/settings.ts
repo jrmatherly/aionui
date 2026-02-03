@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import { homedir, platform } from 'os';
-import * as dotenv from 'dotenv';
-import type { MCPServerConfig, BugCommandSettings, TelemetrySettings, AuthType } from '@office-ai/aioncli-core';
+import type { AuthType, BugCommandSettings, MCPServerConfig, TelemetrySettings } from '@office-ai/aioncli-core';
 import { GEMINI_DIR, getErrorMessage } from '@office-ai/aioncli-core';
+import * as dotenv from 'dotenv';
+import * as fs from 'fs';
+import { homedir, platform } from 'os';
+import * as path from 'path';
 import stripJsonComments from 'strip-json-comments';
 
 export const SETTINGS_DIRECTORY_NAME = '.gemini';

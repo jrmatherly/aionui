@@ -1,76 +1,76 @@
 # AionUi Database System
 
-本文档介绍 AionUi 的新数据库系统，它使用 **better-sqlite3** (主进程) 作为持久化存储。
+This document describes AionUi's database system, which uses **better-sqlite3** (main process) for persistent storage.
 
-## 架构概览
+## Architecture Overview
 
 ```
 ┌─────────────────────────────────────┐
-│         主进程 (Main Process)        │
+│         Main Process                │
 │                                     │
 │  ┌─────────────────────────────┐   │
 │  │   better-sqlite3            │   │
-│  │   - 账户系统                 │   │
-│  │   - 聊天记录持久化           │   │
-│  │   - 配置信息 (db_version)    │   │
+│  │   - Account system          │   │
+│  │   - Chat history persistence│   │
+│  │   - Config info (db_version)│   │
 │  └─────────────────────────────┘   │
 │              ↕ IPC                  │
 └─────────────────────────────────────┘
               ↕ IPC
 ┌─────────────────────────────────────┐
-│       渲染进程 (Renderer Process)    │
+│       Renderer Process              │
 │                                     │
-│  - IPC Bridge 直接查询主进程数据库   │
-│  - React State 管理UI状态           │
-│  - localStorage 保存临时数据        │
+│  - IPC Bridge queries main process  │
+│  - React State manages UI state     │
+│  - localStorage saves temp data     │
 └─────────────────────────────────────┘
 
 ┌─────────────────────────────────────┐
-│         文件系统 (File System)       │
+│         File System                 │
 │                                     │
-│  - 图片文件 (message.resultDisplay) │
-│  - 大文件附件                       │
-│  - 数据库文件 (aionui.db)           │
+│  - Image files (message.resultDisplay) │
+│  - Large file attachments           │
+│  - Database file (aionui.db)        │
 └─────────────────────────────────────┘
 ```
 
-## 设计特点
+## Design Features
 
-### ✅ 复用现有类型系统
+### ✅ Reuses Existing Type System
 
-数据库层完全复用现有的业务类型定义：
+The database layer fully reuses existing business type definitions:
 
-- `TChatConversation` - 会话类型
-- `TMessage` - 消息类型
+- `TChatConversation` - Conversation type
+- `TMessage` - Message type
 
-### ✅ 自动迁移
+### ✅ Automatic Migration
 
-首次启动时，系统会自动将文件存储的数据迁移到数据库，无需手动操作。
+On first startup, the system automatically migrates file storage data to the database without manual intervention.
 
-### ✅ 图片存储
+### ✅ Image Storage
 
-- 图片文件存储在文件系统中
-- 通过message.resultDisplay字段引用图片路径
-- 不在数据库中存储图片元数据
+- Image files are stored in the file system
+- Image paths are referenced via message.resultDisplay field
+- Image metadata is not stored in the database
 
-### ✅ 高性能
+### ✅ High Performance
 
-- better-sqlite3 的同步API，避免mutex争用
-- WAL模式，提升并发性能
-- 完善的索引设计
-- 支持事务操作
+- better-sqlite3's synchronous API avoids mutex contention
+- WAL mode improves concurrent performance
+- Well-designed indexes
+- Transaction support
 
-## 使用方式
+## Usage
 
-### 主进程 (Main Process)
+### Main Process
 
 ```typescript
 import { getDatabase } from '@/process/database/export';
 
-// 获取数据库实例
+// Get database instance
 const db = getDatabase();
 
-// 创建会话
+// Create conversation
 const conversation: TChatConversation = {
   id: 'conv_123',
   name: 'My Conversation',
@@ -88,7 +88,7 @@ if (result.success) {
   console.log('Conversation created');
 }
 
-// 插入消息
+// Insert message
 const message: TMessage = {
   id: 'msg_123',
   conversation_id: 'conv_123',
@@ -100,45 +100,45 @@ const message: TMessage = {
 
 db.insertMessage(message);
 
-// 查询会话的消息（分页）
+// Query conversation messages (paginated)
 const messages = db.getConversationMessages('conv_123', 0, 50);
 console.log(messages.data); // TMessage[]
 ```
 
-### 渲染进程 (Renderer Process)
+### Renderer Process
 
 ```typescript
 import { ipcBridge } from '@/common';
 
-// 通过IPC查询消息
+// Query messages via IPC
 const messages = await ipcBridge.database.getConversationMessages({
   conversation_id: 'conv_123',
   page: 0,
   pageSize: 100,
 });
 
-// 草稿使用React状态管理
+// Drafts use React state management
 const [draft, setDraft] = useState('');
 
-// UI状态使用localStorage
+// UI state uses localStorage
 localStorage.setItem('sidebar_collapsed', 'true');
 const collapsed = localStorage.getItem('sidebar_collapsed') === 'true';
 ```
 
-## 数据库文件位置
+## Database File Location
 
-- **数据库文件**: `{userData}/config/aionui.db`
-- **图片文件**: `{userData}/data/images/`
+- **Database file**: `{userData}/config/aionui.db`
+- **Image files**: `{userData}/data/images/`
 
-其中 `{userData}` 为：
+Where `{userData}` is:
 
 - macOS: `~/Library/Application Support/AionUi/`
 - Windows: `%APPDATA%/AionUi/`
 - Linux: `~/.config/AionUi/`
 
-## 迁移管理
+## Migration Management
 
-### 查看迁移状态
+### Check Migration Status
 
 ```typescript
 import { getMigrationStatus } from '@/process/database/export';
@@ -153,7 +153,7 @@ console.log(status);
 // }
 ```
 
-### 手动触发迁移
+### Manually Trigger Migration
 
 ```typescript
 import { migrateFileStorageToDatabase } from '@/process/database/export';
@@ -166,18 +166,18 @@ if (result.success) {
 }
 ```
 
-### 回滚迁移（测试用）
+### Rollback Migration (for testing)
 
 ```typescript
 import { rollbackMigration } from '@/process/database/export';
 
 await rollbackMigration();
-// 清除迁移标记，可以重新运行迁移
+// Clears migration flag, allowing migration to run again
 ```
 
-## 备份与恢复
+## Backup and Restore
 
-### 导出数据
+### Export Data
 
 ```typescript
 import { exportDatabaseToJSON } from '@/process/database/export';
@@ -186,7 +186,7 @@ const data = await exportDatabaseToJSON();
 await fs.writeFile('backup.json', JSON.stringify(data, null, 2));
 ```
 
-### 导入数据
+### Import Data
 
 ```typescript
 import { importDatabaseFromJSON } from '@/process/database/export';
@@ -195,91 +195,91 @@ const data = JSON.parse(await fs.readFile('backup.json', 'utf-8'));
 await importDatabaseFromJSON(data);
 ```
 
-### 数据库文件备份
+### Database File Backup
 
-直接复制 `aionui.db` 和 `aionui.db-wal` 文件即可。
+Simply copy the `aionui.db` and `aionui.db-wal` files.
 
-## API 参考
+## API Reference
 
-### AionUIDatabase 主要方法
+### AionUIDatabase Main Methods
 
-#### 会话操作
+#### Conversation Operations
 
-- `createConversation(conversation, userId?)` - 创建会话
-- `getConversation(conversationId)` - 获取会话
-- `getUserConversations(userId?, page?, pageSize?)` - 获取用户的所有会话（分页）
-- `updateConversation(conversationId, updates)` - 更新会话
-- `deleteConversation(conversationId)` - 删除会话
+- `createConversation(conversation, userId?)` - Create conversation
+- `getConversation(conversationId)` - Get conversation
+- `getUserConversations(userId?, page?, pageSize?)` - Get all user conversations (paginated)
+- `updateConversation(conversationId, updates)` - Update conversation
+- `deleteConversation(conversationId)` - Delete conversation
 
-#### 消息操作
+#### Message Operations
 
-- `insertMessage(message)` - 插入单条消息
-- `insertMessages(messages)` - 批量插入消息
-- `getConversationMessages(conversationId, page?, pageSize?)` - 获取会话消息（分页）
-- `deleteConversationMessages(conversationId)` - 删除会话的所有消息
+- `insertMessage(message)` - Insert single message
+- `insertMessages(messages)` - Batch insert messages
+- `getConversationMessages(conversationId, page?, pageSize?)` - Get conversation messages (paginated)
+- `deleteConversationMessages(conversationId)` - Delete all messages in conversation
 
-#### 配置操作
+#### Config Operations
 
-- `setConfig(key, value)` - 设置配置（主要用于数据库版本跟踪）
-- `getConfig<T>(key)` - 获取配置
-- `getAllConfigs()` - 获取所有配置
-- `deleteConfig(key)` - 删除配置
+- `setConfig(key, value)` - Set config (mainly for database version tracking)
+- `getConfig<T>(key)` - Get config
+- `getAllConfigs()` - Get all configs
+- `deleteConfig(key)` - Delete config
 
-#### 工具方法
+#### Utility Methods
 
-- `getStats()` - 获取数据库统计信息（返回: users, conversations, messages）
-- `vacuum()` - 清理数据库，回收空间
+- `getStats()` - Get database statistics (returns: users, conversations, messages)
+- `vacuum()` - Clean database, reclaim space
 
-### IPC Bridge 方法
+### IPC Bridge Methods
 
-- `database.getConversationMessages({ conversation_id, page?, pageSize? })` - 查询消息（支持分页）
+- `database.getConversationMessages({ conversation_id, page?, pageSize? })` - Query messages (supports pagination)
 
-## 性能优化建议
+## Performance Optimization Tips
 
-1. **批量插入消息**: 使用 `insertMessages()` 而不是循环调用 `insertMessage()`
-2. **分页查询**: 大量数据时使用分页参数
-3. **定期清理**: 定期调用 `db.vacuum()` 清理数据库
-4. **WAL模式**: 数据库已启用WAL模式，支持读写并发
-5. **图片去重**: 系统自动通过hash去重，无需额外处理
+1. **Batch insert messages**: Use `insertMessages()` instead of looping `insertMessage()`
+2. **Paginated queries**: Use pagination parameters for large datasets
+3. **Regular cleanup**: Periodically call `db.vacuum()` to clean the database
+4. **WAL mode**: Database has WAL mode enabled, supports read/write concurrency
+5. **Image deduplication**: System automatically deduplicates via hash, no extra handling needed
 
-## 故障排查
+## Troubleshooting
 
-### 数据库锁定错误
+### Database Lock Error
 
-如果出现 "database is locked" 错误：
+If "database is locked" error occurs:
 
-1. 确保只有一个应用实例在运行
-2. 检查是否有其他进程在访问数据库文件
-3. 重启应用
+1. Ensure only one application instance is running
+2. Check if other processes are accessing the database file
+3. Restart the application
 
-### 迁移失败
+### Migration Failed
 
-如果迁移失败：
+If migration fails:
 
-1. 查看错误日志确定具体原因
-2. 使用 `rollbackMigration()` 回滚
-3. 修复数据问题后重新迁移
+1. Check error logs to determine the specific cause
+2. Use `rollbackMigration()` to rollback
+3. Fix data issues and re-run migration
 
-### Native模块问题
+### Native Module Issues
 
-如果better-sqlite3加载失败：
+If better-sqlite3 fails to load:
 
-1. 运行 `npm rebuild better-sqlite3`
-2. 确认Electron版本与依赖兼容
-3. 查看Electron Forge配置
+1. Run `npm rebuild better-sqlite3`
+2. Confirm Electron version is compatible with dependencies
+3. Check Electron Forge configuration
 
-## 数据库版本升级和迁移
+## Database Version Upgrade and Migration
 
-### 版本管理
+### Version Management
 
-数据库Schema有版本控制，当前版本为 **v4**。每个版本升级都有对应的迁移脚本。
+Database Schema has version control, current version is **v4**. Each version upgrade has a corresponding migration script.
 
 ```typescript
 import { getDatabase } from '@/process/database/export';
 
 const db = getDatabase();
 
-// 查看迁移历史
+// View migration history
 const history = db.getMigrationHistory();
 console.log(history);
 // [
@@ -288,212 +288,74 @@ console.log(history);
 //   ...
 // ]
 
-// 检查特定迁移是否已执行
+// Check if specific migration has been applied
 const isV2Applied = db.isMigrationApplied(2);
 ```
 
-### 迁移脚本
+### Migration Scripts
 
-迁移脚本在 `migrations.ts` 中定义。每个迁移包含：
+Migration scripts are defined in `migrations.ts`. Each migration includes:
 
-- **version**: 目标版本号
-- **name**: 迁移名称
-- **up()**: 升级脚本
-- **down()**: 降级脚本（用于回滚）
+- **version**: Target version number
+- **name**: Migration name
+- **up()**: Upgrade script
+- **down()**: Downgrade script (for rollback)
 
-#### 当前迁移列表
+#### Current Migration List
 
-- **v1**: 初始Schema（用户、会话、消息、配置）
-- **v2**: 添加性能索引（复合索引优化查询）
-- **v3**: ~~添加全文搜索支持~~ (已跳过，不创建FTS表)
-- **v4**: 添加用户偏好设置表
-- **v5**: 删除FTS表（清理v3遗留的表，确保数据库结构一致）
+- **v1**: Initial Schema (users, conversations, messages, configs)
+- **v2**: Add performance indexes (composite indexes for query optimization)
+- **v3**: ~~Add full-text search support~~ (skipped, doesn't create FTS tables)
+- **v4**: Add user preferences table
+- **v5**: Delete FTS tables (cleanup v3 legacy tables, ensure database structure consistency)
 
-### 如何添加新迁移
+### Migration Features
 
-1. **编辑 migrations.ts**
+#### ✅ Transaction Protection
 
-```typescript
-const migration_v5: IMigration = {
-  version: 5,
-  name: 'Add user sessions table',
-  up: (db) => {
-    db.exec(`
-      CREATE TABLE IF NOT EXISTS user_sessions (
-        id TEXT PRIMARY KEY,
-        user_id TEXT NOT NULL,
-        token TEXT NOT NULL,
-        expires_at INTEGER NOT NULL,
-        created_at INTEGER NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-      );
+All migrations run in a single transaction. If any migration fails, all changes are rolled back.
 
-      CREATE INDEX IF NOT EXISTS idx_user_sessions_token
-        ON user_sessions(token);
-    `);
-    console.log('[Migration v5] Added user sessions table');
-  },
-  down: (db) => {
-    db.exec(`DROP TABLE IF EXISTS user_sessions;`);
-    console.log('[Migration v5] Rolled back: Removed user sessions table');
-  },
-};
+#### ✅ Migration History
 
-// 添加到迁移列表
-export const ALL_MIGRATIONS: IMigration[] = [
-  migration_v1,
-  migration_v2,
-  migration_v3,
-  migration_v4,
-  migration_v5, // 新增
-];
-```
+Each successful migration is recorded in the `configs` table.
 
-2. **更新 schema.ts 中的版本号**
+#### ✅ Idempotency
 
-```typescript
-export const CURRENT_DB_VERSION = 5; // 从 4 改为 5
-```
+All migrations use `IF NOT EXISTS` to ensure safe repeated runs.
 
-3. **重启应用**
+### Migration Best Practices
 
-应用启动时会自动检测版本变化并执行迁移：
+1. **Backward compatibility**: Prefer `ALTER TABLE ADD COLUMN` over deleting fields
+2. **Data transformation**: Handle data format changes in migrations
+3. **Index optimization**: Adding indexes doesn't affect existing data
+4. **Test rollback**: Ensure `down()` method correctly restores state
+5. **Small migrations**: One migration does one thing
 
-```
-[Database] Migrating from version 4 to 5
-[Migrations] Running 1 migrations from v4 to v5
-[Migrations] Running migration v5: Add user sessions table
-[Migration v5] Added user sessions table
-[Migrations] ✓ Migration v5 completed
-[Migrations] All migrations completed successfully
-```
+## Future Plans
 
-### 迁移特性
+- [x] Database version upgrade and migration system
+- [ ] Support multi-user account system
+- [ ] Data encryption
+- [ ] Cloud sync
+- [ ] More query APIs (search, filter, etc.)
+- [ ] Performance monitoring and optimization
+- [ ] Data analysis and statistics
 
-#### ✅ 事务保护
+## Tech Stack
 
-所有迁移在单个事务中执行。如果任何迁移失败，所有更改将回滚：
+- **better-sqlite3** v12.4.1 - Main process SQLite database
+- **Electron IPC Bridge** - Renderer to main process communication
+- **Electron Forge** - Auto-handles native modules
 
-```typescript
-// migrations.ts
-const runAll = db.transaction(() => {
-  for (const migration of migrations) {
-    migration.up(db); // 如果抛出异常，整个事务回滚
-  }
-});
-```
+## Contributing
 
-#### ✅ 迁移历史
+To add new database features:
 
-每个成功的迁移都会记录在 `configs` 表中：
-
-```sql
-SELECT * FROM configs WHERE key LIKE 'migration_v%';
--- migration_v1: {"version":1,"name":"Initial schema","timestamp":1738012345678}
--- migration_v2: {"version":2,"name":"Add performance indexes","timestamp":1738012345679}
-```
-
-#### ✅ 幂等性
-
-所有迁移使用 `IF NOT EXISTS` 确保可以安全重复执行。
-
-### 回滚迁移（测试用）
-
-```typescript
-import { rollbackMigrations } from '@/process/database/export';
-
-// ⚠️ WARNING: 这会导致数据丢失！
-const db = getDatabase();
-rollbackMigrations(db.db, 4, 2); // 从 v4 回滚到 v2
-
-// 回滚后需要手动更新版本号
-setDatabaseVersion(db.db, 2);
-```
-
-### 迁移最佳实践
-
-1. **向后兼容**: 尽量使用 `ALTER TABLE ADD COLUMN` 而不是删除字段
-2. **数据转换**: 在迁移中处理数据格式变更
-3. **索引优化**: 添加索引不会影响现有数据
-4. **测试回滚**: 确保 `down()` 方法能正确恢复
-5. **小步迁移**: 一个迁移只做一件事
-
-### 常见迁移操作
-
-#### 添加新表
-
-```typescript
-up: (db) => {
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS new_table (
-      id TEXT PRIMARY KEY,
-      ...
-    );
-  `);
-};
-```
-
-#### 添加字段
-
-```typescript
-up: (db) => {
-  db.exec(`
-    ALTER TABLE users ADD COLUMN phone TEXT;
-  `);
-};
-```
-
-#### 添加索引
-
-```typescript
-up: (db) => {
-  db.exec(`
-    CREATE INDEX IF NOT EXISTS idx_users_phone ON users(phone);
-  `);
-};
-```
-
-#### 数据迁移
-
-```typescript
-up: (db) => {
-  // 先添加新字段
-  db.exec(`ALTER TABLE users ADD COLUMN full_name TEXT;`);
-
-  // 然后迁移数据
-  db.exec(`
-    UPDATE users
-    SET full_name = COALESCE(first_name || ' ' || last_name, username)
-    WHERE full_name IS NULL;
-  `);
-};
-```
-
-## 未来计划
-
-- [x] 数据库版本升级和迁移系统
-- [ ] 支持多用户账户系统
-- [ ] 数据加密
-- [ ] 云端同步
-- [ ] 更多查询API（搜索、过滤等）
-- [ ] 性能监控和优化
-- [ ] 数据分析和统计
-
-## 技术栈
-
-- **better-sqlite3** v12.4.1 - 主进程SQLite数据库
-- **Electron IPC Bridge** - 渲染进程与主进程通信
-- **Electron Forge** - 自动处理native模块
-
-## 贡献
-
-如需添加新的数据库功能：
-
-1. 在 `schema.ts` 中添加表结构
-2. 在 `types.ts` 中定义类型（优先复用现有业务类型）
-3. 在 `index.ts` 中添加CRUD方法
-4. 更新本README文档
+1. Add table structure in `schema.ts`
+2. Define types in `types.ts` (prefer reusing existing business types)
+3. Add CRUD methods in `index.ts`
+4. Update this README document
 
 ---
 
-**最后更新**: 2025-01-27
+**Last Updated**: 2025-01-27

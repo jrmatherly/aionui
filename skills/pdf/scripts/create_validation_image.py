@@ -19,10 +19,12 @@ except ImportError:
     sys.exit(1)
 
 
-def create_validation_image(page_num: int, json_path: str, input_path: str, output_path: str) -> None:
+def create_validation_image(
+    page_num: int, json_path: str, input_path: str, output_path: str
+) -> None:
     """Create validation image with bounding box overlays."""
     # Load fields data
-    with open(json_path, 'r', encoding='utf-8') as f:
+    with open(json_path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
     # Open image
@@ -30,33 +32,39 @@ def create_validation_image(page_num: int, json_path: str, input_path: str, outp
     draw = ImageDraw.Draw(img)
 
     # Filter fields for this page
-    form_fields = data.get('form_fields', [])
-    page_fields = [f for f in form_fields if f.get('page_number', 1) == page_num]
+    form_fields = data.get("form_fields", [])
+    page_fields = [f for f in form_fields if f.get("page_number", 1) == page_num]
 
     # Draw bounding boxes
     for field in page_fields:
         # Draw entry box in red
-        entry_box = field.get('entry_bounding_box')
+        entry_box = field.get("entry_bounding_box")
         if entry_box:
             left, top, right, bottom = entry_box
-            draw.rectangle([left, top, right, bottom], outline='red', width=2)
+            draw.rectangle([left, top, right, bottom], outline="red", width=2)
 
         # Draw label box in blue
-        label_box = field.get('label_bounding_box')
+        label_box = field.get("label_bounding_box")
         if label_box:
             left, top, right, bottom = label_box
-            draw.rectangle([left, top, right, bottom], outline='blue', width=2)
+            draw.rectangle([left, top, right, bottom], outline="blue", width=2)
 
     # Save output
     img.save(output_path)
     print(f"Created validation image: {output_path}")
-    print(f"  - Red boxes: {sum(1 for f in page_fields if f.get('entry_bounding_box'))} entry areas")
-    print(f"  - Blue boxes: {sum(1 for f in page_fields if f.get('label_bounding_box'))} label areas")
+    print(
+        f"  - Red boxes: {sum(1 for f in page_fields if f.get('entry_bounding_box'))} entry areas"
+    )
+    print(
+        f"  - Blue boxes: {sum(1 for f in page_fields if f.get('label_bounding_box'))} label areas"
+    )
 
 
 if __name__ == "__main__":
     if len(sys.argv) != 5:
-        print("Usage: python create_validation_image.py <page_number> <fields.json> <input_image> <output_image>")
+        print(
+            "Usage: python create_validation_image.py <page_number> <fields.json> <input_image> <output_image>"
+        )
         sys.exit(1)
 
     page_num = int(sys.argv[1])

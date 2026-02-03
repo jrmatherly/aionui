@@ -9,8 +9,8 @@
  */
 
 // Main panel and sub-components
-export { default as PreviewPanel } from './PreviewPanel/PreviewPanel';
 export * from './PreviewPanel';
+export { default as PreviewPanel } from './PreviewPanel/PreviewPanel';
 
 // Viewer components
 export * from './viewers';

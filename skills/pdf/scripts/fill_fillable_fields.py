@@ -19,17 +19,18 @@ field_values.json format:
 
 import json
 import sys
+
 from pypdf import PdfReader, PdfWriter
 
 
 def fill_form_fields(input_path: str, values_path: str, output_path: str) -> None:
     """Fill PDF form fields with values from JSON."""
     # Load field values
-    with open(values_path, 'r', encoding='utf-8') as f:
+    with open(values_path, "r", encoding="utf-8") as f:
         field_values = json.load(f)
 
     # Create a dictionary for quick lookup
-    values_dict = {item['field_id']: item['value'] for item in field_values}
+    values_dict = {item["field_id"]: item["value"] for item in field_values}
 
     reader = PdfReader(input_path)
     writer = PdfWriter()
@@ -62,13 +63,11 @@ def fill_form_fields(input_path: str, values_path: str, output_path: str) -> Non
 
     # Update fields
     writer.update_page_form_field_values(
-        writer.pages[0],
-        values_dict,
-        auto_regenerate=False
+        writer.pages[0], values_dict, auto_regenerate=False
     )
 
     # Write output
-    with open(output_path, 'wb') as f:
+    with open(output_path, "wb") as f:
         writer.write(f)
 
     print(f"Successfully filled {len(values_dict)} field(s) and saved to {output_path}")
@@ -76,7 +75,9 @@ def fill_form_fields(input_path: str, values_path: str, output_path: str) -> Non
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
-        print("Usage: python fill_fillable_fields.py <input.pdf> <field_values.json> <output.pdf>")
+        print(
+            "Usage: python fill_fillable_fields.py <input.pdf> <field_values.json> <output.pdf>"
+        )
         sys.exit(1)
 
     fill_form_fields(sys.argv[1], sys.argv[2], sys.argv[3])

@@ -1,7 +1,7 @@
 import type { IProvider } from '@/common/storage';
-import ModalHOC from '@/renderer/utils/ModalHOC';
 import AionModal from '@/renderer/components/base/AionModal';
-import { Button, Select, Tag } from '@arco-design/web-react';
+import ModalHOC from '@/renderer/utils/ModalHOC';
+import { Select } from '@arco-design/web-react';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useModeModeList from '../../../hooks/useModeModeList';
@@ -12,7 +12,7 @@ const AddModelModal = ModalHOC<{ data?: IProvider; onSubmit: (model: IProvider) 
   const { data: modelList, isLoading } = useModeModeList(data?.platform, data?.baseUrl, data?.apiKey);
   const existingModels = data?.model || [];
   const optionsList = useMemo(() => {
-    // 处理新的数据格式，可能包含 fix_base_url
+    // Handle new data format, which may contain fix_base_url
     const models = Array.isArray(modelList) ? modelList : modelList?.models || [];
     if (!models || !data?.model) return models;
     return models.map((item) => {

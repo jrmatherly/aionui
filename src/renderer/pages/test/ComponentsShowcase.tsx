@@ -1,8 +1,8 @@
-import { Button, Message, Collapse, Tag } from '@arco-design/web-react';
-import React, { useState } from 'react';
-import StepsWrapper from '@/renderer/components/base/StepsWrapper';
 import ModalWrapper from '@/renderer/components/base/ModalWrapper';
+import StepsWrapper from '@/renderer/components/base/StepsWrapper';
+import { Button, Collapse, Message, Tag } from '@arco-design/web-react';
 import { Check } from '@icon-park/react';
+import React, { useState } from 'react';
 
 const ComponentsShowcase: React.FC = () => {
   const [message, contextHolder] = Message.useMessage();

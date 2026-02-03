@@ -4,15 +4,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import type React from 'react';
-import { useCallback, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ipcBridge } from '@/common';
 import { useLayoutContext } from '@/renderer/context/LayoutContext';
 import { useResizableSplit } from '@/renderer/hooks/useResizableSplit';
+import type React from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { PreviewConfirmModals, PreviewContextMenu, PreviewHistoryDropdown, PreviewTabs, PreviewToolbar, type CloseTabConfirmState, type ContextMenuState, type PreviewTab } from '.';
 import { DEFAULT_SPLIT_RATIO, FILE_TYPES_WITH_BUILTIN_OPEN, MAX_SPLIT_WIDTH, MIN_SPLIT_WIDTH } from '../../constants';
 import { usePreviewContext } from '../../context/PreviewContext';
-import { type PreviewToolbarExtras, PreviewToolbarExtrasProvider } from '../../context/PreviewToolbarExtrasContext';
+import { PreviewToolbarExtrasProvider, type PreviewToolbarExtras } from '../../context/PreviewToolbarExtrasContext';
 import { usePreviewHistory, usePreviewKeyboardShortcuts, useScrollSync, useTabOverflow, useThemeDetection } from '../../hooks';
 import HTMLEditor from '../editors/HTMLEditor';
 import MarkdownEditor from '../editors/MarkdownEditor';
@@ -27,7 +28,6 @@ import PDFPreview from '../viewers/PDFViewer';
 import PPTPreview from '../viewers/PPTViewer';
 import URLViewer from '../viewers/URLViewer';
 import WordPreview from '../viewers/WordViewer';
-import { type CloseTabConfirmState, type ContextMenuState, PreviewConfirmModals, PreviewContextMenu, PreviewHistoryDropdown, type PreviewTab, PreviewTabs, PreviewToolbar } from '.';
 
 /**
  * Main preview panel component

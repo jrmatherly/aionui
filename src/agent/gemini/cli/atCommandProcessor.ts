@@ -45,15 +45,13 @@ function truncateFileContent(content: string): { content: string; truncated: boo
 interface HandleAtCommandParams {
   query: string;
   config: Config;
-  addItem: (...args: unknown[]) => void; //@mark mock addItem it not use
+  addItem: (...args: unknown[]) => void; // mark: mock addItem is not used
   onDebugMessage: (message: string) => void;
   messageId: number;
   signal: AbortSignal;
   /**
-   * 懒加载模式：不立即读取文件内容，只传递文件路径提示给 agent
-   * 让 agent 自主决定何时使用 read_file 工具读取文件
-   * Lazy loading mode: don't read file content immediately, only pass file path hints to agent
-   * Let agent decide when to use read_file tool to read files
+   * Lazy loading mode: don't read file content immediately, only pass file path hints to agent.
+   * Let agent decide when to use read_file tool to read files.
    */
   lazyFileLoading?: boolean;
 }
@@ -360,8 +358,7 @@ export async function handleAtCommand({ query, config, addItem, onDebugMessage, 
 
   const processedQueryParts: PartUnion[] = [{ text: initialQueryText }];
 
-  // 懒加载模式：不读取文件内容，只传递文件路径提示给 agent
-  // Lazy loading mode: don't read file content, only pass file path hints to agent
+  // Lazy loading mode: don't read file content, only pass file path hints to agent.
   if (lazyFileLoading) {
     const workspaceDirs = config.getWorkspaceContext().getDirectories();
     const workspaceDir = workspaceDirs[0] || process.cwd();
@@ -427,7 +424,6 @@ export async function handleAtCommand({ query, config, addItem, onDebugMessage, 
       respect_git_ignore: respectFileIgnore.respectGitIgnore,
       respect_gemini_ignore: respectFileIgnore.respectGeminiIgnore,
     },
-    // Use configuration setting
   };
   let toolCallDisplay: IndividualToolCallDisplay;
 

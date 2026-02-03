@@ -4,17 +4,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import type { TProviderWithModel } from '@/common/storage';
-import { Type } from '@google/genai';
-import type { Config, ToolResult, ToolInvocation, ToolLocation, ToolCallConfirmationDetails, ToolResultDisplay, MessageBus } from '@office-ai/aioncli-core';
-import { BaseDeclarativeTool, BaseToolInvocation, Kind, getErrorMessage, ToolErrorType } from '@office-ai/aioncli-core';
-import * as fs from 'fs';
-import { jsonrepair } from 'jsonrepair';
-import * as path from 'path';
-import type OpenAI from 'openai';
 import { ClientFactory, type RotatingClient } from '@/common/ClientFactory';
 import type { UnifiedChatCompletionResponse } from '@/common/RotatingApiClient';
-import { IMAGE_EXTENSIONS, MIME_TYPE_MAP, MIME_TO_EXT_MAP, DEFAULT_IMAGE_EXTENSION } from '@/common/constants';
+import { DEFAULT_IMAGE_EXTENSION, IMAGE_EXTENSIONS, MIME_TO_EXT_MAP, MIME_TYPE_MAP } from '@/common/constants';
+import type { TProviderWithModel } from '@/common/storage';
+import { Type } from '@google/genai';
+import type { Config, MessageBus, ToolCallConfirmationDetails, ToolInvocation, ToolLocation, ToolResult, ToolResultDisplay } from '@office-ai/aioncli-core';
+import { BaseDeclarativeTool, BaseToolInvocation, Kind, ToolErrorType, getErrorMessage } from '@office-ai/aioncli-core';
+import * as fs from 'fs';
+import { jsonrepair } from 'jsonrepair';
+import type OpenAI from 'openai';
+import * as path from 'path';
 
 /**
  * Safely parse JSON string with jsonrepair fallback
@@ -328,23 +328,23 @@ class ImageGenerationInvocation extends BaseToolInvocation<ImageGenerationToolPa
         },
       };
     } else {
-      // 处理本地文件路径：支持绝对路径、相对路径和纯文件名
+      // Process local file path: supports absolute, relative, and pure filename
       let processedUri = imageUri;
 
-      // 如果文件名以@开头，去掉@符号
+      // Remove @ symbol if filename starts with it
       if (imageUri.startsWith('@')) {
         processedUri = imageUri.substring(1);
       }
 
       let fullPath = processedUri;
 
-      // 如果不是绝对路径，尝试拼接工作目录
+      // If not absolute path, try prepending workspace directory
       if (!path.isAbsolute(processedUri)) {
         const workspaceDir = this.config.getWorkingDir();
         fullPath = path.join(workspaceDir, processedUri);
       }
 
-      // 检查文件是否存在且为图片文件
+      // Check if file exists and is an image file
       try {
         // Check if file exists first
         await fs.promises.access(fullPath, fs.constants.F_OK);
@@ -365,9 +365,9 @@ class ImageGenerationInvocation extends BaseToolInvocation<ImageGenerationToolPa
           },
         };
       } catch (error) {
-        // 文件不存在或读取失败，提供详细的错误信息
+        // File does not exist or read failed; provide detailed error message
         const workspaceDir = this.config.getWorkingDir();
-        const possiblePaths = [imageUri, path.join(workspaceDir, imageUri)].filter((p, i, arr) => arr.indexOf(p) === i); // 去重
+        const possiblePaths = [imageUri, path.join(workspaceDir, imageUri)].filter((p, i, arr) => arr.indexOf(p) === i); // Deduplicate
 
         const errorMessage = error instanceof Error ? error.message : String(error);
 
@@ -467,7 +467,7 @@ class ImageGenerationInvocation extends BaseToolInvocation<ImageGenerationToolPa
       const completion: UnifiedChatCompletionResponse = await client.createChatCompletion(
         {
           model: this.currentModel,
-          messages: messages as any, // 必要的类型兼容：OpenAI原生格式
+          messages: messages as any, // Required type compatibility: OpenAI native format
         },
         {
           signal,
@@ -494,7 +494,7 @@ class ImageGenerationInvocation extends BaseToolInvocation<ImageGenerationToolPa
       let images = choice.message.images;
 
       // If no images field, try to extract from markdown in content
-      // Antigravity proxy returns images as ![image](data:mime;base64,xxx) in content
+      // Proxy returns images as ![image](data:mime;base64,xxx) in content
       if ((!images || images.length === 0) && responseText) {
         const markdownImageRegex = /!\[image\]\((data:image\/[^;]+;base64,[^)]+)\)/g;
         const matches = [...responseText.matchAll(markdownImageRegex)];

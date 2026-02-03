@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import type { SelectionPosition } from '@/renderer/hooks/useTextSelection';
 import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import type { SelectionPosition } from '@/renderer/hooks/useTextSelection';
 import { usePreviewContext } from '../../context/PreviewContext';
 
 interface SelectionToolbarProps {

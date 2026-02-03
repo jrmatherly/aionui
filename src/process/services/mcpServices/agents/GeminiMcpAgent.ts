@@ -6,17 +6,17 @@
 
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import type { IMcpServer } from '../../../../common/storage';
 import type { McpOperationResult } from '../McpProtocol';
 import { AbstractMcpAgent } from '../McpProtocol';
-import type { IMcpServer } from '../../../../common/storage';
 
 const execAsync = promisify(exec);
 
 /**
- * Google Gemini CLI MCP代理实现
+ * Google Gemini CLI MCP Agent Implementation
  *
- * 使用 Google 官方的 Gemini CLI 的 mcp 子命令管理 MCP 服务器配置
- * 注意：这是管理真实的 Google Gemini CLI，不是 @office-ai/aioncli-core
+ * Uses the official Google Gemini CLI's mcp subcommand to manage MCP server configuration
+ * Note: This manages the real Google Gemini CLI, not @office-ai/aioncli-core
  */
 export class GeminiMcpAgent extends AbstractMcpAgent {
   constructor() {
@@ -24,12 +24,12 @@ export class GeminiMcpAgent extends AbstractMcpAgent {
   }
 
   getSupportedTransports(): string[] {
-    // Google Gemini CLI 支持 stdio, sse, http 传输类型
+    // Google Gemini CLI supports stdio, sse, http transport types
     return ['stdio', 'sse', 'http'];
   }
 
   /**
-   * 检测 Google Gemini CLI 的 MCP 配置
+   * Detect Google Gemini CLI MCP configuration
    */
   detectMcpServers(_cliPath?: string): Promise<IMcpServer[]> {
     const detectOperation = async () => {
@@ -42,25 +42,25 @@ export class GeminiMcpAgent extends AbstractMcpAgent {
             console.log('[GeminiMcpAgent] Starting MCP detection...');
           } else {
             console.log(`[GeminiMcpAgent] Retrying detection (attempt ${attempt}/${maxRetries})...`);
-            // 如果不是第一次尝试，添加短暂延迟避免与其他操作冲突
+            // If not the first attempt, add a short delay to avoid conflicts with other operations
             await new Promise((resolve) => setTimeout(resolve, 500));
           }
 
-          // 使用 Gemini CLI 命令获取 MCP 配置
+          // Use Gemini CLI command to get MCP configuration
           const { stdout: result } = await execAsync('gemini mcp list', { timeout: this.timeout });
 
-          // 如果没有配置任何MCP服务器，返回空数组
+          // If no MCP servers are configured, return empty array
           if (result.includes('No MCP servers configured') || !result.trim()) {
             console.log('[GeminiMcpAgent] No MCP servers configured');
             return [];
           }
 
-          // 解析文本输出
+          // Parse text output
           const mcpServers: IMcpServer[] = [];
           const lines = result.split('\n');
 
           for (const line of lines) {
-            // 清除 ANSI 颜色代码 (支持多种格式)
+            // Remove ANSI color codes (supports multiple formats)
             /* eslint-disable no-control-regex */
             const cleanLine = line
               .replace(/\u001b\[[0-9;]*m/g, '')
@@ -68,7 +68,7 @@ export class GeminiMcpAgent extends AbstractMcpAgent {
               .trim();
             /* eslint-enable no-control-regex */
 
-            // 查找格式如: "✓ 12306-mcp: npx -y 12306-mcp (stdio) - Connected"
+            // Find format like: "✓ 12306-mcp: npx -y 12306-mcp (stdio) - Connected"
             const match = cleanLine.match(/[✓✗]\s+([^:]+):\s+(.+?)\s+\(([^)]+)\)\s*-\s*(Connected|Disconnected)/);
             if (match) {
               const [, name, commandStr, transport, status] = match;
@@ -78,7 +78,7 @@ export class GeminiMcpAgent extends AbstractMcpAgent {
 
               const transportType = transport as 'stdio' | 'sse' | 'http';
 
-              // 构建transport对象
+              // Build transport object
               const transportObj: any =
                 transportType === 'stdio'
                   ? {
@@ -97,7 +97,7 @@ export class GeminiMcpAgent extends AbstractMcpAgent {
                         url: commandStr.trim(),
                       };
 
-              // 尝试获取tools信息（对所有已连接的服务器）
+              // Try to get tools info (for all connected servers)
               let tools: Array<{ name: string; description?: string }> = [];
               if (status === 'Connected') {
                 try {
@@ -144,7 +144,7 @@ export class GeminiMcpAgent extends AbstractMcpAgent {
 
           console.log(`[GeminiMcpAgent] Detection complete: found ${mcpServers.length} server(s)`);
 
-          // 验证结果：如果输出包含"Configured MCP servers:"但没检测到任何服务器，可能被截断
+          // Validate result: if output contains "Configured MCP servers:" but no servers detected, it may be truncated
           const hasConfigHeader = result.includes('Configured MCP servers:');
           const hasServerLines = lines.some((line) => line.match(/[✓✗]\s+[^:]+:/));
 
@@ -152,46 +152,46 @@ export class GeminiMcpAgent extends AbstractMcpAgent {
             throw new Error('Output appears truncated: found server markers but parsed 0 servers');
           }
 
-          // 成功，返回结果
+          // Success, return result
           return mcpServers;
         } catch (error) {
           lastError = error instanceof Error ? error : new Error(String(error));
           console.warn(`[GeminiMcpAgent] Detection attempt ${attempt} failed:`, lastError.message);
 
-          // 如果还有重试机会，继续下一次尝试
+          // If there are retry attempts remaining, continue to next attempt
           if (attempt < maxRetries) {
             continue;
           }
         }
       }
 
-      // 所有重试都失败了
+      // All retry attempts failed
       console.warn('[GeminiMcpAgent] All detection attempts failed. Last error:', lastError);
       return [];
     };
 
-    // 使用命名函数以便在日志中显示
+    // Use named function for better logging
     Object.defineProperty(detectOperation, 'name', { value: 'detectMcpServers' });
     return this.withLock(detectOperation);
   }
 
   /**
-   * 安装 MCP 服务器到 Google Gemini CLI
+   * Install MCP servers to Google Gemini CLI
    */
   installMcpServers(mcpServers: IMcpServer[]): Promise<McpOperationResult> {
     const installOperation = async () => {
       try {
         for (const server of mcpServers) {
           if (server.transport.type === 'stdio') {
-            // 使用 Gemini CLI 添加 MCP 服务器
-            // 格式: gemini mcp add <name> <command> [args...]
+            // Use Gemini CLI to add MCP server
+            // Format: gemini mcp add <name> <command> [args...]
             const args = server.transport.args?.join(' ') || '';
             let command = `gemini mcp add "${server.name}" "${server.transport.command}"`;
             if (args) {
               command += ` ${args}`;
             }
 
-            // 添加 scope 参数（user 或 project）
+            // Add scope parameter (user or project)
             command += ' -s user';
 
             try {
@@ -199,16 +199,16 @@ export class GeminiMcpAgent extends AbstractMcpAgent {
               console.log(`[GeminiMcpAgent] Added MCP server: ${server.name}`);
             } catch (error) {
               console.warn(`Failed to add MCP ${server.name} to Gemini:`, error);
-              // 继续处理其他服务器
+              // Continue processing other servers
             }
           } else if (server.transport.type === 'sse' || server.transport.type === 'http') {
-            // 处理 SSE/HTTP 传输类型
+            // Handle SSE/HTTP transport types
             let command = `gemini mcp add "${server.name}" "${server.transport.url}"`;
 
-            // 添加 transport 类型
+            // Add transport type
             command += ` --transport ${server.transport.type}`;
 
-            // 添加 scope 参数
+            // Add scope parameter
             command += ' -s user';
 
             try {
@@ -232,13 +232,13 @@ export class GeminiMcpAgent extends AbstractMcpAgent {
   }
 
   /**
-   * 从 Google Gemini CLI 删除 MCP 服务器
+   * Remove MCP server from Google Gemini CLI
    */
   removeMcpServer(mcpServerName: string): Promise<McpOperationResult> {
     const removeOperation = async () => {
       try {
-        // 使用 Gemini CLI 命令删除 MCP 服务器
-        // 首先尝试 user scope
+        // Use Gemini CLI command to remove MCP server
+        // First try user scope
         try {
           const removeCommand = `gemini mcp remove "${mcpServerName}" -s user`;
           const result = await execAsync(removeCommand, { timeout: 5000 });
@@ -247,13 +247,13 @@ export class GeminiMcpAgent extends AbstractMcpAgent {
             console.log(`[GeminiMcpAgent] Removed MCP server: ${mcpServerName}`);
             return { success: true };
           } else if (result.stdout && result.stdout.includes('not found')) {
-            // 尝试 project scope
+            // Try project scope
             throw new Error('Server not found in user scope');
           } else {
             return { success: true };
           }
         } catch (userError) {
-          // 尝试 project scope
+          // Try project scope
           try {
             const removeCommand = `gemini mcp remove "${mcpServerName}" -s project`;
             const result = await execAsync(removeCommand, { timeout: 5000 });
@@ -262,11 +262,11 @@ export class GeminiMcpAgent extends AbstractMcpAgent {
               console.log(`[GeminiMcpAgent] Removed MCP server from project: ${mcpServerName}`);
               return { success: true };
             } else {
-              // 服务器不存在，也认为成功
+              // Server doesn't exist, also consider it success
               return { success: true };
             }
           } catch (projectError) {
-            // 如果服务器不存在，也认为成功
+            // If server doesn't exist, also consider it success
             if (userError instanceof Error && userError.message.includes('not found')) {
               return { success: true };
             }

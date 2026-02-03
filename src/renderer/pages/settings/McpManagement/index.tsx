@@ -1,12 +1,12 @@
-import { Button, Collapse, Modal, Dropdown, Menu } from '@arco-design/web-react';
-import { Plus, Down } from '@icon-park/react';
+import { acpConversation } from '@/common/ipcBridge';
+import type { IMcpServer } from '@/common/storage';
+import { useMcpAgentStatus, useMcpConnection, useMcpModal, useMcpOAuth, useMcpOperations, useMcpServerCRUD, useMcpServers } from '@/renderer/hooks/mcp';
+import { Button, Collapse, Dropdown, Menu, Modal } from '@arco-design/web-react';
+import { Down, Plus } from '@icon-park/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import type { IMcpServer } from '@/common/storage';
-import { acpConversation } from '@/common/ipcBridge';
 import AddMcpServerModal from '../components/AddMcpServerModal';
 import McpServerItem from './McpServerItem';
-import { useMcpServers, useMcpAgentStatus, useMcpOperations, useMcpConnection, useMcpModal, useMcpServerCRUD, useMcpOAuth } from '@/renderer/hooks/mcp';
 
 interface McpManagementProps {
   message: ReturnType<typeof import('@arco-design/web-react').Message.useMessage>[0];
@@ -15,7 +15,7 @@ interface McpManagementProps {
 const McpManagement: React.FC<McpManagementProps> = ({ message }) => {
   const { t } = useTranslation();
 
-  // 使用自定义hooks管理各种状态和操作
+  // Use custom hooks to manage various states and operations
   const { mcpServers, saveMcpServers } = useMcpServers();
   const { agentInstallStatus, setAgentInstallStatus, isServerLoading, checkSingleServerInstallStatus } = useMcpAgentStatus();
   const { syncMcpToAgents, removeMcpFromAgents } = useMcpOperations(mcpServers, message);
@@ -23,7 +23,7 @@ const McpManagement: React.FC<McpManagementProps> = ({ message }) => {
   // OAuth hook
   const { oauthStatus, loggingIn, checkOAuthStatus, login } = useMcpOAuth();
 
-  // 当需要认证时的回调
+  // Callback when authentication is required
   const handleAuthRequired = React.useCallback(
     (server: IMcpServer) => {
       void checkOAuthStatus(server);
@@ -35,14 +35,14 @@ const McpManagement: React.FC<McpManagementProps> = ({ message }) => {
   const { showMcpModal, editingMcpServer, deleteConfirmVisible, serverToDelete, mcpCollapseKey, showAddMcpModal, showEditMcpModal, hideMcpModal, showDeleteConfirm, hideDeleteConfirm, toggleServerCollapse } = useMcpModal();
   const { handleAddMcpServer, handleBatchImportMcpServers, handleEditMcpServer, handleDeleteMcpServer, handleToggleMcpServer } = useMcpServerCRUD(mcpServers, saveMcpServers, syncMcpToAgents, removeMcpFromAgents, checkSingleServerInstallStatus, setAgentInstallStatus, message);
 
-  // OAuth 登录处理
+  // OAuth login handler
   const handleOAuthLogin = React.useCallback(
     async (server: IMcpServer) => {
       const result = await login(server);
 
       if (result.success) {
         message.success(`${server.name}: ${t('settings.mcpOAuthLoginSuccess') || 'Login successful'}`);
-        // 登录成功后重新测试连接
+        // Re-test connection after successful login
         void handleTestMcpConnection(server);
       } else {
         message.error(`${server.name}: ${result.error || t('settings.mcpOAuthLoginFailed') || 'Login failed'}`);
@@ -51,20 +51,18 @@ const McpManagement: React.FC<McpManagementProps> = ({ message }) => {
     [login, message, t, handleTestMcpConnection]
   );
 
-  // 包装添加服务器，添加后自动测试连接
+  // Wrap add server, auto-test connection after adding
   const wrappedHandleAddMcpServer = React.useCallback(
     async (serverData: Omit<IMcpServer, 'id' | 'createdAt' | 'updatedAt'>) => {
       const addedServer = await handleAddMcpServer(serverData);
       if (addedServer) {
-        // 直接使用返回的服务器对象进行测试，避免闭包问题
+        // Use returned server object directly for testing to avoid closure issues
         void handleTestMcpConnection(addedServer);
-        // 对于 HTTP/SSE 服务器，检查 OAuth 状态
+        // For HTTP/SSE servers, check OAuth status
         if (addedServer.transport.type === 'http' || addedServer.transport.type === 'sse') {
           void checkOAuthStatus(addedServer);
         }
-        // 修复 #518: 使用实际服务器的 enabled 状态而不是输入数据的状态
         // Fix #518: Use actual server enabled state instead of input data
-        // 因为服务器可能在添加过程中被修改，需要使用最终的实际状态
         // The server may be modified during addition, need to use final actual state
         if (addedServer.enabled) {
           void syncMcpToAgents(addedServer, true);
@@ -74,18 +72,17 @@ const McpManagement: React.FC<McpManagementProps> = ({ message }) => {
     [handleAddMcpServer, handleTestMcpConnection, checkOAuthStatus, syncMcpToAgents]
   );
 
-  // 包装编辑服务器，编辑后自动测试连接
+  // Wrap edit server, auto-test connection after editing
   const wrappedHandleEditMcpServer = React.useCallback(
     async (editingMcpServer: IMcpServer | undefined, serverData: Omit<IMcpServer, 'id' | 'createdAt' | 'updatedAt'>) => {
       const updatedServer = await handleEditMcpServer(editingMcpServer, serverData);
       if (updatedServer) {
-        // 直接使用返回的服务器对象进行测试
+        // Use returned server object directly for testing
         void handleTestMcpConnection(updatedServer);
-        // 对于 HTTP/SSE 服务器，检查 OAuth 状态
+        // For HTTP/SSE servers, check OAuth status
         if (updatedServer.transport.type === 'http' || updatedServer.transport.type === 'sse') {
           void checkOAuthStatus(updatedServer);
         }
-        // 修复 #518: 使用实际服务器的 enabled 状态而不是输入数据的状态
         // Fix #518: Use actual server enabled state instead of input data
         if (updatedServer.enabled) {
           void syncMcpToAgents(updatedServer, true);
@@ -95,14 +92,14 @@ const McpManagement: React.FC<McpManagementProps> = ({ message }) => {
     [handleEditMcpServer, handleTestMcpConnection, checkOAuthStatus, syncMcpToAgents]
   );
 
-  // 包装批量导入，导入后自动测试连接
+  // Wrap batch import, auto-test connection after importing
   const wrappedHandleBatchImportMcpServers = React.useCallback(
     async (serversData: Omit<IMcpServer, 'id' | 'createdAt' | 'updatedAt'>[]) => {
       const addedServers = await handleBatchImportMcpServers(serversData);
       if (addedServers && addedServers.length > 0) {
         addedServers.forEach((server) => {
           void handleTestMcpConnection(server);
-          // 对于 HTTP/SSE 服务器，检查 OAuth 状态
+          // For HTTP/SSE servers, check OAuth status
           if (server.transport.type === 'http' || server.transport.type === 'sse') {
             void checkOAuthStatus(server);
           }
@@ -115,7 +112,7 @@ const McpManagement: React.FC<McpManagementProps> = ({ message }) => {
     [handleBatchImportMcpServers, handleTestMcpConnection, checkOAuthStatus, syncMcpToAgents]
   );
 
-  // 检测可用agents的状态
+  // Detect available agents status
   const [detectedAgents, setDetectedAgents] = React.useState<Array<{ backend: string; name: string }>>([]);
   const [importMode, setImportMode] = React.useState<'json' | 'oneclick'>('json');
 
@@ -133,7 +130,7 @@ const McpManagement: React.FC<McpManagementProps> = ({ message }) => {
     void loadAgents();
   }, []);
 
-  // 初始化时检查所有 HTTP/SSE 服务器的 OAuth 状态
+  // Check OAuth status for all HTTP/SSE servers on initialization
   React.useEffect(() => {
     const httpServers = mcpServers.filter((s) => s.transport.type === 'http' || s.transport.type === 'sse');
     if (httpServers.length > 0) {
@@ -143,7 +140,7 @@ const McpManagement: React.FC<McpManagementProps> = ({ message }) => {
     }
   }, [mcpServers, checkOAuthStatus]);
 
-  // 删除确认处理
+  // Delete confirmation handler
   const handleConfirmDelete = async () => {
     if (!serverToDelete) return;
     hideDeleteConfirm();

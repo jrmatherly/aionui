@@ -8,6 +8,7 @@ Returns exit code 0 if fillable fields found, 1 if not.
 """
 
 import sys
+
 from pypdf import PdfReader
 
 
@@ -20,7 +21,7 @@ def check_fillable_fields(pdf_path: str) -> bool:
         if fields:
             print(f"Found {len(fields)} fillable form field(s):")
             for name, field in fields.items():
-                field_type = field.get('/FT', 'Unknown')
+                field_type = field.get("/FT", "Unknown")
                 print(f"  - {name}: {field_type}")
             return True
         else:

@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import type { IRegisteredAction, ActionHandler } from './types';
-import { ChatActionNames, createSuccessResponse, createErrorResponse } from './types';
-import { createResponseActionsKeyboard, createErrorRecoveryKeyboard } from '../plugins/telegram/TelegramKeyboards';
 import { getChannelMessageService } from '../agent/ChannelMessageService';
+import { createErrorRecoveryKeyboard, createResponseActionsKeyboard } from '../plugins/telegram/TelegramKeyboards';
+import type { ActionHandler, IRegisteredAction } from './types';
+import { ChatActionNames, createErrorResponse, createSuccessResponse } from './types';
 
 /**
  * ChatActions - Handlers for chat/AI-related actions
@@ -100,12 +100,10 @@ export const handleToolConfirm: ActionHandler = async (context, params) => {
   }
 
   try {
-    // 只调用 confirm，不发送消息
     // Only call confirm, don't send message - agent will continue and send updates
     await getChannelMessageService().confirm(conversationId, callId, value);
     console.log(`[ChatActions] Tool confirmation sent successfully`);
 
-    // 返回成功但不带消息，agent 会继续执行并通过流回调更新消息
     // Return success without message, agent will continue and update via stream callback
     return { success: true };
   } catch (error: any) {

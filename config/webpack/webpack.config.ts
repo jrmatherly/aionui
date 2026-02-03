@@ -42,14 +42,11 @@ export const mainConfig: Configuration = {
   externals: {
     'better-sqlite3': 'commonjs better-sqlite3',
     'node-pty': 'commonjs node-pty',
-    // tree-sitter 相关依赖需要作为外部模块，避免 webpack 处理 .wasm 文件
     // tree-sitter dependencies need to be external to avoid webpack processing .wasm files
     'tree-sitter': 'commonjs tree-sitter',
     'tree-sitter-bash': 'commonjs tree-sitter-bash',
-    // web-tree-sitter 是 aioncli-core 的嵌套依赖
     // web-tree-sitter is a nested dependency of aioncli-core
     'web-tree-sitter': 'commonjs web-tree-sitter',
-    // 处理 aioncli-core 中的 ?binary WASM 导入
     // Handle ?binary WASM imports from aioncli-core - let them fail so fallback can work
     'web-tree-sitter/tree-sitter.wasm?binary': 'commonjs web-tree-sitter/tree-sitter.wasm',
     'tree-sitter-bash/tree-sitter-bash.wasm?binary': 'commonjs tree-sitter-bash/tree-sitter-bash.wasm',

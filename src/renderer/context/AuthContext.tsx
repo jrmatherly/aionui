@@ -1,5 +1,5 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { withCsrfToken } from '@/webserver/middleware/csrfClient';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 type AuthStatus = 'checking' | 'authenticated' | 'unauthenticated';
 
@@ -107,7 +107,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         return { success: true };
       }
 
-      // P1 安全修复：登录请求需要 CSRF Token / P1 Security fix: Login needs CSRF token
+      // P1 Security fix: Login needs CSRF token
       const response = await fetch('/login', {
         method: 'POST',
         headers: {
@@ -171,7 +171,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
     try {
       await fetch('/logout', {
         method: 'POST',
-        // Logout also needs CSRF token / 登出同样需要 CSRF Token
+        // Logout also needs CSRF token
         headers: {
           'Content-Type': 'application/json',
         },

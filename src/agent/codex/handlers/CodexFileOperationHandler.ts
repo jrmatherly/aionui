@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { uuid } from '@/common/utils';
 import type { ICodexMessageEmitter } from '@/agent/codex/messaging/CodexMessageEmitter';
-import type { FileChange } from '@/common/codex/types';
 import { ipcBridge } from '@/common';
+import type { FileChange } from '@/common/codex/types';
+import { uuid } from '@/common/utils';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -21,8 +21,8 @@ export interface FileOperation {
 }
 
 /**
- * CodexFileOperationHandler - 参考 ACP 的文件操作能力
- * 提供统一的文件读写、权限管理和操作反馈
+ * CodexFileOperationHandler - Based on ACP's file operation capabilities
+ * Provides unified file read/write, permission management and operation feedback
  */
 export class CodexFileOperationHandler {
   private readonly pendingOperations = new Map<string, { resolve: (result: unknown) => void; reject: (error: unknown) => void }>();
@@ -37,7 +37,7 @@ export class CodexFileOperationHandler {
   }
 
   /**
-   * 处理文件操作请求 - 参考 ACP 的 handleFileOperation
+   * Handle file operation request - Based on ACP's handleFileOperation
    */
   async handleFileOperation(operation: FileOperation): Promise<unknown> {
     // Validate inputs
@@ -66,20 +66,19 @@ export class CodexFileOperationHandler {
   }
 
   /**
-   * 处理文件写入操作
+   * Handle file write operation
    */
   private async handleFileWrite(operation: FileOperation): Promise<void> {
     const fullPath = this.resolveFilePath(operation.path);
     const content = operation.content || '';
 
-    // 确保目录存在
+    // Ensure directory exists
     const dir = path.dirname(fullPath);
     await fs.mkdir(dir, { recursive: true });
 
-    // 写入文件
+    // Write file
     await fs.writeFile(fullPath, content, 'utf-8');
 
-    // 发送流式内容更新事件到预览面板（用于实时更新）
     // Send streaming content update to preview panel (for real-time updates)
     try {
       const eventData = {
@@ -95,7 +94,7 @@ export class CodexFileOperationHandler {
       console.error('[CodexFileOperationHandler] ❌ Failed to emit file stream update:', error);
     }
 
-    // 发送操作反馈消息
+    // Send operation feedback message
     this.emitFileOperationMessage({
       method: 'fs/write_text_file',
       path: operation.path,
@@ -104,7 +103,7 @@ export class CodexFileOperationHandler {
   }
 
   /**
-   * 处理文件读取操作
+   * Handle file read operation
    */
   private async handleFileRead(operation: FileOperation): Promise<string> {
     const fullPath = this.resolveFilePath(operation.path);
@@ -112,7 +111,7 @@ export class CodexFileOperationHandler {
     try {
       const content = await fs.readFile(fullPath, 'utf-8');
 
-      // 发送操作反馈消息
+      // Send operation feedback message
       this.emitFileOperationMessage({
         method: 'fs/read_text_file',
         path: operation.path,
@@ -128,7 +127,7 @@ export class CodexFileOperationHandler {
   }
 
   /**
-   * 处理文件删除操作
+   * Handle file delete operation
    */
   private async handleFileDelete(operation: FileOperation): Promise<void> {
     const fullPath = this.resolveFilePath(operation.path);
@@ -136,7 +135,6 @@ export class CodexFileOperationHandler {
     try {
       await fs.unlink(fullPath);
 
-      // 发送流式删除事件到预览面板（用于关闭预览）
       // Send streaming delete event to preview panel (to close preview)
       try {
         ipcBridge.fileStream.contentUpdate.emit({
@@ -150,30 +148,30 @@ export class CodexFileOperationHandler {
         console.error('[CodexFileOperationHandler] Failed to emit file stream delete:', error);
       }
 
-      // 发送操作反馈消息
+      // Send operation feedback message
       this.emitFileOperationMessage({
         method: 'fs/delete_file',
         path: operation.path,
       });
     } catch (error) {
       if (error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT') {
-        return; // 文件不存在，视为成功
+        return; // File doesn't exist, treat as success
       }
       throw error;
     }
   }
 
   /**
-   * 处理通用文件操作
+   * Handle generic file operation
    */
   private handleGenericFileOperation(operation: FileOperation): Promise<void> {
-    // 发送通用操作反馈消息
+    // Send generic operation feedback message
     this.emitFileOperationMessage(operation);
     return Promise.resolve();
   }
 
   /**
-   * 解析文件路径 - 参考 ACP 的路径处理逻辑
+   * Resolve file path - Based on ACP's path handling logic
    */
   private resolveFilePath(filePath: string): string {
     if (path.isAbsolute(filePath)) {
@@ -183,7 +181,7 @@ export class CodexFileOperationHandler {
   }
 
   /**
-   * 处理智能文件引用 - 参考 ACP 的 @filename 处理
+   * Process smart file references - Based on ACP's @filename handling
    */
   processFileReferences(content: string, files?: string[]): string {
     if (!files || files.length === 0 || !content.includes('@')) {
@@ -192,12 +190,12 @@ export class CodexFileOperationHandler {
 
     let processedContent = content;
 
-    // 获取实际文件名
+    // Get actual filenames
     const actualFilenames = files.map((filePath) => {
       return filePath.split('/').pop() || filePath;
     });
 
-    // 替换 @actualFilename 为 actualFilename
+    // Replace @actualFilename with actualFilename
     actualFilenames.forEach((filename) => {
       const atFilename = `@${filename}`;
       if (processedContent.includes(atFilename)) {
@@ -209,7 +207,7 @@ export class CodexFileOperationHandler {
   }
 
   /**
-   * 发送文件操作消息到 UI - 参考 ACP 的 formatFileOperationMessage
+   * Send file operation message to UI - Based on ACP's formatFileOperationMessage
    */
   private emitFileOperationMessage(operation: FileOperation): void {
     const formattedMessage = this.formatFileOperationMessage(operation);
@@ -223,7 +221,7 @@ export class CodexFileOperationHandler {
   }
 
   /**
-   * 格式化文件操作消息 - 参考 ACP 的实现
+   * Format file operation message - Based on ACP's implementation
    */
   private formatFileOperationMessage(operation: FileOperation): string {
     switch (operation.method) {
@@ -245,7 +243,7 @@ export class CodexFileOperationHandler {
   }
 
   /**
-   * 发送错误消息
+   * Send error message
    */
   private emitErrorMessage(error: string): void {
     this.messageEmitter.emitAndPersistMessage({
@@ -257,7 +255,7 @@ export class CodexFileOperationHandler {
   }
 
   /**
-   * 批量应用文件更改 - 参考 ACP 和当前 CodexAgentManager 的 applyPatchChanges
+   * Apply batch file changes - Based on ACP and current CodexAgentManager's applyPatchChanges
    */
   async applyBatchChanges(changes: Record<string, FileChange>): Promise<void> {
     const operations: Promise<void>[] = [];
@@ -280,7 +278,7 @@ export class CodexFileOperationHandler {
   }
 
   private getChangeAction(change: FileChange): 'create' | 'write' | 'delete' {
-    // 现代 FileChange 结构检查
+    // Modern FileChange structure check
     if (typeof change === 'object' && change !== null && 'type' in change) {
       const type = change.type;
       if (type === 'add') return 'create';
@@ -288,7 +286,7 @@ export class CodexFileOperationHandler {
       if (type === 'update') return 'write';
     }
 
-    // 兼容旧格式 - 类型安全的检查
+    // Backward compatibility with old format - type-safe check
     if (typeof change === 'object' && change !== null && 'action' in change) {
       const action = change.action;
       if (action === 'create' || action === 'modify' || action === 'delete' || action === 'rename') {
@@ -307,10 +305,10 @@ export class CodexFileOperationHandler {
   }
 
   /**
-   * 清理资源
+   * Clean up resources
    */
   cleanup(): void {
-    // 拒绝所有待处理的操作
+    // Reject all pending operations
     for (const [_operationId, { reject }] of this.pendingOperations) {
       reject(new Error('File operation handler is being cleaned up'));
     }

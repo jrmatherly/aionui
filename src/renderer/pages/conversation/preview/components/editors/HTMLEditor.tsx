@@ -5,11 +5,11 @@
  */
 
 import { useThemeContext } from '@/renderer/context/ThemeContext';
-import { html } from '@codemirror/lang-html';
 import { history, historyKeymap } from '@codemirror/commands';
+import { html } from '@codemirror/lang-html';
 import { keymap } from '@codemirror/view';
 import CodeMirror from '@uiw/react-codemirror';
-import React, { useMemo, useRef, useCallback } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { useCodeMirrorScroll, useScrollSyncTarget } from '../../hooks/useScrollSyncHelpers';
 
 interface HTMLEditorProps {

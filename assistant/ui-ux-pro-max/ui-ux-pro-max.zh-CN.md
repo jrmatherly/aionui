@@ -103,6 +103,7 @@ python3 assistant/ui-ux-pro-max/scripts/search.py "<关键词>" --domain <域名
    ```
 
 8. **技术栈** - 获取特定技术栈的指南（默认：html-tailwind）
+
    ```bash
    python3 assistant/ui-ux-pro-max/scripts/search.py "layout responsive" --stack html-tailwind
    ```

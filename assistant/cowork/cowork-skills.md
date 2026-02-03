@@ -732,7 +732,7 @@ triggers: multiple files, batch, parallel, concurrent, all files, bulk, mass, æ‰
 
 **Parallel Execution Examples**:
 
-```
+```text
 âœ“ PARALLEL - Independent reads:
 Read src/a.ts, Read src/b.ts, Read src/c.ts
 

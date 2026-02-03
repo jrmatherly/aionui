@@ -1,13 +1,13 @@
 import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import { initReactI18next } from 'react-i18next';
 
-import zhCN from './locales/zh-CN.json';
+import { ConfigStorage } from '@/common/storage';
 import enUS from './locales/en-US.json';
 import jaJP from './locales/ja-JP.json';
-import zhTW from './locales/zh-TW.json';
 import koKR from './locales/ko-KR.json';
-import { ConfigStorage } from '@/common/storage';
+import zhCN from './locales/zh-CN.json';
+import zhTW from './locales/zh-TW.json';
 
 const resources = {
   'zh-CN': {

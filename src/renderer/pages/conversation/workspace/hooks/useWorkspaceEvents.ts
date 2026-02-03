@@ -32,14 +32,12 @@ interface UseWorkspaceEventsOptions {
 }
 
 /**
- * useWorkspaceEvents - 管理所有事件监听器
- * Manage all event listeners
+ * useWorkspaceEvents - Manage all event listeners
  */
 export function useWorkspaceEvents(options: UseWorkspaceEventsOptions) {
   const { conversation_id, eventPrefix, refreshWorkspace, clearSelection, setFiles, setSelected, setExpandedKeys, setTreeKey, selectedNodeRef, selectedKeysRef, closeContextMenu, setContextMenu, closeRenameModal, closeDeleteModal } = options;
 
   /**
-   * 监听对话切换事件 - 重置所有状态
    * Listen to conversation switch event - reset all states
    */
   useEffect(() => {
@@ -57,7 +55,6 @@ export function useWorkspaceEvents(options: UseWorkspaceEventsOptions) {
   }, [conversation_id, eventPrefix, refreshWorkspace, setFiles, setSelected, setExpandedKeys, setTreeKey, selectedNodeRef, selectedKeysRef, setContextMenu, closeRenameModal, closeDeleteModal]);
 
   /**
-   * 监听 Agent 响应流 - 自动刷新工作空间
    * Listen to agent response stream - auto refresh workspace
    */
   useEffect(() => {
@@ -88,19 +85,16 @@ export function useWorkspaceEvents(options: UseWorkspaceEventsOptions) {
   }, [conversation_id, eventPrefix, refreshWorkspace]);
 
   /**
-   * 监听手动刷新工作空间事件
    * Listen to manual refresh workspace event
    */
   useAddEventListener(`${eventPrefix}.workspace.refresh`, () => refreshWorkspace(), [refreshWorkspace]);
 
   /**
-   * 监听清空选中文件事件（发送消息后）
    * Listen to clear selected files event (after sending message)
    */
   useAddEventListener(`${eventPrefix}.selected.file.clear`, () => clearSelection(), [clearSelection]);
 
   /**
-   * 监听搜索工作空间响应
    * Listen to search workspace response
    */
   useEffect(() => {
@@ -111,7 +105,6 @@ export function useWorkspaceEvents(options: UseWorkspaceEventsOptions) {
   }, [setFiles]);
 
   /**
-   * 监听右键菜单外部点击 - 关闭菜单
    * Listen to clicks outside context menu - close menu
    */
   useEffect(() => {

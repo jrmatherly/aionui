@@ -4,19 +4,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import type { IMcpServer } from '@/common/storage';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import type { McpOperationResult } from '../McpProtocol';
 import { AbstractMcpAgent } from '../McpProtocol';
-import type { IMcpServer } from '@/common/storage';
 
 const execAsync = promisify(exec);
 
 /**
- * Codex CLI MCP代理实现
+ * Codex CLI MCP Agent Implementation
  *
- * 使用 Codex CLI 的 mcp 子命令管理 MCP 服务器配置
- * 注意：Codex CLI 目前只支持 stdio 传输类型
+ * Uses the Codex CLI's mcp subcommand to manage MCP server configuration
+ * Note: Codex CLI currently only supports stdio transport type
  */
 export class CodexMcpAgent extends AbstractMcpAgent {
   constructor() {
@@ -24,41 +24,41 @@ export class CodexMcpAgent extends AbstractMcpAgent {
   }
 
   getSupportedTransports(): string[] {
-    // Codex CLI 目前只支持 stdio 传输类型
+    // Codex CLI currently only supports stdio transport type
     return ['stdio'];
   }
 
   /**
-   * 检测 Codex CLI 的 MCP 配置
+   * Detect Codex CLI MCP configuration
    */
   detectMcpServers(_cliPath?: string): Promise<IMcpServer[]> {
     const detectOperation = async () => {
       try {
-        // 使用 Codex CLI 命令获取 MCP 配置
+        // Use Codex CLI command to get MCP configuration
         const { stdout: result } = await execAsync('codex mcp list', { timeout: this.timeout });
 
-        // 如果没有配置任何MCP服务器，返回空数组
+        // If no MCP servers are configured, return empty array
         if (result.includes('No MCP servers configured') || !result.trim()) {
           return [];
         }
 
-        // 解析表格格式输出
-        // 格式示例:
+        // Parse table format output
+        // Example format:
         // Name  Command  Args      Env
         // Bazi  npx      bazi-mcp  -
         const mcpServers: IMcpServer[] = [];
         const lines = result.split('\n');
 
-        // 跳过表头行（第一行）
+        // Skip header row (first line)
         for (let i = 1; i < lines.length; i++) {
           const line = lines[i];
-          // 清除 ANSI 颜色代码
+          // Remove ANSI color codes
           // eslint-disable-next-line no-control-regex
           const cleanLine = line.replace(/\u001b\[[0-?]*[ -/]*[@-~]/g, '').trim();
 
           if (!cleanLine) continue;
 
-          // 使用正则表达式解析表格列（以多个空格分隔）
+          // Use regex to parse table columns (separated by multiple spaces)
           const parts = cleanLine.split(/\s{2,}/);
           if (parts.length < 2) continue;
 
@@ -67,13 +67,13 @@ export class CodexMcpAgent extends AbstractMcpAgent {
           const argsStr = parts[2]?.trim() || '';
           const envStr = parts[3]?.trim() || '';
 
-          // 解析 args（如果是 "-" 则表示没有参数）
+          // Parse args (if "-" it means no arguments)
           const args = argsStr === '-' ? [] : argsStr.split(/\s+/);
 
-          // 解析 env（如果是 "-" 则表示没有环境变量）
+          // Parse env (if "-" it means no environment variables)
           const env: Record<string, string> = {};
           if (envStr && envStr !== '-') {
-            // 环境变量格式可能是 KEY=VALUE 形式
+            // Environment variable format may be KEY=VALUE
             const envPairs = envStr.split(/\s+/);
             for (const pair of envPairs) {
               const [key, value] = pair.split('=');
@@ -83,7 +83,7 @@ export class CodexMcpAgent extends AbstractMcpAgent {
             }
           }
 
-          // 尝试获取tools信息（对所有服务器类型）
+          // Try to get tools info (for all server types)
           let tools: Array<{ name: string; description?: string }> = [];
           try {
             const testResult = await this.testMcpConnection({
@@ -141,22 +141,22 @@ export class CodexMcpAgent extends AbstractMcpAgent {
   }
 
   /**
-   * 安装 MCP 服务器到 Codex CLI
+   * Install MCP servers to Codex CLI
    */
   installMcpServers(mcpServers: IMcpServer[]): Promise<McpOperationResult> {
     const installOperation = async () => {
       try {
         for (const server of mcpServers) {
           if (server.transport.type === 'stdio') {
-            // 使用 Codex CLI 添加 MCP 服务器
-            // 格式: codex mcp add <NAME> <COMMAND> [ARGS]... [--env KEY=VALUE]
+            // Use Codex CLI to add MCP server
+            // Format: codex mcp add <NAME> <COMMAND> [ARGS]... [--env KEY=VALUE]
             const args = server.transport.args || [];
             const envArgs = Object.entries(server.transport.env || {}).map(([key, value]) => `--env ${key}=${value}`);
 
-            // 构建命令数组
+            // Build command array
             const commandParts = ['codex', 'mcp', 'add', server.name, server.transport.command, ...args, ...envArgs];
 
-            // 将命令数组转换为 shell 命令字符串
+            // Convert command array to shell command string
             const command = commandParts.map((part) => `"${part}"`).join(' ');
 
             try {
@@ -164,7 +164,7 @@ export class CodexMcpAgent extends AbstractMcpAgent {
               console.log(`[CodexMcpAgent] Added MCP server: ${server.name}`);
             } catch (error) {
               console.warn(`Failed to add MCP ${server.name} to Codex:`, error);
-              // 继续处理其他服务器，不要因为一个失败就停止
+              // Continue processing other servers, don't stop for one failure
             }
           } else {
             console.warn(`Skipping ${server.name}: Codex CLI only supports stdio transport type`);
@@ -181,31 +181,31 @@ export class CodexMcpAgent extends AbstractMcpAgent {
   }
 
   /**
-   * 从 Codex CLI 删除 MCP 服务器
+   * Remove MCP server from Codex CLI
    */
   removeMcpServer(mcpServerName: string): Promise<McpOperationResult> {
     const removeOperation = async () => {
       try {
-        // 使用 Codex CLI 命令删除 MCP 服务器
+        // Use Codex CLI command to remove MCP server
         const removeCommand = `codex mcp remove "${mcpServerName}"`;
 
         try {
           const result = await execAsync(removeCommand, { timeout: 5000 });
 
-          // 检查输出确认删除成功
+          // Check output to confirm successful removal
           if (result.stdout && (result.stdout.includes('removed') || result.stdout.includes('Removed'))) {
             console.log(`[CodexMcpAgent] Removed MCP server: ${mcpServerName}`);
             return { success: true };
           } else if (result.stdout && (result.stdout.includes('not found') || result.stdout.includes('No such server'))) {
-            // 服务器不存在，也认为成功
+            // Server doesn't exist, also consider it success
             console.log(`[CodexMcpAgent] MCP server '${mcpServerName}' not found, nothing to remove`);
             return { success: true };
           } else {
-            // 其他情况认为成功（向后兼容）
+            // Other cases considered success (backward compatible)
             return { success: true };
           }
         } catch (cmdError) {
-          // 如果命令执行失败，检查是否是因为服务器不存在
+          // If command execution fails, check if it's because server doesn't exist
           if (cmdError instanceof Error && (cmdError.message.includes('not found') || cmdError.message.includes('does not exist'))) {
             return { success: true };
           }

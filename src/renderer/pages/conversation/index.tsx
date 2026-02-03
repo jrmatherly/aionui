@@ -1,10 +1,10 @@
 import { ipcBridge } from '@/common';
+import { usePreviewContext } from '@/renderer/pages/conversation/preview';
 import { Spin } from '@arco-design/web-react';
 import React, { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import useSWR from 'swr';
 import ChatConversation from './ChatConversation';
-import { usePreviewContext } from '@/renderer/pages/conversation/preview';
 import { useConversationTabs } from './context/ConversationTabsContext';
 
 const ChatConversationIndex: React.FC = () => {
@@ -16,8 +16,7 @@ const ChatConversationIndex: React.FC = () => {
   useEffect(() => {
     if (!id) return;
 
-    // 切换会话时自动关闭预览面板，避免跨会话残留
-    // Ensure preview panel closes when switching conversations
+    // Ensure preview panel closes when switching conversations to avoid cross-conversation residue
     if (previousConversationIdRef.current && previousConversationIdRef.current !== id) {
       closePreview();
     }
@@ -29,7 +28,6 @@ const ChatConversationIndex: React.FC = () => {
     return ipcBridge.conversation.get.invoke({ id });
   });
 
-  // 当会话数据加载完成后，自动打开 tab
   // Automatically open tab when conversation data is loaded
   useEffect(() => {
     if (data) {

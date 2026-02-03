@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/// 多线程管理模型
-// 1. 主进程管理子进程 -》 进程管理器，需要维护当前所有子进程，并负责子进程的通信操作
-// 2. 子进程管理，需要根据不同的agent处理不同的agent任务，同时所有子进程具备相同的通信机制
+/// Multi-threaded management model
+// 1. Main process manages child processes -> Process manager that maintains all current child processes and handles their communication
+// 2. Child process management handles different agent tasks based on agent type, while all child processes share the same communication mechanism
 import { GeminiAgent } from '@/agent/gemini';
 import { forkTask } from './utils';
 export default forkTask(({ data }, pipe) => {

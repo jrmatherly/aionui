@@ -3,7 +3,6 @@ import { Button, Dropdown, Menu, Tooltip } from '@arco-design/web-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-// 统一的模型下拉，供会话头部使用
 // Unified model dropdown rendered in the chat header
 const GeminiModelSelector: React.FC<{ selection: GeminiModelSelection }> = ({ selection }) => {
   const { t } = useTranslation();
@@ -25,7 +24,6 @@ const GeminiModelSelector: React.FC<{ selection: GeminiModelSelection }> = ({ se
                   const isGoogleProvider = provider.platform?.toLowerCase().includes('gemini-with-google-auth');
                   const option = isGoogleProvider ? geminiModeLookup.get(modelName) : undefined;
 
-                  // Manual 模式：显示带子菜单的选项
                   // Manual mode: show submenu with specific models
                   if (option?.subModels && option.subModels.length > 0) {
                     return (
@@ -46,7 +44,6 @@ const GeminiModelSelector: React.FC<{ selection: GeminiModelSelection }> = ({ se
                     );
                   }
 
-                  // 普通模式：显示单个选项
                   // Normal mode: show single item
                   return (
                     <Menu.Item key={`${provider.id}-${modelName}`} onClick={() => void handleSelectModel(provider, modelName)}>

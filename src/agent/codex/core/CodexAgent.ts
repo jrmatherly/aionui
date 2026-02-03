@@ -4,16 +4,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import type { NetworkError, CodexEventEnvelope } from '@/agent/codex/connection/CodexConnection';
+import type { CodexEventEnvelope, NetworkError } from '@/agent/codex/connection/CodexConnection';
 import { CodexConnection } from '@/agent/codex/connection/CodexConnection';
-import type { FileChange, CodexEventParams, CodexJsonRpcEvent } from '@/common/codex/types';
 import type { CodexEventHandler } from '@/agent/codex/handlers/CodexEventHandler';
-import type { CodexSessionManager } from '@/agent/codex/handlers/CodexSessionManager';
 import type { CodexFileOperationHandler } from '@/agent/codex/handlers/CodexFileOperationHandler';
-import { ApprovalStore, createExecApprovalKey, createPatchApprovalKey } from './ApprovalStore';
-import type { ReviewDecision } from './ApprovalStore';
-import { getConfiguredAppClientName, getConfiguredAppClientVersion, getConfiguredCodexMcpProtocolVersion } from '../../../common/utils/appConfig';
+import type { CodexSessionManager } from '@/agent/codex/handlers/CodexSessionManager';
+import type { CodexEventParams, CodexJsonRpcEvent, FileChange } from '@/common/codex/types';
 import { lt } from 'semver';
+import { getConfiguredAppClientName, getConfiguredAppClientVersion, getConfiguredCodexMcpProtocolVersion } from '../../../common/utils/appConfig';
+import type { ReviewDecision } from './ApprovalStore';
+import { ApprovalStore, createExecApprovalKey, createPatchApprovalKey } from './ApprovalStore';
 
 interface LegacyNetworkErrorDetails {
   networkErrorType?: string;
@@ -79,7 +79,7 @@ export class CodexAgent {
     this.conn.onError = (error) => this.handleError(error);
 
     try {
-      // 让 CodexConnection 根据版本自动检测合适的命令 / Let CodexConnection auto-detect the appropriate command based on version
+      // Let CodexConnection auto-detect the appropriate command based on version
       // Pass yoloMode option for cron jobs to enable automatic execution
       await this.conn.start(this.cliPath || 'codex', this.workingDir, [], { yoloMode: this.yoloMode });
 
@@ -132,16 +132,16 @@ export class CodexAgent {
   }
 
   /**
-   * 检查是否为致命错误，不应该重试
+   * Check if the error is fatal and should not be retried
    */
   private isFatalError(errorMessage: string): boolean {
     const fatalErrorPatterns = [
-      "You've hit your usage limit", // 使用限制错误
-      'authentication failed', // 认证失败
-      'unauthorized', // 未授权
-      'forbidden', // 禁止访问
-      'invalid api key', // API key无效
-      'account suspended', // 账户被暂停
+      "You've hit your usage limit", // Usage limit error
+      'authentication failed', // Authentication failed
+      'unauthorized', // Unauthorized
+      'forbidden', // Forbidden access
+      'invalid api key', // Invalid API key
+      'account suspended', // Account suspended
     ];
 
     const lowerErrorMsg = errorMessage.toLowerCase();
@@ -167,7 +167,7 @@ export class CodexAgent {
     const args: Record<string, unknown> = {
       prompt: initialPrompt || '',
       cwd: cwd || this.workingDir,
-      sandbox: this.sandboxMode, // 强制指定沙盒模式
+      sandbox: this.sandboxMode, // Explicitly specify sandbox mode
     };
 
     // Restore web_search_request for older versions (< 0.40.0)
@@ -191,12 +191,12 @@ export class CodexAgent {
             config: { conversationId: convId },
           },
           600000
-        ); // 10分钟超时
+        ); // 10-minute timeout
         return { sessionId: convId };
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
 
-        // 检查是否为不可重试的错误类型
+        // Check if error type is non-retryable
         const errorMessage = lastError.message;
         const isFatalError = this.isFatalError(errorMessage);
 
@@ -208,15 +208,15 @@ export class CodexAgent {
           break;
         }
 
-        // 指数退避：2s, 4s, 8s
+        // Exponential backoff: 2s, 4s, 8s
         const delay = 2000 * Math.pow(2, attempt - 1);
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
 
-    // 如果所有重试都失败，但连接可能仍然有效，只记录错误而不抛出
+    // If all retries failed but connection may still be valid, just log error without throwing
 
-    // 返回会话 ID，让后续流程继续
+    // Return session ID to allow subsequent flow to continue
     return { sessionId: convId };
   }
 
@@ -231,25 +231,25 @@ export class CodexAgent {
           name: 'codex-reply',
           arguments: { prompt, conversationId: convId },
         },
-        600000 // 10分钟超时，避免长任务中断
+        600000 // 10-minute timeout to avoid interrupting long tasks
       );
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
 
-      // 检查是否是超时错误
+      // Check if it's a timeout error
       if (errorMsg.includes('timed out')) {
-        // 不抛出错误，因为从日志看到 reasoning_delta 事件仍在正常到达
+        // Don't throw error since logs show reasoning_delta events are still arriving normally
         return;
       }
 
-      // 检查是否为致命错误
+      // Check if it's a fatal error
       const isFatalError = this.isFatalError(errorMsg);
       if (isFatalError) {
-        // 对于致命错误，直接抛出，不进行重试
+        // For fatal errors, throw directly without retry
         throw error;
       }
 
-      // 对于非超时、非致命错误，仍然抛出
+      // For non-timeout, non-fatal errors, still throw
       throw error;
     }
   }
@@ -294,20 +294,20 @@ export class CodexAgent {
   }
 
   private handleError(error: { message: string; type?: 'network' | 'stream' | 'timeout' | 'process'; details?: unknown }): void {
-    // 统一错误处理，直接调用 MessageProcessor 的错误处理方法
+    // Unified error handling, directly call MessageProcessor's error handling method
     try {
       if (error.type === 'network') {
-        // 网络错误特殊处理，如果有外部处理器则优先使用
+        // Special handling for network errors, prefer external handler if available
         if (this.onNetworkError) {
           const networkError = this.convertToLegacyNetworkError(error);
           this.onNetworkError(networkError);
         } else {
-          // 网络错误也通过流错误处理
+          // Handle network errors through stream error processing
           const errorMessage = `Network Error: ${error.message}`;
           this.eventHandler.getMessageProcessor().processStreamError(errorMessage);
         }
       } else {
-        // 其他错误类型统一处理
+        // Unified handling for other error types
         this.eventHandler.getMessageProcessor().processStreamError(error.message);
       }
     } catch {

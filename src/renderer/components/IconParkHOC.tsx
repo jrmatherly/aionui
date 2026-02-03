@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
-import { IconProvider, DEFAULT_ICON_CONFIGS } from '@icon-park/react/es/runtime';
-import { theme } from '@office-ai/platform';
 import { iconColors } from '@/renderer/theme/colors';
+import { DEFAULT_ICON_CONFIGS, IconProvider } from '@icon-park/react/es/runtime';
+import { theme } from '@office-ai/platform';
+import React from 'react';
 
 const IconParkHOC = <T extends Record<string, any>>(Component: React.FunctionComponent<T>): React.FC<T> => {
   return (props) => {

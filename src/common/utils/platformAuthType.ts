@@ -7,14 +7,14 @@
 import { AuthType } from '@office-ai/aioncli-core';
 
 /**
- * 根据平台名称获取对应的认证类型
- * @param platform 平台名称
- * @returns 对应的AuthType
+ * Get the corresponding authentication type based on platform name
+ * @param platform Platform name
+ * @returns Corresponding AuthType
  */
 export function getAuthTypeFromPlatform(platform: string): AuthType {
   const platformLower = platform?.toLowerCase() || '';
 
-  // Gemini 相关平台
+  // Gemini related platforms
   if (platformLower.includes('gemini-with-google-auth')) {
     return AuthType.LOGIN_WITH_GOOGLE;
   }
@@ -25,27 +25,27 @@ export function getAuthTypeFromPlatform(platform: string): AuthType {
     return AuthType.USE_GEMINI;
   }
 
-  // Anthropic/Claude 相关平台
+  // Anthropic/Claude related platforms
   if (platformLower.includes('anthropic') || platformLower.includes('claude')) {
     return AuthType.USE_ANTHROPIC;
   }
 
-  // 其他所有平台默认使用OpenAI兼容协议
-  // 包括：OpenRouter, OpenAI, DeepSeek, 等
+  // All other platforms default to OpenAI compatible protocol
+  // Including: OpenRouter, OpenAI, DeepSeek, etc.
   return AuthType.USE_OPENAI;
 }
 
 /**
- * 获取provider的认证类型，优先使用明确指定的authType，否则根据platform推断
- * @param provider 包含platform和可选authType的provider配置
- * @returns 认证类型
+ * Get provider's authentication type, prioritizing explicitly specified authType, otherwise infer from platform
+ * @param provider Provider configuration containing platform and optional authType
+ * @returns Authentication type
  */
 export function getProviderAuthType(provider: { platform: string; authType?: AuthType }): AuthType {
-  // 如果明确指定了authType，直接使用
+  // If authType is explicitly specified, use it directly
   if (provider.authType) {
     return provider.authType;
   }
 
-  // 否则根据platform推断
+  // Otherwise infer from platform
   return getAuthTypeFromPlatform(provider.platform);
 }

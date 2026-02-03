@@ -28,7 +28,7 @@ import { useGeminiGoogleAuthModels } from '@/renderer/hooks/useGeminiGoogleAuthM
 import { useInputFocusRing } from '@/renderer/hooks/useInputFocusRing';
 import { usePasteService } from '@/renderer/hooks/usePasteService';
 import { useConversationTabs } from '@/renderer/pages/conversation/context/ConversationTabsContext';
-import { allSupportedExts, type FileMetadata, getCleanFileNames } from '@/renderer/services/FileService';
+import { allSupportedExts, getCleanFileNames, type FileMetadata } from '@/renderer/services/FileService';
 import { iconColors } from '@/renderer/theme/colors';
 import { emitter } from '@/renderer/utils/emitter';
 import { buildDisplayMessage } from '@/renderer/utils/messageFiles';
@@ -45,25 +45,25 @@ import useSWR, { mutate } from 'swr';
 import styles from './index.module.css';
 
 /**
- * 缓存Provider的可用模型列表，避免重复计算
+ * Cache provider's available model list to avoid repeated calculations
  */
 const availableModelsCache = new Map<string, string[]>();
 
 /**
- * 获取提供商下所有可用的主力模型（带缓存）
- * @param provider - 提供商配置
- * @returns 可用的主力模型名称数组
+ * Get all available primary models under a provider (with cache)
+ * @param provider - Provider configuration
+ * @returns Array of available primary model names
  */
 const getAvailableModels = (provider: IProvider): string[] => {
-  // 生成缓存键，包含模型列表以检测变化
+  // Generate cache key including model list to detect changes
   const cacheKey = `${provider.id}-${(provider.model || []).join(',')}`;
 
-  // 检查缓存
+  // Check cache
   if (availableModelsCache.has(cacheKey)) {
     return availableModelsCache.get(cacheKey)!;
   }
 
-  // 计算可用模型
+  // Calculate available models
   const result: string[] = [];
   for (const modelName of provider.model || []) {
     const functionCalling = hasSpecificModelCapability(provider, modelName, 'function_calling');
@@ -74,27 +74,27 @@ const getAvailableModels = (provider: IProvider): string[] => {
     }
   }
 
-  // 缓存结果
+  // Cache result
   availableModelsCache.set(cacheKey, result);
   return result;
 };
 
 /**
- * 检查提供商是否有可用的主力对话模型（高效版本）
- * @param provider - 提供商配置
- * @returns true 表示提供商有可用模型，false 表示无可用模型
+ * Check if provider has available primary conversation models (efficient version)
+ * @param provider - Provider configuration
+ * @returns true if provider has available models, false otherwise
  */
 const hasAvailableModels = (provider: IProvider): boolean => {
-  // 直接使用缓存的结果，避免重复计算
+  // Directly use cached results to avoid repeated calculations
   const availableModels = getAvailableModels(provider);
   return availableModels.length > 0;
 };
 
 /**
- * 测量 textarea 中指定位置的垂直坐标
- * @param textarea - 目标 textarea 元素
- * @param position - 文本位置
- * @returns 该位置的垂直像素坐标
+ * Measure vertical coordinate of specified position in textarea
+ * @param textarea - Target textarea element
+ * @param position - Text position
+ * @returns Vertical pixel coordinate at that position
  */
 const measureCaretTop = (textarea: HTMLTextAreaElement, position: number): number => {
   const textBefore = textarea.value.slice(0, position);
@@ -120,14 +120,14 @@ const measureCaretTop = (textarea: HTMLTextAreaElement, position: number): numbe
 };
 
 /**
- * 滚动 textarea 使光标位于视口最后一行
- * @param textarea - 目标 textarea 元素
- * @param caretTop - 光标的垂直坐标
+ * Scroll textarea so cursor is on the last line of viewport
+ * @param textarea - Target textarea element
+ * @param caretTop - Vertical coordinate of cursor
  */
 const scrollCaretToLastLine = (textarea: HTMLTextAreaElement, caretTop: number): void => {
   const style = getComputedStyle(textarea);
   const lineHeight = parseInt(style.lineHeight, 10) || 20;
-  // 滚动使光标位于视口最后一行
+  // Scroll so cursor is on the last line of viewport
   textarea.scrollTop = Math.max(0, caretTop - textarea.clientHeight + lineHeight);
 };
 
@@ -159,14 +159,14 @@ const useModelList = () => {
       allProviders = modelConfig || [];
     }
 
-    // 过滤出有可用主力模型的提供商
+    // Filter providers with available primary models
     return allProviders.filter(hasAvailableModels);
   }, [geminiModelValues, isGoogleAuth, modelConfig]);
 
   return { modelList, isGoogleAuth, geminiModeOptions };
 };
 
-// Agent Logo 映射 (custom uses Robot icon from @icon-park/react)
+// Agent Logo mapping (custom uses Robot icon from @icon-park/react)
 const AGENT_LOGO_MAP: Partial<Record<AcpBackend, string>> = {
   claude: ClaudeLogo,
   gemini: GeminiLogo,
@@ -191,7 +191,7 @@ const Guid: React.FC = () => {
   const { activeBorderColor, inactiveBorderColor, activeShadow } = useInputFocusRing();
   const localeKey = resolveLocaleKey(i18n.language);
 
-  // 打开外部链接 / Open external link
+  // Open external link
   const openLink = useCallback(async (url: string) => {
     try {
       await ipcBridge.shell.openExternal.invoke(url);
@@ -223,7 +223,7 @@ const Guid: React.FC = () => {
     [activeBorderColor, activeShadow, inactiveBorderColor]
   );
 
-  // 从 location.state 中读取 workspace（从 tabs 的添加按钮传递）
+  // Read workspace from location.state (passed from tabs add button)
   useEffect(() => {
     const state = location.state as { workspace?: string } | null;
     if (state?.workspace) {
@@ -247,18 +247,16 @@ const Guid: React.FC = () => {
     },
     [geminiModeLookup]
   );
-  // 记录当前选中的 provider+model，方便列表刷新时判断是否仍可用
+  // Track currently selected provider+model for checking availability on list refresh
   const selectedModelKeyRef = useRef<string | null>(null);
-  // 支持在初始化页展示 Codex（MCP）选项，先做 UI 占位
-  // 对于自定义代理，使用 "custom:uuid" 格式来区分多个自定义代理
+  // Support displaying Codex (MCP) option on init page, UI placeholder first
   // For custom agents, we store "custom:uuid" format to distinguish between multiple custom agents
   const [selectedAgentKey, _setSelectedAgentKey] = useState<string>('gemini');
 
-  // 封装 setSelectedAgentKey 以同时保存到 storage
   // Wrap setSelectedAgentKey to also save to storage
   const setSelectedAgentKey = useCallback((key: string) => {
     _setSelectedAgentKey(key);
-    // 保存选择到 storage / Save selection to storage
+    // Save selection to storage
     ConfigStorage.set('guid.lastSelectedAgent', key).catch((error) => {
       console.error('Failed to save selected agent:', error);
     });
@@ -278,8 +276,6 @@ const Guid: React.FC = () => {
   const [customAgents, setCustomAgents] = useState<AcpBackendConfig[]>([]);
 
   /**
-   * 获取代理的唯一选择键
-   * 对于自定义代理返回 "custom:uuid"，其他代理返回 backend 类型
    * Helper to get agent key for selection
    * Returns "custom:uuid" for custom agents, backend type for others
    */
@@ -288,8 +284,6 @@ const Guid: React.FC = () => {
   };
 
   /**
-   * 通过选择键查找代理
-   * 支持 "custom:uuid" 格式和普通 backend 类型
    * Helper to find agent by key
    * Supports both "custom:uuid" format and plain backend type
    */
@@ -316,7 +310,7 @@ const Guid: React.FC = () => {
     return availableAgents?.find((a) => a.backend === key);
   };
 
-  // 获取选中的后端类型（向后兼容）/ Get the selected backend type (for backward compatibility)
+  // Get the selected backend type (for backward compatibility)
   const selectedAgent = selectedAgentKey.startsWith('custom:') ? 'custom' : (selectedAgentKey as AcpBackend);
   const selectedAgentInfo = useMemo(() => findAgentByKey(selectedAgentKey), [selectedAgentKey, availableAgents, customAgents]);
   const isPresetAgent = Boolean(selectedAgentInfo?.isPreset);
@@ -327,8 +321,7 @@ const Guid: React.FC = () => {
   const mentionMatchRegex = useMemo(() => /(?:^|\s)@([^\s@]*)$/, []);
 
   /**
-   * 生成唯一模型 key（providerId:model）
-   * Build a unique key for provider/model pair
+   * Build a unique key for provider/model pair (providerId:model)
    */
   const buildModelKey = (providerId?: string, modelName?: string) => {
     if (!providerId || !modelName) return null;
@@ -336,7 +329,6 @@ const Guid: React.FC = () => {
   };
 
   /**
-   * 检查当前 key 是否仍存在于新模型列表中
    * Check if selected model key still exists in the new provider list
    */
   const isModelKeyAvailable = (key: string | null, providers?: IProvider[]) => {
@@ -348,7 +340,7 @@ const Guid: React.FC = () => {
   };
 
   const setCurrentModel = async (modelInfo: TProviderWithModel) => {
-    // 记录最新的选中 key，避免列表刷新后被错误重置
+    // Track latest selected key to prevent incorrect reset after list refresh
     selectedModelKeyRef.current = buildModelKey(modelInfo.id, modelInfo.useModel);
     await ConfigStorage.set('gemini.defaultModel', modelInfo.useModel).catch((error) => {
       console.error('Failed to save default model:', error);
@@ -358,41 +350,36 @@ const Guid: React.FC = () => {
   const navigate = useNavigate();
   const _layout = useLayoutContext();
 
-  // 处理粘贴的文件（替换模式，避免累积旧文件路径）
   // Handle pasted files (replace mode to avoid accumulating old file paths)
   const handleFilesPasted = useCallback((pastedFiles: FileMetadata[]) => {
     const filePaths = pastedFiles.map((file) => file.path);
-    // 粘贴操作替换现有文件，而不是追加
     // Paste operation replaces existing files instead of appending
     setFiles(filePaths);
     setDir('');
   }, []);
 
-  // 处理通过对话框上传的文件（追加模式）
   // Handle files uploaded via dialog (append mode)
   const handleFilesUploaded = useCallback((uploadedPaths: string[]) => {
     setFiles((prevFiles) => [...prevFiles, ...uploadedPaths]);
   }, []);
 
   const handleRemoveFile = useCallback((targetPath: string) => {
-    // 删除初始化面板中的已选文件 / Remove files already selected on the welcome screen
+    // Remove files already selected on the welcome screen
     setFiles((prevFiles) => prevFiles.filter((file) => file !== targetPath));
   }, []);
 
-  // 使用拖拽 hook（拖拽视为粘贴操作，替换现有文件）
   // Use drag upload hook (drag is treated like paste, replaces existing files)
   const { isFileDragging, dragHandlers } = useDragUpload({
     supportedExts: allSupportedExts,
     onFilesAdded: handleFilesPasted,
   });
 
-  // 使用共享的PasteService集成（粘贴操作替换现有文件）
   // Use shared PasteService integration (paste replaces existing files)
   const { onPaste, onFocus } = usePasteService({
     supportedExts: allSupportedExts,
     onFilesAdded: handleFilesPasted,
     onTextPaste: (text: string) => {
-      // 按光标位置插入文本，保持现有内容
+      // Insert text at cursor position, keep existing content
       const textarea = document.activeElement as HTMLTextAreaElement | null;
       if (textarea && textarea.tagName === 'TEXTAREA') {
         const start = textarea.selectionStart ?? textarea.value.length;
@@ -507,24 +494,24 @@ const Guid: React.FC = () => {
     [filteredMentionOptions, mentionMenuSelectedKey, selectMentionAgent, t]
   );
 
-  // 获取可用的 ACP agents - 基于全局标记位
+  // Get available ACP agents - based on global flag
   const { data: availableAgentsData } = useSWR('acp.agents.available', async () => {
     const result = await ipcBridge.acpConversation.getAvailableAgents.invoke();
     if (result.success) {
-      // 过滤掉检测到的gemini命令，只保留内置Gemini
+      // Filter out detected gemini command, keep only built-in Gemini
       return result.data.filter((agent) => !(agent.backend === 'gemini' && agent.cliPath));
     }
     return [];
   });
 
-  // 更新本地状态
+  // Update local state
   useEffect(() => {
     if (availableAgentsData) {
       setAvailableAgents(availableAgentsData);
     }
   }, [availableAgentsData]);
 
-  // 加载上次选择的 agent / Load last selected agent
+  // Load last selected agent
   useEffect(() => {
     if (!availableAgents || availableAgents.length === 0) return;
 
@@ -606,11 +593,10 @@ const Guid: React.FC = () => {
   const { compositionHandlers, isComposing } = useCompositionInput();
 
   /**
-   * 解析预设助手的 rules 和 skills
    * Resolve preset assistant rules and skills
    *
-   * - rules: 系统规则，在会话初始化时注入到 userMemory
-   * - skills: 技能定义，在首次请求时注入到消息前缀
+   * - rules: System rules, injected into userMemory at conversation init
+   * - skills: Skill definitions, injected into message prefix on first request
    */
   const resolvePresetRulesAndSkills = useCallback(
     async (agentInfo: { backend: AcpBackend; customAgentId?: string; context?: string } | undefined): Promise<{ rules?: string; skills?: string }> => {
@@ -625,7 +611,7 @@ const Guid: React.FC = () => {
       let rules = '';
       let skills = '';
 
-      // 1. 加载 rules / Load rules
+      // 1. Load rules
       try {
         rules = await ipcBridge.fs.readAssistantRule.invoke({
           assistantId: customAgentId,
@@ -635,18 +621,17 @@ const Guid: React.FC = () => {
         console.warn(`Failed to load rules for ${customAgentId}:`, error);
       }
 
-      // 2. 加载 skills / Load skills
+      // 2. Load skills
       try {
         skills = await ipcBridge.fs.readAssistantSkill.invoke({
           assistantId: customAgentId,
           locale: localeKey,
         });
       } catch (error) {
-        // skills 可能不存在，这是正常的 / skills may not exist, this is normal
+        // skills may not exist, this is normal
       }
 
-      // 3. Fallback: 如果是内置助手且文件为空，从内置资源加载
-      // Fallback: If builtin assistant and files are empty, load from builtin resources
+      // 3. Fallback: If builtin assistant and files are empty, load from builtin resources
       if (customAgentId.startsWith('builtin-')) {
         const presetId = customAgentId.replace('builtin-', '');
         const preset = ASSISTANT_PRESETS.find((p) => p.id === presetId);
@@ -681,7 +666,6 @@ const Guid: React.FC = () => {
     [localeKey]
   );
 
-  // 保持向后兼容的 resolvePresetContext（只返回 rules）
   // Backward compatible resolvePresetContext (returns only rules)
   const resolvePresetContext = useCallback(
     async (agentInfo: { backend: AcpBackend; customAgentId?: string; context?: string } | undefined): Promise<string | undefined> => {
@@ -701,7 +685,7 @@ const Guid: React.FC = () => {
     [customAgents]
   );
 
-  // 解析助手启用的 skills 列表 / Resolve enabled skills for the assistant
+  // Resolve enabled skills for the assistant
   const resolveEnabledSkills = useCallback(
     (agentInfo: { backend: AcpBackend; customAgentId?: string } | undefined): string[] | undefined => {
       if (!agentInfo) return undefined;
@@ -742,21 +726,21 @@ const Guid: React.FC = () => {
   );
 
   const handleSend = async () => {
-    // 用户明确选择的目录 -> customWorkspace = true, 使用用户选择的目录
-    // 未选择时 -> customWorkspace = false, 传空让后端创建临时目录 (gemini-temp-xxx)
+    // User explicitly selected directory -> customWorkspace = true, use user's chosen directory
+    // Not selected -> customWorkspace = false, pass empty to let backend create temp dir (gemini-temp-xxx)
     const isCustomWorkspace = !!dir;
-    const finalWorkspace = dir || ''; // 不指定时传空，让后端创建临时目录
+    const finalWorkspace = dir || ''; // Pass empty when not specified, let backend create temp dir
 
     const agentInfo = selectedAgentInfo;
     const isPreset = isPresetAgent;
     const presetAgentType = resolvePresetAgentType(agentInfo);
 
-    // 加载 rules（skills 已迁移到 SkillManager）/ Load rules (skills migrated to SkillManager)
+    // Load rules (skills migrated to SkillManager)
     const { rules: presetRules } = await resolvePresetRulesAndSkills(agentInfo);
-    // 获取启用的 skills 列表 / Get enabled skills list
+    // Get enabled skills list
     const enabledSkills = resolveEnabledSkills(agentInfo);
 
-    // 默认情况使用 Gemini，或 Preset 配置为 Gemini
+    // Default case uses Gemini, or Preset configured as Gemini
     if (!selectedAgent || selectedAgent === 'gemini' || (isPreset && presetAgentType === 'gemini')) {
       if (!currentModel) return;
       try {
@@ -771,12 +755,10 @@ const Guid: React.FC = () => {
             workspace: finalWorkspace,
             customWorkspace: isCustomWorkspace,
             webSearchEngine: isGoogleAuth ? 'google' : 'default',
-            // 传递 rules（skills 通过 SkillManager 加载）
             // Pass rules (skills loaded via SkillManager)
             presetRules: isPreset ? presetRules : undefined,
-            // 启用的 skills 列表 / Enabled skills list
+            // Enabled skills list
             enabledSkills: isPreset ? enabledSkills : undefined,
-            // 预设助手 ID，用于在会话面板显示助手名称和头像
             // Preset assistant ID for displaying name and avatar in conversation panel
             presetAssistantId: presetAssistantIdToPass,
           },
@@ -786,15 +768,15 @@ const Guid: React.FC = () => {
           throw new Error('Failed to create conversation - conversation object is null or missing id');
         }
 
-        // 更新 workspace 时间戳，确保分组会话能正确排序（仅自定义工作空间）
+        // Update workspace timestamp to ensure grouped conversations are sorted correctly (custom workspace only)
         if (isCustomWorkspace) {
           closeAllTabs();
           updateWorkspaceTime(finalWorkspace);
-          // 将新会话添加到 tabs
+          // Add new conversation to tabs
           openTab(conversation);
         }
 
-        // 立即触发刷新，让左侧栏开始加载新会话（在导航前）
+        // Trigger refresh immediately so sidebar starts loading new conversation (before navigation)
         emitter.emit('chat.history.refresh');
 
         // Store initial message to sessionStorage for GeminiSendBox to send after navigation
@@ -820,7 +802,7 @@ const Guid: React.FC = () => {
       // Codex conversation type (including preset with codex agent type)
       const codexAgentInfo = agentInfo || findAgentByKey(selectedAgentKey);
 
-      // 创建 Codex 会话并保存初始消息，由对话页负责发送
+      // Create Codex conversation and save initial message, conversation page handles sending
       try {
         const conversation = await ipcBridge.conversation.create.invoke({
           type: 'codex',
@@ -832,9 +814,8 @@ const Guid: React.FC = () => {
             customWorkspace: isCustomWorkspace,
             // Pass preset context (rules only)
             presetContext: isPreset ? presetRules : undefined,
-            // 启用的 skills 列表（通过 SkillManager 加载）/ Enabled skills list (loaded via SkillManager)
+            // Enabled skills list (loaded via SkillManager)
             enabledSkills: isPreset ? enabledSkills : undefined,
-            // 预设助手 ID，用于在会话面板显示助手名称和头像
             // Preset assistant ID for displaying name and avatar in conversation panel
             presetAssistantId: isPreset ? codexAgentInfo?.customAgentId : undefined,
           },
@@ -845,25 +826,25 @@ const Guid: React.FC = () => {
           return;
         }
 
-        // 更新 workspace 时间戳，确保分组会话能正确排序（仅自定义工作空间）
+        // Update workspace timestamp to ensure grouped conversations are sorted correctly (custom workspace only)
         if (isCustomWorkspace) {
           closeAllTabs();
           updateWorkspaceTime(finalWorkspace);
-          // 将新会话添加到 tabs
+          // Add new conversation to tabs
           openTab(conversation);
         }
 
-        // 立即触发刷新，让左侧栏开始加载新会话（在导航前）
+        // Trigger refresh immediately so sidebar starts loading new conversation (before navigation)
         emitter.emit('chat.history.refresh');
 
-        // 交给对话页发送，避免事件丢失
+        // Hand off to conversation page to send, avoid event loss
         const initialMessage = {
           input,
           files: files.length > 0 ? files : undefined,
         };
         sessionStorage.setItem(`codex_initial_message_${conversation.id}`, JSON.stringify(initialMessage));
 
-        // 然后导航到会话页面
+        // Then navigate to conversation page
         await navigate(`/conversation/${conversation.id}`);
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error);
@@ -894,13 +875,12 @@ const Guid: React.FC = () => {
             customWorkspace: isCustomWorkspace,
             backend: acpBackend,
             cliPath: acpAgentInfo?.cliPath,
-            agentName: acpAgentInfo?.name, // 存储自定义代理的配置名称 / Store configured name for custom agents
-            customAgentId: acpAgentInfo?.customAgentId, // 自定义代理的 UUID / UUID for custom agents
+            agentName: acpAgentInfo?.name, // Store configured name for custom agents
+            customAgentId: acpAgentInfo?.customAgentId, // UUID for custom agents
             // Pass preset context (rules only)
             presetContext: isPreset ? presetRules : undefined,
-            // 启用的 skills 列表（通过 SkillManager 加载）/ Enabled skills list (loaded via SkillManager)
+            // Enabled skills list (loaded via SkillManager)
             enabledSkills: isPreset ? enabledSkills : undefined,
-            // 预设助手 ID，用于在会话面板显示助手名称和头像
             // Preset assistant ID for displaying name and avatar in conversation panel
             presetAssistantId: isPreset ? acpAgentInfo?.customAgentId : undefined,
           },
@@ -911,15 +891,15 @@ const Guid: React.FC = () => {
           return;
         }
 
-        // 更新 workspace 时间戳，确保分组会话能正确排序（仅自定义工作空间）
+        // Update workspace timestamp to ensure grouped conversations are sorted correctly (custom workspace only)
         if (isCustomWorkspace) {
           closeAllTabs();
           updateWorkspaceTime(finalWorkspace);
-          // 将新会话添加到 tabs
+          // Add new conversation to tabs
           openTab(conversation);
         }
 
-        // 立即触发刷新，让左侧栏开始加载新会话（在导航前）
+        // Trigger refresh immediately so sidebar starts loading new conversation (before navigation)
         emitter.emit('chat.history.refresh');
 
         // For ACP, we need to wait for the connection to be ready before sending the message
@@ -932,7 +912,7 @@ const Guid: React.FC = () => {
         // Store initial message in sessionStorage to be picked up by the conversation page
         sessionStorage.setItem(`acp_initial_message_${conversation.id}`, JSON.stringify(initialMessage));
 
-        // 然后导航到会话页面
+        // Then navigate to conversation page
         await navigate(`/conversation/${conversation.id}`);
       } catch (error: unknown) {
         console.error('Failed to create ACP conversation:', error);
@@ -1038,14 +1018,14 @@ const Guid: React.FC = () => {
       return;
     }
     const currentKey = selectedModelKeyRef.current || buildModelKey(currentModel?.id, currentModel?.useModel);
-    // 当前选择仍然可用则不重置 / Keep current selection when still available
+    // Keep current selection when still available
     if (isModelKeyAvailable(currentKey, modelList)) {
       if (!selectedModelKeyRef.current && currentKey) {
         selectedModelKeyRef.current = currentKey;
       }
       return;
     }
-    // 读取默认配置，或回落到新的第一个模型
+    // Read default config, or fall back to the first model in the new list
     const useModel = await ConfigStorage.get('gemini.defaultModel');
     const defaultModel = modelList.find((m) => m.model.includes(useModel)) || modelList[0];
     if (!defaultModel || !defaultModel.model.length) return;
@@ -1061,34 +1041,34 @@ const Guid: React.FC = () => {
     });
   }, [modelList]);
 
-  // 打字机效果 / Typewriter effect
+  // Typewriter effect
   useEffect(() => {
     const fullText = t('conversation.welcome.placeholder');
     let currentIndex = 0;
-    const typingSpeed = 80; // 每个字符的打字速度（毫秒）/ Typing speed per character (ms)
+    const typingSpeed = 80; // Typing speed per character (ms)
     let intervalId: ReturnType<typeof setInterval> | null = null;
 
     const typeNextChar = () => {
       if (currentIndex <= fullText.length) {
-        // 在打字过程中添加光标 / Add cursor during typing
+        // Add cursor during typing
         setTypewriterPlaceholder(fullText.slice(0, currentIndex) + (currentIndex < fullText.length ? '|' : ''));
         currentIndex++;
       }
     };
 
-    // 初始延迟，让用户看到页面加载完成 / Initial delay to let user see page loaded
+    // Initial delay to let user see page loaded
     const initialDelay = setTimeout(() => {
       intervalId = setInterval(() => {
         typeNextChar();
         if (currentIndex > fullText.length) {
           if (intervalId) clearInterval(intervalId);
-          setIsTyping(false); // 打字完成 / Typing complete
-          setTypewriterPlaceholder(fullText); // 移除光标 / Remove cursor
+          setIsTyping(false); // Typing complete
+          setTypewriterPlaceholder(fullText); // Remove cursor
         }
       }, typingSpeed);
     }, 300);
 
-    // 清理函数：同时清理 timeout 和 interval / Cleanup: clear both timeout and interval
+    // Cleanup: clear both timeout and interval
     return () => {
       clearTimeout(initialDelay);
       if (intervalId) clearInterval(intervalId);
@@ -1100,7 +1080,7 @@ const Guid: React.FC = () => {
         <div className={styles.guidLayout}>
           <p className={`text-2xl font-semibold mb-8 text-0 text-center`}>{t('conversation.welcome.title')}</p>
 
-          {/* Agent 选择器 - 在标题下方 */}
+          {/* Agent Selector - below title */}
           {availableAgents && availableAgents.length > 0 && (
             <div className='w-full flex justify-center'>
               <div
@@ -1206,7 +1186,7 @@ const Guid: React.FC = () => {
               </div>
             )}
             {files.length > 0 && (
-              // 展示待发送的文件并允许取消 / Show pending files and allow cancellation
+              // Show pending files and allow cancellation
               <div className='flex flex-wrap items-center gap-8px mt-12px mb-12px'>
                 {files.map((path) => (
                   <FilePreview key={path} path={path} onRemove={() => handleRemoveFile(path)} />
@@ -1227,7 +1207,6 @@ const Guid: React.FC = () => {
                             .invoke({ properties: ['openFile', 'multiSelections'] })
                             .then((uploadedFiles) => {
                               if (uploadedFiles && uploadedFiles.length > 0) {
-                                // 通过对话框上传的文件使用追加模式
                                 // Files uploaded via dialog use append mode
                                 handleFilesUploaded(uploadedFiles);
                               }
@@ -1281,11 +1260,11 @@ const Guid: React.FC = () => {
                       <Menu selectedKeys={currentModel ? [currentModel.id + currentModel.useModel] : []}>
                         {!modelList || modelList.length === 0
                           ? [
-                              /* 暂无可用模型提示 */
+                              /* No available models hint */
                               <Menu.Item key='no-models' className='px-12px py-12px text-t-secondary text-14px text-center flex justify-center items-center' disabled>
                                 {t('settings.noAvailableModels')}
                               </Menu.Item>,
-                              /* Add Model 选项 */
+                              /* Add Model option */
                               <Menu.Item key='add-model' className='text-12px text-t-secondary' onClick={() => navigate('/settings/model')}>
                                 <Plus theme='outline' size='12' />
                                 {t('settings.addModel')}
@@ -1294,7 +1273,7 @@ const Guid: React.FC = () => {
                           : [
                               ...(modelList || []).map((provider) => {
                                 const availableModels = getAvailableModels(provider);
-                                // 只渲染有可用模型的 provider
+                                // Only render providers with available models
                                 if (availableModels.length === 0) return null;
                                 return (
                                   <Menu.ItemGroup title={provider.name} key={provider.id}>
@@ -1302,7 +1281,6 @@ const Guid: React.FC = () => {
                                       const isGoogleProvider = provider.platform?.toLowerCase().includes('gemini-with-google-auth');
                                       const option = isGoogleProvider ? geminiModeLookup.get(modelName) : undefined;
 
-                                      // Manual 模式：显示带子菜单的选项
                                       // Manual mode: show submenu with specific models
                                       if (option?.subModels && option.subModels.length > 0) {
                                         return (
@@ -1331,7 +1309,6 @@ const Guid: React.FC = () => {
                                         );
                                       }
 
-                                      // 普通模式：显示单个选项
                                       // Normal mode: show single item
                                       return (
                                         <Menu.Item
@@ -1370,7 +1347,7 @@ const Guid: React.FC = () => {
                                   </Menu.ItemGroup>
                                 );
                               }),
-                              /* Add Model 选项 */
+                              /* Add Model option */
                               <Menu.Item key='add-model' className='text-12px text-t-secondary' onClick={() => navigate('/settings/model')}>
                                 <Plus theme='outline' size='12' />
                                 {t('settings.addModel')}
@@ -1535,7 +1512,7 @@ const Guid: React.FC = () => {
           )}
         </div>
 
-        {/* 底部快捷按钮 */}
+        {/* Bottom quick action buttons */}
         <div className='absolute bottom-32px left-50% -translate-x-1/2 flex flex-col justify-center items-center'>
           {/* <div className='text-text-3 text-14px mt-24px mb-12px'>{t('conversation.welcome.quickActionsTitle')}</div> */}
           <div className='flex justify-center items-center gap-24px'>

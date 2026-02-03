@@ -60,7 +60,7 @@
 
 ### 🤖 **Modo multiagente - Cowork para suas ferramentas de IA em linha de comando, interface gráfica unificada**
 
-_AionUi inclui o Gemini CLI integrado, pronto para usar desde a instalação sem extras. Se você já tem ferramentas de linha de comando como Gemini CLI, Claude Code, CodeX, Qwen Code, Goose AI ou Augment Code, o AionUi as detecta automaticamente e oferece uma interface gráfica unificada para uma experiência mais completa_
+*AionUi inclui o Gemini CLI integrado, pronto para usar desde a instalação sem extras. Se você já tem ferramentas de linha de comando como Gemini CLI, Claude Code, CodeX, Qwen Code, Goose AI ou Augment Code, o AionUi as detecta automaticamente e oferece uma interface gráfica unificada para uma experiência mais completa*
 
 - ✅ **Detecção automática + interface unificada** - Reconhece automaticamente as ferramentas CLI locais e fornece uma interface gráfica unificada, dê adeus à linha de comando
 - ✅ **Armazenamento local + multissessão** - Conversas salvas localmente, suporta várias sessões em paralelo, cada uma com contexto independente
@@ -73,7 +73,7 @@ _AionUi inclui o Gemini CLI integrado, pronto para usar desde a instalação sem
 
 ### 🌐 **Acesso ao seu AionUi de qualquer lugar**
 
-_Seu assistente de IA 7×24 horas - Acesse o AionUi de qualquer dispositivo, em qualquer lugar. Em viagens de negócios, em casa, no escritório, use suas ferramentas de IA a qualquer momento e em qualquer lugar através do WebUI ou Telegram_
+*Seu assistente de IA 7×24 horas - Acesse o AionUi de qualquer dispositivo, em qualquer lugar. Em viagens de negócios, em casa, no escritório, use suas ferramentas de IA a qualquer momento e em qualquer lugar através do WebUI ou Telegram*
 
 O AionUi fornece dois métodos de acesso remoto：
 
@@ -97,7 +97,7 @@ O AionUi fornece dois métodos de acesso remoto：
 
 ### ⏰ **Tarefas agendadas - Deixe o AionUi automatizar seu trabalho**
 
-_Após configurar as tarefas agendadas, o assistente de IA será executado automaticamente de acordo com o tempo que você definir, alcançando verdadeiramente uma operação 7×24 horas sem supervisão_
+*Após configurar as tarefas agendadas, o assistente de IA será executado automaticamente de acordo com o tempo que você definir, alcançando verdadeiramente uma operação 7×24 horas sem supervisão*
 
 - **Conversa livre** - Diga à IA o que fazer usando linguagem natural, como conversar normalmente
 - **Configuração de tempo flexível** - Diário, semanal, mensal, tudo é possível
@@ -113,7 +113,7 @@ _Após configurar as tarefas agendadas, o assistente de IA será executado autom
 
 ### 📁 **Gerenciamento inteligente de arquivos (AI Cowork)**
 
-_Renomeação em lote, organização automática, classificação inteligente, mesclagem de arquivos_
+*Renomeação em lote, organização automática, classificação inteligente, mesclagem de arquivos*
 
 - **Organização automática**: Identifica o conteúdo de forma inteligente e classifica automaticamente, mantendo as pastas organizadas.
 - **Lotes eficientes**: Renomeia e mescla arquivos com um clique, adeus às tarefas manuais tediosas.
@@ -126,7 +126,7 @@ _Renomeação em lote, organização automática, classificação inteligente, m
 
 ### 📄 **Painel de visualização - Veja rapidamente os resultados gerados por IA**
 
-_Suporta 9+ formatos de visualização (PDF, Word, Excel, PPT, código, Markdown, imagens, HTML, Diff, etc.)_
+*Suporta 9+ formatos de visualização (PDF, Word, Excel, PPT, código, Markdown, imagens, HTML, Diff, etc.)*
 
 - ✅ **Ver resultados instantaneamente** - Após a IA gerar arquivos, visualize imediatamente sem trocar de aplicativo
 - ✅ **Acompanhamento em tempo real + editável** - Rastreia mudanças automaticamente, editor e visualização sincronizados; suporta edição em tempo real de Markdown, código, HTML, WYSIWYG
@@ -139,7 +139,7 @@ _Suporta 9+ formatos de visualização (PDF, Word, Excel, PPT, código, Markdown
 
 ### 🎨 **Geração e edição de imagens com IA**
 
-_Geração, edição e reconhecimento inteligente de imagens, impulsionados pelo Gemini_
+*Geração, edição e reconhecimento inteligente de imagens, impulsionados pelo Gemini*
 
 <p align="center">
   <img src="./resources/Image_Generation.gif" alt="AI Image Generation Demo" width="800">
@@ -149,7 +149,7 @@ _Geração, edição e reconhecimento inteligente de imagens, impulsionados pelo
 
 ### 🤖 **Suporte multi-modelo**
 
-_Admite modelos principais como Gemini, OpenAI, Claude, Qwen, e modelos locais como Ollama, LM Studio. Alterne flexivelmente entre diferentes modelos para atender a vários requisitos de tarefas._
+*Admite modelos principais como Gemini, OpenAI, Claude, Qwen, e modelos locais como Ollama, LM Studio. Alterne flexivelmente entre diferentes modelos para atender a vários requisitos de tarefas.*
 
 <p align="center">
   <img src="./resources/multi-model.png" alt="Suporte multi-modelo" width="800">
@@ -159,7 +159,7 @@ _Admite modelos principais como Gemini, OpenAI, Claude, Qwen, e modelos locais c
 
 ### 🎨 **Personalização de interface personalizada**
 
-_Personalize com seu próprio código CSS, faça sua interface corresponder às suas preferências_
+*Personalize com seu próprio código CSS, faça sua interface corresponder às suas preferências*
 
 <p align="center">
   <img src="./resources/css with skin.gif" alt="CSS Custom Interface Demo" width="800">
@@ -171,7 +171,7 @@ _Personalize com seu próprio código CSS, faça sua interface corresponder às 
 
 ### 💬 **Processamento paralelo de múltiplas tarefas**
 
-_Abrir várias conversas, tarefas sem se misturar, memória independente, eficiência dobrada_
+*Abrir várias conversas, tarefas sem se misturar, memória independente, eficiência dobrada*
 
 <details>
 <summary><strong>🎬 Clique para ver a demo ▶️</strong></summary>
@@ -220,6 +220,7 @@ A: O AionUi é um **Multi-AI Agent Desktop** **gratuito e de código aberto**. E
 - **Processamento de dados**: Analise profundamente e embeleze relatórios do Excel automaticamente.
 - **Geração de documentos**: Escreva e formate PPT, Word e Markdown automaticamente.
 - **Visualização instantânea**: Painéis de visualização integrados para mais de 9 formatos, resultados visíveis de imediato.
+
 </details>
 
 <details>
@@ -254,7 +255,7 @@ A: Todos os dados de conversas são armazenados em um banco SQLite local e não 
 
 ## 🎬 Veja como as pessoas usam o AionUi
 
-_Assista como os criadores de conteúdo avaliam e usam o AionUi_
+*Assista como os criadores de conteúdo avaliam e usam o AionUi*
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=yUU5E-U5B3M" target="_blank">

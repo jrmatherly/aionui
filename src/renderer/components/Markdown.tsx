@@ -27,7 +27,7 @@ import LocalImageView from './LocalImageView';
 const formatCode = (code: string) => {
   const content = String(code).replace(/\n$/, '');
   try {
-    //@todo 可以再美化
+    //@todo Can be further beautified
     return JSON.stringify(
       JSON.parse(content),
       (_key, value) => {
@@ -130,7 +130,7 @@ function CodeBlock(props: any) {
               {'<' + language.toLocaleLowerCase() + '>'}
             </span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              {/* 复制代码按钮 / Copy code button */}
+              {/* Copy code button */}
               <Copy
                 theme='outline'
                 size='18'
@@ -142,7 +142,7 @@ function CodeBlock(props: any) {
                   });
                 }}
               />
-              {/* 折叠/展开按钮 / Fold/unfold button */}
+              {/* Fold/unfold button */}
               {logicRender(!fold, <Up theme='outline' size='20' style={{ cursor: 'pointer' }} fill='var(--text-secondary)' onClick={() => setFlow(true)} />, <Down theme='outline' size='20' style={{ cursor: 'pointer' }} fill='var(--text-secondary)' onClick={() => setFlow(false)} />)}
             </div>
           </div>
@@ -179,7 +179,7 @@ function CodeBlock(props: any) {
 
 const createInitStyle = (currentTheme = 'light', cssVars?: Record<string, string>, customCss?: string) => {
   const style = document.createElement('style');
-  // 将外部 CSS 变量注入到 Shadow DOM 中，支持深色模式 Inject external CSS variables into Shadow DOM for dark mode support
+  // Inject external CSS variables into Shadow DOM for dark mode support
   const cssVarsDeclaration = cssVars
     ? Object.entries(cssVars)
         .map(([key, value]) => `${key}: ${value};`)
@@ -187,7 +187,7 @@ const createInitStyle = (currentTheme = 'light', cssVars?: Record<string, string
     : '';
 
   style.innerHTML = `
-  /* Shadow DOM CSS 变量定义 Shadow DOM CSS variable definitions */
+  /* Shadow DOM CSS variable definitions */
   :host {
     ${cssVarsDeclaration}
   }
@@ -243,9 +243,9 @@ const createInitStyle = (currentTheme = 'light', cssVars?: Record<string, string
   img {
     max-width: 100%;
   }
-   /* 给整个表格添加边框 */
+   /* Add border to entire table */
   table {
-    border-collapse: collapse;  /* 表格边框合并为单一边框 */
+    border-collapse: collapse;  /* Merge table borders into single border */
     th{
       padding: 8px;
       border: 1px solid var(--bg-3);
@@ -278,7 +278,7 @@ const createInitStyle = (currentTheme = 'light', cssVars?: Record<string, string
     }
   }
 
-  /* 用户自定义 CSS（注入到 Shadow DOM）User Custom CSS (injected into Shadow DOM) */
+  /* User Custom CSS (injected into Shadow DOM) */
   ${customCss || ''}
   `;
   return style;
@@ -289,13 +289,13 @@ const ShadowView = ({ children }: { children: React.ReactNode }) => {
   const styleRef = React.useRef<HTMLStyleElement | null>(null);
   const [customCss, setCustomCss] = useState<string>('');
 
-  // 从 ConfigStorage 加载自定义 CSS / Load custom CSS from ConfigStorage
+  // Load custom CSS from ConfigStorage
   React.useEffect(() => {
     void import('@/common/storage').then(({ ConfigStorage }) => {
       ConfigStorage.get('customCss')
         .then((css) => {
           if (css) {
-            // 使用统一的工具函数自动添加 !important
+            // Use unified utility function to automatically add !important
             const processedCss = addImportantToAll(css);
             setCustomCss(processedCss);
           } else {
@@ -307,11 +307,11 @@ const ShadowView = ({ children }: { children: React.ReactNode }) => {
         });
     });
 
-    // 监听自定义 CSS 更新事件 / Listen to custom CSS update events
+    // Listen to custom CSS update events
     const handleCustomCssUpdate = (e: CustomEvent) => {
       if (e.detail?.customCss !== undefined) {
         const css = e.detail.customCss || '';
-        // 使用统一的工具函数自动添加 !important
+        // Use unified utility function to automatically add !important
         const processedCss = addImportantToAll(css);
         setCustomCss(processedCss);
       }
@@ -324,7 +324,7 @@ const ShadowView = ({ children }: { children: React.ReactNode }) => {
     };
   }, []);
 
-  // 更新 Shadow DOM 中的 CSS 变量和自定义样式 Update CSS variables and custom styles in Shadow DOM
+  // Update CSS variables and custom styles in Shadow DOM
   const updateStyles = React.useCallback(
     (shadowRoot: ShadowRoot) => {
       const computedStyle = getComputedStyle(document.documentElement);
@@ -340,7 +340,7 @@ const ShadowView = ({ children }: { children: React.ReactNode }) => {
         '--text-secondary': computedStyle.getPropertyValue('--text-secondary'),
       };
 
-      // 移除旧样式并添加新样式 Remove old style and add new style
+      // Remove old style and add new style
       if (styleRef.current) {
         styleRef.current.remove();
       }
@@ -354,14 +354,14 @@ const ShadowView = ({ children }: { children: React.ReactNode }) => {
   React.useEffect(() => {
     if (!root) return;
 
-    // 当自定义 CSS 变化时，更新样式 Update styles when custom CSS changes
+    // Update styles when custom CSS changes
     updateStyles(root);
   }, [root, customCss, updateStyles]);
 
   React.useEffect(() => {
     if (!root) return;
 
-    // 监听主题变化 Listen for theme changes
+    // Listen for theme changes
     const observer = new MutationObserver(() => {
       updateStyles(root);
     });

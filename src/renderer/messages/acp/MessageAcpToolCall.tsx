@@ -28,7 +28,7 @@ const StatusTag: React.FC<{ status: string }> = ({ status }) => {
 };
 
 const ContentView: React.FC<{ content: IMessageAcpToolCall['content']['update']['content'][0] }> = ({ content }) => {
-  // 处理 diff 类型
+  // Handle diff type
   if (content.type === 'diff') {
     const oldText = content.oldText || '';
     const newText = content.newText || '';
@@ -38,7 +38,7 @@ const ContentView: React.FC<{ content: IMessageAcpToolCall['content']['update'][
     return <Diff2Html diff={formattedDiff} title={`File: ${displayName}`} className='border rounded' filePath={resolvedPath || displayName} />;
   }
 
-  // 处理 content 类型，包含 text 内容
+  // Handle content type with text content
   const contentAny = content as any;
   if (content.type === 'content' && contentAny.content) {
     if (contentAny.content.type === 'text' && contentAny.content.text) {

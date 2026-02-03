@@ -4,12 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import type { PreviewHistoryTarget } from '@/common/types/preview';
 import { Dropdown } from '@arco-design/web-react';
-import { Close } from '@icon-park/react';
 import type React from 'react';
 import { useTranslation } from 'react-i18next';
-import type { PreviewHistoryTarget } from '@/common/types/preview';
-import { iconColors } from '@/renderer/theme/colors';
 
 /**
  * PreviewToolbar component props

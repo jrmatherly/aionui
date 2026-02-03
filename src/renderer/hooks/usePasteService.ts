@@ -10,15 +10,15 @@ interface UsePasteServiceProps {
 }
 
 /**
- * 通用的PasteService集成hook
- * 为所有组件提供统一的粘贴处理功能
+ * Generic PasteService integration hook
+ * Provides unified paste handling functionality for all components
  */
 export const usePasteService = ({ supportedExts, onFilesAdded, onTextPaste }: UsePasteServiceProps) => {
   const componentId = useRef('paste-service-' + uuid(4)).current;
-  // 统一的粘贴事件处理
+  // Unified paste event handling
   const handlePaste = useCallback(
     async (event: React.ClipboardEvent) => {
-      // 检查是否有文件，如果有文件立即阻止默认行为
+      // Check if there are files, if so prevent default behavior immediately
       const files = event.clipboardData?.files;
       if (files && files.length > 0) {
         event.preventDefault();
@@ -27,7 +27,7 @@ export const usePasteService = ({ supportedExts, onFilesAdded, onTextPaste }: Us
 
       const handled = await PasteService.handlePaste(event, supportedExts, onFilesAdded || (() => {}), onTextPaste);
       if (handled && (!files || files.length === 0)) {
-        // 如果不是文件粘贴但被处理了（比如纯文本粘贴），也阻止默认行为
+        // If not a file paste but was handled (e.g., plain text paste), also prevent default behavior
         event.preventDefault();
         event.stopPropagation();
       }
@@ -36,12 +36,12 @@ export const usePasteService = ({ supportedExts, onFilesAdded, onTextPaste }: Us
     [supportedExts, onFilesAdded, onTextPaste]
   );
 
-  // 焦点处理
+  // Focus handling
   const handleFocus = useCallback(() => {
     PasteService.setLastFocusedComponent(componentId);
   }, [componentId]);
 
-  // 注册粘贴处理器
+  // Register paste handler
   useEffect(() => {
     PasteService.init();
     PasteService.registerHandler(componentId, handlePaste);

@@ -16,7 +16,6 @@ export interface GeminiModelSelection {
   handleSelectModel: (provider: IProvider, modelName: string) => Promise<void>;
 }
 
-// 将模型选择逻辑集中在一个 hook 中，方便头部/发送框复用
 // Centralize model selection logic for reuse across header and send box
 export const useGeminiModelSelection = (conversationId: string | undefined, initialModel: TProviderWithModel | undefined): GeminiModelSelection => {
   const [currentModel, setCurrentModel] = useState<TProviderWithModel | undefined>(initialModel);
@@ -35,7 +34,7 @@ export const useGeminiModelSelection = (conversationId: string | undefined, init
 
   const { data: modelConfig } = useSWR('model.config.sendbox', () => ipcBridge.mode.getModelConfig.invoke());
 
-  // Use useRef for mutable cache that persists across renders / 使用 useRef 存储可变缓存
+  // Use useRef for mutable cache that persists across renders
   const availableModelsCacheRef = useRef(new Map<string, string[]>());
 
   const getAvailableModels = useCallback((provider: IProvider): string[] => {
@@ -57,7 +56,6 @@ export const useGeminiModelSelection = (conversationId: string | undefined, init
   }, []);
 
   const providers = useMemo(() => {
-    // 根据是否启用 Google Auth 动态拼接 provider 列表
     // Dynamically build provider list when Google Auth provider is available
     let list: IProvider[] = Array.isArray(modelConfig) ? modelConfig : [];
     if (isGoogleAuth) {

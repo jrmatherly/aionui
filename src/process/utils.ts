@@ -19,10 +19,6 @@ export const getTempPath = () => {
  * Ensure CLI-safe symlink exists and return the symlink path.
  * On macOS, creates a symlink in home directory to avoid spaces in paths.
  * CLI tools like Qwen can't handle spaces in paths properly.
- *
- * 确保 CLI 安全符号链接存在并返回符号链接路径。
- * 在 macOS 上，在用户目录创建符号链接以避免路径中的空格。
- * CLI 工具如 Qwen 无法正确处理路径中的空格。
  */
 const ensureCliSafeSymlink = (targetPath: string, symlinkName: string): string => {
   // Only needed on macOS where Application Support has a space
@@ -66,7 +62,6 @@ const ensureCliSafeSymlink = (targetPath: string, symlinkName: string): string =
 
 /**
  * Get data path, using CLI-safe symlink (~/.aionui) on macOS.
- * 获取数据目录路径，macOS 上使用 ~/.aionui 符号链接。
  */
 export const getDataPath = (): string => {
   const rootPath = app.getPath('userData');
@@ -76,7 +71,6 @@ export const getDataPath = (): string => {
 
 /**
  * Get config path, using CLI-safe symlink (~/.aionui-config) on macOS.
- * 获取配置目录路径，macOS 上使用 ~/.aionui-config 符号链接。
  */
 export const getConfigPath = (): string => {
   const rootPath = app.getPath('userData');
@@ -91,11 +85,11 @@ export const generateHashWithFullName = (fullName: string): string => {
     hash = (hash << 5) - hash + char;
     hash = hash & hash; // Convert to 32bit integer
   }
-  // 取绝对值并转换为16进制，然后取前8位
+  // Take absolute value and convert to hex, then pad to 8 characters
   return Math.abs(hash).toString(16).padStart(8, '0'); //.slice(0, 8);
 };
 
-// 递归读取目录内容，返回树状结构
+// Recursively read directory contents, return tree structure
 export async function readDirectoryRecursive(
   dirPath: string,
   options?: {
@@ -202,8 +196,8 @@ export async function readDirectoryRecursive(
 }
 
 /**
- * 递归复制目录
- * 注意：包含路径验证，防止复制到自身或子目录导致无限递归（修复 Windows 下 cache 目录循环创建的 bug）
+ * Recursively copy directory
+ * Note: Includes path validation to prevent copying to self or subdirectory which would cause infinite recursion (fixes Windows cache directory loop creation bug)
  */
 interface CopyOptions {
   overwrite?: boolean;
@@ -212,22 +206,22 @@ interface CopyOptions {
 export async function copyDirectoryRecursively(src: string, dest: string, options: CopyOptions = {}) {
   const { overwrite = true } = options;
 
-  // 标准化路径：Windows 转小写（不区分大小写），Unix/macOS 保持原样（区分大小写）
+  // Normalize paths: Windows converts to lowercase (case-insensitive), Unix/macOS keeps original (case-sensitive)
   const isWindows = process.platform === 'win32';
   const normalizedSrc = isWindows ? path.resolve(src).toLowerCase() : path.resolve(src);
   const normalizedDest = isWindows ? path.resolve(dest).toLowerCase() : path.resolve(dest);
 
-  // 防止复制到自身 (F:\code -> F:\code)
+  // Prevent copying to self (F:\code -> F:\code)
   if (normalizedSrc === normalizedDest) {
     throw new Error(`Cannot copy directory into itself: ${src}`);
   }
 
-  // 防止复制到子目录 (F:\code -> F:\code\cache) - 会导致无限递归
+  // Prevent copying to subdirectory (F:\code -> F:\code\cache) - would cause infinite recursion
   if (normalizedDest.startsWith(normalizedSrc + path.sep)) {
     throw new Error(`Cannot copy directory into its subdirectory: ${src} -> ${dest}`);
   }
 
-  // 防止复制到父目录 (F:\code\cache -> F:\code)
+  // Prevent copying to parent directory (F:\code\cache -> F:\code)
   if (normalizedSrc.startsWith(normalizedDest + path.sep)) {
     throw new Error(`Cannot copy parent directory into child directory: ${src} -> ${dest}`);
   }
@@ -248,7 +242,7 @@ export async function copyDirectoryRecursively(src: string, dest: string, option
       }
       await copyDirectoryRecursively(srcPath, destPath, options);
     } else {
-      // 如果不覆盖且目标文件已存在，跳过
+      // If not overwriting and destination file exists, skip
       if (!overwrite && existsSync(destPath)) {
         continue;
       }
@@ -257,7 +251,7 @@ export async function copyDirectoryRecursively(src: string, dest: string, option
   }
 }
 
-// 验证两个目录的文件名结构是否相同
+// Verify if two directories have the same filename structure
 export async function verifyDirectoryFiles(dir1: string, dir2: string): Promise<boolean> {
   try {
     if (!existsSync(dir1) || !existsSync(dir2)) {
@@ -306,25 +300,23 @@ export const copyFilesToDirectory = async (dir: string, files?: string[], skipCl
   const copiedFiles: string[] = [];
 
   for (const file of files) {
-    // 确保文件路径是绝对路径
+    // Ensure file path is absolute
     const absoluteFilePath = path.isAbsolute(file) ? file : path.resolve(file);
 
-    // 检查源文件是否存在
+    // Check if source file exists
     try {
       await fs.access(absoluteFilePath);
     } catch (error) {
       console.warn(`[AionUi] Source file does not exist, skipping: ${absoluteFilePath}`);
       console.warn(`[AionUi] Original path: ${file}`);
-      // 跳过不存在的文件，而不是抛出错误
+      // Skip non-existent files instead of throwing an error
       continue;
     }
 
-    // 使用原始文件名，只在目标文件已存在时才添加唯一后缀
     // Use original filename, only add unique suffix when destination exists
     let fileName = path.basename(absoluteFilePath);
     let destPath = path.join(dir, fileName);
 
-    // 如果目标文件已存在，添加时间戳后缀避免覆盖
     // If destination exists, add timestamp suffix to avoid overwriting
     if (existsSync(destPath)) {
       const ext = path.extname(fileName);
@@ -338,10 +330,10 @@ export const copyFilesToDirectory = async (dir: string, files?: string[], skipCl
       copiedFiles.push(destPath);
     } catch (error) {
       console.error(`[AionUi] Failed to copy file from ${absoluteFilePath} to ${destPath}:`, error);
-      // 继续处理其他文件，而不是完全失败
+      // Continue processing other files instead of failing completely
     }
 
-    // 如果是临时文件，复制完成后删除
+    // If it's a temp file, delete after copying
     if (absoluteFilePath.startsWith(tempDir) && !skipCleanup) {
       try {
         await fs.unlink(absoluteFilePath);

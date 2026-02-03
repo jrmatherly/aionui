@@ -5,24 +5,23 @@
  */
 
 /**
- * 认证模块统一导出入口
  * Authentication module unified export entry
  *
- * 目录结构 / Directory Structure:
- * - middleware/   : 中间件层，处理请求验证和拦截
- * - repository/   : 数据访问层，负责数据存储和查询
- * - service/      : 业务逻辑层，核心认证功能
+ * Directory Structure:
+ * - middleware/   : Middleware layer, handles request validation and interception
+ * - repository/   : Data access layer, handles data storage and queries
+ * - service/      : Business logic layer, core authentication functionality
  */
 
-// 中间件 / Middleware
+// Middleware
 export { AuthMiddleware } from './middleware/AuthMiddleware';
 export { TokenMiddleware, TokenUtils, createAuthMiddleware } from './middleware/TokenMiddleware';
 export type { TokenPayload } from './middleware/TokenMiddleware';
 
-// 仓储层 / Repository
-export { UserRepository } from './repository/UserRepository';
+// Repository
 export { RateLimitStore } from './repository/RateLimitStore';
+export { UserRepository } from './repository/UserRepository';
 export type { AuthUser } from './repository/UserRepository';
 
-// 服务层 / Service
+// Service
 export { AuthService } from './service/AuthService';

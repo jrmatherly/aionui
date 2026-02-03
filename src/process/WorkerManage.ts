@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { CodexAgentManager } from '@/agent/codex';
 import type { TChatConversation } from '@/common/storage';
 import AcpAgentManager from './task/AcpAgentManager';
-import { CodexAgentManager } from '@/agent/codex';
 // import type { AcpAgentTask } from './task/AcpAgentTask';
+import { getDatabase } from './database/export';
 import { ProcessChat } from './initStorage';
 import type AgentBaseTask from './task/BaseAgentManager';
 import { GeminiAgentManager } from './task/GeminiAgentManager';
-import { getDatabase } from './database/export';
 
 const taskList: {
   id: string;
@@ -49,13 +49,13 @@ const buildConversation = (conversation: TChatConversation, options?: BuildConve
           workspace: conversation.extra.workspace,
           conversation_id: conversation.id,
           webSearchEngine: conversation.extra.webSearchEngine,
-          // 系统规则 / System rules
+          // System rules
           presetRules: conversation.extra.presetRules,
-          // 向后兼容 / Backward compatible
+          // Backward compatible
           contextContent: conversation.extra.contextContent,
-          // 启用的 skills 列表（通过 SkillManager 加载）/ Enabled skills list (loaded via SkillManager)
+          // Enabled skills list (loaded via SkillManager)
           enabledSkills: conversation.extra.enabledSkills,
-          // Runtime options / 运行时选项
+          // Runtime options
           yoloMode: options?.yoloMode,
         },
         conversation.model
@@ -70,7 +70,7 @@ const buildConversation = (conversation: TChatConversation, options?: BuildConve
       const task = new AcpAgentManager({
         ...conversation.extra,
         conversation_id: conversation.id,
-        // Runtime options / 运行时选项
+        // Runtime options
         yoloMode: options?.yoloMode,
       });
       if (!options?.skipCache) {
@@ -82,7 +82,7 @@ const buildConversation = (conversation: TChatConversation, options?: BuildConve
       const task = new CodexAgentManager({
         ...conversation.extra,
         conversation_id: conversation.id,
-        // Runtime options / 运行时选项
+        // Runtime options
         yoloMode: options?.yoloMode,
       });
       if (!options?.skipCache) {

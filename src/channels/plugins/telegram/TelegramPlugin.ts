@@ -10,7 +10,7 @@ import { Bot, GrammyError, HttpError } from 'grammy';
 import type { UserFromGetMe } from 'grammy/types';
 import type { BotInfo, IChannelPluginConfig, IUnifiedOutgoingMessage, PluginType } from '../../types';
 import { BasePlugin } from '../BasePlugin';
-import { splitMessage, TELEGRAM_MESSAGE_LIMIT, toTelegramSendParams, toUnifiedIncomingMessage } from './TelegramAdapter';
+import { TELEGRAM_MESSAGE_LIMIT, splitMessage, toTelegramSendParams, toUnifiedIncomingMessage } from './TelegramAdapter';
 import { extractAction, extractCategory } from './TelegramKeyboards';
 
 /**
@@ -71,7 +71,6 @@ export class TelegramPlugin extends BasePlugin {
       console.log(`[TelegramPlugin] Bot info: @${this.botInfo.username}`);
 
       // Start polling - grammY handles webhook deletion internally
-      // grammY 内部会自动删除 webhook
       await this.startPolling();
 
       this.reconnectAttempts = 0;
@@ -236,7 +235,6 @@ export class TelegramPlugin extends BasePlugin {
       console.error('[TelegramPlugin] Bot error:', errorMessage, botError);
       this.setError(errorMessage);
       // Don't re-throw - let the bot continue running
-      // 不要重新抛出 - 让 bot 继续运行
     });
   }
 
@@ -293,8 +291,6 @@ export class TelegramPlugin extends BasePlugin {
         // IMPORTANT: Don't await - process in background to avoid blocking polling loop
         // grammY's simple polling processes messages sequentially, so blocking here
         // would prevent subsequent messages from being received
-        // 重要：不要 await - 在后台处理以避免阻塞轮询循环
-        // grammY 的简单轮询是顺序处理的，阻塞这里会导致后续消息无法接收
         void this.messageHandler(unifiedMessage)
           .then(() => {
             console.log(`[TelegramPlugin] Message handler completed successfully for: ${text?.slice(0, 20)}...`);
@@ -307,7 +303,6 @@ export class TelegramPlugin extends BasePlugin {
       }
     } catch (error) {
       // Catch errors to prevent them from stopping the bot
-      // 捕获错误以防止它们停止 bot
       console.error(`[TelegramPlugin] Error handling text message:`, error);
       // Don't re-throw - let grammY continue processing
     }
@@ -393,7 +388,6 @@ export class TelegramPlugin extends BasePlugin {
     this.activeUsers.add(userId);
 
     // Answer callback to remove loading state (don't await to avoid blocking)
-    // 不等待 answerCallbackQuery 完成，避免阻塞
     void ctx.answerCallbackQuery().catch((err) => {
       console.warn('[TelegramPlugin] Failed to answer callback query:', err);
     });
@@ -402,27 +396,23 @@ export class TelegramPlugin extends BasePlugin {
     const category = extractCategory(data);
     console.log(`[TelegramPlugin] Callback category:`, category);
 
-    // 处理工具确认回调，格式: confirm:{callId}:{value}
     // Handle tool confirmation callback, format: confirm:{callId}:{value}
     if (category === 'confirm') {
       const parts = data.split(':');
       if (parts.length >= 3 && this.confirmHandler) {
         const callId = parts[1];
-        const value = parts.slice(2).join(':'); // value 可能包含冒号
+        const value = parts.slice(2).join(':'); // value may contain colons
         console.log(`[TelegramPlugin] Calling confirmHandler: userId=${userId}, callId=${callId}, value=${value}`);
 
-        // 直接调用 confirmHandler，不通过 messageHandler
         // Call confirmHandler directly, not through messageHandler
         void this.confirmHandler(userId, 'telegram', callId, value)
           .then(async () => {
             console.log(`[TelegramPlugin] Confirm callback handled: ${data}`);
-            // 确认成功后移除按钮
             // Remove buttons after confirmation success
             try {
               await ctx.editMessageReplyMarkup({ reply_markup: undefined });
               console.log(`[TelegramPlugin] Removed confirmation buttons`);
             } catch (editError) {
-              // 忽略编辑错误（消息可能已被删除或修改）
               // Ignore edit errors (message may have been deleted or modified)
               console.debug(`[TelegramPlugin] Failed to remove buttons (ignored):`, editError);
             }
@@ -434,7 +424,6 @@ export class TelegramPlugin extends BasePlugin {
       return;
     }
 
-    // 处理 agent 选择回调，格式: agent:{agentType}
     // Handle agent selection callback, format: agent:{agentType}
     if (category === 'agent') {
       const agentType = extractAction(data); // gemini, acp, codex
@@ -463,7 +452,6 @@ export class TelegramPlugin extends BasePlugin {
       return;
     }
 
-    // 其他回调类型通过 messageHandler 处理
     // Other callback types are handled through messageHandler
     const unifiedMessage = toUnifiedIncomingMessage(ctx);
     console.log(`[TelegramPlugin] unifiedMessage:`, unifiedMessage ? 'created' : 'null', `messageHandler:`, this.messageHandler ? 'exists' : 'null');
@@ -471,7 +459,6 @@ export class TelegramPlugin extends BasePlugin {
       unifiedMessage.content.type = 'action';
       unifiedMessage.content.text = data;
 
-      // 其他回调类型的处理
       // Handle other callback types
       const action = extractAction(data);
       unifiedMessage.action = {
@@ -510,7 +497,6 @@ export class TelegramPlugin extends BasePlugin {
     console.log('[TelegramPlugin] startPolling called, preparing to start bot.start()...');
 
     // Create a promise that resolves when polling starts successfully
-    // 创建一个 Promise，在轮询成功启动时 resolve
     return new Promise<void>((resolve, reject) => {
       let started = false;
       const startTimeout = setTimeout(() => {
@@ -539,7 +525,6 @@ export class TelegramPlugin extends BasePlugin {
         },
         allowed_updates: ['message', 'callback_query'],
         // Drop pending updates on startup to avoid processing stale messages
-        // 启动时丢弃待处理的更新，避免处理过时的消息
         drop_pending_updates: true,
       })
         .then(() => {

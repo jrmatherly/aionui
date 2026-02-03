@@ -13,7 +13,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { mutate } from 'swr';
 
-// Skill 信息类型 / Skill info type
+// Skill info type
 interface SkillInfo {
   name: string;
   description: string;
@@ -21,22 +21,21 @@ interface SkillInfo {
   isCustom: boolean;
 }
 
-// 检查内置助手是否有 skills 配置（defaultEnabledSkills 或 skillFiles）
 // Check if builtin assistant has skills config (defaultEnabledSkills or skillFiles)
 const hasBuiltinSkills = (assistantId: string): boolean => {
   if (!assistantId.startsWith('builtin-')) return false;
   const presetId = assistantId.replace('builtin-', '');
   const preset = ASSISTANT_PRESETS.find((p) => p.id === presetId);
   if (!preset) return false;
-  // 有 defaultEnabledSkills 或 skillFiles 配置即可
+  // Has defaultEnabledSkills or skillFiles config
   const hasDefaultSkills = preset.defaultEnabledSkills && preset.defaultEnabledSkills.length > 0;
   const hasSkillFiles = preset.skillFiles && Object.keys(preset.skillFiles).length > 0;
   return hasDefaultSkills || hasSkillFiles;
 };
 
-// 待导入的 Skill / Pending skill to import
+// Pending skill to import
 interface PendingSkill {
-  path: string; // 原始路径
+  path: string; // Original path
   name: string;
   description: string;
 }
@@ -60,16 +59,16 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
   const [deleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
   const [promptViewMode, setPromptViewMode] = useState<'edit' | 'preview'>('preview');
   const [drawerWidth, setDrawerWidth] = useState(500);
-  // Skills 选择模式相关 state / Skills selection mode states
+  // Skills selection mode states
   const [availableSkills, setAvailableSkills] = useState<SkillInfo[]>([]);
-  const [customSkills, setCustomSkills] = useState<string[]>([]); // 通过 Add Skills 添加到此助手的 skills 名称 / Skill names added via Add Skills
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([]); // 启用的 skills（勾选状态）/ Enabled skills
+  const [customSkills, setCustomSkills] = useState<string[]>([]); // Skill names added via Add Skills
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]); // Enabled skills (checkbox state)
   const [skillsModalVisible, setSkillsModalVisible] = useState(false);
   const [skillPath, setSkillPath] = useState(''); // Skill folder path input
   const [commonPaths, setCommonPaths] = useState<Array<{ name: string; path: string }>>([]); // Common skill paths detected
-  const [pendingSkills, setPendingSkills] = useState<PendingSkill[]>([]); // 待导入的 skills / Pending skills to import
-  const [deletePendingSkillName, setDeletePendingSkillName] = useState<string | null>(null); // 待删除的 pending skill 名称 / Pending skill name to delete
-  const [deleteCustomSkillName, setDeleteCustomSkillName] = useState<string | null>(null); // 待从助手移除的 custom skill 名称 / Custom skill to remove from assistant
+  const [pendingSkills, setPendingSkills] = useState<PendingSkill[]>([]); // Pending skills to import
+  const [deletePendingSkillName, setDeletePendingSkillName] = useState<string | null>(null); // Pending skill name to delete
+  const [deleteCustomSkillName, setDeleteCustomSkillName] = useState<string | null>(null); // Custom skill to remove from assistant
   const textareaWrapperRef = useRef<HTMLDivElement>(null);
   const localeKey = resolveLocaleKey(i18n.language);
   const avatarImageMap: Record<string, string> = {
@@ -126,7 +125,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
     }
   }, []);
 
-  // 从文件加载助手规则内容 / Load assistant rule content from file
+  // Load assistant rule content from file
   const loadAssistantContext = useCallback(
     async (assistantId: string): Promise<string> => {
       try {
@@ -140,7 +139,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
     [localeKey]
   );
 
-  // 从文件加载助手技能内容 / Load assistant skill content from file
+  // Load assistant skill content from file
   const loadAssistantSkills = useCallback(
     async (assistantId: string): Promise<string> => {
       try {
@@ -156,12 +155,10 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
 
   const loadAssistants = useCallback(async () => {
     try {
-      // 从配置中读取已存储的助手（包含内置助手和用户自定义助手）
       // Read stored assistants from config (includes builtin and user-defined)
       const allAgents: AcpBackendConfig[] = (await ConfigStorage.get('acp.customAgents')) || [];
       const presetOrder = ASSISTANT_PRESETS.map((preset) => `builtin-${preset.id}`);
 
-      // 过滤出助手（isPreset 为 true 的助手）
       // Filter assistants (agents with isPreset = true)
       const presetAssistants = allAgents
         .filter((agent) => agent.isPreset)
@@ -225,19 +222,19 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
     setEditAgent(assistant.presetAgentType || 'gemini');
     setEditVisible(true);
 
-    // 先加载规则、技能内容 / Load rules, skills content
+    // Load rules, skills content
     try {
       const [context, skills] = await Promise.all([loadAssistantContext(assistant.id), loadAssistantSkills(assistant.id)]);
       setEditContext(context);
       setEditSkills(skills);
 
-      // 对于有 skillFiles 配置的内置助手和所有自定义助手，加载技能列表 / Load skills list for builtin assistants with skillFiles and all custom assistants
+      // Load skills list for builtin assistants with skillFiles and all custom assistants
       if (hasBuiltinSkills(assistant.id) || !assistant.isBuiltin) {
         const skillsList = await ipcBridge.fs.listAvailableSkills.invoke();
         setAvailableSkills(skillsList);
-        // selectedSkills: 启用的 skills / Enabled skills
+        // selectedSkills: Enabled skills
         setSelectedSkills(assistant.enabledSkills || []);
-        // customSkills: 通过 Add Skills 添加的 skills 名称 / Skills added via Add Skills
+        // customSkills: Skills added via Add Skills
         setCustomSkills(assistant.customSkillNames || []);
       } else {
         setAvailableSkills([]);
@@ -253,7 +250,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
     }
   };
 
-  // 创建助手功能 / Create assistant function
+  // Create assistant function
   const handleCreate = async () => {
     setIsCreating(true);
     setActiveAssistantId(null);
@@ -263,12 +260,12 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
     setEditAvatar('🤖');
     setEditAgent('gemini');
     setEditSkills('');
-    setSelectedSkills([]); // 没有启用的 skills
-    setCustomSkills([]); // 没有通过 Add Skills 添加的 skills
-    setPromptViewMode('edit'); // 创建助手时，规则默认处于编辑状态 / Default to edit mode when creating
+    setSelectedSkills([]); // No enabled skills
+    setCustomSkills([]); // No skills added via Add Skills
+    setPromptViewMode('edit'); // Default to edit mode when creating
     setEditVisible(true);
 
-    // 加载可用的skills列表 / Load available skills list
+    // Load available skills list
     try {
       const skillsList = await ipcBridge.fs.listAvailableSkills.invoke();
       setAvailableSkills(skillsList);
@@ -278,7 +275,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
     }
   };
 
-  // 复制新建助手功能 / Duplicate assistant function
+  // Duplicate assistant function
   const handleDuplicate = async (assistant: AcpBackendConfig) => {
     setIsCreating(true);
     setActiveAssistantId(null);
@@ -289,7 +286,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
     setPromptViewMode('edit');
     setEditVisible(true);
 
-    // 加载原助手的规则和技能内容 / Load original assistant's rules and skills
+    // Load original assistant's rules and skills
     try {
       const [context, skills, skillsList] = await Promise.all([loadAssistantContext(assistant.id), loadAssistantSkills(assistant.id), ipcBridge.fs.listAvailableSkills.invoke()]);
       setEditContext(context);
@@ -309,15 +306,15 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
 
   const handleSave = async () => {
     try {
-      // 验证必填字段 / Validate required fields
+      // Validate required fields
       if (!editName.trim()) {
         message.error(t('settings.assistantNameRequired', { defaultValue: 'Assistant name is required' }));
         return;
       }
 
-      // 先导入所有待导入的 skills（跳过已存在的）/ Import pending skills (skip existing ones)
+      // Import pending skills (skip existing ones)
       if (pendingSkills.length > 0) {
-        // 过滤出真正需要导入的 skills（不在 availableSkills 中的）
+        // Filter out skills that actually need to be imported (not in availableSkills)
         const skillsToImport = pendingSkills.filter((pending) => !availableSkills.some((available) => available.name === pending.name));
 
         if (skillsToImport.length > 0) {
@@ -334,7 +331,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
               return;
             }
           }
-          // 导入成功后重新加载 skills 列表 / Reload skills list after successful import
+          // Reload skills list after successful import
           const skillsList = await ipcBridge.fs.listAvailableSkills.invoke();
           setAvailableSkills(skillsList);
         }
@@ -342,12 +339,12 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
 
       const agents = (await ConfigStorage.get('acp.customAgents')) || [];
 
-      // 计算最终的 customSkills：合并现有的 + 待导入的 / Calculate final customSkills: merge existing + pending
+      // Calculate final customSkills: merge existing + pending
       const pendingSkillNames = pendingSkills.map((s) => s.name);
       const finalCustomSkills = Array.from(new Set([...customSkills, ...pendingSkillNames]));
 
       if (isCreating) {
-        // 创建新助手 / Create new assistant
+        // Create new assistant
         const newId = `custom-${Date.now()}`;
         const newAssistant: AcpBackendConfig = {
           id: newId,
@@ -362,7 +359,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
           customSkillNames: finalCustomSkills,
         };
 
-        // 保存规则文件 / Save rule file
+        // Save rule file
         if (editContext.trim()) {
           await ipcBridge.fs.writeAssistantRule.invoke({
             assistantId: newId,
@@ -377,7 +374,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
         setActiveAssistantId(newId);
         message.success(t('common.createSuccess', { defaultValue: 'Created successfully' }));
       } else {
-        // 更新现有助手 / Update existing assistant
+        // Update existing assistant
         if (!activeAssistant) return;
 
         const updatedAgent: AcpBackendConfig = {
@@ -390,7 +387,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
           customSkillNames: finalCustomSkills,
         };
 
-        // 保存规则文件（如果有更改）/ Save rule file (if changed)
+        // Save rule file (if changed)
         if (editContext.trim()) {
           await ipcBridge.fs.writeAssistantRule.invoke({
             assistantId: activeAssistant.id,
@@ -406,7 +403,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
       }
 
       setEditVisible(false);
-      setPendingSkills([]); // 清空待导入列表 / Clear pending skills list
+      setPendingSkills([]); // Clear pending skills list
       await refreshAgentDetection();
     } catch (error) {
       console.error('Failed to save assistant:', error);
@@ -416,7 +413,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
 
   const handleDeleteClick = () => {
     if (!activeAssistant) return;
-    // 不能删除内置助手 / Cannot delete builtin assistants
+    // Cannot delete builtin assistants
     if (activeAssistant.isBuiltin) {
       message.warning(t('settings.cannotDeleteBuiltin', { defaultValue: 'Cannot delete builtin assistants' }));
       return;
@@ -427,10 +424,10 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
   const handleDeleteConfirm = async () => {
     if (!activeAssistant) return;
     try {
-      // 1. 删除规则和技能文件 / Delete rule and skill files
+      // 1. Delete rule and skill files
       await Promise.all([ipcBridge.fs.deleteAssistantRule.invoke({ assistantId: activeAssistant.id }), ipcBridge.fs.deleteAssistantSkill.invoke({ assistantId: activeAssistant.id })]);
 
-      // 2. 从配置中移除助手 / Remove assistant from config
+      // 2. Remove assistant from config
       const agents = (await ConfigStorage.get('acp.customAgents')) || [];
       const updatedAgents = agents.filter((agent) => agent.id !== activeAssistant.id);
       await ConfigStorage.set('acp.customAgents', updatedAgents);
@@ -446,7 +443,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
     }
   };
 
-  // Toggle assistant enabled state / 切换助手启用状态
+  // Toggle assistant enabled state
   const handleToggleEnabled = async (assistant: AcpBackendConfig, enabled: boolean) => {
     try {
       const agents = (await ConfigStorage.get('acp.customAgents')) || [];
@@ -655,7 +652,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
                 </div>
               </div>
             </div>
-            {/* 创建助手或编辑有 skillFiles 配置的内置助手/自定义助手时显示技能选择 / Show skills selection when creating or editing builtin assistants with skillFiles/custom assistants */}
+            {/* Show skills selection when creating or editing builtin assistants with skillFiles/custom assistants */}
             {(isCreating || (activeAssistantId && hasBuiltinSkills(activeAssistantId)) || (activeAssistant && !activeAssistant.isBuiltin)) && (
               <div className='flex-shrink-0 mt-16px'>
                 <div className='flex items-center justify-between mb-12px'>
@@ -665,12 +662,12 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
                   </Button>
                 </div>
 
-                {/* Skills 折叠面板 / Skills Collapse */}
+                {/* Skills Collapse */}
                 <Collapse defaultActiveKey={['custom-skills']}>
-                  {/* 通过 Add Skills 添加的 Skills / Custom Skills (Pending + Imported) */}
+                  {/* Custom Skills (Pending + Imported) */}
                   <Collapse.Item header={<span className='text-13px font-medium'>{t('settings.customSkills', { defaultValue: 'Imported Skills (Library)' })}</span>} name='custom-skills' className='mb-8px' extra={<span className='text-12px text-t-secondary'>{pendingSkills.length + availableSkills.filter((skill) => skill.isCustom).length}</span>}>
                     <div className='space-y-4px'>
-                      {/* 待导入的 skills (Pending) / Pending skills (not yet imported) */}
+                      {/* Pending skills (not yet imported) */}
                       {pendingSkills.map((skill) => (
                         <div key={`pending-${skill.name}`} className='flex items-start gap-8px p-8px hover:bg-fill-1 rounded-4px group'>
                           <Checkbox
@@ -703,7 +700,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
                           </button>
                         </div>
                       ))}
-                      {/* 所有已导入的 custom skills / All imported custom skills */}
+                      {/* All imported custom skills */}
                       {availableSkills
                         .filter((skill) => skill.isCustom)
                         .map((skill) => (
@@ -744,7 +741,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
                     </div>
                   </Collapse.Item>
 
-                  {/* 内置 Skills / Builtin Skills */}
+                  {/* Builtin Skills */}
                   <Collapse.Item header={<span className='text-13px font-medium'>{t('settings.builtinSkills', { defaultValue: 'Builtin Skills' })}</span>} name='builtin-skills' extra={<span className='text-12px text-t-secondary'>{availableSkills.filter((skill) => !skill.isCustom).length}</span>}>
                     {availableSkills.filter((skill) => !skill.isCustom).length > 0 ? (
                       <div className='space-y-4px'>
@@ -819,7 +816,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
             const allFoundSkills: Array<{ name: string; description: string; path: string }> = [];
 
             for (const p of paths) {
-              // 扫描目录下的 skills / Scan directory for skills
+              // Scan directory for skills
               const response = await ipcBridge.fs.scanForSkills.invoke({ folderPath: p });
               if (response.success && response.data) {
                 allFoundSkills.push(...response.data);
@@ -837,7 +834,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
               for (const skill of allFoundSkills) {
                 const { name, description, path: sPath } = skill;
 
-                // 检查是否已经在此助手的列表中 / Check if already in this assistant's list
+                // Check if already in this assistant's list
                 const alreadyInAssistant = customSkills.includes(name) || newCustomSkillNames.includes(name);
 
                 if (alreadyInAssistant) {
@@ -845,12 +842,12 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
                   continue;
                 }
 
-                // 检查是否系统已存在 / Check if already exists in system
+                // Check if already exists in system
                 const existsInAvailable = availableSkills.some((s) => s.name === name);
                 const existsInPending = pendingSkills.some((s) => s.name === name);
 
                 if (!existsInAvailable && !existsInPending) {
-                  // 只有系统不存在时才添加到待导入列表 / Only add to pending if not in system
+                  // Only add to pending if not in system
                   newPendingSkills.push({ path: sPath, name, description });
                 }
 
@@ -947,10 +944,10 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
         cancelText={t('common.cancel', { defaultValue: 'Cancel' })}
         onOk={() => {
           if (deletePendingSkillName) {
-            // 从 pendingSkills 和 customSkills 中删除 / Remove from pendingSkills and customSkills
+            // Remove from pendingSkills and customSkills
             setPendingSkills(pendingSkills.filter((s) => s.name !== deletePendingSkillName));
             setCustomSkills(customSkills.filter((s) => s !== deletePendingSkillName));
-            // 如果该 skill 被选中，也从选中列表移除 / Also remove from selectedSkills if selected
+            // Also remove from selectedSkills if selected
             setSelectedSkills(selectedSkills.filter((s) => s !== deletePendingSkillName));
             setDeletePendingSkillName(null);
             message.success(t('settings.skillDeleted', { defaultValue: 'Skill removed from pending list' }));
@@ -982,9 +979,9 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
         cancelText={t('common.cancel', { defaultValue: 'Cancel' })}
         onOk={() => {
           if (deleteCustomSkillName) {
-            // 从 customSkills 中移除 / Remove from customSkills
+            // Remove from customSkills
             setCustomSkills(customSkills.filter((s) => s !== deleteCustomSkillName));
-            // 如果该 skill 被选中，也从选中列表移除 / Also remove from selectedSkills if selected
+            // Also remove from selectedSkills if selected
             setSelectedSkills(selectedSkills.filter((s) => s !== deleteCustomSkillName));
             setDeleteCustomSkillName(null);
             message.success(t('settings.skillRemovedFromAssistant', { defaultValue: 'Skill removed from this assistant' }));

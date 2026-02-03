@@ -15,13 +15,12 @@ import { getChannelMessageService } from '../agent/ChannelMessageService';
 import type { SessionManager } from '../core/SessionManager';
 import type { PairingService } from '../pairing/PairingService';
 import type { PluginMessageHandler } from '../plugins/BasePlugin';
-import { createMainMenuKeyboard, createResponseActionsKeyboard, createToolConfirmationKeyboard } from '../plugins/telegram/TelegramKeyboards';
 import { escapeHtml } from '../plugins/telegram/TelegramAdapter';
+import { createMainMenuKeyboard, createResponseActionsKeyboard, createToolConfirmationKeyboard } from '../plugins/telegram/TelegramKeyboards';
 import type { IUnifiedIncomingMessage, IUnifiedOutgoingMessage } from '../types';
 import type { PluginManager } from './PluginManager';
 
 /**
- * 获取确认选项
  * Get confirmation options based on type
  */
 function getConfirmationOptions(type: string): Array<{ label: string; value: string }> {
@@ -54,9 +53,7 @@ function getConfirmationOptions(type: string): Array<{ label: string; value: str
 }
 
 /**
- * 获取确认提示文本
  * Get confirmation prompt text
- * 注意：所有用户输入的内容都需要转义 HTML 特殊字符
  * Note: All user input content needs HTML special characters escaped
  */
 function getConfirmationPrompt(details: { type: string; title?: string; [key: string]: any }): string {
@@ -77,13 +74,11 @@ function getConfirmationPrompt(details: { type: string; title?: string; [key: st
 }
 
 /**
- * 将 TMessage 转换为 IUnifiedOutgoingMessage
  * Convert TMessage to IUnifiedOutgoingMessage for Telegram
  */
 function convertTMessageToOutgoing(message: TMessage, isComplete = false): IUnifiedOutgoingMessage {
   switch (message.type) {
     case 'text': {
-      // 转义 HTML 特殊字符
       // Escape HTML special characters
       const text = escapeHtml(message.content.content || '') || '...';
       return {
@@ -96,7 +91,6 @@ function convertTMessageToOutgoing(message: TMessage, isComplete = false): IUnif
 
     case 'tips': {
       const icon = message.content.type === 'error' ? '❌' : message.content.type === 'success' ? '✅' : '⚠️';
-      // 转义 HTML 特殊字符
       // Escape HTML special characters
       const content = escapeHtml(message.content.content || '');
       return {
@@ -107,21 +101,17 @@ function convertTMessageToOutgoing(message: TMessage, isComplete = false): IUnif
     }
 
     case 'tool_group': {
-      // 显示工具调用状态
       // Show tool call status
       const toolLines = message.content.map((tool) => {
         const statusIcon = tool.status === 'Success' ? '✅' : tool.status === 'Error' ? '❌' : tool.status === 'Executing' ? '⏳' : tool.status === 'Confirming' ? '❓' : '📋';
-        // 转义 HTML 特殊字符
         // Escape HTML special characters
         const desc = escapeHtml(tool.description || tool.name || '');
         return `${statusIcon} ${desc}`;
       });
 
-      // 检查是否有需要确认的工具
       // Check if there are tools that need confirmation
       const confirmingTool = message.content.find((tool) => tool.status === 'Confirming' && tool.confirmationDetails);
       if (confirmingTool && confirmingTool.confirmationDetails) {
-        // 根据确认类型生成选项
         // Generate options based on confirmation type
         const options = getConfirmationOptions(confirmingTool.confirmationDetails.type);
         const confirmText = toolLines.join('\n') + '\n\n' + getConfirmationPrompt(confirmingTool.confirmationDetails);
@@ -143,7 +133,6 @@ function convertTMessageToOutgoing(message: TMessage, isComplete = false): IUnif
 
     case 'tool_call': {
       const statusIcon = message.content.status === 'success' ? '✅' : message.content.status === 'error' ? '❌' : '⏳';
-      // 转义 HTML 特殊字符
       // Escape HTML special characters
       const name = escapeHtml(message.content.name || '');
       return {
@@ -154,7 +143,6 @@ function convertTMessageToOutgoing(message: TMessage, isComplete = false): IUnif
     }
 
     default:
-      // 其他类型暂不支持，显示通用消息
       // Other types not supported yet, show generic message
       return {
         type: 'text',
@@ -266,14 +254,12 @@ export class ActionExecutor {
       // Set the assistant user in context
       context.channelUser = channelUser;
 
-      // Get or create session
-      // 获取或创建会话，优先复用最后一个 telegram 来源的会话
+      // Get or create session, preferring to reuse the last telegram-sourced session
       let session = this.sessionManager.getSession(channelUser.id);
       if (!session || !session.conversationId) {
-        // 获取用户选择的模型 / Get user selected model
+        // Get user selected model
         const model = await getTelegramDefaultModel();
 
-        // 使用 ConversationService 获取或创建 telegram 会话
         // Use ConversationService to get or create telegram conversation
         const result = await ConversationService.getOrCreateTelegramConversation({
           model,
@@ -388,22 +374,18 @@ export class ActionExecutor {
 
       const messageService = getChannelMessageService();
 
-      // 节流控制：使用定时器机制确保最后一条消息能被发送
       // Throttle control: use timer mechanism to ensure last message is sent
       let lastUpdateTime = 0;
       const UPDATE_THROTTLE_MS = 500; // Update at most every 500ms
       let pendingUpdateTimer: ReturnType<typeof setTimeout> | null = null;
       let pendingMessage: IUnifiedOutgoingMessage | null = null;
 
-      // 跟踪已发送的消息 ID，用于新插入消息的管理
       // Track sent message IDs for new inserted messages
       const sentMessageIds: string[] = [thinkingMsgId];
 
-      // 跟踪最后一条消息内容，用于流结束后添加操作按钮
       // Track last message content for adding action buttons after stream ends
       let lastMessageContent: IUnifiedOutgoingMessage | null = null;
 
-      // 执行消息编辑的函数
       // Function to perform message edit
       const doEditMessage = async (msg: IUnifiedOutgoingMessage) => {
         lastUpdateTime = Date.now();
@@ -411,27 +393,22 @@ export class ActionExecutor {
         try {
           await context.editMessage(targetMsgId, msg);
         } catch (editError) {
-          // 忽略编辑错误（消息未修改等）
           // Ignore edit errors (message not modified, etc.)
           console.debug('[ActionExecutor] Edit error (ignored):', editError);
         }
       };
 
-      // 发送消息
       // Send message
       await messageService.sendMessage(sessionId, conversationId, text, async (message: TMessage, isInsert: boolean) => {
         const now = Date.now();
 
-        // 转换消息格式
         // Convert message format
         const outgoingMessage = convertTMessageToOutgoing(message, false);
 
-        // 保存最后一条消息内容
         // Save last message content
         lastMessageContent = outgoingMessage;
 
         if (isInsert) {
-          // 新消息：发送新消息
           // New message: send new message
           try {
             const newMsgId = await context.sendMessage(outgoingMessage);
@@ -440,12 +417,10 @@ export class ActionExecutor {
             console.debug('[ActionExecutor] Send error (ignored):', sendError);
           }
         } else {
-          // 更新消息：使用定时器节流，确保最后一条消息能被发送
           // Update message: throttle with timer to ensure last message is sent
           pendingMessage = outgoingMessage;
 
           if (now - lastUpdateTime >= UPDATE_THROTTLE_MS) {
-            // 距离上次发送超过节流时间，立即发送
             // Enough time has passed since last send, send immediately
             if (pendingUpdateTimer) {
               clearTimeout(pendingUpdateTimer);
@@ -453,7 +428,6 @@ export class ActionExecutor {
             }
             await doEditMessage(outgoingMessage);
           } else {
-            // 在节流时间内，设置定时器延迟发送
             // Within throttle window, set timer to send later
             if (pendingUpdateTimer) {
               clearTimeout(pendingUpdateTimer);
@@ -470,23 +444,19 @@ export class ActionExecutor {
         }
       });
 
-      // 清除待处理的定时器，确保最后一条消息被处理
       // Clear pending timer and ensure last message is processed
       if (pendingUpdateTimer) {
         clearTimeout(pendingUpdateTimer);
         pendingUpdateTimer = null;
       }
 
-      // 流结束后，更新最后一条消息添加操作按钮（保留原内容）
       // After stream ends, update last message with action buttons (keep original content)
       const lastMsgId = sentMessageIds[sentMessageIds.length - 1] || thinkingMsgId;
       try {
-        // 使用最后一条消息的实际内容，添加操作按钮
         // Use actual content of last message, add action buttons
         const finalMessage: IUnifiedOutgoingMessage = lastMessageContent ? { ...lastMessageContent, replyMarkup: createResponseActionsKeyboard() } : { type: 'text', text: '✅ Done', parseMode: 'HTML', replyMarkup: createResponseActionsKeyboard() };
         await context.editMessage(lastMsgId, finalMessage);
       } catch {
-        // 忽略最终编辑错误
         // Ignore final edit error
       }
     } catch (error: any) {

@@ -1,188 +1,188 @@
-# CI/CD 设置指南
+# CI/CD Setup Guide
 
-## 概述
+## Overview
 
-这个项目配置了完整的 GitHub Actions CI/CD 流水线，支持自动构建、测试和发布到多个平台。
+This project is configured with a complete GitHub Actions CI/CD pipeline, supporting automated building, testing, and publishing to multiple platforms.
 
-## 工作流说明
+## Workflow Description
 
-### 1. `build-and-release.yml` - 主构建和发布流
+### 1. `build-and-release.yml` - Main Build and Release Flow
 
-- **触发时机**: 仅推送到 `main` 分支
-- **功能**:
-  - 代码质量检查 (ESLint, Prettier, TypeScript)
-  - 多平台构建 (macOS Intel/Apple Silicon, Windows, Linux)
-  - 自动创建版本标签
-  - 创建 Draft Release (需要手动审批和发布)
-- **流程**:
-  1. 代码质量检查
-  2. 三平台并行构建
-  3. 自动创建基于 package.json 版本的标签
-  4. 等待环境审批
-  5. 创建 Draft Release (需要手动编辑和发布)
+- **Trigger**: Only on pushes to the `main` branch
+- **Features**:
+  - Code quality checks (ESLint, Prettier, TypeScript)
+  - Multi-platform builds (macOS Intel/Apple Silicon, Windows, Linux)
+  - Automatic version tag creation
+  - Create Draft Release (requires manual approval and publishing)
+- **Process**:
+  1. Code quality checks
+  2. Parallel builds for three platforms
+  3. Automatic tag creation based on package.json version
+  4. Wait for environment approval
+  5. Create Draft Release (requires manual editing and publishing)
 
-## 必需的 GitHub Secrets 配置
+## Required GitHub Secrets Configuration
 
-在 GitHub 仓库的 Settings → Secrets and variables → Actions 中配置以下 Secrets：
+Configure the following Secrets in GitHub repository Settings → Secrets and variables → Actions:
 
-### macOS 应用签名 (可选，用于发布到 Mac App Store)
+### macOS App Signing (Optional, for publishing to Mac App Store)
 
 ```
-APPLE_ID=你的苹果开发者账号邮箱
-APPLE_ID_PASSWORD=应用专用密码
-TEAM_ID=苹果开发者团队ID
-IDENTITY=签名证书名称
+APPLE_ID=your_apple_developer_account_email
+APPLE_ID_PASSWORD=app_specific_password
+TEAM_ID=apple_developer_team_id
+IDENTITY=signing_certificate_name
 ```
 
 ### GitHub Token
 
 ```
-GH_TOKEN=你的Personal Access Token (github_pat_开头)
+GH_TOKEN=your_personal_access_token (starts with github_pat_)
 ```
 
-**注意**: 需要手动配置，因为需要 `contents: write` 权限来创建 releases。
+**Note**: Must be configured manually as it requires `contents: write` permission to create releases.
 
 ### Environment Secrets
 
-在 Settings → Environments → release 中也需要配置：
+Also configure in Settings → Environments → release:
 
 ```
-GH_TOKEN=相同的Personal Access Token
+GH_TOKEN=same_personal_access_token
 ```
 
-## 如何获取 Apple 签名配置
+## How to Obtain Apple Signing Configuration
 
 ### 1. Apple ID App-Specific Password
 
-1. 访问 [appleid.apple.com](https://appleid.apple.com)
-2. 登录你的 Apple ID
-3. 在"Sign-In and Security"部分点击"App-Specific Passwords"
-4. 生成新的应用专用密码
-5. 复制生成的密码作为 `APPLE_ID_PASSWORD`
+1. Visit [appleid.apple.com](https://appleid.apple.com)
+2. Sign in with your Apple ID
+3. Click "App-Specific Passwords" in the "Sign-In and Security" section
+4. Generate a new app-specific password
+5. Copy the generated password as `APPLE_ID_PASSWORD`
 
 ### 2. Team ID
 
-1. 访问 [Apple Developer Portal](https://developer.apple.com/account/)
-2. 在"Membership Details"中找到 Team ID
-3. 复制 Team ID 作为 `TEAM_ID`
+1. Visit [Apple Developer Portal](https://developer.apple.com/account/)
+2. Find the Team ID in "Membership Details"
+3. Copy the Team ID as `TEAM_ID`
 
-### 3. 签名证书 Identity
+### 3. Signing Certificate Identity
 
-1. 打开 Xcode 或 Keychain Access
-2. 查看已安装的开发者证书
-3. 证书名称类似："Developer ID Application: Your Name (TEAM_ID)"
-4. 复制完整证书名称作为 `IDENTITY`
+1. Open Xcode or Keychain Access
+2. View installed developer certificates
+3. Certificate name looks like: "Developer ID Application: Your Name (TEAM_ID)"
+4. Copy the full certificate name as `IDENTITY`
 
-## 使用方法
+## Usage
 
-### 推荐发布流程 (使用 release.sh)
+### Recommended Release Process (using release.sh)
 
-1. 确保代码质量符合要求
-2. 使用发布脚本升级版本:
+1. Ensure code quality meets requirements
+2. Use the release script to upgrade version:
 
    ```bash
-   # 修复版本
+   # Patch version
    ./scripts/release.sh patch
 
-   # 功能版本
+   # Feature version
    ./scripts/release.sh minor
 
-   # 重大版本
+   # Major version
    ./scripts/release.sh major
 
-   # 预发布版本
+   # Pre-release version
    ./scripts/release.sh prerelease
    ```
 
-3. 脚本会自动:
-   - 运行代码质量检查
-   - 升级版本号
-   - 创建 git tag
-   - 推送到 main 分支
-4. GitHub Actions 自动触发构建
-5. 在 Deployments 页面审批发布
-6. 编辑 Draft Release 内容
-7. 手动发布给用户
+3. The script will automatically:
+   - Run code quality checks
+   - Upgrade version number
+   - Create git tag
+   - Push to main branch
+4. GitHub Actions automatically triggers build
+5. Approve release on Deployments page
+6. Edit Draft Release content
+7. Manually publish to users
 
-### 直接推送发布
+### Direct Push Release
 
-1. 手动修改 `package.json` 中的版本号
-2. 提交并推送到 `main` 分支
-3. GitHub Actions 将自动构建并创建 Draft Release
+1. Manually modify version in `package.json`
+2. Commit and push to `main` branch
+3. GitHub Actions will automatically build and create Draft Release
 
-### 版本管理规范
+### Version Management Guidelines
 
-- `patch`: 修复bug (1.0.0 → 1.0.1)
-- `minor`: 新功能 (1.0.0 → 1.1.0)
-- `major`: 重大更新 (1.0.0 → 2.0.0)
-- `prerelease`: 预发布版本 (1.0.0 → 1.0.1-beta.0)
+- `patch`: Bug fixes (1.0.0 → 1.0.1)
+- `minor`: New features (1.0.0 → 1.1.0)
+- `major`: Major updates (1.0.0 → 2.0.0)
+- `prerelease`: Pre-release versions (1.0.0 → 1.0.1-beta.0)
 
-## 构建产物
+## Build Artifacts
 
-成功构建后，将生成以下文件：
+After successful build, the following files are generated:
 
 ### macOS
 
-- `.dmg` 文件 (Intel 和 Apple Silicon 版本)
-- 应用程序包
+- `.dmg` files (Intel and Apple Silicon versions)
+- Application bundle
 
 ### Windows
 
-- `.exe` NSIS 安装程序 (x64/arm64)
-- `.zip` 便携版应用 (x64/arm64)
+- `.exe` NSIS installer (x64/arm64)
+- `.zip` portable application (x64/arm64)
 
 ### Linux
 
-- `.deb` 安装包 (x64/arm64/armv7l)
-- `.AppImage` 便携式应用 (x64/arm64/armv7l)
+- `.deb` package (x64/arm64/armv7l)
+- `.AppImage` portable application (x64/arm64/armv7l)
 
-## 故障排查
+## Troubleshooting
 
-### 常见问题
+### Common Issues
 
-1. **Release创建失败 (403错误)**
-   - 检查 GH_TOKEN 是否正确配置
-   - 确认 token 格式为 `github_pat_` 开头
-   - 验证 repository 和 environment 中都有 GH_TOKEN
+1. **Release creation failed (403 error)**
+   - Check if GH_TOKEN is correctly configured
+   - Confirm token format starts with `github_pat_`
+   - Verify GH_TOKEN exists in both repository and environment
 
-2. **macOS 签名失败**
-   - 检查 Apple ID 和密码是否正确
-   - 确认 Team ID 和证书名称准确
-   - 验证苹果开发者账号状态
+2. **macOS signing failed**
+   - Check if Apple ID and password are correct
+   - Confirm Team ID and certificate name are accurate
+   - Verify Apple Developer account status
 
-3. **构建超时 (Windows)**
-   - Windows 构建通常最慢 (可能40分钟+)
-   - 考虑禁用 MSI target 加速构建
+3. **Build timeout (Windows)**
+   - Windows builds are typically slowest (may take 40+ minutes)
+   - Consider disabling MSI target to speed up builds
 
-4. **重复tag错误**
-   - CI/CD 会检查并跳过已存在的 tag
-   - 如果手动创建了 tag，CI/CD 不会重复创建
+4. **Duplicate tag error**
+   - CI/CD will check and skip existing tags
+   - If tag was manually created, CI/CD won't recreate it
 
-### 调试方法
+### Debugging Methods
 
-1. 查看 GitHub Actions 日志
-2. 本地运行相同的构建命令测试
-3. 检查 package.json 中的构建脚本
+1. Check GitHub Actions logs
+2. Run the same build commands locally for testing
+3. Check build scripts in package.json
 
-## 安全建议
+## Security Recommendations
 
-1. 定期更新 GitHub Actions 版本
-2. 使用最小权限原则配置 Secrets
-3. 定期审查和清理未使用的 Secrets
-4. 监控构建日志，避免敏感信息泄露
+1. Regularly update GitHub Actions versions
+2. Configure Secrets using least privilege principle
+3. Regularly review and clean up unused Secrets
+4. Monitor build logs to avoid sensitive information leaks
 
-## 进阶配置
+## Advanced Configuration
 
-### 自动更新检查
+### Auto-Update Checking
 
-可以集成应用内自动更新功能，配合 GitHub Releases API 实现自动更新提醒。
+You can integrate in-app auto-update functionality using GitHub Releases API to implement automatic update notifications.
 
-### 多环境部署
+### Multi-Environment Deployment
 
-可以扩展工作流支持开发、测试、生产环境的分别部署。
+The workflow can be extended to support separate deployments for development, testing, and production environments.
 
-### 性能优化
+### Performance Optimization
 
-- 使用构建缓存加速构建
-- 并行构建不同平台
-- 优化依赖安装速度
+- Use build cache to speed up builds
+- Parallel builds for different platforms
+- Optimize dependency installation speed

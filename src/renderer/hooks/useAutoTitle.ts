@@ -1,8 +1,8 @@
-import { useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ipcBridge } from '@/common';
 import { useConversationTabs } from '@/renderer/pages/conversation/context/ConversationTabsContext';
 import { emitter } from '@/renderer/utils/emitter';
+import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const useAutoTitle = () => {
   const { t } = useTranslation();

@@ -22,9 +22,11 @@ description: 用于在 X (x.com) 发布招聘帖子。包含文案规范、图�
 使用 `scripts/generate_images.js` 生成图片。
 
 - **操作**：
+
   ```bash
   node scripts/generate_images.js
   ```
+
 - **产出**：`cover.png`, `jd_details.png`
 
 ### 3. 生成文案

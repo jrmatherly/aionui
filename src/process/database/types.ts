@@ -4,18 +4,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// 复用现有的业务类型定义
-import type { TChatConversation, IConfigStorageRefer } from '@/common/storage';
+// Reuse existing business type definitions
 import type { TMessage } from '@/common/chatLib';
+import type { IConfigStorageRefer, TChatConversation } from '@/common/storage';
 
 /**
  * ======================
- * 数据库专属类型 (新增功能)
+ * Database-specific types (new features)
  * ======================
  */
 
 /**
- * User account (新增的账户系统)
+ * User account (new account system)
  */
 export interface IUser {
   id: string;
@@ -33,7 +33,7 @@ export interface IUser {
 
 /**
  * ======================
- * 数据库查询辅助类型
+ * Database query helper types
  * ======================
  */
 
@@ -59,12 +59,12 @@ export interface IPaginatedResult<T> {
 
 /**
  * ======================
- * 数据库存储格式 (序列化后的格式)
+ * Database storage format (serialized format)
  * ======================
  */
 
 /**
- * Conversation stored in database (序列化后的格式)
+ * Conversation stored in database (serialized format)
  */
 export interface IConversationRow {
   id: string;
@@ -74,18 +74,18 @@ export interface IConversationRow {
   extra: string; // JSON string of extra data
   model?: string; // JSON string of TProviderWithModel (gemini type has this)
   status?: 'pending' | 'running' | 'finished';
-  source?: 'aionui' | 'telegram'; // 会话来源 / Conversation source
+  source?: 'aionui' | 'telegram'; // Conversation source
   created_at: number;
   updated_at: number;
 }
 
 /**
- * Message stored in database (序列化后的格式)
+ * Message stored in database (serialized format)
  */
 export interface IMessageRow {
   id: string;
   conversation_id: string;
-  msg_id?: string; // 消息来源ID
+  msg_id?: string; // Message source ID
   type: string; // TMessage['type']
   content: string; // JSON string of message content
   position?: 'left' | 'right' | 'center' | 'pop';
@@ -94,7 +94,7 @@ export interface IMessageRow {
 }
 
 /**
- * Config stored in database (key-value, 用于数据库版本跟踪)
+ * Config stored in database (key-value, used for database version tracking)
  */
 export interface IConfigRow {
   key: string;
@@ -104,7 +104,7 @@ export interface IConfigRow {
 
 /**
  * ======================
- * 类型转换函数
+ * Type conversion functions
  * ======================
  */
 
@@ -201,13 +201,13 @@ export function rowToMessage(row: IMessageRow): TMessage {
 
 /**
  * ======================
- * 导出类型别名，方便使用
+ * Export type aliases for convenience
  * ======================
  */
 
 export type {
-  // 复用的业务类型
+  IConfigStorageRefer,
+  // Reused business types
   TChatConversation,
   TMessage,
-  IConfigStorageRefer,
 };

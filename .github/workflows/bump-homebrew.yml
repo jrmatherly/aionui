@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Release tag to bump (e.g., v1.7.1)'
+        description: "Release tag to bump (e.g., v1.7.1)"
         required: false
         type: string
 

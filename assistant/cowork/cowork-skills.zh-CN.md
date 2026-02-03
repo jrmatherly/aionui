@@ -721,7 +721,7 @@ triggers: 多个文件, 批量, 并行, 并发, 所有文件, 批处理, multipl
 
 **并行执行示例**:
 
-```
+```text
 ✓ 并行 - 独立读取：
 Read src/a.ts, Read src/b.ts, Read src/c.ts
 

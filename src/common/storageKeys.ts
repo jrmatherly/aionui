@@ -6,7 +6,6 @@
 
 /**
  * Centralized localStorage keys for the application
- * 应用程序的集中式 localStorage 键管理
  *
  * All localStorage keys should be defined here to:
  * - Avoid key conflicts
@@ -14,22 +13,22 @@
  * - Provide a single source of truth for storage key names
  */
 export const STORAGE_KEYS = {
-  /** Workspace tree collapse state / 工作空间目录树折叠状态 */
+  /** Workspace tree collapse state */
   WORKSPACE_TREE_COLLAPSE: 'aionui_workspace_collapse_state',
 
-  /** Workspace panel collapse state / 工作空间面板折叠状态 */
+  /** Workspace panel collapse state */
   WORKSPACE_PANEL_COLLAPSE: 'aionui_workspace_panel_collapsed',
 
-  /** Conversation tabs state / 会话 tabs 状态 */
+  /** Conversation tabs state */
   CONVERSATION_TABS: 'aionui_conversation_tabs',
 
-  /** Sidebar collapse state / 侧边栏折叠状态 */
+  /** Sidebar collapse state */
   SIDEBAR_COLLAPSE: 'aionui_sider_collapsed',
 
-  /** Theme preference / 主题偏好 */
+  /** Theme preference */
   THEME: 'aionui_theme',
 
-  /** Language preference / 语言偏好 */
+  /** Language preference */
   LANGUAGE: 'aionui_language',
 } as const;
 

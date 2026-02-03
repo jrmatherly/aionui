@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Modal, Radio, Message, Dropdown, Menu, List, Spin, Empty, Typography, Input } from '@arco-design/web-react';
-import { Magic, FolderOpen, Lightning } from '@icon-park/react';
-import { useTranslation } from 'react-i18next';
 import { ipcBridge } from '@/common';
-import { ConfigStorage } from '@/common/storage';
-import { uuid } from '@/common/utils';
 import type { TMessage } from '@/common/chatLib';
 import type { IDirOrFile } from '@/common/ipcBridge';
+import { ConfigStorage } from '@/common/storage';
+import { uuid } from '@/common/utils';
 import type { AcpBackendConfig } from '@/types/acpTypes';
+import { Button, Dropdown, Empty, Input, List, Menu, Message, Modal, Radio, Spin, Typography } from '@arco-design/web-react';
+import { FolderOpen, Lightning, Magic } from '@icon-park/react';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface SkillRuleGeneratorProps {
   conversationId: string;

@@ -1,11 +1,11 @@
-import { Button, Collapse, Modal } from '@arco-design/web-react';
-import { Plus, EditTwo, Delete } from '@icon-park/react';
-import React, { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import { mutate } from 'swr';
+import { acpConversation } from '@/common/ipcBridge';
 import { ConfigStorage } from '@/common/storage';
 import type { AcpBackendConfig } from '@/types/acpTypes';
-import { acpConversation } from '@/common/ipcBridge';
+import { Button, Collapse, Modal } from '@arco-design/web-react';
+import { Delete, EditTwo, Plus } from '@icon-park/react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { mutate } from 'swr';
 import CustomAcpAgentModal from './CustomAcpAgentModal';
 
 interface CustomAcpAgentProps {
@@ -21,8 +21,6 @@ const CustomAcpAgent: React.FC<CustomAcpAgentProps> = ({ message }) => {
   const [agentToDelete, setAgentToDelete] = useState<AcpBackendConfig | null>(null);
 
   /**
-   * 刷新代理检测结果
-   * 在配置变更后调用以更新可用代理列表
    * Refresh agent detection results
    * Called after config changes to update available agents list
    */
@@ -31,46 +29,44 @@ const CustomAcpAgent: React.FC<CustomAcpAgentProps> = ({ message }) => {
       await acpConversation.refreshCustomAgents.invoke();
       await mutate('acp.agents.available');
     } catch {
-      // 刷新失败 - 下次页面加载时更新 / Refresh failed - UI will update on next page load
+      // Refresh failed - UI will update on next page load
     }
   }, []);
 
   /**
-   * 组件挂载时加载自定义代理配置，并支持从旧的单代理格式迁移
    * Load custom agents config on mount, with migration from old single-agent format
    */
   useEffect(() => {
     const loadConfig = async () => {
       try {
-        // 首先检查新的数组格式 / First check for new array format
+        // First check for new array format
         const agents = await ConfigStorage.get('acp.customAgents');
         if (agents && Array.isArray(agents) && agents.length > 0) {
           setCustomAgents(agents.filter((a) => !a.isPreset));
           return;
         }
 
-        // 检查旧的单代理格式并迁移（如果存在）
         // Check for old single-agent format and migrate if exists
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const legacyAgent = await (ConfigStorage as any).get('acp.customAgent');
         if (legacyAgent && typeof legacyAgent === 'object' && legacyAgent.defaultCliPath) {
-          // 迁移：确保有 UUID / Migrate: ensure it has a UUID
+          // Migrate: ensure it has a UUID
           const migratedAgent: AcpBackendConfig = {
             ...legacyAgent,
             id: legacyAgent.id && legacyAgent.id !== 'custom' ? legacyAgent.id : `migrated-${Date.now()}`,
           };
           const migratedAgents = [migratedAgent];
 
-          // 保存为新格式 / Save to new format
+          // Save to new format
           await ConfigStorage.set('acp.customAgents', migratedAgents);
-          // 删除旧格式 / Remove old format
+          // Remove old format
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           await (ConfigStorage as any).remove('acp.customAgent');
 
           setCustomAgents(migratedAgents);
           console.log('[CustomAcpAgent] Migrated legacy single agent to new array format');
 
-          // 用新数据刷新检测 / Refresh detection with new data
+          // Refresh detection with new data
           await refreshAgentDetection();
         }
       } catch (error) {
@@ -81,7 +77,6 @@ const CustomAcpAgent: React.FC<CustomAcpAgentProps> = ({ message }) => {
   }, [refreshAgentDetection]);
 
   /**
-   * 保存代理配置（新增或更新）
    * Save agent config (create or update)
    */
   const handleSaveAgent = useCallback(
@@ -90,10 +85,10 @@ const CustomAcpAgent: React.FC<CustomAcpAgentProps> = ({ message }) => {
         let updatedAgents: AcpBackendConfig[];
 
         if (editingAgent) {
-          // 更新现有代理 / Update existing agent
+          // Update existing agent
           updatedAgents = customAgents.map((agent) => (agent.id === editingAgent.id ? agentData : agent));
         } else {
-          // 添加新代理 / Add new agent
+          // Add new agent
           updatedAgents = [...customAgents, agentData];
         }
 
@@ -113,14 +108,13 @@ const CustomAcpAgent: React.FC<CustomAcpAgentProps> = ({ message }) => {
   );
 
   /**
-   * 删除代理配置
    * Delete agent config
    */
   const handleDeleteAgent = useCallback(async () => {
     if (!agentToDelete) return;
 
     try {
-      // 过滤掉要删除的代理 / Filter out the agent to delete
+      // Filter out the agent to delete
       const updatedAgents = customAgents.filter((agent) => agent.id !== agentToDelete.id);
       await ConfigStorage.set('acp.customAgents', updatedAgents);
       setCustomAgents(updatedAgents);

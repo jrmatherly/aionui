@@ -19,13 +19,13 @@ import { mapPermissionDecision } from '@/common/codex/utils';
 import { AIONUI_FILES_MARKER } from '@/common/constants';
 import type { IResponseMessage } from '@/common/ipcBridge';
 import { uuid } from '@/common/utils';
+import i18n from '@process/i18n';
+import { ProcessConfig } from '@process/initStorage';
 import { addMessage } from '@process/message';
 import { cronBusyGuard } from '@process/services/cron/CronBusyGuard';
-import { ProcessConfig } from '@process/initStorage';
 import BaseAgentManager from '@process/task/BaseAgentManager';
 import { prepareFirstMessageWithSkillsIndex } from '@process/task/agentUtils';
 import { handlePreviewOpenEvent } from '@process/utils/previewUtils';
-import i18n from '@process/i18n';
 import { getConfiguredAppClientName, getConfiguredAppClientVersion, getConfiguredCodexMcpProtocolVersion, setAppConfig } from '../../common/utils/appConfig';
 
 const APP_CLIENT_NAME = getConfiguredAppClientName();
@@ -37,20 +37,20 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
   agent!: CodexAgent; // Initialized in bootstrap promise
   bootstrap: Promise<CodexAgent>;
   private isFirstMessage: boolean = true;
-  private options: CodexAgentManagerData; // 保存原始配置数据 / Store original config data
+  private options: CodexAgentManagerData; // Store original config data
 
   constructor(data: CodexAgentManagerData) {
     // Do not fork a worker for Codex; we run the agent in-process now
     super('codex', data);
     this.conversation_id = data.conversation_id;
     this.workspace = data.workspace;
-    this.options = data; // 保存原始数据以便后续使用 / Save original data for later use
+    this.options = data; // Save original data for later use
 
     this.initAgent(data);
   }
 
   private initAgent(data: CodexAgentManagerData) {
-    // 初始化各个管理器 - 参考 ACP 的架构，传递消息发送器
+    // Initialize managers - following ACP architecture, passing message emitter
     const eventHandler = new CodexEventHandler(data.conversation_id, this);
     const sessionManager = new CodexSessionManager(
       {
@@ -62,10 +62,10 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
     );
     const fileOperationHandler = new CodexFileOperationHandler(data.workspace || process.cwd(), data.conversation_id, this);
 
-    // 使用 SessionManager 来管理连接状态 - 参考 ACP 的模式
+    // Use SessionManager to manage connection state - following ACP pattern
     // Use async bootstrap to read config and initialize agent
     this.bootstrap = (async () => {
-      // 设置 Codex Agent 的应用配置，使用 Electron API 在主进程中
+      // Set Codex Agent app config using Electron API in main process
       try {
         const electronModule = await import('electron');
         const app = electronModule.app;
@@ -75,7 +75,7 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
           protocolVersion: CODEX_MCP_PROTOCOL_VERSION,
         });
       } catch (error) {
-        // 如果不在主进程中，使用通用方法获取版本
+        // If not in main process, use generic method to get version
         setAppConfig({
           name: APP_CLIENT_NAME,
           version: APP_CLIENT_VERSION,
@@ -85,7 +85,6 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
 
       // Read codex.config for global yoloMode setting
       // yoloMode priority: data.yoloMode (from CronService) > config setting
-      // yoloMode 优先级：data.yoloMode（来自 CronService）> 配置设置
       const codexConfig = await ProcessConfig.get('codex.config');
       const yoloMode = data.yoloMode ?? codexConfig?.yoloMode;
 
@@ -112,34 +111,34 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
   }
 
   /**
-   * 使用会话管理器启动 - 参考 ACP 的启动流程
+   * Start with session management - following ACP startup flow
    */
   private async startWithSessionManagement(): Promise<void> {
-    // 1. 启动会话管理器
+    // 1. Start session manager
     await this.agent.getSessionManager().startSession();
 
-    // 2. 启动 MCP Agent
+    // 2. Start MCP Agent
     await this.agent.start();
 
-    // 3. 执行认证和会话创建
+    // 3. Perform authentication and session creation
     this.performPostConnectionSetup();
   }
 
   /**
-   * 连接后设置 - 参考 ACP 的认证和会话创建
+   * Post-connection setup - following ACP authentication and session creation
    */
   private performPostConnectionSetup(): void {
     try {
       // Get connection diagnostics
       void this.getDiagnostics();
 
-      // 延迟会话创建到第一条用户消息时，避免空 prompt 问题
+      // Delay session creation until first user message to avoid empty prompt issue
       // Session will be created with first user message - no session event sent here
     } catch (error) {
-      // 输出更详细的诊断信息
+      // Output more detailed diagnostic information
       const diagnostics = this.getDiagnostics();
 
-      // 提供具体的错误信息和建议
+      // Provide specific error messages and suggestions
       const errorMessage = error instanceof Error ? error.message : String(error);
       let suggestions: string[] = [];
 
@@ -153,7 +152,7 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
 
       // Log troubleshooting suggestions for debugging
 
-      // 即使设置失败，也尝试继续运行，因为连接可能仍然有效
+      // Even if setup fails, try to continue running as connection may still be valid
       this.agent.getSessionManager().emitSessionEvent('session_partial', {
         workspace: this.workspace,
         agent_type: 'codex',
@@ -162,7 +161,7 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
         suggestions,
       });
 
-      // 不抛出错误，让应用程序继续运行
+      // Don't throw error, let the application continue running
       return;
     }
   }
@@ -187,14 +186,13 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
         addMessage(this.conversation_id, userMessage);
       }
 
-      // 处理文件引用 - 参考 ACP 的文件引用处理
+      // Process file references - following ACP file reference handling
       let processedContent = this.agent.getFileOperationHandler().processFileReferences(contentToSend, data.files);
 
-      // 如果是第一条消息，通过 newSession 发送以避免双消息问题
+      // If this is the first message, send via newSession to avoid double message issue
       if (this.isFirstMessage) {
         this.isFirstMessage = false;
 
-        // 注入智能助手的预设规则和 skills 索引（如果有）
         // Inject preset context and skills INDEX from smart assistant (if available)
         processedContent = await prepareFirstMessageWithSkillsIndex(processedContent, {
           presetContext: this.options.presetContext,
@@ -208,20 +206,20 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
         // when the message flow is actually complete
         return result;
       } else {
-        // 后续消息使用正常的 sendPrompt
+        // Subsequent messages use normal sendPrompt
         const result = await this.agent.sendPrompt(processedContent);
         // Note: setProcessing(false) is called in CodexMessageProcessor.processTaskComplete
         return result;
       }
     } catch (e) {
       cronBusyGuard.setProcessing(this.conversation_id, false);
-      // 对于某些错误类型，避免重复错误消息处理
-      // 这些错误通常已经通过 MCP 连接的事件流处理过了
+      // For certain error types, avoid duplicate error message handling
+      // These errors are usually already handled via MCP connection event stream
       const errorMsg = e instanceof Error ? e.message : String(e);
       const isUsageLimitError = errorMsg.toLowerCase().includes("you've hit your usage limit");
 
       if (isUsageLimitError) {
-        // Usage limit 错误已经通过 MCP 事件流处理，避免重复发送
+        // Usage limit error already handled via MCP event stream, avoid duplicate sending
         throw e;
       }
 
@@ -252,8 +250,8 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
   }
 
   /**
-   * 统一的确认方法 - 通过 addConfirmation 管理所有确认项
-   * 参考 GeminiAgentManager 和 AcpAgentManager 的实现
+   * Unified confirmation method - manage all confirmations through addConfirmation
+   * Following GeminiAgentManager and AcpAgentManager implementation
    */
   async confirm(id: string, callId: string, data: string) {
     super.confirm(id, callId, data);
@@ -320,10 +318,10 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
 
   private async applyPatchChanges(callId: string, changes: Record<string, FileChange>): Promise<void> {
     try {
-      // 使用文件操作处理器来应用更改 - 参考 ACP 的批量操作
+      // Use file operation handler to apply changes - following ACP batch operations
       await this.agent.getFileOperationHandler().applyBatchChanges(changes);
 
-      // 发送成功事件
+      // Emit success event
       this.agent.getSessionManager().emitSessionEvent('patch_applied', {
         callId,
         changeCount: Object.keys(changes).length,
@@ -332,7 +330,7 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
 
       // Patch changes applied successfully
     } catch (error) {
-      // 发送失败事件
+      // Emit failure event
       this.agent.getSessionManager().emitSessionEvent('patch_failed', {
         callId,
         error: error instanceof Error ? error.message : String(error),
@@ -423,12 +421,12 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
   }
 
   cleanup() {
-    // 清理所有管理器 - 参考 ACP 的清理模式
+    // Clean up all managers - following ACP cleanup pattern
     this.agent.getEventHandler().cleanup();
     this.agent.getSessionManager().cleanup();
     this.agent.getFileOperationHandler().cleanup();
 
-    // 停止 agent
+    // Stop agent
     this.agent?.stop?.().catch((error) => {
       console.error('Failed to stop Codex agent during cleanup:', error);
     });
@@ -456,9 +454,8 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
     message.conversation_id = this.conversation_id;
 
     // Handle preview_open event (chrome-devtools navigation interception)
-    // 处理 preview_open 事件（chrome-devtools 导航拦截）
     if (handlePreviewOpenEvent(message)) {
-      return; // Don't process further / 不需要继续处理
+      return; // Don't process further
     }
 
     // Backend handles persistence if needed
@@ -476,8 +473,8 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
   }
 
   /**
-   * 实现 ICodexMessageEmitter 接口的 addConfirmation 方法
-   * 委托给 BaseAgentManager 的 addConfirmation 进行统一管理
+   * Implement ICodexMessageEmitter interface's addConfirmation method
+   * Delegate to BaseAgentManager's addConfirmation for unified management
    */
   addConfirmation(data: IConfirmation): void {
     super.addConfirmation(data);

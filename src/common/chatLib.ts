@@ -11,81 +11,81 @@ import type { IResponseMessage } from './ipcBridge';
 import { uuid } from './utils';
 
 /**
- * 安全的路径拼接函数，兼容Windows和Mac
- * @param basePath 基础路径
- * @param relativePath 相对路径
- * @returns 拼接后的绝对路径
+ * Safe path joining function, compatible with Windows and Mac
+ * @param basePath Base path
+ * @param relativePath Relative path
+ * @returns Joined absolute path
  */
 export const joinPath = (basePath: string, relativePath: string): string => {
-  // 标准化路径分隔符为 /
+  // Normalize path separators to /
   const normalizePath = (path: string) => path.replace(/\\/g, '/');
 
   const base = normalizePath(basePath);
   const relative = normalizePath(relativePath);
 
-  // 去掉base路径末尾的斜杠
+  // Remove trailing slashes from base path
   const cleanBase = base.replace(/\/+$/, '');
 
-  // 处理相对路径中的 ./ 和 ../
+  // Handle ./ and ../ in relative path
   const parts = relative.split('/');
   const resultParts = [];
 
   for (const part of parts) {
     if (part === '.' || part === '') {
-      continue; // 跳过 . 和空字符串
+      continue; // Skip . and empty strings
     } else if (part === '..') {
-      // 处理上级目录
+      // Handle parent directory
       if (resultParts.length > 0) {
-        resultParts.pop(); // 移除最后一个部分
+        resultParts.pop(); // Remove the last part
       }
     } else {
       resultParts.push(part);
     }
   }
 
-  // 拼接路径
+  // Join the path
   const result = cleanBase + '/' + resultParts.join('/');
 
-  // 确保路径格式正确
-  return result.replace(/\/+/g, '/'); // 将多个连续的斜杠替换为单个
+  // Ensure correct path format
+  return result.replace(/\/+/g, '/'); // Replace multiple consecutive slashes with single
 };
 
 /**
- * @description 跟对话相关的消息类型申明 及相关处理
+ * @description Conversation-related message type declarations and related processing
  */
 
 type TMessageType = 'text' | 'tips' | 'tool_call' | 'tool_group' | 'agent_status' | 'acp_permission' | 'acp_tool_call' | 'codex_permission' | 'codex_tool_call' | 'plan';
 
 interface IMessage<T extends TMessageType, Content extends Record<string, any>> {
   /**
-   * 唯一ID
+   * Unique ID
    */
   id: string;
   /**
-   * 消息来源ID，
+   * Message source ID
    */
   msg_id?: string;
 
-  //消息会话ID
+  // Message conversation ID
   conversation_id: string;
   /**
-   * 消息类型
+   * Message type
    */
   type: T;
   /**
-   * 消息内容
+   * Message content
    */
   content: Content;
   /**
-   * 消息创建时间
+   * Message creation time
    */
   createdAt?: number;
   /**
-   * 消息位置
+   * Message position
    */
   position?: 'left' | 'right' | 'center' | 'pop';
   /**
-   * 消息状态
+   * Message status
    */
   status?: 'finish' | 'pending' | 'error' | 'work';
 }
@@ -264,7 +264,7 @@ export type IMessagePlan = IMessage<
 // eslint-disable-next-line max-len
 export type TMessage = IMessageText | IMessageTips | IMessageToolCall | IMessageToolGroup | IMessageAgentStatus | IMessageAcpPermission | IMessageAcpToolCall | IMessageCodexPermission | IMessageCodexToolCall | IMessagePlan;
 
-// 统一所有需要用户交互的用户类型
+// Unified type for all user interaction types
 export interface IConfirmation<Option extends any = any> {
   title?: string;
   id: string;
@@ -279,7 +279,7 @@ export interface IConfirmation<Option extends any = any> {
 }
 
 /**
- * @description 将后端返回的消息转换为前端消息
+ * @description Transform backend response message to frontend message
  * */
 export const transformMessage = (message: IResponseMessage): TMessage => {
   switch (message.type) {
@@ -400,7 +400,7 @@ export const transformMessage = (message: IResponseMessage): TMessage => {
 };
 
 /**
- * @description 将消息合并到消息列表中
+ * @description Merge message into message list
  * */
 export const composeMessage = (message: TMessage | undefined, list: TMessage[] | undefined, messageHandler: (type: 'update' | 'insert', message: TMessage) => void = () => {}): TMessage[] => {
   if (!message) return list || [];
@@ -515,22 +515,22 @@ export const composeMessage = (message: TMessage | undefined, list: TMessage[] |
 };
 
 export const handleImageGenerationWithWorkspace = (message: TMessage, workspace: string): TMessage => {
-  // 只处理text类型的消息
+  // Only process text type messages
   if (message.type !== 'text') {
     return message;
   }
 
-  // 深拷贝消息以避免修改原始对象
+  // Deep copy message to avoid modifying the original object
   const processedMessage = {
     ...message,
     content: {
       ...message.content,
       content: message.content.content.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, imagePath) => {
-        // 如果是绝对路径、http链接或data URL，保持不变
+        // If it's an absolute path, http link, or data URL, keep unchanged
         if (imagePath.startsWith('http') || imagePath.startsWith('data:') || imagePath.startsWith('/') || imagePath.startsWith('file:') || imagePath.startsWith('\\') || /^[A-Za-z]:/.test(imagePath)) {
           return match;
         }
-        // 如果是相对路径，与workspace拼接
+        // If it's a relative path, join with workspace
         const absolutePath = joinPath(workspace, imagePath);
         return `![${alt}](${encodeURI(absolutePath)})`;
       }),

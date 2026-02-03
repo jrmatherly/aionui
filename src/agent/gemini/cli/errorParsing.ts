@@ -7,31 +7,25 @@
 import { AuthType, DEFAULT_GEMINI_FLASH_MODEL, DEFAULT_GEMINI_MODEL, isApiError, isStructuredError, UserTierId } from '@office-ai/aioncli-core';
 
 /**
- * 检查错误是否为 Pro 模型配额超限错误
- * Check if error is a Pro model quota exceeded error
- *
- * aioncli-core v0.18.4 移除了 isProQuotaExceededError，本地实现替代
- * isProQuotaExceededError was removed in aioncli-core v0.18.4, local implementation
+ * Check if error is a Pro model quota exceeded error.
+ * Local implementation as isProQuotaExceededError was removed in aioncli-core v0.18.4.
  */
 function isProQuotaExceededError(error: unknown): boolean {
   if (!error || typeof error !== 'object') return false;
 
-  // 检查是否包含 Pro 模型相关的配额错误信息
+  // Check if error contains Pro-model related quota error information
   const errorStr = JSON.stringify(error).toLowerCase();
   return errorStr.includes('quota') && (errorStr.includes('pro') || errorStr.includes('2.5') || errorStr.includes('gemini-pro'));
 }
 
 /**
- * 检查错误是否为通用配额超限错误
- * Check if error is a generic quota exceeded error
- *
- * aioncli-core v0.18.4 移除了 isGenericQuotaExceededError，本地实现替代
- * isGenericQuotaExceededError was removed in aioncli-core v0.18.4, local implementation
+ * Check if error is a generic quota exceeded error.
+ * Local implementation as isGenericQuotaExceededError was removed in aioncli-core v0.18.4.
  */
 function isGenericQuotaExceededError(error: unknown): boolean {
   if (!error || typeof error !== 'object') return false;
 
-  // 检查是否包含配额相关错误
+  // Check if error contains quota-related error information
   const errorStr = JSON.stringify(error).toLowerCase();
   return errorStr.includes('quota') && (errorStr.includes('exceeded') || errorStr.includes('exhausted') || errorStr.includes('limit'));
 }

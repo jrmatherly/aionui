@@ -7,8 +7,8 @@ import type { CodexError, ErrorCode } from '@/common/codex/types/errorTypes';
 import { ERROR_CODES } from '@/common/codex/types/errorTypes';
 
 // Re-export types for convenience
-export type { CodexError, ErrorCode };
 export { ERROR_CODES };
+export type { CodexError, ErrorCode };
 
 export class CodexErrorService {
   private maxRetries = 3;

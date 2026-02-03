@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// JSON-RPC 消息的泛型结构 - 使用 CodexEventMsg 自动推断类型
+// Generic structure for JSON-RPC messages - uses CodexEventMsg for automatic type inference
 export interface CodexJsonRpcEvent<T extends CodexEventMsg['type'] = CodexEventMsg['type']> {
   jsonrpc: '2.0';
   method: 'codex/event';
@@ -15,36 +15,36 @@ export interface CodexJsonRpcEvent<T extends CodexEventMsg['type'] = CodexEventM
       source?: string;
     };
     id: string;
-    msg: Extract<CodexEventMsg, { type: T }>; // 直接从 CodexEventMsg 提取类型
+    msg: Extract<CodexEventMsg, { type: T }>; // Extract type directly from CodexEventMsg
   };
 }
 
-// 精准的事件消息类型，直接对应 params.msg
+// Precise event message types, directly corresponding to params.msg
 export type CodexEventMsg =
-  | ({ type: 'session_configured' } & SessionConfiguredData) //忽略
-  | ({ type: 'task_started' } & TaskStartedData) //已处理
-  | ({ type: 'task_complete' } & TaskCompleteData) //已处理
-  | ({ type: 'agent_message_delta' } & MessageDeltaData) //已处理
-  | ({ type: 'agent_message' } & MessageData) //忽略
+  | ({ type: 'session_configured' } & SessionConfiguredData) // ignored
+  | ({ type: 'task_started' } & TaskStartedData) // handled
+  | ({ type: 'task_complete' } & TaskCompleteData) // handled
+  | ({ type: 'agent_message_delta' } & MessageDeltaData) // handled
+  | ({ type: 'agent_message' } & MessageData) // ignored
   | ({ type: 'user_message' } & UserMessageData)
-  | ({ type: 'agent_reasoning_delta' } & AgentReasoningDeltaData) //已处理
-  | ({ type: 'agent_reasoning' } & AgentReasoningData) //忽略
+  | ({ type: 'agent_reasoning_delta' } & AgentReasoningDeltaData) // handled
+  | ({ type: 'agent_reasoning' } & AgentReasoningData) // ignored
   | ({ type: 'agent_reasoning_raw_content' } & AgentReasoningRawContentData)
   | ({ type: 'agent_reasoning_raw_content_delta' } & AgentReasoningRawContentDeltaData)
-  | ({ type: 'exec_command_begin' } & ExecCommandBeginData) //已处理
-  | ({ type: 'exec_command_output_delta' } & ExecCommandOutputDeltaData) //已处理
-  | ({ type: 'exec_command_end' } & ExecCommandEndData) //已处理
-  | ({ type: 'exec_approval_request' } & ExecApprovalRequestData) //已处理
-  | ({ type: 'apply_patch_approval_request' } & PatchApprovalData) //已处理
-  | ({ type: 'patch_apply_begin' } & PatchApplyBeginData) //已处理
-  | ({ type: 'patch_apply_end' } & PatchApplyEndData) //已处理
-  | ({ type: 'mcp_tool_call_begin' } & McpToolCallBeginData) //已处理
-  | ({ type: 'mcp_tool_call_end' } & McpToolCallEndData) //已处理
-  | ({ type: 'web_search_begin' } & WebSearchBeginData) //已处理
-  | ({ type: 'web_search_end' } & WebSearchEndData) //已处理
-  | ({ type: 'token_count' } & TokenCountData) //忽略
-  | { type: 'agent_reasoning_section_break' } //已处理
-  | ({ type: 'turn_diff' } & TurnDiffData) // 已处理
+  | ({ type: 'exec_command_begin' } & ExecCommandBeginData) // handled
+  | ({ type: 'exec_command_output_delta' } & ExecCommandOutputDeltaData) // handled
+  | ({ type: 'exec_command_end' } & ExecCommandEndData) // handled
+  | ({ type: 'exec_approval_request' } & ExecApprovalRequestData) // handled
+  | ({ type: 'apply_patch_approval_request' } & PatchApprovalData) // handled
+  | ({ type: 'patch_apply_begin' } & PatchApplyBeginData) // handled
+  | ({ type: 'patch_apply_end' } & PatchApplyEndData) // handled
+  | ({ type: 'mcp_tool_call_begin' } & McpToolCallBeginData) // handled
+  | ({ type: 'mcp_tool_call_end' } & McpToolCallEndData) // handled
+  | ({ type: 'web_search_begin' } & WebSearchBeginData) // handled
+  | ({ type: 'web_search_end' } & WebSearchEndData) // handled
+  | ({ type: 'token_count' } & TokenCountData) // ignored
+  | { type: 'agent_reasoning_section_break' } // handled
+  | ({ type: 'turn_diff' } & TurnDiffData) // handled
   | ({ type: 'get_history_entry_response' } & GetHistoryEntryResponseData)
   | ({ type: 'mcp_list_tools_response' } & McpListToolsResponseData)
   | ({ type: 'list_custom_prompts_response' } & ListCustomPromptsResponseData)
@@ -321,8 +321,8 @@ export interface CodexAgentManagerData {
   cliPath?: string;
   sandboxMode?: 'read-only' | 'workspace-write' | 'danger-full-access';
   webSearchEnabled?: boolean;
-  presetContext?: string; // 智能助手的预设规则/提示词 / Preset context from smart assistant
-  /** 启用的 skills 列表，用于过滤 SkillManager 加载的 skills / Enabled skills list for filtering SkillManager skills */
+  presetContext?: string; // Preset context from smart assistant
+  /** Enabled skills list for filtering SkillManager loaded skills */
   enabledSkills?: string[];
   /** Full auto mode for cron jobs - skip confirmation prompts while keeping sandbox protection */
   yoloMode?: boolean;

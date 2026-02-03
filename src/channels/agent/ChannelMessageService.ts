@@ -16,7 +16,6 @@ import { channelEventBus, type IAgentMessageEvent } from './ChannelEventBus';
 export type StreamCallback = (chunk: TMessage, insert: boolean) => void;
 
 /**
- * 消息流状态
  * Message stream state
  */
 interface IStreamState {
@@ -30,28 +29,25 @@ interface IStreamState {
 /**
  * ChannelMessageService - Manages message sending for Channel
  *
- * Architecture (分离设计):
- * 1. 全局事件监听：通过 ChannelEventBus 监听 Agent 消息
- * 2. sendMessage(): 仅发送消息和注册流回调
- * 3. handleAgentMessage(): 处理消息事件
+ * Architecture (decoupled design):
+ * 1. Global event listening: Listen to Agent messages via ChannelEventBus
+ * 2. sendMessage(): Only sends messages and registers stream callbacks
+ * 3. handleAgentMessage(): Handles message events
  *
- * 不直接与 Agent Task 交互，完全通过全局事件总线解耦
+ * Does not interact directly with Agent Task, fully decoupled via global event bus
  */
 export class ChannelMessageService {
   /**
-   * 活跃消息流缓存：conversationId -> 流状态
    * Active message stream cache: conversationId -> stream state
    */
   private activeStreams: Map<string, IStreamState> = new Map();
 
   /**
-   * 全局事件监听器清理函数
    * Global event listener cleanup function
    */
   private eventCleanup: (() => void) | null = null;
 
   /**
-   * 是否已初始化
    * Whether initialized
    */
   private initialized = false;
@@ -59,7 +55,6 @@ export class ChannelMessageService {
   private messageListMap = new Map<string, TMessage[]>();
 
   /**
-   * 初始化服务，注册全局事件监听
    * Initialize service, register global event listener
    */
   initialize(): void {
@@ -67,7 +62,6 @@ export class ChannelMessageService {
       return;
     }
 
-    // 监听全局 Agent 消息事件
     // Listen to global agent message events
     this.eventCleanup = channelEventBus.onAgentMessage((event) => {
       this.handleAgentMessage(event);
@@ -78,23 +72,19 @@ export class ChannelMessageService {
   }
 
   /**
-   * 处理 Agent 消息事件
    * Handle agent message event
    */
   private handleAgentMessage(event: IAgentMessageEvent): void {
     const conversationId = event.conversation_id;
     const stream = this.activeStreams.get(conversationId);
     if (!stream) {
-      // 没有活跃的流，忽略消息
       // No active stream, ignore message
       return;
     }
 
-    // 转换消息
     // Transform message
     const message = transformMessage(event);
     if (!message) {
-      // transformMessage 返回 undefined 表示不需要处理的消息类型（如 thought, start）
       // transformMessage returns undefined for message types that don't need processing (like thought, start)
       return;
     }
@@ -105,7 +95,6 @@ export class ChannelMessageService {
     }
 
     messageList = composeMessage(message, messageList, (type, msg: TMessage) => {
-      // insert: true 表示新消息，false 表示更新现有消息
       // insert: true means new message, false means update existing message
 
       console.log('%c [  ]-130', 'font-size:13px; background:pink; color:#bf2c9f;', type, msg);
@@ -125,15 +114,12 @@ export class ChannelMessageService {
    * @returns Promise that resolves when streaming is complete
    */
   async sendMessage(_sessionId: string, conversationId: string, message: string, onStream: StreamCallback): Promise<string> {
-    // 确保服务已初始化
     // Ensure service is initialized
     this.initialize();
 
-    // 生成消息 ID
     // Generate message ID
     const msgId = `channel_msg_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
-    // 获取任务
     // Get task
     let task: BaseAgentManager<unknown>;
     try {
@@ -157,7 +143,6 @@ export class ChannelMessageService {
     }
 
     return new Promise((resolve, reject) => {
-      // 注册流状态
       // Register stream state
       this.activeStreams.set(conversationId, {
         msgId,
@@ -167,7 +152,6 @@ export class ChannelMessageService {
         reject,
       });
 
-      // 发送消息
       // Send message
       task
         .sendMessage({
@@ -187,8 +171,6 @@ export class ChannelMessageService {
   /**
    * Clear conversation context for a session
    * Note: Agent cleanup is handled by WorkerManage.
-   *
-   * 清理会话上下文。Agent 的清理由 WorkerManage 处理。
    */
   async clearContext(sessionId: string): Promise<void> {
     console.log(`[ChannelMessageService] clearContext called for session ${sessionId}`);
@@ -196,7 +178,6 @@ export class ChannelMessageService {
 
   /**
    * Clear active stream for a conversation
-   * 清理指定会话的活跃流
    */
   clearStreamByConversationId(conversationId: string): void {
     const stream = this.activeStreams.get(conversationId);
@@ -223,7 +204,6 @@ export class ChannelMessageService {
 
   /**
    * Confirm a tool call for a conversation
-   * 确认工具调用
    *
    * @param conversationId - Conversation ID
    * @param callId - Tool call ID
@@ -236,7 +216,6 @@ export class ChannelMessageService {
         throw new Error(`Task not found for conversation ${conversationId}`);
       }
 
-      // 调用 agent 的 confirm 方法
       // Call agent's confirm method
       task.confirm(conversationId, callId, value);
       console.log(`[ChannelMessageService] Confirmed tool call ${callId} with value ${value}`);
@@ -251,14 +230,12 @@ export class ChannelMessageService {
    * Called during application shutdown
    */
   async shutdown(): Promise<void> {
-    // 清理所有活跃流
     // Clear all active streams
     for (const [conversationId] of this.activeStreams) {
       this.clearStreamByConversationId(conversationId);
     }
     this.activeStreams.clear();
 
-    // 移除全局事件监听
     // Remove global event listener
     if (this.eventCleanup) {
       this.eventCleanup();
@@ -281,5 +258,4 @@ export function getChannelMessageService(): ChannelMessageService {
 }
 
 // Backward compatibility export
-// 向后兼容的导出
 export { ChannelMessageService as ChannelGeminiService, getChannelMessageService as getChannelGeminiService };

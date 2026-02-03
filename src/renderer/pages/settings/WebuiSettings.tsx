@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
 import WebuiModalContent from '@/renderer/components/SettingsModal/contents/WebuiModalContent';
+import React from 'react';
 import SettingsPageWrapper from './components/SettingsPageWrapper';
 
 const WebuiSettings: React.FC = () => {

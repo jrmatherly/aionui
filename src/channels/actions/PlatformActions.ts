@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import type { IActionContext, IActionResult, IRegisteredAction, ActionHandler } from './types';
-import { PlatformActionNames, createSuccessResponse, createErrorResponse } from './types';
 import { getPairingService } from '../pairing/PairingService';
-import { createPairingCodeKeyboard, createPairingStatusKeyboard, createMainMenuKeyboard } from '../plugins/telegram/TelegramKeyboards';
+import { createMainMenuKeyboard, createPairingCodeKeyboard, createPairingStatusKeyboard } from '../plugins/telegram/TelegramKeyboards';
+import type { ActionHandler, IRegisteredAction } from './types';
+import { PlatformActionNames, createErrorResponse, createSuccessResponse } from './types';
 
 /**
  * PlatformActions - Handlers for platform-specific actions

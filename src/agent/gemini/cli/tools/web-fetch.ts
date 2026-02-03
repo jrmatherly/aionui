@@ -5,10 +5,10 @@
  */
 
 import { Type } from '@google/genai';
-import type { GeminiClient, Config, ToolResult, ToolInvocation, ToolLocation, ToolCallConfirmationDetails, MessageBus } from '@office-ai/aioncli-core';
-import { BaseDeclarativeTool, BaseToolInvocation, Kind, getErrorMessage, ToolErrorType, DEFAULT_GEMINI_FLASH_MODEL } from '@office-ai/aioncli-core';
-import { getResponseText } from './utils';
+import type { GeminiClient, MessageBus, ToolCallConfirmationDetails, ToolInvocation, ToolLocation, ToolResult } from '@office-ai/aioncli-core';
+import { BaseDeclarativeTool, BaseToolInvocation, DEFAULT_GEMINI_FLASH_MODEL, Kind, ToolErrorType, getErrorMessage } from '@office-ai/aioncli-core';
 import { convert } from 'html-to-text';
+import { getResponseText } from './utils';
 
 const URL_FETCH_TIMEOUT_MS = 10000;
 const MAX_CONTENT_LENGTH = 100000;

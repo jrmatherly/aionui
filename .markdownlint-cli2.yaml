@@ -10,33 +10,33 @@ fix: true
 
 # Files to lint
 globs:
-  - "**/*.md"
+  - '**/*.md'
 
 # Files to ignore
 ignores:
-  - "node_modules/**"
-  - "**/node_modules/**"
-  - "vendor/**"
-  - "**/vendor/**"
-  - ".git/**"
-  - "**/build/**"
-  - "**/dist/**"
-  - ".venv/**"
+  - 'node_modules/**'
+  - '**/node_modules/**'
+  - 'vendor/**'
+  - '**/vendor/**'
+  - '.git/**'
+  - '**/build/**'
+  - '**/dist/**'
+  - '.venv/**'
   # Serena memories (auto-generated, not actively maintained)
-  - ".serena/**"
+  - '.serena/**'
   # Claude Code config files (have YAML frontmatter)
-  - ".claude/**"
+  - '.claude/**'
   # Gemini/Antigravity artifacts (AI-generated)
-  - ".gemini/**"
+  - '.gemini/**'
   # Terraform provider docs
-  - ".terraform/**"
+  - '.terraform/**'
   # Local docs
-  - ".docs/**"
-  - ".scratchpad/**"
-  - ".local_docs/**"
+  - '.docs/**'
+  - '.scratchpad/**'
+  - '.local_docs/**'
   # LICENSE symlink (plain text, not markdown)
-  - "docs/LICENSE.md"
-  - "LICENSE"
+  - 'docs/LICENSE.md'
+  - 'LICENSE'
 
 # Rule configuration
 config:
@@ -46,12 +46,12 @@ config:
   # MD003 - Heading style
   # Use ATX-style headings (# Heading)
   MD003:
-    style: "atx"
+    style: 'atx'
 
   # MD004 - Unordered list style
   # Use dashes for consistency
   MD004:
-    style: "dash"
+    style: 'dash'
 
   # MD007 - Unordered list indentation
   # Use 2 spaces for list indentation
@@ -105,39 +105,39 @@ config:
   # Allow specific HTML elements commonly used in documentation
   MD033:
     allowed_elements:
-      - "a"
-      - "br"
-      - "details"
-      - "summary"
-      - "img"
-      - "kbd"
-      - "sup"
-      - "sub"
-      - "div"
-      - "span"
-      - "p"
-      - "table"
-      - "thead"
-      - "tbody"
-      - "tr"
-      - "th"
-      - "td"
-      - "pre"
-      - "code"
-      - "strong"
-      - "em"
+      - 'a'
+      - 'br'
+      - 'details'
+      - 'summary'
+      - 'img'
+      - 'kbd'
+      - 'sup'
+      - 'sub'
+      - 'div'
+      - 'span'
+      - 'p'
+      - 'table'
+      - 'thead'
+      - 'tbody'
+      - 'tr'
+      - 'th'
+      - 'td'
+      - 'pre'
+      - 'code'
+      - 'strong'
+      - 'em'
       # GitHub-specific elements
-      - "picture"
-      - "source"
-      - "blockquote" # Used by GitHub [!NOTE], [!WARNING] alerts
+      - 'picture'
+      - 'source'
+      - 'blockquote' # Used by GitHub [!NOTE], [!WARNING] alerts
       # Media elements
-      - "video"
-      - "audio"
+      - 'video'
+      - 'audio'
       # Accessibility/semantic elements
-      - "mark"
-      - "abbr"
+      - 'mark'
+      - 'abbr'
       # Mermaid diagrams
-      - "mermaid"
+      - 'mermaid'
 
   # MD034 - Bare URL
   # Disable - URLs in documentation are often intentionally bare
@@ -161,7 +161,7 @@ config:
   # MD046 - Code block style
   # Use fenced code blocks (```)
   MD046:
-    style: "fenced"
+    style: 'fenced'
 
   # MD047 - Files should end with single newline
   MD047: true
@@ -173,12 +173,12 @@ config:
   # MD049 - Emphasis style
   # Use asterisks for emphasis
   MD049:
-    style: "asterisk"
+    style: 'asterisk'
 
   # MD050 - Strong style
   # Use asterisks for strong
   MD050:
-    style: "asterisk"
+    style: 'asterisk'
 
   # MD051 - Link fragments should be valid
   # Disable - too many false positives with dynamic content

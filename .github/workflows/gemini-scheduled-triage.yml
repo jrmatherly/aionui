@@ -1,55 +1,55 @@
-name: '📋 Gemini Scheduled Issue Triage'
+name: "📋 Gemini Scheduled Issue Triage"
 
 on:
   schedule:
-    - cron: '0 * * * *' # Runs every hour
+    - cron: "0 * * * *" # Runs every hour
   pull_request:
     branches:
-      - 'main'
-      - 'gemini-cli'
-      - 'release/**/*'
+      - "main"
+      - "gemini-cli"
+      - "release/**/*"
     paths:
-      - '.github/workflows/gemini-scheduled-triage.yml'
+      - ".github/workflows/gemini-scheduled-triage.yml"
   push:
     branches:
-      - 'main'
-      - 'gemini-cli'
-      - 'release/**/*'
+      - "main"
+      - "gemini-cli"
+      - "release/**/*"
     paths:
-      - '.github/workflows/gemini-scheduled-triage.yml'
+      - ".github/workflows/gemini-scheduled-triage.yml"
   workflow_dispatch:
 
 concurrency:
-  group: '${{ github.workflow }}'
+  group: "${{ github.workflow }}"
   cancel-in-progress: true
 
 # Permissions for workflow and nested workflow calls
 permissions:
-  contents: 'read'
-  issues: 'write'
-  pull-requests: 'write'
-  id-token: 'write'
+  contents: "read"
+  issues: "write"
+  pull-requests: "write"
+  id-token: "write"
 
 defaults:
   run:
-    shell: 'bash'
+    shell: "bash"
 
 jobs:
   find-issues:
-    runs-on: 'ubuntu-latest'
+    runs-on: "ubuntu-latest"
     timeout-minutes: 5
     permissions:
-      contents: 'read'
-      issues: 'read'
+      contents: "read"
+      issues: "read"
     outputs:
-      issues: '${{ steps.find_issues.outputs.issues }}'
-      has_issues: '${{ steps.find_issues.outputs.has_issues }}'
+      issues: "${{ steps.find_issues.outputs.issues }}"
+      has_issues: "${{ steps.find_issues.outputs.has_issues }}"
     steps:
-      - name: 'Find untriaged issues'
-        id: 'find_issues'
+      - name: "Find untriaged issues"
+        id: "find_issues"
         env:
-          GITHUB_REPOSITORY: '${{ github.repository }}'
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN || github.token }}'
+          GITHUB_REPOSITORY: "${{ github.repository }}"
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN || github.token }}"
         run: |-
           echo '🔍 Finding unlabeled issues and issues marked for triage...'
           ISSUES="$(gh issue list \
@@ -74,14 +74,14 @@ jobs:
           fi
 
   triage-issues:
-    needs: 'find-issues'
+    needs: "find-issues"
     if: ${{ needs.find-issues.outputs.has_issues == 'true' }}
     strategy:
       max-parallel: 3
       fail-fast: false
       matrix:
         issue: ${{ fromJson(needs.find-issues.outputs.issues) }}
-    uses: './.github/workflows/gemini-triage.yml'
+    uses: "./.github/workflows/gemini-triage.yml"
     with:
       issue_number: ${{ matrix.issue.issue_number }}
       issue_title: ${{ matrix.issue.issue_title }}

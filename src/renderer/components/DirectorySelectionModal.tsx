@@ -71,7 +71,6 @@ const DirectorySelectionModal: React.FC<DirectorySelectionModalProps> = ({ visib
   };
 
   // Double-click behavior removed - single click now handles directory navigation
-  // 移除双击行为 - 单击现在处理目录导航
   const handleItemDoubleClick = (_item: DirectoryItem) => {
     // No-op: single click already handles navigation
   };

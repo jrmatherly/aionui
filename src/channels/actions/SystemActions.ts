@@ -6,9 +6,9 @@
 
 import { acpDetector } from '@/agent/acp/AcpDetector';
 import type { TProviderWithModel } from '@/common/storage';
+import WorkerManage from '@/process/WorkerManage';
 import { ProcessConfig } from '@/process/initStorage';
 import { ConversationService } from '@/process/services/conversationService';
-import WorkerManage from '@/process/WorkerManage';
 import { getChannelMessageService } from '../agent/ChannelMessageService';
 import { getChannelManager } from '../core/ChannelManager';
 import type { AgentDisplayInfo } from '../plugins/telegram/TelegramKeyboards';
@@ -88,15 +88,14 @@ export const handleSessionNew: ActionHandler = async (context) => {
   }
 
   // Clear existing session and agent for this user
-  // 清除现有会话和 agent
   const existingSession = sessionManager.getSession(context.channelUser.id);
   if (existingSession) {
-    // 清除 ChannelMessageService 中的 agent 缓存
+    // Clear agent cache in ChannelMessageService
     const messageService = getChannelMessageService();
     await messageService.clearContext(existingSession.id);
 
-    // 直接使用 session.conversationId 清理 WorkerManage 中的 agent
-    // 确保即使 sessionConversationMap 为空也能正确清理
+    // Use session.conversationId directly to clean up agent in WorkerManage
+    // Ensures correct cleanup even if sessionConversationMap is empty
     if (existingSession.conversationId) {
       try {
         WorkerManage.kill(existingSession.conversationId);
@@ -108,10 +107,9 @@ export const handleSessionNew: ActionHandler = async (context) => {
   }
   sessionManager.clearSession(context.channelUser.id);
 
-  // 获取用户选择的模型 / Get user selected model
+  // Get user selected model
   const model = await getTelegramDefaultModel();
 
-  // 使用 ConversationService 创建新会话（始终创建新的，不复用）
   // Use ConversationService to create new conversation (always new, don't reuse)
   const result = await ConversationService.createGeminiConversation({
     model,
@@ -124,7 +122,6 @@ export const handleSessionNew: ActionHandler = async (context) => {
   }
 
   // Create session with the new conversation ID
-  // 使用新会话 ID 创建 session
   const session = sessionManager.createSessionWithConversation(context.channelUser, result.conversation.id);
 
   return createSuccessResponse({

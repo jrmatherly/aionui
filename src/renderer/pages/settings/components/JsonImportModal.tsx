@@ -1,11 +1,11 @@
 import type { IMcpServer, IMcpServerTransport, IMcpTool } from '@/common/storage';
-import { Alert, Button } from '@arco-design/web-react';
-import React, { useState, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import CodeMirror from '@uiw/react-codemirror';
-import { json } from '@codemirror/lang-json';
-import { useThemeContext } from '@/renderer/context/ThemeContext';
 import AionModal from '@/renderer/components/base/AionModal';
+import { useThemeContext } from '@/renderer/context/ThemeContext';
+import { Alert, Button } from '@arco-design/web-react';
+import { json } from '@codemirror/lang-json';
+import CodeMirror from '@uiw/react-codemirror';
+import React, { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface JsonImportModalProps {
   visible: boolean;
@@ -28,11 +28,11 @@ const JsonImportModal: React.FC<JsonImportModalProps> = ({ visible, server, onCa
   const [validation, setValidation] = useState<ValidationResult>({ isValid: true });
 
   /**
-   * JSON语法校验
+   * JSON syntax validation
    */
   const validateJsonSyntax = useCallback((input: string): ValidationResult => {
     if (!input.trim()) {
-      return { isValid: true }; // 空值视为有效
+      return { isValid: true }; // Empty value is considered valid
     }
 
     try {
@@ -46,19 +46,19 @@ const JsonImportModal: React.FC<JsonImportModalProps> = ({ visible, server, onCa
     }
   }, []);
 
-  // 监听 jsonInput 变化，实时更新校验结果
+  // Watch jsonInput changes, update validation result in real-time
   React.useEffect(() => {
     setValidation(validateJsonSyntax(jsonInput));
   }, [jsonInput, validateJsonSyntax]);
 
-  // 当编辑现有服务器时，预填充JSON数据
+  // Pre-fill JSON data when editing an existing server
   React.useEffect(() => {
     if (visible && server) {
-      // 优先使用存储的originalJson，如果没有则生成JSON配置
+      // Prefer stored originalJson, otherwise generate JSON config
       if (server.originalJson) {
         setJsonInput(server.originalJson);
       } else {
-        // 兼容没有originalJson的旧数据，生成JSON配置
+        // Backward compatibility for old data without originalJson, generate JSON config
         const serverConfig = {
           mcpServers: {
             [server.name]: {
@@ -80,18 +80,18 @@ const JsonImportModal: React.FC<JsonImportModalProps> = ({ visible, server, onCa
         setJsonInput(JSON.stringify(serverConfig, null, 2));
       }
     } else if (visible && !server) {
-      // 新建模式下清空JSON输入
+      // Clear JSON input in create mode
       setJsonInput('');
     }
   }, [visible, server]);
 
   const handleSubmit = () => {
-    // 语法校验已经通过了（按钮禁用逻辑保证），直接解析
+    // Syntax validation already passed (guaranteed by button disable logic), parse directly
     const config = JSON.parse(jsonInput);
     const mcpServers = config.mcpServers || config;
 
     if (Array.isArray(mcpServers)) {
-      // TODO: 支持数组格式的导入
+      // TODO: Support array format import
       console.warn('Array format not supported yet');
       return;
     }
@@ -102,7 +102,7 @@ const JsonImportModal: React.FC<JsonImportModalProps> = ({ visible, server, onCa
       return;
     }
 
-    // 如果有多个服务器，使用批量导入
+    // If there are multiple servers, use batch import
     if (serverKeys.length > 1 && onBatchImport) {
       const serversToImport = serverKeys.map((serverKey) => {
         const serverConfig = mcpServers[serverKey];
@@ -137,7 +137,7 @@ const JsonImportModal: React.FC<JsonImportModalProps> = ({ visible, server, onCa
           enabled: true,
           transport,
           status: 'disconnected' as const,
-          tools: [] as IMcpTool[], // JSON导入时初始化为空数组，后续可通过连接测试获取
+          tools: [] as IMcpTool[], // Initialize as empty array on JSON import, can be fetched via connection test later
           originalJson: JSON.stringify({ mcpServers: { [serverKey]: serverConfig } }, null, 2),
         };
       });
@@ -147,7 +147,7 @@ const JsonImportModal: React.FC<JsonImportModalProps> = ({ visible, server, onCa
       return;
     }
 
-    // 单个服务器导入
+    // Single server import
     const firstServerKey = serverKeys[0];
     const serverConfig = mcpServers[firstServerKey];
     const transport: IMcpServerTransport = serverConfig.command
@@ -181,7 +181,7 @@ const JsonImportModal: React.FC<JsonImportModalProps> = ({ visible, server, onCa
       enabled: true,
       transport,
       status: 'disconnected',
-      tools: [] as IMcpTool[], // JSON导入时初始化为空数组，后续可通过连接测试获取
+      tools: [] as IMcpTool[], // Initialize as empty array on JSON import, can be fetched via connection test later
       originalJson: jsonInput,
     });
     onCancel();
@@ -197,7 +197,7 @@ const JsonImportModal: React.FC<JsonImportModalProps> = ({ visible, server, onCa
       okButtonProps={{ disabled: !validation.isValid }}
       header={{ title: server ? t('settings.mcpEditServer') : t('settings.mcpImportFromJSON'), showClose: true }}
       style={{ width: 600, height: 450 }}
-      contentStyle={{ borderRadius: 16, padding: '24px', background: 'var(--bg-1)', overflow: 'auto', height: 420 - 80 }} // 与“添加模型”弹窗保持统一尺寸 / Keep same size as Add Model modal
+      contentStyle={{ borderRadius: 16, padding: '24px', background: 'var(--bg-1)', overflow: 'auto', height: 420 - 80 }} // Keep same size as Add Model modal
     >
       <div className='space-y-12px'>
         <div>
@@ -244,7 +244,7 @@ const JsonImportModal: React.FC<JsonImportModalProps> = ({ visible, server, onCa
                       if (navigator.clipboard && window.isSecureContext) {
                         await navigator.clipboard.writeText(jsonInput);
                       } else {
-                        // Fallback to legacy method 降级到传统方法
+                        // Fallback to legacy method
                         const textArea = document.createElement('textarea');
                         textArea.value = jsonInput;
                         textArea.style.position = 'fixed';
@@ -259,7 +259,7 @@ const JsonImportModal: React.FC<JsonImportModalProps> = ({ visible, server, onCa
                       setCopyStatus('success');
                       setTimeout(() => setCopyStatus('idle'), 2000);
                     } catch (err) {
-                      console.error('Copy failed 复制失败:', err);
+                      console.error('Copy failed:', err);
                       setCopyStatus('error');
                       setTimeout(() => setCopyStatus('idle'), 2000);
                     }
@@ -276,7 +276,7 @@ const JsonImportModal: React.FC<JsonImportModalProps> = ({ visible, server, onCa
             )}
           </div>
 
-          {/* JSON 格式错误提示 */}
+          {/* JSON format error message */}
           {!validation.isValid && jsonInput.trim() && <div className='mt-2 text-sm text-red-600'>{t('settings.mcpJsonFormatError') || 'JSON format error'}</div>}
         </div>
 

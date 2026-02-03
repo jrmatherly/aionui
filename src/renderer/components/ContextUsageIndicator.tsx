@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { TokenUsageData } from '@/common/storage';
 
-// 从 modelContextLimits 导入默认上下文限制
+// Import default context limit from modelContextLimits
 import { DEFAULT_CONTEXT_LIMIT } from '@/renderer/utils/modelContextLimits';
 
 interface ContextUsageIndicatorProps {
@@ -46,25 +46,25 @@ const ContextUsageIndicator: React.FC<ContextUsageIndicatorProps> = ({ tokenUsag
     };
   }, [tokenUsage, contextLimit]);
 
-  // 如果没有 token 数据，不显示
+  // If no token data, don't display
   if (!tokenUsage) {
     return null;
   }
 
-  // 计算圆环参数
+  // Calculate ring parameters
   const strokeWidth = 2.5;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
-  // 根据状态获取颜色
+  // Get stroke color based on state
   const getStrokeColor = () => {
     if (isDanger) return 'rgb(var(--danger-6))';
     if (isWarning) return 'rgb(var(--warning-6))';
     return 'rgb(var(--primary-6))';
   };
 
-  // 背景圆环颜色 - 适配深浅主题
+  // Background ring color - adapts to light/dark themes
   const getTrackColor = () => {
     return 'var(--color-fill-3)';
   };
@@ -81,9 +81,9 @@ const ContextUsageIndicator: React.FC<ContextUsageIndicatorProps> = ({ tokenUsag
     <Popover content={popoverContent} position='top' trigger='hover' className='context-usage-popover'>
       <div className={`context-usage-indicator cursor-pointer flex items-center justify-center ${className}`} style={{ width: size, height: size }}>
         <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ transform: 'rotate(-90deg)' }}>
-          {/* 背景圆环 */}
+          {/* Background ring */}
           <circle cx={size / 2} cy={size / 2} r={radius} fill='none' stroke={getTrackColor()} strokeWidth={strokeWidth} />
-          {/* 进度圆环 */}
+          {/* Progress ring */}
           <circle cx={size / 2} cy={size / 2} r={radius} fill='none' stroke={getStrokeColor()} strokeWidth={strokeWidth} strokeLinecap='round' strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} style={{ transition: 'stroke-dashoffset 0.3s ease, stroke 0.3s ease' }} />
         </svg>
       </div>
@@ -92,10 +92,10 @@ const ContextUsageIndicator: React.FC<ContextUsageIndicatorProps> = ({ tokenUsag
 };
 
 /**
- * 格式化 token 数量显示
- * @param count token 数量
- * @param hideZeroDecimals 是否隐藏小数点为0的情况（如 1.0M 显示为 1M），默认为 false
- * @returns 格式化后的字符串，如 "37.0K" 或 "1.2M"，当 hideZeroDecimals 为 true 时 "1.0M" 显示为 "1M"
+ * Format token count for display
+ * @param count - Token count
+ * @param hideZeroDecimals - Whether to hide zero decimals (e.g., show "1M" instead of "1.0M"), defaults to false
+ * @returns Formatted string, e.g., "37.0K" or "1.2M", when hideZeroDecimals is true "1.0M" displays as "1M"
  */
 export function formatTokenCount(count: number, hideZeroDecimals = false): string {
   if (count >= 1_000_000) {

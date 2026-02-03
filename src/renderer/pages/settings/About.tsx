@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
 import AboutModalContent from '@/renderer/components/SettingsModal/contents/AboutModalContent';
+import React from 'react';
 import SettingsPageWrapper from './components/SettingsPageWrapper';
 
 const About: React.FC = () => {

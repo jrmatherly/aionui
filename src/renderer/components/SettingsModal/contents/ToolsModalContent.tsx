@@ -4,19 +4,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ConfigStorage, type IConfigStorageRefer, type IMcpServer } from '@/common/storage';
 import { acpConversation } from '@/common/ipcBridge';
-import { Divider, Form, Switch, Tooltip, Message, Button, Dropdown, Menu, Modal } from '@arco-design/web-react';
-import { Help, Down, Plus } from '@icon-park/react';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import useConfigModelListWithImage from '@/renderer/hooks/useConfigModelListWithImage';
+import { ConfigStorage, type IConfigStorageRefer, type IMcpServer } from '@/common/storage';
 import AionScrollArea from '@/renderer/components/base/AionScrollArea';
 import AionSelect from '@/renderer/components/base/AionSelect';
-import AddMcpServerModal from '@/renderer/pages/settings/components/AddMcpServerModal';
+import { useMcpAgentStatus, useMcpConnection, useMcpModal, useMcpOAuth, useMcpOperations, useMcpServerCRUD, useMcpServers } from '@/renderer/hooks/mcp';
+import useConfigModelListWithImage from '@/renderer/hooks/useConfigModelListWithImage';
 import McpServerItem from '@/renderer/pages/settings/McpManagement/McpServerItem';
-import { useMcpServers, useMcpAgentStatus, useMcpOperations, useMcpConnection, useMcpModal, useMcpServerCRUD, useMcpOAuth } from '@/renderer/hooks/mcp';
+import AddMcpServerModal from '@/renderer/pages/settings/components/AddMcpServerModal';
+import { Button, Divider, Dropdown, Form, Menu, Message, Modal, Switch, Tooltip } from '@arco-design/web-react';
+import { Down, Help, Plus } from '@icon-park/react';
 import classNames from 'classnames';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSettingsViewMode } from '../settingsViewContext';
 
 type MessageInstance = ReturnType<typeof Message.useMessage>[0];
@@ -227,7 +227,6 @@ const ToolsModalContent: React.FC = () => {
   const imageGenerationModelList = useMemo(() => {
     if (!data) return [];
     // Filter models that support image generation
-    // 筛选支持图片生成的模型
     const isImageModel = (modelName: string) => {
       const name = modelName.toLowerCase();
       return name.includes('image') || name.includes('banana');
@@ -326,7 +325,7 @@ const ToolsModalContent: React.FC = () => {
       {/* Content Area */}
       <AionScrollArea className='flex-1 min-h-0 pb-16px' disableOverflow={isPageMode}>
         <div className='space-y-16px'>
-          {/* MCP 工具配置 */}
+          {/* MCP Tool Configuration */}
           <div className='px-[12px] md:px-[32px] py-[24px] bg-2 rd-12px md:rd-16px flex flex-col min-h-0 border border-border-2'>
             <div className='flex-1 min-h-0'>
               <AionScrollArea className={classNames('h-full', isPageMode && 'overflow-visible')} disableOverflow={isPageMode}>
@@ -334,7 +333,7 @@ const ToolsModalContent: React.FC = () => {
               </AionScrollArea>
             </div>
           </div>
-          {/* 图像生成 */}
+          {/* Image Generation */}
           <div className='px-[12px] md:px-[32px] py-[24px] bg-2 rd-12px md:rd-16px border border-border-2'>
             <div className='flex items-center justify-between mb-16px'>
               <span className='text-14px text-t-primary'>{t('settings.imageGeneration')}</span>

@@ -7,6 +7,8 @@
 import { ipcBridge } from '@/common';
 import type { IDirOrFile } from '@/common/ipcBridge';
 import { STORAGE_KEYS } from '@/common/storageKeys';
+import { uuid } from '@/common/utils';
+import DirectorySelectionModal from '@/renderer/components/DirectorySelectionModal';
 import FlexFullContainer from '@/renderer/components/FlexFullContainer';
 import useDebounce from '@/renderer/hooks/useDebounce';
 import { usePreviewContext } from '@/renderer/pages/conversation/preview';
@@ -20,14 +22,12 @@ import { Down, FileText, FolderOpen, Refresh, Search } from '@icon-park/react';
 import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import DirectorySelectionModal from '@/renderer/components/DirectorySelectionModal';
-import { uuid } from '@/common/utils';
+import { useWorkspaceDragImport } from './hooks/useWorkspaceDragImport';
 import { useWorkspaceEvents } from './hooks/useWorkspaceEvents';
 import { useWorkspaceFileOps } from './hooks/useWorkspaceFileOps';
 import { useWorkspaceModals } from './hooks/useWorkspaceModals';
 import { useWorkspacePaste } from './hooks/useWorkspacePaste';
 import { useWorkspaceTree } from './hooks/useWorkspaceTree';
-import { useWorkspaceDragImport } from './hooks/useWorkspaceDragImport';
 import type { WorkspaceProps } from './types';
 import { extractNodeData, extractNodeKey, findNodeByKey, getTargetFolderPath } from './utils/treeHelpers';
 
@@ -70,27 +70,27 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
   const [selectedTargetPath, setSelectedTargetPath] = useState('');
   const [migrationLoading, setMigrationLoading] = useState(false);
 
-  // Workspace tree collapse state - 全局统一的折叠状态
-  // 切换会话时保持折叠状态不变，只更新工作目录内容
+  // Workspace tree collapse state - unified global collapse state
+  // Keep collapse state unchanged when switching conversations, only update workspace content
   const [isWorkspaceCollapsed, setIsWorkspaceCollapsed] = useState(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEYS.WORKSPACE_TREE_COLLAPSE);
       if (stored) {
-        // 直接存储boolean值，不按workspace路径区分
+        // Store boolean value directly, not distinguished by workspace path
         return stored === 'true';
       }
     } catch {
-      // 忽略错误
+      // Ignore errors
     }
-    return false; // 默认展开
+    return false; // Default expanded
   });
 
-  // 持久化折叠状态 - 全局统一
+  // Persist collapse state - unified global
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEYS.WORKSPACE_TREE_COLLAPSE, String(isWorkspaceCollapsed));
     } catch {
-      // 忽略错误
+      // Ignore errors
     }
   }, [isWorkspaceCollapsed]);
 
@@ -116,17 +116,16 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
     onFilesDropped: pasteHook.handleFilesToAdd,
   });
 
-  // 只在用户主动打开搜索时聚焦，不在会话切换时自动聚焦
   // Only focus search input when user actively opens search, not on conversation switch
   const previousShowSearchRef = useRef<boolean | null>(null);
   useEffect(() => {
-    // 首次渲染或会话切换时不聚焦
+    // Don't focus on first render or conversation switch
     if (previousShowSearchRef.current === null) {
       previousShowSearchRef.current = showSearch;
       return;
     }
 
-    // 只在从 false 变为 true 时聚焦（用户主动打开搜索）
+    // Only focus when changing from false to true (user actively opens search)
     if (showSearch && !previousShowSearchRef.current) {
       const timer = window.setTimeout(() => {
         searchInputRef.current?.focus?.();
@@ -197,7 +196,6 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
   const hasOriginalFiles = treeHook.files.length > 0 && treeHook.files[0]?.children?.length > 0;
   const rootName = treeHook.files[0]?.name ?? '';
 
-  // 当只有一个根目录且有子文件时，隐藏根目录直接展示子文件，因为 Toolbar 已经作为一级目录
   // Hide root directory when there's a single root with children, as Toolbar serves as the first-level directory
   const treeData = treeHook.files.length === 1 && (treeHook.files[0]?.children?.length ?? 0) > 0 ? (treeHook.files[0]?.children ?? []) : treeHook.files;
 
@@ -295,7 +293,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
 
       const filePaths = collectFilePaths(workspaceFiles);
 
-      // Copy all files to the target workspace / 复制所有文件到目标工作区
+      // Copy all files to the target workspace
       if (filePaths.length > 0) {
         const copyResult = await ipcBridge.fs.copyFilesToWorkspace.invoke({
           filePaths,
@@ -307,7 +305,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
         }
       }
 
-      // Create new conversation with the new workspace / 使用新工作区创建会话
+      // Create new conversation with the new workspace
       const newId = uuid();
       const newConversation = {
         ...currentConversation,
@@ -317,7 +315,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
         modifyTime: Date.now(),
       };
 
-      // Update the workspace in extra field / 更新 extra 中的 workspace 信息
+      // Update the workspace in extra field
       newConversation.extra = {
         ...(currentConversation.extra ?? {}),
         workspace: targetWorkspace,
@@ -326,15 +324,15 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
 
       await ipcBridge.conversation.createWithConversation.invoke({
         conversation: newConversation,
-        sourceConversationId: conversation_id, // Pass source ID to migrate chat history / 传递源会话 ID 以迁移聊天记录
+        sourceConversationId: conversation_id, // Pass source ID to migrate chat history
       });
 
-      // Close modal and reset state / 关闭弹窗并重置状态
+      // Close modal and reset state
       setShowMigrationModal(false);
       setSelectedTargetPath('');
       setMigrationLoading(false);
 
-      // Navigate to new conversation / 跳转到新的会话
+      // Navigate to new conversation
       void navigate(`/conversation/${newId}`);
       emitter.emit('chat.history.refresh');
       messageApi.success(t('conversation.workspace.migration.success'));
@@ -686,7 +684,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
         {/* Directory Selection Modal (for WebUI only) */}
         <DirectorySelectionModal visible={showDirectorySelector} onConfirm={handleSelectDirectoryFromModal} onCancel={() => setShowDirectorySelector(false)} />
 
-        {/* Search Input - 最上方 */}
+        {/* Search Input - at top */}
         <div className='px-12px'>
           {(showSearch || searchText) && (
             <div className='pb-8px workspace-toolbar-search'>
@@ -708,7 +706,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
 
         {/* Toolbar */}
         <div className='px-12px'>
-          {/* Border divider - 搜索框下方分界线 */}
+          {/* Border divider - below search input */}
           {!isWorkspaceCollapsed && (showSearch || searchText) && <div className='border-b border-b-base' />}
 
           {/* Directory name with collapse and action icons */}
@@ -881,7 +879,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
                   const wasSelected = clickedKey ? treeHook.selectedKeysRef.current.includes(clickedKey) : false;
 
                   if (isFileNode) {
-                    // 单击文件仅打开预览，不改变选中状态 / Single-click file only opens preview without changing selection state
+                    // Single-click file only opens preview without changing selection state
                     if (clickedKey) {
                       const filteredKeys = treeHook.selectedKeysRef.current.filter((key) => key !== clickedKey);
                       treeHook.selectedKeysRef.current = filteredKeys;
@@ -894,7 +892,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
                     return;
                   }
 
-                  // 目录节点仍保留原有选中逻辑 / Keep existing selection logic for folders
+                  // Keep existing selection logic for folders
                   let newKeys: string[];
 
                   if (clickedKey && wasSelected) {

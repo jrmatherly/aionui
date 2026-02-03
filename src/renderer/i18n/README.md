@@ -1,26 +1,26 @@
-# 多语言支持 (i18n)
+# Multi-language Support (i18n)
 
-本项目使用 i18next 和 react-i18next 实现多语言支持。
+This project uses i18next and react-i18next to implement multi-language support.
 
-## 支持的语言
+## Supported Languages
 
-- 中文 (zh-CN) - 默认语言
-- 英文 (en-US)
+- Chinese (zh-CN) - Default language
+- English (en-US)
 
-## 文件结构
+## File Structure
 
-```
+```text
 src/renderer/i18n/
-├── index.ts              # i18next 配置文件
+├── index.ts              # i18next configuration file
 ├── locales/
-│   ├── zh-CN.json        # 中文语言包
-│   └── en-US.json        # 英文语言包
-└── README.md             # 说明文档
+│   ├── zh-CN.json        # Chinese language pack
+│   └── en-US.json        # English language pack
+└── README.md             # Documentation
 ```
 
-## 使用方法
+## Usage
 
-### 在组件中使用翻译
+### Using Translations in Components
 
 ```tsx
 import { useTranslation } from 'react-i18next';
@@ -37,7 +37,7 @@ const MyComponent = () => {
 };
 ```
 
-### 切换语言
+### Switching Languages
 
 ```tsx
 import { useTranslation } from 'react-i18next';
@@ -58,41 +58,41 @@ const LanguageSwitcher = () => {
 };
 ```
 
-## 添加新的翻译
+## Adding New Translations
 
-1. 在 `src/renderer/i18n/locales/zh-CN.json` 中添加中文翻译
-2. 在 `src/renderer/i18n/locales/en-US.json` 中添加对应的英文翻译
-3. 在组件中使用 `t('key')` 来获取翻译
+1. Add Chinese translation in `src/renderer/i18n/locales/zh-CN.json`
+2. Add corresponding English translation in `src/renderer/i18n/locales/en-US.json`
+3. Use `t('key')` in components to get the translation
 
-### 翻译键的命名规范
+### Translation Key Naming Convention
 
-- 使用点号分隔的层级结构
-- 使用小写字母和下划线
-- 按功能模块分组
+- Use dot-separated hierarchical structure
+- Use lowercase letters and underscores
+- Group by functional module
 
-例如：
+Example:
 
 ```json
 {
   "common": {
-    "send": "发送",
-    "cancel": "取消"
+    "send": "Send",
+    "cancel": "Cancel"
   },
   "conversation": {
     "welcome": {
-      "title": "今天有什么安排？"
+      "title": "What's on your schedule today?"
     }
   }
 }
 ```
 
-## 语言切换器
+## Language Switcher
 
-项目在顶部导航栏中集成了语言切换器，用户可以随时切换界面语言。语言选择会保存在 localStorage 中，下次访问时会自动应用上次选择的语言。
+The project has a language switcher integrated in the top navigation bar, allowing users to switch the interface language at any time. The language selection is saved in localStorage and will be automatically applied on the next visit.
 
-## 注意事项
+## Important Notes
 
-1. 所有用户可见的文本都应该使用翻译函数
-2. 翻译键应该具有描述性，便于维护
-3. 新增翻译时，确保中英文都有对应的翻译
-4. 避免在代码中硬编码文本内容
+1. All user-visible text should use translation functions
+2. Translation keys should be descriptive for easy maintenance
+3. When adding translations, ensure both Chinese and English have corresponding translations
+4. Avoid hardcoding text content in code

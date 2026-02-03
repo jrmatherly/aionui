@@ -5,8 +5,8 @@
  */
 
 // Export all codex types from the modular structure
-export * from './eventTypes';
+export * from './errorTypes';
 export * from './eventData';
+export * from './eventTypes';
 export * from './permissionTypes';
 export * from './toolTypes';
-export * from './errorTypes';

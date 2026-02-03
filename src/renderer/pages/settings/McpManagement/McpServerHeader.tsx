@@ -1,11 +1,11 @@
 import type { IMcpServer } from '@/common/storage';
+import type { McpOAuthStatus } from '@/renderer/hooks/mcp/useMcpOAuth';
+import { iconColors } from '@/renderer/theme/colors';
 import { Button, Dropdown, Menu, Switch, Tooltip } from '@arco-design/web-react';
-import { Check, CloseOne, CloseSmall, LoadingOne, Refresh, Write, DeleteFour, SettingOne, Login } from '@icon-park/react';
+import { Check, CloseOne, CloseSmall, DeleteFour, LoadingOne, Login, Refresh, SettingOne, Write } from '@icon-park/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import McpAgentStatusDisplay from './McpAgentStatusDisplay';
-import type { McpOAuthStatus } from '@/renderer/hooks/mcp/useMcpOAuth';
-import { iconColors } from '@/renderer/theme/colors';
 
 interface McpServerHeaderProps {
   server: IMcpServer;
@@ -42,34 +42,34 @@ const getStatusIcon = (status?: IMcpServer['status'], oauthStatus?: McpOAuthStat
 };
 
 const getStatusText = (status?: IMcpServer['status'], oauthStatus?: McpOAuthStatus, t?: any) => {
-  // 优先级1: 测试中状态
+  // Priority 1: Testing status
   if (status === 'testing' || oauthStatus?.isChecking) {
     return t?.('settings.mcpTesting') || 'testing';
   }
 
-  // 优先级2: 错误状态
+  // Priority 2: Error status
   if (status === 'error') {
     return t?.('settings.mcpError') || 'error';
   }
 
-  // 优先级3: OAuth 需要登录
+  // Priority 3: OAuth requires login
   if (oauthStatus?.needsLogin) {
     return t?.('settings.mcpNeedsLogin') || 'disconnected · Enter to login';
   }
 
-  // 优先级4: 连接成功或已认证
+  // Priority 4: Connected or authenticated
   if (status === 'connected' || oauthStatus?.isAuthenticated) {
     return t?.('settings.mcpConnected') || 'connected';
   }
 
-  // 默认: 未连接
+  // Default: Disconnected
   return t?.('settings.mcpDisconnected') || 'disconnected';
 };
 
 const McpServerHeader: React.FC<McpServerHeaderProps> = ({ server, agentInstallStatus, isServerLoading, isTestingConnection, oauthStatus, isLoggingIn, onTestConnection, onEditServer, onDeleteServer, onToggleServer, onOAuthLogin }) => {
   const { t } = useTranslation();
 
-  // 判断是否支持 OAuth（仅 HTTP/SSE）
+  // Check if OAuth is supported (HTTP/SSE only)
   const supportsOAuth = server.transport.type === 'http' || server.transport.type === 'sse';
   const needsLogin = supportsOAuth && oauthStatus?.needsLogin;
   const statusText = getStatusText(server.status, oauthStatus, t);

@@ -11,14 +11,14 @@
 export const BACKGROUND_BLOCK_START = '/* AionUi Theme Background Start */';
 export const BACKGROUND_BLOCK_END = '/* AionUi Theme Background End */';
 
-// Precompiled regex for better performance / 预编译正则以提升性能
+// Precompiled regex for better performance
 const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const BACKGROUND_BLOCK_PATTERN = new RegExp(`${escapeRegex(BACKGROUND_BLOCK_START)}[\\s\\S]*?${escapeRegex(BACKGROUND_BLOCK_END)}\n?`, 'g');
 
 const buildBackgroundCss = (imageDataUrl: string): string => {
   if (!imageDataUrl) return '';
   return `${BACKGROUND_BLOCK_START}
-/* 根容器设置背景图 / Root container background image */
+/* Root container background image */
 body,
 html,
 .arco-layout,
@@ -31,7 +31,7 @@ html,
   background-color: transparent;
 }
 
-/* 内部容器透明化，让背景图穿透 / Make inner containers transparent */
+/* Make inner containers transparent */
 .layout-content,
 .layout-content.bg-1,
 .arco-layout-content,
@@ -45,7 +45,7 @@ html,
   background-image: none;
 }
 
-/* 确保伪元素也透明 / Ensure pseudo elements are transparent */
+/* Ensure pseudo elements are transparent */
 .layout-content::before,
 .layout-content.bg-1::before,
 [class*="chat-layout"] .arco-layout-content::before,
@@ -63,7 +63,7 @@ export const injectBackgroundCssBlock = (css: string, imageDataUrl: string): str
   if (!css) {
     return buildBackgroundCss(imageDataUrl);
   }
-  // Reset lastIndex for global regex reuse / 重置 lastIndex 以重用全局正则
+  // Reset lastIndex for global regex reuse
   BACKGROUND_BLOCK_PATTERN.lastIndex = 0;
   const cleanedCss = css.replace(BACKGROUND_BLOCK_PATTERN, '').trim();
   const block = buildBackgroundCss(imageDataUrl);

@@ -6,7 +6,7 @@
 
 ## Execution Flow (/plan command scope)
 
-```
+```text
 1. Load feature spec from Input path
    → If not found: ERROR "No feature spec at {path}"
 2. Fill Technical Context (scan for NEEDS CLARIFICATION)
@@ -58,7 +58,7 @@
 
 ### Documentation (this feature)
 
-```
+```text
 specs/[###-feature]/
 ├── plan.md              # This file (/plan command output)
 ├── research.md          # Phase 0 output (/plan command)
@@ -70,7 +70,7 @@ specs/[###-feature]/
 
 ### Source Code (repository root)
 
-```
+```text
 # Option 1: Single project (DEFAULT)
 src/
 ├── models/
@@ -117,7 +117,7 @@ ios/ or android/
 
 2. **Generate and dispatch research agents**:
 
-   ```
+   ```text
    For each unknown in Technical Context:
      Task: "Research {unknown} for {feature context}"
    For each technology choice:

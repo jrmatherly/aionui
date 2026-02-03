@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import type { IChannelPluginStatus } from '@/channels/types';
 import { Collapse } from '@arco-design/web-react';
 import React from 'react';
-import type { IChannelPluginStatus } from '@/channels/types';
 import ChannelHeader from './ChannelHeader';
 
 interface ChannelItemProps {

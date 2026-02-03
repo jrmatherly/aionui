@@ -5,11 +5,11 @@
  */
 
 import { AuthType } from '@office-ai/aioncli-core';
-import type { TProviderWithModel } from './storage';
-import { OpenAIRotatingClient, type OpenAIClientConfig } from './adapters/OpenAIRotatingClient';
-import { GeminiRotatingClient, type GeminiClientConfig } from './adapters/GeminiRotatingClient';
-import { AnthropicRotatingClient, type AnthropicClientConfig } from './adapters/AnthropicRotatingClient';
 import type { RotatingApiClientOptions } from './RotatingApiClient';
+import { AnthropicRotatingClient, type AnthropicClientConfig } from './adapters/AnthropicRotatingClient';
+import { GeminiRotatingClient, type GeminiClientConfig } from './adapters/GeminiRotatingClient';
+import { OpenAIRotatingClient, type OpenAIClientConfig } from './adapters/OpenAIRotatingClient';
+import type { TProviderWithModel } from './storage';
 import { getProviderAuthType } from './utils/platformAuthType';
 
 export interface ClientOptions {
@@ -38,7 +38,7 @@ export class ClientFactory {
           ...(options.baseConfig as OpenAIClientConfig),
         };
 
-        // 添加代理配置（如果提供）
+        // Add proxy configuration if provided
         if (options.proxy) {
           const { HttpsProxyAgent } = await import('https-proxy-agent');
           clientConfig.httpAgent = new HttpsProxyAgent(options.proxy);
@@ -79,7 +79,7 @@ export class ClientFactory {
       }
 
       default: {
-        // 默认使用OpenAI兼容协议
+        // Default to OpenAI-compatible protocol
         const clientConfig: OpenAIClientConfig = {
           baseURL: provider.baseUrl,
           timeout: options.timeout,
@@ -90,7 +90,7 @@ export class ClientFactory {
           ...(options.baseConfig as OpenAIClientConfig),
         };
 
-        // 添加代理配置（如果提供）
+        // Add proxy configuration if provided
         if (options.proxy) {
           const { HttpsProxyAgent } = await import('https-proxy-agent');
           clientConfig.httpAgent = new HttpsProxyAgent(options.proxy);

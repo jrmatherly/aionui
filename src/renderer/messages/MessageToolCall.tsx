@@ -5,6 +5,7 @@
  */
 
 import type { IMessageToolCall } from '@/common/chatLib';
+import { iconColors } from '@/renderer/theme/colors';
 import { Alert, Checkbox } from '@arco-design/web-react';
 import { MessageSearch } from '@icon-park/react';
 import { createTwoFilesPatch } from 'diff';
@@ -12,7 +13,6 @@ import { html } from 'diff2html';
 import 'diff2html/bundles/css/diff2html.min.css';
 import React, { useMemo, useState } from 'react';
 import MarkdownView from '../components/Markdown';
-import { iconColors } from '@/renderer/theme/colors';
 
 const Diff2Html = ({ message }: { message: IMessageToolCall }) => {
   const [sideBySide, setSideBySide] = useState(false);

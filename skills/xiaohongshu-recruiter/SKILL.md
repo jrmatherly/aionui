@@ -31,10 +31,12 @@ description: 用于在小红书上发布高质量的 AI 相关岗位招聘帖子
 默认使用本地脚本 `scripts/generate_images.js` 生成图片（暂时隐藏/禁用大模型生图流程）。
 
 - **操作**：
+
   ```bash
   node scripts/generate_images.js
   ```
-  _(注：可视情况修改脚本中的文本配置)_
+
+  *(注：可视情况修改脚本中的文本配置)*
 - **产出**：`cover.png`, `jd_details.png`
 
 ### 3. 生成文案 (Content Generation)

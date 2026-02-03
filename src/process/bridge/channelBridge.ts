@@ -4,12 +4,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { channel } from '@/common/ipcBridge';
-import { getDatabase } from '@/process/database';
 import { getChannelManager } from '@/channels/core/ChannelManager';
 import { getPairingService } from '@/channels/pairing/PairingService';
-import type { IChannelPluginStatus, IChannelUser, IChannelPairingRequest, IChannelSession } from '@/channels/types';
-import { rowToChannelUser, rowToChannelSession, rowToPairingRequest } from '@/channels/types';
+import type { IChannelPluginStatus } from '@/channels/types';
+import { channel } from '@/common/ipcBridge';
+import { getDatabase } from '@/process/database';
 
 /**
  * Initialize Channel IPC Bridge

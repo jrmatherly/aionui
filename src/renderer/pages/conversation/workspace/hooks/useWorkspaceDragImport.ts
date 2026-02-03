@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useCallback, useRef, useState } from 'react';
-import type { DragEvent } from 'react';
-import type { TFunction } from 'i18next';
 import { ipcBridge } from '@/common';
 import { FileService } from '@/renderer/services/FileService';
+import type { TFunction } from 'i18next';
+import type { DragEvent } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import type { MessageApi } from '../types';
 
 interface UseWorkspaceDragImportOptions {
@@ -86,7 +86,6 @@ export function useWorkspaceDragImport({ onFilesDropped, messageApi, t }: UseWor
   }, []);
 
   /**
-   * 解析拖拽的项目，检测是文件还是目录
    * Resolve dropped items, detect whether they are files or directories
    */
   const resolveDroppedItems = useCallback(async (items: DroppedItem[]): Promise<DroppedItem[]> => {
@@ -122,7 +121,6 @@ export function useWorkspaceDragImport({ onFilesDropped, messageApi, t }: UseWor
         for (let i = 0; i < dataTransfer.files.length; i++) {
           const file = dataTransfer.files[i];
 
-          // 使用 Electron webUtils.getPathForFile API 获取文件/目录的绝对路径
           // Use Electron webUtils.getPathForFile API to get absolute path for file/directory
           let filePath: string | undefined;
           if (window.electronAPI?.getPathForFile) {
@@ -133,7 +131,6 @@ export function useWorkspaceDragImport({ onFilesDropped, messageApi, t }: UseWor
             }
           }
 
-          // 回退到 File.path 属性（旧版 Electron 或非 Electron 环境）
           // Fallback to File.path property (older Electron or non-Electron)
           if (!filePath) {
             const electronFile = file as File & { path?: string };
@@ -144,17 +141,15 @@ export function useWorkspaceDragImport({ onFilesDropped, messageApi, t }: UseWor
             const name = file.name || getBaseName(filePath);
             itemsWithPath.push({ path: filePath, name, kind: 'file' });
           } else {
-            // 没有 path 属性，可能是从浏览器拖拽或非 Electron 环境
-            // 检查是否是目录（通过 webkitGetAsEntry）
             // No path property, might be from browser or non-Electron
             // Check if it's a directory (via webkitGetAsEntry)
             const item = dataTransfer.items?.[i];
             const entry = item?.webkitGetAsEntry?.();
             if (entry?.isDirectory) {
-              // 目录但没有 path，无法处理
+              // Directory without path, cannot process
               console.warn('[WorkspaceDragImport] Directory without path property, cannot process:', entry.name);
             } else {
-              // 普通文件，需要创建临时文件
+              // Regular file, need to create temp file
               filesWithoutPath.push(file);
             }
           }

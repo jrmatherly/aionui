@@ -4,7 +4,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { getChannelManager } from '@/channels';
 import { app } from 'electron';
+import './i18n'; // Initialize i18n for main process
+import './initBridge';
+import initStorage from './initStorage';
 
 // Force node-gyp-build to skip build/ directory and use prebuilds/ only in production
 // This prevents loading wrong architecture binaries from development environment
@@ -12,10 +16,6 @@ import { app } from 'electron';
 if (app.isPackaged) {
   process.env.PREBUILDS_ONLY = '1';
 }
-import initStorage from './initStorage';
-import './initBridge';
-import './i18n'; // Initialize i18n for main process
-import { getChannelManager } from '@/channels';
 
 export const initializeProcess = async () => {
   await initStorage();

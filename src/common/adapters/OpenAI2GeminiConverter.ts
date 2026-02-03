@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import type { ProtocolConverter, ConverterConfig } from './ProtocolConverter';
+import type { ConverterConfig, ProtocolConverter } from './ProtocolConverter';
 
 // OpenAI types - compatible with actual OpenAI SDK types
 export interface OpenAIChatCompletionParams {

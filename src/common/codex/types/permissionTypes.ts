@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import type { ExecApprovalRequestData, ApplyPatchApprovalRequestData } from './eventData';
+import type { ApplyPatchApprovalRequestData, ExecApprovalRequestData } from './eventData';
 
 // ===== UI-facing permission request payloads for Codex =====
 
 /**
- * 权限类型枚举
+ * Permission type enumeration
  */
 export enum PermissionType {
   COMMAND_EXECUTION = 'command_execution',
@@ -18,7 +18,7 @@ export enum PermissionType {
 }
 
 /**
- * 权限选项严重级别
+ * Permission option severity level
  */
 export enum PermissionSeverity {
   LOW = 'low',
@@ -28,10 +28,10 @@ export enum PermissionSeverity {
 }
 
 /**
- * 权限决策类型映射
- * 将UI选项映射到后端决策逻辑
- * 参考 Codex 源码 codex-rs/protocol/src/protocol.rs
- * ReviewDecision 使用 snake_case 序列化 (#[serde(rename_all = "snake_case")])
+ * Permission decision type mapping
+ * Maps UI options to backend decision logic
+ * Reference: Codex source code codex-rs/protocol/src/protocol.rs
+ * ReviewDecision uses snake_case serialization (#[serde(rename_all = "snake_case")])
  */
 export const PERMISSION_DECISION_MAP = {
   allow_once: 'approved',

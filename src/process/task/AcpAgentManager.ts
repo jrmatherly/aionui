@@ -7,14 +7,14 @@ import type { IResponseMessage } from '@/common/ipcBridge';
 import { parseError, uuid } from '@/common/utils';
 import type { AcpBackend, AcpPermissionOption, AcpPermissionRequest } from '@/types/acpTypes';
 import { ACP_BACKENDS_ALL } from '@/types/acpTypes';
+import { cronBusyGuard } from '@process/services/cron/CronBusyGuard';
 import { ProcessConfig } from '../initStorage';
 import { addMessage, addOrUpdateMessage, nextTickToLocalFinish } from '../message';
 import { handlePreviewOpenEvent } from '../utils/previewUtils';
-import { cronBusyGuard } from '@process/services/cron/CronBusyGuard';
-import { prepareFirstMessageWithSkillsIndex } from './agentUtils';
 import BaseAgentManager from './BaseAgentManager';
 import { hasCronCommands } from './CronCommandDetector';
 import { extractTextFromMessage, processCronInMessage } from './MessageMiddleware';
+import { prepareFirstMessageWithSkillsIndex } from './agentUtils';
 
 interface AcpAgentManagerData {
   workspace?: string;
@@ -22,9 +22,9 @@ interface AcpAgentManagerData {
   cliPath?: string;
   customWorkspace?: boolean;
   conversation_id: string;
-  customAgentId?: string; // 用于标识特定自定义代理的 UUID / UUID for identifying specific custom agent
-  presetContext?: string; // 智能助手的预设规则/提示词 / Preset context from smart assistant
-  /** 启用的 skills 列表，用于过滤 SkillManager 加载的 skills / Enabled skills list for filtering SkillManager skills */
+  customAgentId?: string; // UUID for identifying specific custom agent
+  presetContext?: string; // Preset context from smart assistant
+  /** Enabled skills list for filtering SkillManager skills */
   enabledSkills?: string[];
   /** Force yolo mode (auto-approve) - used by CronService for scheduled tasks */
   yoloMode?: boolean;
@@ -55,18 +55,16 @@ class AcpAgentManager extends BaseAgentManager<AcpAgentManagerData, AcpPermissio
       let customEnv: Record<string, string> | undefined;
       let yoloMode: boolean | undefined;
 
-      // 处理自定义后端：从 acp.customAgents 配置数组中读取
       // Handle custom backend: read from acp.customAgents config array
       if (data.backend === 'custom' && data.customAgentId) {
         const customAgents = await ProcessConfig.get('acp.customAgents');
-        // 通过 UUID 查找对应的自定义代理配置 / Find custom agent config by UUID
+        // Find custom agent config by UUID
         const customAgentConfig = customAgents?.find((agent) => agent.id === data.customAgentId);
         if (customAgentConfig?.defaultCliPath) {
           // Parse defaultCliPath which may contain command + args (e.g., "node /path/to/file.js" or "goose acp")
           const parts = customAgentConfig.defaultCliPath.trim().split(/\s+/);
           cliPath = parts[0]; // First part is the command
 
-          // 参数优先级：acpArgs > defaultCliPath 中解析的参数
           // Argument priority: acpArgs > args parsed from defaultCliPath
           if (customAgentConfig.acpArgs) {
             customArgs = customAgentConfig.acpArgs;
@@ -82,7 +80,6 @@ class AcpAgentManager extends BaseAgentManager<AcpAgentManagerData, AcpPermissio
           cliPath = config[data.backend].cliPath;
         }
         // yoloMode priority: data.yoloMode (from CronService) > config setting
-        // yoloMode 优先级：data.yoloMode（来自 CronService）> 配置设置
         yoloMode = data.yoloMode ?? (config?.[data.backend] as any)?.yoloMode;
 
         // Get acpArgs from backend config (for goose, auggie, opencode, etc.)
@@ -91,14 +88,12 @@ class AcpAgentManager extends BaseAgentManager<AcpAgentManagerData, AcpPermissio
           customArgs = backendConfig.acpArgs;
         }
 
-        // 如果没有配置 cliPath，使用 ACP_BACKENDS_ALL 中的默认 cliCommand
         // If cliPath is not configured, fallback to default cliCommand from ACP_BACKENDS_ALL
         if (!cliPath && backendConfig?.cliCommand) {
           cliPath = backendConfig.cliCommand;
         }
       } else {
         // backend === 'custom' but no customAgentId - this is an invalid state
-        // 自定义后端但缺少 customAgentId - 这是无效状态
         console.warn('[AcpAgentManager] Custom backend specified but customAgentId is missing');
       }
 
@@ -120,9 +115,8 @@ class AcpAgentManager extends BaseAgentManager<AcpAgentManagerData, AcpPermissio
         },
         onStreamEvent: (message) => {
           // Handle preview_open event (chrome-devtools navigation interception)
-          // 处理 preview_open 事件（chrome-devtools 导航拦截）
           if (handlePreviewOpenEvent(message)) {
-            return; // Don't process further / 不需要继续处理
+            return; // Don't process further
           }
 
           if (message.type !== 'thought') {
@@ -148,7 +142,7 @@ class AcpAgentManager extends BaseAgentManager<AcpAgentManagerData, AcpPermissio
           ipcBridge.acpConversation.responseStream.emit(message as IResponseMessage);
         },
         onSignalEvent: async (v) => {
-          // 仅发送信号到前端，不更新消息列表
+          // Only emit signal to frontend, do not update message list
           if (v.type === 'acp_permission') {
             const { toolCall, options } = v.data as AcpPermissionRequest;
             this.addConfirmation({
@@ -230,7 +224,6 @@ class AcpAgentManager extends BaseAgentManager<AcpAgentManagerData, AcpPermissio
           contentToSend = contentToSend.split(AIONUI_FILES_MARKER)[0].trimEnd();
         }
 
-        // 首条消息时注入预设规则和 skills 索引（来自智能助手配置）
         // Inject preset context and skills INDEX on first message (from smart assistant config)
         if (this.isFirstMessage) {
           contentToSend = await prepareFirstMessageWithSkillsIndex(contentToSend, {
@@ -260,7 +253,7 @@ class AcpAgentManager extends BaseAgentManager<AcpAgentManagerData, AcpPermissio
         ipcBridge.acpConversation.responseStream.emit(userResponseMessage);
 
         const result = await this.agent.sendMessage({ ...data, content: contentToSend });
-        // 首条消息发送后标记，无论是否有 presetContext
+        // Mark as no longer first message after sending, regardless of whether presetContext exists
         if (this.isFirstMessage) {
           this.isFirstMessage = false;
         }

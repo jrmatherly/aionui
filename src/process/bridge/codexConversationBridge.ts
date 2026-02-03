@@ -5,6 +5,6 @@
  */
 
 /**
- * 初始化 Codex 对话相关的 IPC 桥接
+ * Initialize Codex conversation-related IPC bridges
  */
 export function initCodexConversationBridge(): void {}

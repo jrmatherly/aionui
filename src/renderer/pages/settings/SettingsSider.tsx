@@ -1,18 +1,18 @@
 import FlexFullContainer from '@/renderer/components/FlexFullContainer';
 import { isElectronDesktop } from '@/renderer/utils/platform';
-import { Computer, Gemini, Info, LinkCloud, System, Toolkit, Robot, Earth } from '@icon-park/react';
+import { Tooltip } from '@arco-design/web-react';
+import { Computer, Earth, Gemini, Info, LinkCloud, Robot, System, Toolkit } from '@icon-park/react';
 import classNames from 'classnames';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Tooltip } from '@arco-design/web-react';
 
 const SettingsSider: React.FC<{ collapsed?: boolean }> = ({ collapsed = false }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { pathname } = useLocation();
 
-  // 检测是否在 Electron 桌面环境 / Check if running in Electron desktop environment
+  // Check if running in Electron desktop environment
   const isDesktop = isElectronDesktop();
 
   const menus = useMemo(() => {
@@ -44,7 +44,7 @@ const SettingsSider: React.FC<{ collapsed?: boolean }> = ({ collapsed = false })
       },
     ];
 
-    // 仅在桌面端添加 WebUI 选项（包含 Assistant 配置）/ Only add WebUI option on desktop (includes Assistant config)
+    // Only add WebUI option on desktop (includes Assistant config)
     if (isDesktop) {
       items.push({
         label: t('settings.webui'),

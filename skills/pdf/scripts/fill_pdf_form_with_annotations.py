@@ -28,28 +28,31 @@ import json
 import sys
 
 try:
-    from pypdf import PdfReader, PdfWriter
-    from reportlab.pdfgen import canvas
-    from reportlab.lib.pagesizes import letter
-    from reportlab.lib.colors import HexColor
     from io import BytesIO
+
+    from pypdf import PdfReader, PdfWriter
+    from reportlab.lib.colors import HexColor
+    from reportlab.lib.pagesizes import letter
+    from reportlab.pdfgen import canvas
 except ImportError as e:
     print(f"Error: Required library missing. Install with: pip install pypdf reportlab")
     print(f"Details: {e}")
     sys.exit(1)
 
 
-def fill_form_with_annotations(input_path: str, json_path: str, output_path: str) -> None:
+def fill_form_with_annotations(
+    input_path: str, json_path: str, output_path: str
+) -> None:
     """Fill PDF form using text annotations."""
     # Load fields data
-    with open(json_path, 'r', encoding='utf-8') as f:
+    with open(json_path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
     reader = PdfReader(input_path)
     writer = PdfWriter()
 
     # Get page dimensions from PDF or JSON
-    pages_info = {p['page_number']: p for p in data.get('pages', [])}
+    pages_info = {p["page_number"]: p for p in data.get("pages", [])}
 
     # Process each page
     for page_num, page in enumerate(reader.pages, start=1):
@@ -60,16 +63,19 @@ def fill_form_with_annotations(input_path: str, json_path: str, output_path: str
 
         # Get image dimensions from JSON for coordinate conversion
         page_info = pages_info.get(page_num, {})
-        img_width = page_info.get('image_width', page_width)
-        img_height = page_info.get('image_height', page_height)
+        img_width = page_info.get("image_width", page_width)
+        img_height = page_info.get("image_height", page_height)
 
         # Scale factors (image coords to PDF coords)
         scale_x = page_width / img_width
         scale_y = page_height / img_height
 
         # Get fields for this page
-        page_fields = [f for f in data.get('form_fields', [])
-                       if f.get('page_number', 1) == page_num]
+        page_fields = [
+            f
+            for f in data.get("form_fields", [])
+            if f.get("page_number", 1) == page_num
+        ]
 
         if page_fields:
             # Create overlay with annotations
@@ -77,8 +83,8 @@ def fill_form_with_annotations(input_path: str, json_path: str, output_path: str
             c = canvas.Canvas(packet, pagesize=(page_width, page_height))
 
             for field in page_fields:
-                entry_box = field.get('entry_bounding_box')
-                entry_text = field.get('entry_text', {})
+                entry_box = field.get("entry_bounding_box")
+                entry_text = field.get("entry_text", {})
 
                 if entry_box and entry_text:
                     # Convert image coordinates to PDF coordinates
@@ -91,16 +97,16 @@ def fill_form_with_annotations(input_path: str, json_path: str, output_path: str
                     # PDF y is from bottom
                     pdf_y = page_height - bottom
 
-                    text = entry_text.get('text', '')
-                    font_size = entry_text.get('font_size', 12)
-                    font_color = entry_text.get('font_color', '000000')
+                    text = entry_text.get("text", "")
+                    font_size = entry_text.get("font_size", 12)
+                    font_color = entry_text.get("font_color", "000000")
 
                     # Set font and color
-                    c.setFont('Helvetica', font_size)
+                    c.setFont("Helvetica", font_size)
                     try:
-                        c.setFillColor(HexColor(f'#{font_color}'))
+                        c.setFillColor(HexColor(f"#{font_color}"))
                     except ValueError:
-                        c.setFillColor(HexColor('#000000'))
+                        c.setFillColor(HexColor("#000000"))
 
                     # Draw text
                     c.drawString(left, pdf_y, text)
@@ -116,16 +122,18 @@ def fill_form_with_annotations(input_path: str, json_path: str, output_path: str
         writer.add_page(page)
 
     # Write output
-    with open(output_path, 'wb') as f:
+    with open(output_path, "wb") as f:
         writer.write(f)
 
-    total_fields = len(data.get('form_fields', []))
+    total_fields = len(data.get("form_fields", []))
     print(f"Successfully added {total_fields} annotation(s) and saved to {output_path}")
 
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
-        print("Usage: python fill_pdf_form_with_annotations.py <input.pdf> <fields.json> <output.pdf>")
+        print(
+            "Usage: python fill_pdf_form_with_annotations.py <input.pdf> <fields.json> <output.pdf>"
+        )
         sys.exit(1)
 
     fill_form_with_annotations(sys.argv[1], sys.argv[2], sys.argv[3])

@@ -6,6 +6,7 @@ Usage: python merge_pdfs.py <output.pdf> <input1.pdf> <input2.pdf> ...
 """
 
 import sys
+
 from pypdf import PdfReader, PdfWriter
 
 
@@ -24,10 +25,12 @@ def merge_pdfs(output_path: str, input_paths: list) -> None:
         except Exception as e:
             print(f"  Error reading {pdf_path}: {e}")
 
-    with open(output_path, 'wb') as f:
+    with open(output_path, "wb") as f:
         writer.write(f)
 
-    print(f"\nMerged {len(input_paths)} PDFs ({total_pages} total pages) into {output_path}")
+    print(
+        f"\nMerged {len(input_paths)} PDFs ({total_pages} total pages) into {output_path}"
+    )
 
 
 if __name__ == "__main__":

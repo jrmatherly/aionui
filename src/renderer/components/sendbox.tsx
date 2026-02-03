@@ -18,7 +18,6 @@ import type { FileMetadata } from '../services/FileService';
 import { allSupportedExts } from '../services/FileService';
 
 const constVoid = (): void => undefined;
-// 临界值：超过该字符数直接切换至多行模式，避免为超长文本做昂贵的宽度测量
 // Threshold: switch to multi-line mode directly when character count exceeds this value to avoid heavy layout work
 const MAX_SINGLE_LINE_CHARACTERS = 800;
 
@@ -51,10 +50,10 @@ const SendBox: React.FC<{
   const latestInputRef = useLatestRef(input);
   const setInputRef = useLatestRef(setInput);
 
-  // 集成预览面板的"添加到聊天"功能 / Integrate preview panel's "Add to chat" functionality
+  // Integrate preview panel's "Add to chat" functionality
   const { setSendBoxHandler, domSnippets, removeDomSnippet, clearDomSnippets } = usePreviewContext();
 
-  // 注册处理器以接收来自预览面板的文本 / Register handler to receive text from preview panel
+  // Register handler to receive text from preview panel
   useEffect(() => {
     const handler = (text: string) => {
       const base = latestInputRef.current;
@@ -67,14 +66,12 @@ const SendBox: React.FC<{
     };
   }, [setSendBoxHandler]);
 
-  // 初始化时获取单行输入框的可用宽度
   // Initialize and get the available width of single-line input
   useEffect(() => {
     const timer = setTimeout(() => {
       if (containerRef.current && singleLineWidthRef.current === 0) {
         const textarea = containerRef.current.querySelector('textarea');
         if (textarea) {
-          // 保存单行模式下的可用宽度作为固定基准
           // Save the available width in single-line mode as a fixed baseline
           singleLineWidthRef.current = textarea.offsetWidth;
         }
@@ -83,30 +80,25 @@ const SendBox: React.FC<{
     return () => clearTimeout(timer);
   }, []);
 
-  // 检测是否单行
   // Detect whether to use single-line or multi-line mode
   useEffect(() => {
-    // 有换行符直接多行
     // Switch to multi-line mode if newline character exists
     if (input.includes('\n')) {
       setIsSingleLine(false);
       return;
     }
 
-    // 还没获取到基准宽度时不做判断
     // Skip detection if baseline width is not yet obtained
     if (singleLineWidthRef.current === 0) {
       return;
     }
 
-    // 长文本无需测量，直接切换多行，防止创建超宽 DOM 触发长时间布局计算
     // Skip measurement for long text and switch to multi-line immediately to avoid expensive layout caused by extra-wide DOM
     if (input.length >= MAX_SINGLE_LINE_CHARACTERS) {
       setIsSingleLine(false);
       return;
     }
 
-    // 检测内容宽度
     // Detect content width
     const frame = requestAnimationFrame(() => {
       const textarea = containerRef.current?.querySelector('textarea');
@@ -114,7 +106,6 @@ const SendBox: React.FC<{
         return;
       }
 
-      // 复用单个离屏 canvas，防止持续创建/销毁元素
       // Reuse a single offscreen canvas to avoid creating/destroying DOM nodes repeatedly
       const canvas = measurementCanvasRef.current ?? document.createElement('canvas');
       if (!measurementCanvasRef.current) {
@@ -132,29 +123,24 @@ const SendBox: React.FC<{
 
       const textWidth = context.measureText(input || '').width;
 
-      // 使用初始化时保存的固定宽度作为判断基准
       // Use the fixed baseline width saved during initialization
       const baseWidth = singleLineWidthRef.current;
 
-      // 文本宽度超过基准宽度时切换到多行
       // Switch to multi-line when text width exceeds baseline width
       if (textWidth >= baseWidth) {
         setIsSingleLine(false);
       } else if (textWidth < baseWidth - 30 && !lockMultiLine) {
-        // 文本宽度小于基准宽度减30px时切回单行，留出小缓冲区避免临界点抖动
-        // 如果 lockMultiLine 为 true，则不切换回单行
         // Switch back to single-line when text width is less than baseline minus 30px, leaving a small buffer to avoid flickering at the threshold
         // If lockMultiLine is true, do not switch back to single-line
         setIsSingleLine(true);
       }
-      // 在 (baseWidth-30) 到 baseWidth 之间保持当前状态
       // Maintain current state between (baseWidth-30) and baseWidth
     });
 
     return () => cancelAnimationFrame(frame);
   }, [input, lockMultiLine]);
 
-  // 使用拖拽 hook
+  // Use drag upload hook
   const { isFileDragging, dragHandlers } = useDragUpload({
     supportedExts,
     onFilesAdded,
@@ -162,15 +148,15 @@ const SendBox: React.FC<{
 
   const [message, context] = Message.useMessage();
 
-  // 使用共享的输入法合成处理
+  // Use shared composition input handling
   const { compositionHandlers, createKeyDownHandler } = useCompositionInput();
 
-  // 使用共享的PasteService集成
+  // Use shared PasteService integration
   const { onPaste, onFocus: handlePasteFocus } = usePasteService({
     supportedExts,
     onFilesAdded,
     onTextPaste: (text: string) => {
-      // 处理清理后的文本粘贴，在当前光标位置插入文本而不是替换整个内容
+      // Handle sanitized text paste, insert text at cursor position instead of replacing entire content
       const textarea = document.activeElement as HTMLTextAreaElement;
       if (textarea && textarea.tagName === 'TEXTAREA') {
         const cursorPosition = textarea.selectionStart;
@@ -179,12 +165,12 @@ const SendBox: React.FC<{
         const end = textarea.selectionEnd ?? start;
         const newValue = currentValue.slice(0, start) + text + currentValue.slice(end);
         setInput(newValue);
-        // 设置光标到插入文本后的位置
+        // Set cursor position after inserted text
         setTimeout(() => {
           textarea.setSelectionRange(cursorPosition + text.length, cursorPosition + text.length);
         }, 0);
       } else {
-        // 如果无法获取光标位置，回退到追加到末尾的行为
+        // If cursor position is not available, fall back to appending to the end
         setInput(text);
       }
     },
@@ -207,7 +193,7 @@ const SendBox: React.FC<{
     }
     setIsLoading(true);
 
-    // 构建消息内容：如果有 DOM 片段，附加完整 HTML / Build message: if has DOM snippets, append full HTML
+    // Build message: if has DOM snippets, append full HTML
     let finalMessage = input;
     if (domSnippets.length > 0) {
       const snippetsHtml = domSnippets.map((s) => `\n\n---\nDOM Snippet (${s.tag}):\n\`\`\`html\n${s.html}\n\`\`\``).join('');
@@ -217,7 +203,7 @@ const SendBox: React.FC<{
     onSend(finalMessage)
       .then(() => {
         setInput('');
-        clearDomSnippets(); // 发送后清除 DOM 片段 / Clear DOM snippets after sending
+        clearDomSnippets(); // Clear DOM snippets after sending
       })
       .catch(() => {})
       .finally(() => {
@@ -258,7 +244,7 @@ const SendBox: React.FC<{
         <div style={{ width: '100%' }}>
           {prefix}
           {context}
-          {/* DOM 片段标签 / DOM snippet tags */}
+          {/* DOM snippet tags */}
           {domSnippets.length > 0 && (
             <div className='flex flex-wrap gap-6px mb-8px'>
               {domSnippets.map((snippet) => (

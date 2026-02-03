@@ -7,7 +7,6 @@
 import { CSRF_COOKIE_NAME, CSRF_HEADER_NAME } from '@/webserver/config/constants';
 
 // Read cookie by name in browser environment
-// 在浏览器环境中根据名称读取指定 Cookie
 function readCookie(name: string): string | null {
   if (typeof document === 'undefined') {
     return null;
@@ -30,13 +29,11 @@ function readCookie(name: string): string | null {
 }
 
 // Retrieve current CSRF token from cookie (if present)
-// 从 Cookie 中获取当前的 CSRF Token（若不存在则返回 null）
 export function getCsrfToken(): string | null {
   return readCookie(CSRF_COOKIE_NAME);
 }
 
 // Attach CSRF token to request headers, keeping original headers untouched when token missing
-// 将 CSRF Token 写入请求头，若 Token 不存在则保持原始请求头不变
 export function withCsrfHeader(headers: HeadersInit = {}): HeadersInit {
   const token = getCsrfToken();
   if (!token) {
@@ -66,8 +63,6 @@ export function withCsrfHeader(headers: HeadersInit = {}): HeadersInit {
 
 // Attach CSRF token to request body for tiny-csrf compatibility
 // tiny-csrf expects token in req.body._csrf, not in headers
-// 将 CSRF Token 附加到请求体以兼容 tiny-csrf
-// tiny-csrf 期望从 req.body._csrf 读取 token，而不是从请求头
 export function withCsrfToken<T = unknown>(body: T): T & { _csrf?: string } {
   const token = getCsrfToken();
   if (!token) {

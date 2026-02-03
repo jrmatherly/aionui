@@ -12,32 +12,32 @@ import { addEventListener, emitter } from '@/renderer/utils/emitter';
 import { getActivityTime, getTimelineLabel } from '@/renderer/utils/timeline';
 import { getWorkspaceDisplayName } from '@/renderer/utils/workspace';
 import { getWorkspaceUpdateTime } from '@/renderer/utils/workspaceHistory';
-import { Empty, Popconfirm, Input, Tooltip } from '@arco-design/web-react';
-import { DeleteOne, MessageOne, EditOne } from '@icon-park/react';
+import { Empty, Input, Popconfirm, Tooltip } from '@arco-design/web-react';
+import { DeleteOne, EditOne, MessageOne } from '@icon-park/react';
 import classNames from 'classnames';
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useConversationTabs } from './context/ConversationTabsContext';
 import WorkspaceCollapse from './WorkspaceCollapse';
+import { useConversationTabs } from './context/ConversationTabsContext';
 
 interface WorkspaceGroup {
-  workspace: string; // 完整路径
-  displayName: string; // 显示名称
+  workspace: string; // Full path
+  displayName: string; // Display name
   conversations: TChatConversation[];
 }
 
-// 统一的时间线项目，可以是 workspace 分组或独立会话
+// Unified timeline item, can be a workspace group or standalone conversation
 interface TimelineItem {
   type: 'workspace' | 'conversation';
-  time: number; // 用于排序的时间
-  workspaceGroup?: WorkspaceGroup; // type === 'workspace' 时有值
-  conversation?: TChatConversation; // type === 'conversation' 时有值
+  time: number; // Time used for sorting
+  workspaceGroup?: WorkspaceGroup; // Has value when type === 'workspace'
+  conversation?: TChatConversation; // Has value when type === 'conversation'
 }
 
 interface TimelineSection {
-  timeline: string; // 时间线标题
-  items: TimelineItem[]; // 合并后按时间排序的项目
+  timeline: string; // Timeline title
+  items: TimelineItem[]; // Items sorted by time after merging
 }
 
 // Helper to get timeline label for a conversation
@@ -46,9 +46,9 @@ const getConversationTimelineLabel = (conversation: TChatConversation, t: (key: 
   return getTimelineLabel(time, Date.now(), t);
 };
 
-// 按时间线和工作空间分组
+// Group by timeline and workspace
 const groupConversationsByTimelineAndWorkspace = (conversations: TChatConversation[], t: (key: string) => string): TimelineSection[] => {
-  // 第一步：先按workspace分组所有会话
+  // Step 1: Group all conversations by workspace first
   const allWorkspaceGroups = new Map<string, TChatConversation[]>();
   const withoutWorkspaceConvs: TChatConversation[] = [];
 
@@ -66,13 +66,13 @@ const groupConversationsByTimelineAndWorkspace = (conversations: TChatConversati
     }
   });
 
-  // 第二步：为每个workspace组确定它应该出现在哪个时间线（使用组内最新会话的时间）
+  // Step 2: Determine which timeline each workspace group should appear in (using the most recent conversation's time)
   const workspaceGroupsByTimeline = new Map<string, WorkspaceGroup[]>();
 
   allWorkspaceGroups.forEach((convList, workspace) => {
-    // 按时间排序会话
+    // Sort conversations by time
     const sortedConvs = convList.sort((a, b) => getActivityTime(b) - getActivityTime(a));
-    // 使用最新会话的时间线
+    // Use the most recent conversation's timeline
     const latestConv = sortedConvs[0];
     const timeline = getConversationTimelineLabel(latestConv, t);
 
@@ -87,7 +87,7 @@ const groupConversationsByTimelineAndWorkspace = (conversations: TChatConversati
     });
   });
 
-  // 第三步：将无workspace的会话按时间线分组
+  // Step 3: Group conversations without workspace by timeline
   const withoutWorkspaceByTimeline = new Map<string, TChatConversation[]>();
 
   withoutWorkspaceConvs.forEach((conv) => {
@@ -98,7 +98,7 @@ const groupConversationsByTimelineAndWorkspace = (conversations: TChatConversati
     withoutWorkspaceByTimeline.get(timeline)!.push(conv);
   });
 
-  // 第四步：按时间线顺序构建sections
+  // Step 4: Build sections in timeline order
   const timelineOrder = ['conversation.history.today', 'conversation.history.yesterday', 'conversation.history.recent7Days', 'conversation.history.earlier'];
   const sections: TimelineSection[] = [];
 
@@ -107,13 +107,13 @@ const groupConversationsByTimelineAndWorkspace = (conversations: TChatConversati
     const withWorkspace = workspaceGroupsByTimeline.get(timeline) || [];
     const withoutWorkspace = withoutWorkspaceByTimeline.get(timeline) || [];
 
-    // 只有当该时间线有会话时才添加section
+    // Only add section when this timeline has conversations
     if (withWorkspace.length === 0 && withoutWorkspace.length === 0) return;
 
-    // 将 workspace 分组和独立会话合并成统一的 items 数组
+    // Merge workspace groups and standalone conversations into a unified items array
     const items: TimelineItem[] = [];
 
-    // 添加 workspace 分组项目
+    // Add workspace group items
     withWorkspace.forEach((group) => {
       const updateTime = getWorkspaceUpdateTime(group.workspace);
       const time = updateTime > 0 ? updateTime : getActivityTime(group.conversations[0]);
@@ -124,7 +124,7 @@ const groupConversationsByTimelineAndWorkspace = (conversations: TChatConversati
       });
     });
 
-    // 添加独立会话项目
+    // Add standalone conversation items
     withoutWorkspace.forEach((conv) => {
       items.push({
         type: 'conversation',
@@ -133,7 +133,7 @@ const groupConversationsByTimelineAndWorkspace = (conversations: TChatConversati
       });
     });
 
-    // 按时间统一排序（最近的在前）
+    // Sort uniformly by time (most recent first)
     items.sort((a, b) => b.time - a.time);
 
     sections.push({
@@ -150,7 +150,7 @@ const EXPANSION_STORAGE_KEY = 'aionui_workspace_expansion';
 const WorkspaceGroupedHistory: React.FC<{ onSessionClick?: () => void; collapsed?: boolean }> = ({ onSessionClick, collapsed = false }) => {
   const [conversations, setConversations] = useState<TChatConversation[]>([]);
   const [expandedWorkspaces, setExpandedWorkspaces] = useState<string[]>(() => {
-    // 从 localStorage 恢复展开状态
+    // Restore expansion state from localStorage
     try {
       const stored = localStorage.getItem(EXPANSION_STORAGE_KEY);
       if (stored) {
@@ -158,7 +158,7 @@ const WorkspaceGroupedHistory: React.FC<{ onSessionClick?: () => void; collapsed
         return Array.isArray(parsed) ? parsed : [];
       }
     } catch {
-      // 忽略错误
+      // Ignore errors
     }
     return [];
   });
@@ -170,7 +170,7 @@ const WorkspaceGroupedHistory: React.FC<{ onSessionClick?: () => void; collapsed
   const { openTab, closeAllTabs, activeTab, updateTabName } = useConversationTabs();
   const { getJobStatus, markAsRead } = useCronJobsMap();
 
-  // 加载会话列表
+  // Load conversation list
   useEffect(() => {
     const refresh = () => {
       ipcBridge.database.getUserConversations
@@ -204,21 +204,21 @@ const WorkspaceGroupedHistory: React.FC<{ onSessionClick?: () => void; collapsed
     return () => cancelAnimationFrame(rafId);
   }, [id]);
 
-  // 持久化展开状态
+  // Persist expansion state
   useEffect(() => {
     try {
       localStorage.setItem(EXPANSION_STORAGE_KEY, JSON.stringify(expandedWorkspaces));
     } catch {
-      // 忽略错误
+      // Ignore errors
     }
   }, [expandedWorkspaces]);
 
-  // 按时间线和workspace分组
+  // Group by timeline and workspace
   const timelineSections = useMemo(() => {
     return groupConversationsByTimelineAndWorkspace(conversations, t);
   }, [conversations, t]);
 
-  // 默认展开所有 workspace（仅在还未记录展开状态时执行一次）
+  // Expand all workspaces by default (only execute once when expansion state is not yet recorded)
   useEffect(() => {
     if (expandedWorkspaces.length > 0) return;
     const allWorkspaces: string[] = [];
@@ -242,7 +242,7 @@ const WorkspaceGroupedHistory: React.FC<{ onSessionClick?: () => void; collapsed
       // Mark conversation as read (clear unread cron execution indicator)
       markAsRead(conv.id);
 
-      // 如果点击的是非自定义工作空间的会话，关闭所有tabs
+      // If clicking a non-custom workspace conversation, close all tabs
       if (!customWorkspace) {
         closeAllTabs();
         void navigate(`/conversation/${conv.id}`);
@@ -252,16 +252,16 @@ const WorkspaceGroupedHistory: React.FC<{ onSessionClick?: () => void; collapsed
         return;
       }
 
-      // 如果点击的是自定义工作空间的会话
-      // 检查当前活动tab的workspace是否与新会话的workspace不同
+      // If clicking a custom workspace conversation
+      // Check if current active tab's workspace differs from new conversation's workspace
       const currentWorkspace = activeTab?.workspace;
 
-      // 如果当前没有活动tab，或者workspace不同，则关闭所有tabs后再打开新tab
+      // If no active tab or workspace differs, close all tabs before opening new tab
       if (!currentWorkspace || currentWorkspace !== newWorkspace) {
         closeAllTabs();
       }
 
-      // 打开新会话的tab
+      // Open new conversation's tab
       openTab(conv);
       void navigate(`/conversation/${conv.id}`);
       if (onSessionClick) {
@@ -271,7 +271,7 @@ const WorkspaceGroupedHistory: React.FC<{ onSessionClick?: () => void; collapsed
     [openTab, closeAllTabs, activeTab, navigate, onSessionClick, markAsRead]
   );
 
-  // 切换 workspace 展开/收起状态
+  // Toggle workspace expand/collapse state
   const handleToggleWorkspace = useCallback((workspace: string) => {
     setExpandedWorkspaces((prev) => {
       if (prev.includes(workspace)) {
@@ -288,10 +288,9 @@ const WorkspaceGroupedHistory: React.FC<{ onSessionClick?: () => void; collapsed
         .invoke({ id: convId })
         .then((success) => {
           if (success) {
-            // 触发会话删除事件，用于关闭对应的 tab
             // Trigger conversation deletion event to close corresponding tab
             emitter.emit('conversation.deleted', convId);
-            // 刷新会话列表
+            // Refresh conversation list
             emitter.emit('chat.history.refresh');
             if (id === convId) {
               void navigate('/');
@@ -414,7 +413,7 @@ const WorkspaceGroupedHistory: React.FC<{ onSessionClick?: () => void; collapsed
     [id, collapsed, editingId, editingName, t, handleConversationClick, handleEditStart, handleEditKeyDown, handleEditSave, handleRemoveConversation, getJobStatus]
   );
 
-  // 如果没有任何会话，显示空状态
+  // If no conversations, show empty state
   if (timelineSections.length === 0) {
     return (
       <FlexFullContainer>
@@ -430,10 +429,10 @@ const WorkspaceGroupedHistory: React.FC<{ onSessionClick?: () => void; collapsed
       <div className='size-full overflow-y-auto overflow-x-hidden'>
         {timelineSections.map((section) => (
           <div key={section.timeline} className='mb-8px min-w-0'>
-            {/* 时间线标题 */}
+            {/* Timeline title */}
             {!collapsed && <div className='chat-history__section px-12px py-8px text-13px text-t-secondary font-bold'>{section.timeline}</div>}
 
-            {/* 按时间统一排序渲染所有项目（workspace 分组和独立会话混合） */}
+            {/* Render all items sorted by time uniformly (workspace groups and standalone conversations mixed) */}
             {section.items.map((item) => {
               if (item.type === 'workspace' && item.workspaceGroup) {
                 const group = item.workspaceGroup;

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useEffect, useCallback, useRef } from 'react';
+import { useCallback, useEffect } from 'react';
 
 /**
  * Hook for listening to external scroll sync requests

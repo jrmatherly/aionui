@@ -16,7 +16,6 @@ const [useChatKey, ChatKeyProvider] = createContext('');
 
 const beforeUpdateMessageListStack: Array<(list: TMessage[]) => TMessage[]> = [];
 
-// 消息索引缓存类型定义
 // Message index cache type definitions
 interface MessageIndex {
   msgIdIndex: Map<string, number>; // msg_id -> index
@@ -24,11 +23,9 @@ interface MessageIndex {
   toolCallIdIndex: Map<string, number>; // codex_tool_call.toolCallId / acp_tool_call.toolCallId -> index
 }
 
-// 使用 WeakMap 缓存索引，当列表被 GC 时自动清理
 // Use WeakMap to cache index, auto-cleanup when list is GC'd
 const indexCache = new WeakMap<TMessage[], MessageIndex>();
 
-// 构建消息索引
 // Build message index
 function buildMessageIndex(list: TMessage[]): MessageIndex {
   const msgIdIndex = new Map<string, number>();
@@ -52,7 +49,6 @@ function buildMessageIndex(list: TMessage[]): MessageIndex {
   return { msgIdIndex, callIdIndex, toolCallIdIndex };
 }
 
-// 获取或构建索引（带缓存）
 // Get or build index with caching
 function getOrBuildIndex(list: TMessage[]): MessageIndex {
   let cached = indexCache.get(list);
@@ -63,19 +59,16 @@ function getOrBuildIndex(list: TMessage[]): MessageIndex {
   return cached;
 }
 
-// 使用索引优化的消息合并函数
 // Index-optimized message compose function
 function composeMessageWithIndex(message: TMessage, list: TMessage[], index: MessageIndex): TMessage[] {
   if (!message) return list || [];
   if (!list?.length) return [message];
 
-  // 对于 tool_group 类型，使用原始的 composeMessage（因为涉及内部数组匹配）
   // For tool_group type, use original composeMessage (involves inner array matching)
   if (message.type === 'tool_group') {
     return composeMessage(message, list);
   }
 
-  // tool_call: 使用 callIdIndex 快速查找
   // tool_call: use callIdIndex for fast lookup
   if (message.type === 'tool_call' && message.content?.callId) {
     const existingIdx = index.callIdIndex.get(message.content.callId);
@@ -88,12 +81,11 @@ function composeMessageWithIndex(message: TMessage, list: TMessage[], index: Mes
         return newList;
       }
     }
-    // 未找到，添加新消息
+    // Not found, add new message
     list.push(message);
     return list;
   }
 
-  // codex_tool_call: 使用 toolCallIdIndex 快速查找
   // codex_tool_call: use toolCallIdIndex for fast lookup
   if (message.type === 'codex_tool_call' && message.content?.toolCallId) {
     const existingIdx = index.toolCallIdIndex.get(message.content.toolCallId);
@@ -110,7 +102,6 @@ function composeMessageWithIndex(message: TMessage, list: TMessage[], index: Mes
     return list;
   }
 
-  // acp_tool_call: 使用 toolCallIdIndex 快速查找
   // acp_tool_call: use toolCallIdIndex for fast lookup
   if (message.type === 'acp_tool_call' && message.content?.update?.toolCallId) {
     const existingIdx = index.toolCallIdIndex.get(message.content.update.toolCallId);
@@ -127,14 +118,12 @@ function composeMessageWithIndex(message: TMessage, list: TMessage[], index: Mes
     return list;
   }
 
-  // 其他类型: 使用 msgIdIndex + 原始逻辑
   // Other types: use msgIdIndex + original logic
   const last = list[list.length - 1];
   if (last.msg_id !== message.msg_id || last.type !== message.type) {
     return list.concat(message);
   }
 
-  // 合并 text 消息
   // Merge text messages - create new array to trigger React re-render
   const newList = list.slice();
   const lastIdx = newList.length - 1;
@@ -165,14 +154,12 @@ export const useAddOrUpdateMessage = () => {
     if (!pending.length) return;
     pendingRef.current = [];
     update((list) => {
-      // 获取或构建索引用于快速查找 (O(1) instead of O(n))
-      // Get or build index for fast lookup
+      // Get or build index for fast lookup (O(1) instead of O(n))
       const index = getOrBuildIndex(list);
       let newList = list;
 
       for (const item of pending) {
         if (item.add) {
-          // 新增消息，更新索引
           // New message, update index
           const msg = item.message;
           const newIdx = newList.length;
@@ -188,7 +175,6 @@ export const useAddOrUpdateMessage = () => {
           }
           newList = newList.concat(msg);
         } else {
-          // 使用索引优化的消息合并
           // Use index-optimized message compose
           newList = composeMessageWithIndex(item.message, newList, index);
         }

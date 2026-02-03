@@ -1,8 +1,9 @@
-import sys
 import os
-import time
-import subprocess
 import socket
+import subprocess
+import sys
+import time
+
 from playwright.sync_api import sync_playwright
 
 # Ensure logs flush immediately
@@ -12,6 +13,7 @@ try:
 except Exception:
     pass
 
+
 def log(msg: str) -> None:
     print(msg, flush=True)
 
@@ -19,14 +21,14 @@ def log(msg: str) -> None:
 def find_free_port():
     """Find a free port for Chrome debugging."""
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind(('', 0))
+        s.bind(("", 0))
         return s.getsockname()[1]
 
 
 def is_port_in_use(port):
     """Check if a port is already in use."""
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        return s.connect_ex(('localhost', port)) == 0
+        return s.connect_ex(("localhost", port)) == 0
 
 
 def launch_standalone_chrome(profile_dir, debug_port):
@@ -34,7 +36,9 @@ def launch_standalone_chrome(profile_dir, debug_port):
     chrome_paths = [
         "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
         "/Applications/Chromium.app/Contents/MacOS/Chromium",
-        os.path.expanduser("~/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"),
+        os.path.expanduser(
+            "~/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        ),
     ]
 
     chrome_path = None
@@ -58,7 +62,7 @@ def launch_standalone_chrome(profile_dir, debug_port):
         "--no-default-browser-check",
         "--disable-features=ChromeWhatsNewUI",
         "--disable-background-networking",
-        "about:blank"
+        "about:blank",
     ]
 
     try:
@@ -68,7 +72,7 @@ def launch_standalone_chrome(profile_dir, debug_port):
             cmd,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
-            start_new_session=True
+            start_new_session=True,
         )
         log(f"ℹ️ Chrome 进程已启动，PID: {process.pid}")
         # Wait for Chrome to start and listen on the debug port
@@ -99,7 +103,9 @@ def publish(title, content, images):
 
     # Determine profile directory - use a unique directory to avoid conflicts with user's Chrome
     env_profile = os.environ.get("XHS_PROFILE_DIR")
-    default_xhs_profile = os.path.join(os.path.expanduser("~"), ".aionui", "xiaohongshu-chrome-profile")
+    default_xhs_profile = os.path.join(
+        os.path.expanduser("~"), ".aionui", "xiaohongshu-chrome-profile"
+    )
     profile_dir = env_profile or default_xhs_profile
     os.makedirs(profile_dir, exist_ok=True)
     log(f"ℹ️ 使用浏览器 profile: {profile_dir}")
@@ -121,7 +127,9 @@ def publish(title, content, images):
         if launched_port:
             debug_port = launched_port
         else:
-            log("⚠️ 无法启动独立 Chrome，将使用 Playwright 托管模式（脚本退出时浏览器可能关闭）")
+            log(
+                "⚠️ 无法启动独立 Chrome，将使用 Playwright 托管模式（脚本退出时浏览器可能关闭）"
+            )
             debug_port = None
 
     with sync_playwright() as p:
@@ -140,7 +148,10 @@ def publish(title, content, images):
         try:
             # 1. Navigate to Publish Page
             log("🌐 正在打开小红书创作者中心...")
-            page.goto("https://creator.xiaohongshu.com/publish/publish", wait_until="domcontentloaded")
+            page.goto(
+                "https://creator.xiaohongshu.com/publish/publish",
+                wait_until="domcontentloaded",
+            )
             try:
                 page.wait_for_load_state("networkidle", timeout=5000)
             except Exception:
@@ -181,7 +192,10 @@ def publish(title, content, images):
             current_url = page.url
             if "target=video" in current_url or "上传视频" in page.content():
                 # Navigate directly to image upload mode via URL
-                page.goto("https://creator.xiaohongshu.com/publish/publish?from=tab_switch", wait_until="domcontentloaded")
+                page.goto(
+                    "https://creator.xiaohongshu.com/publish/publish?from=tab_switch",
+                    wait_until="domcontentloaded",
+                )
                 page.wait_for_timeout(2000)
 
             # Also try clicking the tab as backup
@@ -254,7 +268,7 @@ def publish(title, content, images):
                     log("✅ 发布表单已加载")
                     break
                 if i % 5 == 0:
-                    log(f"⏳ 等待表单加载... ({i*2}s)")
+                    log(f"⏳ 等待表单加载... ({i * 2}s)")
                 time.sleep(2)
 
             if not title_input:
@@ -337,19 +351,22 @@ def publish(title, content, images):
                 except KeyboardInterrupt:
                     log("收到退出指令，脚本结束。")
 
+
 if __name__ == "__main__":
     # Usage: python publish_xiaohongshu.py <title> <content_file_path> <img1> <img2> ...
     if len(sys.argv) < 4:
-        print("用法: python publish_xiaohongshu.py <title> <content_file> <img1> [img2 ...]")
+        print(
+            "用法: python publish_xiaohongshu.py <title> <content_file> <img1> [img2 ...]"
+        )
         sys.exit(1)
 
     title_arg = sys.argv[1]
     content_file = sys.argv[2]
     image_args = sys.argv[3:]
-    
+
     # Read content from file
     if os.path.exists(content_file):
-        with open(content_file, 'r', encoding='utf-8') as f:
+        with open(content_file, "r", encoding="utf-8") as f:
             content_arg = f.read()
     else:
         # Fallback if user passed raw text (not recommended for long text)

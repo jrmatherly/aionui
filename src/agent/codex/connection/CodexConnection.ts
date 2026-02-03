@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import type { CodexEventParams } from '@/common/codex/types';
+import { JSONRPC_VERSION } from '@/types/acpTypes';
 import type { ChildProcess } from 'child_process';
-import { spawn, execSync } from 'child_process';
+import { execSync, spawn } from 'child_process';
 import { readFileSync } from 'fs';
 import { homedir } from 'os';
 import { join } from 'path';
-import type { CodexEventParams } from '@/common/codex/types';
-import { globalErrorService, fromNetworkError } from '../core/ErrorService';
-import { JSONRPC_VERSION } from '@/types/acpTypes';
+import { fromNetworkError, globalErrorService } from '../core/ErrorService';
 
 /**
  * Get Codex config file path based on platform
@@ -112,21 +112,19 @@ export class CodexConnection {
   }
 
   /**
-   * 检测 Codex 版本并返回相应的 MCP 启动命令
    * Detect Codex version and return appropriate MCP command
-   * @param cliPath - Codex CLI 路径 / Path to Codex CLI
-   * @returns 启动 MCP 服务器的命令参数数组 / Array of command arguments for starting MCP server
+   * @param cliPath - Path to Codex CLI
+   * @returns Array of command arguments for starting MCP server
    */
   private detectMcpCommand(cliPath: string): string[] {
     try {
-      // 尝试获取 Codex 版本 / Try to get Codex version
+      // Try to get Codex version
       const versionOutput = execSync(`${cliPath} --version`, {
         encoding: 'utf8',
         timeout: 5000,
         stdio: ['pipe', 'pipe', 'ignore'],
       }).trim();
 
-      // 提取版本号（例如从 "codex version 0.39.0" 中提取 "0.39.0"）
       // Extract version number (e.g., "0.39.0" from "codex version 0.39.0")
       const versionMatch = versionOutput.match(/(\d+)\.(\d+)\.(\d+)/);
       if (versionMatch) {
@@ -135,8 +133,6 @@ export class CodexConnection {
         const majorVer = parseInt(major, 10);
         const minorVer = parseInt(minor, 10);
 
-        // 版本 0.40.0 及以上使用 "mcp-server"
-        // 版本 0.39.x 及以下使用 "mcp serve"
         // Version 0.40.0 and above use "mcp-server"
         // Version 0.39.x and below use "mcp serve"
         if (majorVer > 0 || (majorVer === 0 && minorVer >= 40)) {
@@ -146,18 +142,16 @@ export class CodexConnection {
         }
       }
 
-      // 如果版本检测失败，默认使用 mcp-server（适用于新版本）
       // If version detection fails, try mcp-server first (for newer versions)
       return ['mcp-server'];
     } catch (error) {
-      // 如果版本命令执行失败，默认使用 mcp-server（新版本）
       // If version command fails, default to mcp-server (newer versions)
       return ['mcp-server'];
     }
   }
 
   start(cliPath: string, cwd: string, args: string[] = [], options?: { yoloMode?: boolean }): Promise<void> {
-    // 根据 Codex 版本自动检测合适的 MCP 命令 / Auto-detect appropriate MCP command based on Codex version
+    // Auto-detect appropriate MCP command based on Codex version
     const cleanEnv = { ...process.env };
     delete cleanEnv.NODE_OPTIONS;
     delete cleanEnv.NODE_INSPECT;

@@ -4,12 +4,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { TokenMiddleware } from '@/webserver/auth/middleware/TokenMiddleware';
+import type { IncomingMessage } from 'http';
 import type { WebSocketServer } from 'ws';
 import { WebSocket } from 'ws';
-import type { IncomingMessage } from 'http';
-import { TokenMiddleware } from '@/webserver/auth/middleware/TokenMiddleware';
-import { WEBSOCKET_CONFIG } from '../config/constants';
 import { SHOW_OPEN_REQUEST_EVENT } from '../../adapter/constant';
+import { WEBSOCKET_CONFIG } from '../config/constants';
 
 interface ClientInfo {
   token: string;
@@ -17,7 +17,6 @@ interface ClientInfo {
 }
 
 /**
- * WebSocket 管理器 - 管理客户端连接、心跳检测和消息处理
  * WebSocket Manager - Manages client connections, heartbeat detection, and message handling
  */
 export class WebSocketManager {
@@ -27,7 +26,6 @@ export class WebSocketManager {
   constructor(private wss: WebSocketServer) {}
 
   /**
-   * 初始化 WebSocket 管理器
    * Initialize WebSocket manager
    */
   initialize(): void {
@@ -36,7 +34,6 @@ export class WebSocketManager {
   }
 
   /**
-   * 设置连接处理器
    * Setup connection handler
    */
   setupConnectionHandler(onMessage: (name: string, data: any, ws: WebSocket) => void): void {
@@ -57,7 +54,6 @@ export class WebSocketManager {
   }
 
   /**
-   * 验证连接
    * Validate connection
    */
   private validateConnection(ws: WebSocket, token: string | null): boolean {
@@ -75,7 +71,6 @@ export class WebSocketManager {
   }
 
   /**
-   * 添加客户端
    * Add client
    */
   private addClient(ws: WebSocket, token: string): void {
@@ -86,7 +81,6 @@ export class WebSocketManager {
   }
 
   /**
-   * 设置消息处理器
    * Setup message handler
    */
   private setupMessageHandler(ws: WebSocket, onMessage: (name: string, data: any, ws: WebSocket) => void): void {
@@ -121,7 +115,6 @@ export class WebSocketManager {
   }
 
   /**
-   * 处理文件选择请求
    * Handle file selection request
    */
   private handleFileSelection(ws: WebSocket, data: any): void {
@@ -137,7 +130,6 @@ export class WebSocketManager {
   }
 
   /**
-   * 设置关闭处理器
    * Setup close handler
    */
   private setupCloseHandler(ws: WebSocket): void {
@@ -148,7 +140,6 @@ export class WebSocketManager {
   }
 
   /**
-   * 设置错误处理器
    * Setup error handler
    */
   private setupErrorHandler(ws: WebSocket): void {
@@ -159,7 +150,6 @@ export class WebSocketManager {
   }
 
   /**
-   * 更新最后心跳时间
    * Update last ping time
    */
   private updateLastPing(ws: WebSocket): void {
@@ -170,7 +160,6 @@ export class WebSocketManager {
   }
 
   /**
-   * 启动心跳检测
    * Start heartbeat detection
    */
   private startHeartbeat(): void {
@@ -180,7 +169,6 @@ export class WebSocketManager {
   }
 
   /**
-   * 检查所有客户端
    * Check all clients
    */
   private checkClients(): void {
@@ -210,7 +198,6 @@ export class WebSocketManager {
   }
 
   /**
-   * 检查客户端是否超时
    * Check if client timed out
    */
   private isClientTimeout(clientInfo: ClientInfo, now: number): boolean {
@@ -218,7 +205,6 @@ export class WebSocketManager {
   }
 
   /**
-   * 发送心跳
    * Send heartbeat
    */
   private sendHeartbeat(ws: WebSocket): void {
@@ -228,7 +214,6 @@ export class WebSocketManager {
   }
 
   /**
-   * 向所有客户端广播消息
    * Broadcast message to all clients
    */
   broadcast(name: string, data: any): void {
@@ -242,7 +227,6 @@ export class WebSocketManager {
   }
 
   /**
-   * 获取连接的客户端数量
    * Get connected client count
    */
   getConnectedClientsCount(): number {
@@ -250,7 +234,6 @@ export class WebSocketManager {
   }
 
   /**
-   * 清理资源
    * Cleanup resources
    */
   destroy(): void {

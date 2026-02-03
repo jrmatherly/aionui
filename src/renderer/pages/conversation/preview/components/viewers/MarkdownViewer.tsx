@@ -4,13 +4,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { joinPath } from '@/common/chatLib';
 import { ipcBridge } from '@/common';
+import { joinPath } from '@/common/chatLib';
 import { useAutoScroll } from '@/renderer/hooks/useAutoScroll';
 import { useTextSelection } from '@/renderer/hooks/useTextSelection';
 import { useTypingAnimation } from '@/renderer/hooks/useTypingAnimation';
-import { iconColors } from '@/renderer/theme/colors';
-import { Close } from '@icon-park/react';
 import 'katex/dist/katex.min.css';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -22,9 +20,9 @@ import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import { Streamdown } from 'streamdown';
+import { useContainerScroll, useContainerScrollTarget } from '../../hooks/useScrollSyncHelpers';
 import MarkdownEditor from '../editors/MarkdownEditor';
 import SelectionToolbar from '../renderers/SelectionToolbar';
-import { useContainerScroll, useContainerScrollTarget } from '../../hooks/useScrollSyncHelpers';
 
 interface MarkdownPreviewProps {
   content: string; // Markdown content

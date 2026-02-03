@@ -32,29 +32,33 @@ def boxes_intersect(box1: list, box2: list) -> bool:
 
 def check_bounding_boxes(json_path: str) -> bool:
     """Check bounding boxes for issues."""
-    with open(json_path, 'r', encoding='utf-8') as f:
+    with open(json_path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
     errors = []
     MIN_HEIGHT = 15  # Minimum height in pixels for text entry
 
-    form_fields = data.get('form_fields', [])
+    form_fields = data.get("form_fields", [])
 
     for i, field in enumerate(form_fields):
-        label_box = field.get('label_bounding_box')
-        entry_box = field.get('entry_bounding_box')
-        description = field.get('description', f'Field {i}')
-        page = field.get('page_number', 1)
+        label_box = field.get("label_bounding_box")
+        entry_box = field.get("entry_bounding_box")
+        description = field.get("description", f"Field {i}")
+        page = field.get("page_number", 1)
 
         # Check for intersection
         if label_box and entry_box and boxes_intersect(label_box, entry_box):
-            errors.append(f"Page {page}: Label and entry boxes intersect for '{description}'")
+            errors.append(
+                f"Page {page}: Label and entry boxes intersect for '{description}'"
+            )
 
         # Check minimum height
         if entry_box:
             height = entry_box[3] - entry_box[1]  # bottom - top
             if height < MIN_HEIGHT:
-                errors.append(f"Page {page}: Entry box too short ({height}px < {MIN_HEIGHT}px) for '{description}'")
+                errors.append(
+                    f"Page {page}: Entry box too short ({height}px < {MIN_HEIGHT}px) for '{description}'"
+                )
 
     if errors:
         print("Bounding box errors found:")

@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import type { PreviewContentType } from '@/common/types/preview';
+import type { FileOrFolderItem } from '@/renderer/types/files';
 import EventEmitter from 'eventemitter3';
 import type { DependencyList } from 'react';
 import { useEffect } from 'react';
-import type { FileOrFolderItem } from '@/renderer/types/files';
-import type { PreviewContentType } from '@/common/types/preview';
 
 interface EventTypes {
   'gemini.selected.file': [Array<string | FileOrFolderItem>];
@@ -24,9 +24,9 @@ interface EventTypes {
   'codex.selected.file.clear': void;
   'codex.workspace.refresh': void;
   'chat.history.refresh': void;
-  // 会话删除事件 / Conversation deletion event
+  // Conversation deletion event
   'conversation.deleted': [string]; // conversationId
-  // 预览面板事件 / Preview panel events
+  // Preview panel events
   'preview.open': [{ content: string; contentType: PreviewContentType; metadata?: { title?: string; fileName?: string } }];
 }
 

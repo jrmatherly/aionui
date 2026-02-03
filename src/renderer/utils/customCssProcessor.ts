@@ -5,14 +5,14 @@
  */
 
 /**
- * 自定义 CSS 处理工具
- * 统一处理自定义 CSS 的 !important 添加和格式化
+ * Custom CSS Processing Utilities
+ * Unified handling of !important addition and formatting for custom CSS
  */
 
 /**
- * 自动为所有 CSS 属性添加 !important
- * @param css - 原始 CSS 字符串
- * @returns 处理后的 CSS 字符串（所有属性都带 !important）
+ * Automatically add !important to all CSS properties
+ * @param css - Original CSS string
+ * @returns Processed CSS string (all properties with !important)
  */
 export const addImportantToAll = (css: string): string => {
   if (!css || !css.trim()) {
@@ -21,19 +21,19 @@ export const addImportantToAll = (css: string): string => {
 
   return css.replace(/([a-zA-Z-]+)\s*:\s*([^;!}]+);/g, (match, property, value) => {
     const trimmedValue = value.trim();
-    // 如果已经包含 !important，不再添加
+    // If already contains !important, don't add again
     if (trimmedValue.endsWith('!important')) {
       return match;
     }
-    // 添加 !important
+    // Add !important
     return `${property}: ${trimmedValue} !important;`;
   });
 };
 
 /**
- * 包装自定义 CSS，添加注释说明
- * @param css - 处理后的 CSS 字符串
- * @returns 带注释的 CSS 字符串
+ * Wrap custom CSS with descriptive comments
+ * @param css - Processed CSS string
+ * @returns CSS string with comments
  */
 export const wrapCustomCss = (css: string): string => {
   if (!css || !css.trim()) {
@@ -41,16 +41,15 @@ export const wrapCustomCss = (css: string): string => {
   }
 
   return `
-/* 用户自定义样式 - 自动添加 !important 提升优先级 */
 /* User Custom Styles - Auto !important for highest priority */
 ${css}
   `.trim();
 };
 
 /**
- * 完整处理自定义 CSS
- * @param css - 原始 CSS 字符串
- * @returns 处理后并包装的 CSS 字符串
+ * Complete custom CSS processing
+ * @param css - Original CSS string
+ * @returns Processed and wrapped CSS string
  */
 export const processCustomCss = (css: string): string => {
   const processed = addImportantToAll(css);
@@ -58,9 +57,9 @@ export const processCustomCss = (css: string): string => {
 };
 
 /**
- * 验证 CSS 语法（简单验证）
- * @param css - CSS 字符串
- * @returns 是否为有效的 CSS
+ * Validate CSS syntax (simple validation)
+ * @param css - CSS string
+ * @returns Whether the CSS is valid
  */
 export const validateCss = (css: string): { valid: boolean; error?: string } => {
   if (!css || !css.trim()) {
@@ -68,7 +67,7 @@ export const validateCss = (css: string): { valid: boolean; error?: string } => 
   }
 
   try {
-    // 简单验证：检查大括号是否配对
+    // Simple validation: check if braces are balanced
     const openBraces = (css.match(/\{/g) || []).length;
     const closeBraces = (css.match(/\}/g) || []).length;
 
@@ -79,7 +78,7 @@ export const validateCss = (css: string): { valid: boolean; error?: string } => 
       };
     }
 
-    // 检查是否有基本的 CSS 结构
+    // Check for basic CSS structure
     if (openBraces > 0 && !css.includes(':')) {
       return {
         valid: false,

@@ -1,7 +1,7 @@
+import type { IMcpServer } from '@/common/storage';
+import { Tooltip } from '@arco-design/web-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Tooltip } from '@arco-design/web-react';
-import type { IMcpServer } from '@/common/storage';
 
 interface McpServerToolsListProps {
   server: IMcpServer;

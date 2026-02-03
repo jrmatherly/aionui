@@ -5,17 +5,17 @@
  */
 import type { CodexAgentEventType } from './eventTypes';
 
-// 工具类别枚举
+// Tool category enumeration
 export enum ToolCategory {
-  EXECUTION = 'execution', // shell, bash, python等
-  FILE_OPS = 'file_ops', // 读写、编辑、搜索文件
-  SEARCH = 'search', // 各种搜索方式
-  ANALYSIS = 'analysis', // 代码分析、图表生成
-  COMMUNICATION = 'communication', // 网络请求、API调用
-  CUSTOM = 'custom', // MCP工具等自定义工具
+  EXECUTION = 'execution', // shell, bash, python, etc.
+  FILE_OPS = 'file_ops', // read/write, edit, search files
+  SEARCH = 'search', // various search methods
+  ANALYSIS = 'analysis', // code analysis, chart generation
+  COMMUNICATION = 'communication', // network requests, API calls
+  CUSTOM = 'custom', // MCP tools and other custom tools
 }
 
-// 输出格式枚举
+// Output format enumeration
 export enum OutputFormat {
   TEXT = 'text',
   MARKDOWN = 'markdown',
@@ -26,56 +26,56 @@ export enum OutputFormat {
   TABLE = 'table',
 }
 
-// 渲染器类型枚举
+// Renderer type enumeration
 export enum RendererType {
-  STANDARD = 'standard', // 标准文本渲染
-  MARKDOWN = 'markdown', // Markdown渲染
-  CODE = 'code', // 代码高亮渲染
-  CHART = 'chart', // 图表渲染
-  IMAGE = 'image', // 图像渲染
-  INTERACTIVE = 'interactive', // 交互式渲染
-  COMPOSITE = 'composite', // 复合渲染
+  STANDARD = 'standard', // standard text rendering
+  MARKDOWN = 'markdown', // Markdown rendering
+  CODE = 'code', // code highlighting rendering
+  CHART = 'chart', // chart rendering
+  IMAGE = 'image', // image rendering
+  INTERACTIVE = 'interactive', // interactive rendering
+  COMPOSITE = 'composite', // composite rendering
 }
 
-// 工具可用性配置
+// Tool availability configuration
 export interface ToolAvailability {
   platforms: string[]; // ['darwin', 'linux', 'win32']
-  requires?: string[]; // 依赖的工具或服务
-  experimental?: boolean; // 是否为实验性功能
+  requires?: string[]; // required tools or services
+  experimental?: boolean; // whether it's an experimental feature
 }
 
-// 工具能力配置
+// Tool capabilities configuration
 export interface ToolCapabilities {
   supportsStreaming: boolean;
   supportsImages: boolean;
   supportsCharts: boolean;
   supportsMarkdown: boolean;
-  supportsInteraction: boolean; // 是否需要用户交互
+  supportsInteraction: boolean; // whether user interaction is required
   outputFormats: OutputFormat[];
 }
 
-// 渲染器配置
+// Renderer configuration
 export interface ToolRenderer {
   type: RendererType;
   config: Record<string, any>;
 }
 
-// 工具定义接口
+// Tool definition interface
 export interface ToolDefinition {
   id: string;
   name: string;
   displayNameKey: string; // i18n key for display name
   category: ToolCategory;
-  priority: number; // 优先级，数字越小优先级越高
+  priority: number; // priority, lower number means higher priority
   availability: ToolAvailability;
   capabilities: ToolCapabilities;
   renderer: ToolRenderer;
-  icon?: string; // 工具图标
+  icon?: string; // tool icon
   descriptionKey: string; // i18n key for description
-  schema?: any; // 工具Schema
+  schema?: any; // tool schema
 }
 
-// MCP工具信息
+// MCP tool information
 export interface McpToolInfo {
   name: string;
   serverName: string;
@@ -83,7 +83,7 @@ export interface McpToolInfo {
   inputSchema?: Record<string, unknown>;
 }
 
-// 事件数据类型定义 (simplified using CodexEventMsg structure)
+// Event data type definition (simplified using CodexEventMsg structure)
 export type EventDataMap = {
   [CodexAgentEventType.EXEC_COMMAND_BEGIN]: Extract<import('./eventData').CodexEventMsg, { type: 'exec_command_begin' }>;
   [CodexAgentEventType.EXEC_COMMAND_OUTPUT_DELTA]: Extract<import('./eventData').CodexEventMsg, { type: 'exec_command_output_delta' }>;

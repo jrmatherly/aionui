@@ -22,9 +22,9 @@ export const useDirectorySelection = () => {
   const handleConfirm = useCallback(
     (paths: string[] | undefined) => {
       if (requestData) {
-        // Bridge 框架的回调事件命名规则: subscribe.callback-{event-name}{id}
+        // Bridge callback event naming convention: subscribe.callback-{event-name}{id}
         const callbackEventName = `subscribe.callback-show-open${requestData.id}`;
-        // 使用全局函数发送回调到 bridge emitter
+        // Use global function to send callback to bridge emitter
         if ((window as any).__emitBridgeCallback) {
           (window as any).__emitBridgeCallback(callbackEventName, paths);
         }
@@ -37,9 +37,9 @@ export const useDirectorySelection = () => {
 
   const handleCancel = useCallback(() => {
     if (requestData) {
-      // Bridge 框架的回调事件命名规则: subscribe.callback-{event-name}{id}
+      // Bridge callback event naming convention: subscribe.callback-{event-name}{id}
       const callbackEventName = `subscribe.callback-show-open${requestData.id}`;
-      // 使用全局函数发送回调到 bridge emitter
+      // Use global function to send callback to bridge emitter
       if ((window as any).__emitBridgeCallback) {
         (window as any).__emitBridgeCallback(callbackEventName, undefined);
       }
@@ -50,10 +50,10 @@ export const useDirectorySelection = () => {
 
   useEffect(() => {
     const handleShowOpenRequest = (data: DirectorySelectionRequest) => {
-      // 判断是文件选择还是目录选择
+      // Determine if it's file selection or directory selection
       let isFileMode = data.isFileMode === true;
 
-      // 从 properties 自动推断
+      // Auto-infer from properties
       if (!isFileMode && data.properties) {
         isFileMode = data.properties.includes('openFile') && !data.properties.includes('openDirectory');
       }
@@ -62,7 +62,7 @@ export const useDirectorySelection = () => {
       setVisible(true);
     };
 
-    // 监听来自 browser.ts 的文件选择请求
+    // Listen for file selection requests from browser.ts
     bridge.on(SHOW_OPEN_REQUEST_EVENT, handleShowOpenRequest);
 
     return () => {

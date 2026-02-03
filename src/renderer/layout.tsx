@@ -8,6 +8,7 @@ import { ipcBridge } from '@/common';
 import { ConfigStorage } from '@/common/storage';
 import PwaPullToRefresh from '@/renderer/components/PwaPullToRefresh';
 import Titlebar from '@/renderer/components/Titlebar';
+import UpdateModal from '@/renderer/components/UpdateModal';
 import { Layout as ArcoLayout } from '@arco-design/web-react';
 import { MenuFold, MenuUnfold } from '@icon-park/react';
 import classNames from 'classnames';
@@ -17,7 +18,6 @@ import { LayoutContext } from './context/LayoutContext';
 import { useDirectorySelection } from './hooks/useDirectorySelection';
 import { useMultiAgentDetection } from './hooks/useMultiAgentDetection';
 import { processCustomCss } from './utils/customCssProcessor';
-import UpdateModal from '@/renderer/components/UpdateModal';
 
 const useDebug = () => {
   const [count, setCount] = useState(0);
@@ -65,7 +65,7 @@ const Layout: React.FC<{
   const workspaceAvailable = location.pathname.startsWith('/conversation/');
   const collapsedRef = useRef(collapsed);
 
-  // 加载并监听自定义 CSS 配置 / Load & watch custom CSS configuration
+  // Load & watch custom CSS configuration
   useEffect(() => {
     const loadCustomCss = () => {
       ConfigStorage.get('customCss')
@@ -97,7 +97,7 @@ const Layout: React.FC<{
     };
   }, []);
 
-  // 注入自定义 CSS / Inject custom CSS into document head
+  // Inject custom CSS into document head
   useEffect(() => {
     const styleId = 'user-defined-custom-css';
 
@@ -144,22 +144,22 @@ const Layout: React.FC<{
     };
   }, [customCss]);
 
-  // 检测移动端并响应窗口大小变化
+  // Detect mobile and respond to window size changes
   useEffect(() => {
     const checkMobile = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
     };
 
-    // 初始检测
+    // Initial detection
     checkMobile();
 
-    // 监听窗口大小变化
+    // Listen for window size changes
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // 进入移动端后立即折叠 / Collapse immediately when switching to mobile
+  // Collapse immediately when switching to mobile
   useEffect(() => {
     if (!isMobile || collapsedRef.current) {
       return;
@@ -173,7 +173,7 @@ const Layout: React.FC<{
     <LayoutContext.Provider value={{ isMobile, siderCollapsed: collapsed, setSiderCollapsed: setCollapsed }}>
       <div className='app-shell flex flex-col size-full min-h-0'>
         <Titlebar workspaceAvailable={workspaceAvailable} />
-        {/* 移动端左侧边栏蒙板 / Mobile left sider backdrop */}
+        {/* Mobile left sider backdrop */}
         {isMobile && !collapsed && <div className='fixed inset-0 bg-black/30 z-90' onClick={() => setCollapsed(true)} aria-hidden='true' />}
 
         <ArcoLayout className={'size-full layout flex-1 min-h-0'}>
@@ -226,7 +226,7 @@ const Layout: React.FC<{
                   {collapsed ? <MenuUnfold theme='outline' size='18' fill='currentColor' /> : <MenuFold theme='outline' size='18' fill='currentColor' />}
                 </button>
               )}
-              {/* 侧栏折叠改由标题栏统一控制 / Sidebar folding handled by Titlebar toggle */}
+              {/* Sidebar folding handled by Titlebar toggle */}
             </ArcoLayout.Header>
             <ArcoLayout.Content className={classNames('p-8px layout-sider-content', !isMobile && 'h-[calc(100%-72px-16px)]')}>
               {React.isValidElement(sider)

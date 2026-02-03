@@ -6,24 +6,24 @@
 
 import { ipcBridge } from '@/common';
 import type { ExcelWorkbookData } from '@/common/types/conversion';
-import { usePreviewToolbarExtras } from '../../context/PreviewToolbarExtrasContext';
 import { Button, Message } from '@arco-design/web-react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { usePreviewToolbarExtras } from '../../context/PreviewToolbarExtrasContext';
 
 interface ExcelPreviewProps {
   filePath?: string;
-  content?: string; // 预留，暂不使用
+  content?: string; // Reserved, not currently used
   hideToolbar?: boolean;
 }
 
 /**
- * Excel 表格预览组件（只读模式）
+ * Excel spreadsheet preview component (read-only mode)
  *
- * 功能：
- * 1. 通过 IPC 从主进程读取 Excel 文件
- * 2. 主进程使用 xlsx 库转换为 JSON 格式
- * 3. 渲染进程用 HTML 表格展示数据
+ * Features:
+ * 1. Read Excel file from main process via IPC
+ * 2. Main process converts to JSON format using xlsx library
+ * 3. Renderer process displays data in HTML table
  */
 const ExcelPreview: React.FC<ExcelPreviewProps> = ({ filePath, hideToolbar = false }) => {
   const { t } = useTranslation();
@@ -67,7 +67,7 @@ const ExcelPreview: React.FC<ExcelPreviewProps> = ({ filePath, hideToolbar = fal
   }, [usePortalToolbar, toolbarExtrasContext, sheetCount, t]);
 
   /**
-   * 加载 Excel 文件
+   * Load Excel file
    */
   useEffect(() => {
     const loadExcel = async () => {
@@ -81,8 +81,7 @@ const ExcelPreview: React.FC<ExcelPreviewProps> = ({ filePath, hideToolbar = fal
       setError(null);
 
       try {
-        // 通过 IPC 调用主进程转换
-        // 调用统一的 document.convert 将 Excel 转换为 JSON / Convert Excel to JSON via document.convert
+        // Convert Excel to JSON via document.convert
         const response = await ipcBridge.document.convert.invoke({ filePath, to: 'excel-json' });
 
         if (response.to !== 'excel-json') {
@@ -91,7 +90,7 @@ const ExcelPreview: React.FC<ExcelPreviewProps> = ({ filePath, hideToolbar = fal
 
         if (response.result.success && response.result.data) {
           setExcelData(response.result.data);
-          // 默认选中第一个工作表
+          // Select the first sheet by default
           if (response.result.data.sheets.length > 0) {
             setActiveSheet(response.result.data.sheets[0].name);
           }
@@ -109,7 +108,7 @@ const ExcelPreview: React.FC<ExcelPreviewProps> = ({ filePath, hideToolbar = fal
   }, [filePath, t]);
 
   /**
-   * 渲染工作表数据为 HTML 表格
+   * Render sheet data as HTML table
    */
   const renderSheetTable = (sheetName: string) => {
     const sheet = excelData?.sheets.find((s) => s.name === sheetName);
@@ -290,7 +289,7 @@ const ExcelPreview: React.FC<ExcelPreviewProps> = ({ filePath, hideToolbar = fal
     <div className='h-full w-full flex flex-col'>
       {messageContextHolder}
 
-      {/* 工具栏 */}
+      {/* Toolbar */}
       {!usePortalToolbar && !hideToolbar && (
         <div className='flex items-center justify-between h-40px px-12px bg-bg-2 border-b border-border-base flex-shrink-0'>
           <div className='flex items-center gap-8px'>
@@ -314,15 +313,15 @@ const ExcelPreview: React.FC<ExcelPreviewProps> = ({ filePath, hideToolbar = fal
         </div>
       )}
 
-      {/* 内容区域 */}
+      {/* Content area */}
       <div className='flex-1 overflow-hidden flex flex-col bg-bg-1'>
         {excelData.sheets.length === 1 ? (
-          // 单个工作表：直接显示表格
+          // Single sheet: display table directly
           renderSheetTable(excelData.sheets[0].name)
         ) : (
-          // 多个工作表：使用紧凑的工作表切换栏
+          // Multiple sheets: use compact sheet switcher bar
           <>
-            {/* 工作表切换栏 */}
+            {/* Sheet switcher bar */}
             <div className='flex items-center h-28px px-8px bg-bg-1 border-b border-border-base overflow-x-auto flex-shrink-0'>
               {excelData.sheets.map((sheet) => (
                 <button
@@ -350,7 +349,7 @@ const ExcelPreview: React.FC<ExcelPreviewProps> = ({ filePath, hideToolbar = fal
                 </button>
               ))}
             </div>
-            {/* 当前工作表内容 */}
+            {/* Current sheet content */}
             <div className='flex-1 overflow-hidden' key={activeSheet}>
               {renderSheetTable(activeSheet)}
             </div>

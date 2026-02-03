@@ -56,7 +56,9 @@
 -->
 
 - **Status:** pending
+
 - ## Actions taken:
+
 - ## Files created/modified:
 
 ## Test Results
@@ -123,4 +125,4 @@
   - Include timestamps for errors to track when issues occurred
 -->
 
-_Update after completing each phase or encountering errors_
+*Update after completing each phase or encountering errors*

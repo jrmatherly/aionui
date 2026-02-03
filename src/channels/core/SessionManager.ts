@@ -71,7 +71,7 @@ export class SessionManager {
 
   /**
    * Create a new session with a specific conversation ID
-   * 使用指定的 conversationId 创建会话（用于复用现有会话）
+   * Used to reuse an existing conversation
    */
   createSessionWithConversation(user: IChannelUser, conversationId: string, agentType: ChannelAgentType = 'gemini', workspace?: string): IChannelSession {
     const db = getDatabase();
@@ -172,7 +172,6 @@ export class SessionManager {
   /**
    * Clear session by conversation ID
    * Used when a conversation is deleted from AionUI
-   * 根据 conversationId 清理 session（当会话从 AionUI 删除时调用）
    */
   clearSessionByConversationId(conversationId: string): IChannelSession | null {
     const db = getDatabase();

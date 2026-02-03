@@ -17,7 +17,6 @@ import { useSettingsViewMode } from '../settingsViewContext';
 import ChannelModalContent from './ChannelModalContent';
 
 /**
- * 偏好设置行组件
  * Preference row component
  */
 const PreferenceRow: React.FC<{ label: string; description?: React.ReactNode; extra?: React.ReactNode; children: React.ReactNode }> = ({ label, description, extra, children }) => (
@@ -34,7 +33,6 @@ const PreferenceRow: React.FC<{ label: string; description?: React.ReactNode; ex
 );
 
 /**
- * 信息行组件（用于登录信息展示）
  * Info row component (for login info display)
  */
 const InfoRow: React.FC<{ label: string; value: string; onCopy?: () => void; showCopy?: boolean }> = ({ label, value, onCopy, showCopy = true }) => (
@@ -43,7 +41,7 @@ const InfoRow: React.FC<{ label: string; value: string; onCopy?: () => void; sho
     <div className='flex items-center gap-8px'>
       <span className='text-14px text-t-primary'>{value}</span>
       {showCopy && onCopy && (
-        <Tooltip content='复制'>
+        <Tooltip content='Copy'>
           <button className='p-4px bg-transparent border-none text-t-tertiary hover:text-t-primary cursor-pointer' onClick={onCopy}>
             <Copy size={16} />
           </button>
@@ -54,7 +52,6 @@ const InfoRow: React.FC<{ label: string; value: string; onCopy?: () => void; sho
 );
 
 /**
- * WebUI 设置内容组件
  * WebUI settings content component
  */
 const WebuiModalContent: React.FC = () => {
@@ -62,7 +59,7 @@ const WebuiModalContent: React.FC = () => {
   const viewMode = useSettingsViewMode();
   const isPageMode = viewMode === 'page';
 
-  // 检测是否在 Electron 桌面环境 / Check if running in Electron desktop environment
+  // Check if running in Electron desktop environment
   const isDesktop = isElectronDesktop();
 
   const [status, setStatus] = useState<IWebUIStatus | null>(null);
@@ -72,31 +69,31 @@ const WebuiModalContent: React.FC = () => {
   const [allowRemote, setAllowRemote] = useState(false);
   const [cachedIP, setCachedIP] = useState<string | null>(null);
   const [cachedPassword, setCachedPassword] = useState<string | null>(null);
-  // 标记密码是否可以明文显示（首次启动且未复制过）/ Flag for plaintext password display (first startup and not copied)
+  // Flag for plaintext password display (first startup and not copied)
   const [canShowPlainPassword, setCanShowPlainPassword] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
-  // 设置新密码弹窗 / Set new password modal
+  // Set new password modal
   const [setPasswordModalVisible, setSetPasswordModalVisible] = useState(false);
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [form] = Form.useForm();
 
-  // 二维码登录相关状态 / QR code login related state
+  // QR code login related state
   const [qrUrl, setQrUrl] = useState<string | null>(null);
   const [qrExpiresAt, setQrExpiresAt] = useState<number | null>(null);
   const [qrLoading, setQrLoading] = useState(false);
   const qrRefreshTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 加载状态 / Load status
+  // Load status
   const loadStatus = useCallback(async () => {
     setLoading(true);
     try {
       let result: { success: boolean; data?: IWebUIStatus } | null = null;
 
-      // 优先使用直接 IPC（Electron 环境）/ Prefer direct IPC (Electron environment)
+      // Prefer direct IPC (Electron environment)
       if (window.electronAPI?.webuiGetStatus) {
         result = await window.electronAPI.webuiGetStatus();
       } else {
-        // 后备方案：使用 bridge（减少超时）/ Fallback: use bridge (reduced timeout)
+        // Fallback: use bridge (reduced timeout)
         const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 1500));
         result = await Promise.race([webui.getStatus.invoke(), timeoutPromise]);
       }
@@ -114,10 +111,9 @@ const WebuiModalContent: React.FC = () => {
         }
         if (result.data.initialPassword) {
           setCachedPassword(result.data.initialPassword);
-          // 有初始密码说明可以显示明文 / Having initial password means can show plaintext
+          // Having initial password means can show plaintext
           setCanShowPlainPassword(true);
         }
-        // 注意：如果 running 但没有密码，会在下面的 useEffect 中自动重置
         // Note: If running but no password, auto-reset will be triggered in the useEffect below
       } else {
         setStatus(
@@ -142,7 +138,7 @@ const WebuiModalContent: React.FC = () => {
     void loadStatus();
   }, [loadStatus]);
 
-  // 监听状态变更事件 / Listen to status change events
+  // Listen to status change events
   useEffect(() => {
     const unsubscribe = webui.statusChanged.on((data) => {
       if (data.running) {
@@ -167,7 +163,7 @@ const WebuiModalContent: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  // 监听密码重置结果事件（Web 环境后备）/ Listen to password reset result events (Web environment fallback)
+  // Listen to password reset result events (Web environment fallback)
   useEffect(() => {
     const unsubscribe = webui.resetPasswordResult.on((data) => {
       if (data.success && data.newPassword) {
@@ -180,21 +176,17 @@ const WebuiModalContent: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  // 注意：不再自动重置密码，用户已有密码存储在数据库中
   // Note: No longer auto-reset password, user already has password stored in database
-  // 如果用户忘记密码，可以手动点击重置按钮
   // If user forgets password, they can manually click reset button
   useEffect(() => {
-    // 仅在组件首次加载且没有显示过密码时，标记为密文状态
     // Only when component first loads and password hasn't been shown, mark as hidden
     if (status?.running && !status?.initialPassword && !cachedPassword && !loading) {
-      // 不自动重置，只是确保密码显示为 ******
       // Don't auto-reset, just ensure password shows as ******
       setCanShowPlainPassword(false);
     }
   }, [status?.running, status?.initialPassword, cachedPassword, loading]);
 
-  // 获取当前 IP 地址 / Get current IP
+  // Get current IP
   const getLocalIP = useCallback(() => {
     if (status?.lanIP) return status.lanIP;
     if (cachedIP) return cachedIP;
@@ -205,7 +197,7 @@ const WebuiModalContent: React.FC = () => {
     return null;
   }, [status?.lanIP, cachedIP, status?.networkUrl]);
 
-  // 获取显示的 URL / Get display URL
+  // Get display URL
   const getDisplayUrl = useCallback(() => {
     const currentIP = getLocalIP();
     const currentPort = status?.port || port;
@@ -215,19 +207,19 @@ const WebuiModalContent: React.FC = () => {
     return `http://localhost:${currentPort}`;
   }, [allowRemote, getLocalIP, status?.port, port]);
 
-  // 启动/停止 WebUI / Start/Stop WebUI
+  // Start/Stop WebUI
   const handleToggle = async (enabled: boolean) => {
-    // 使用缓存的 IP，不再阻塞获取 / Use cached IP, no longer block to fetch
+    // Use cached IP, no longer block to fetch
     const currentIP = getLocalIP();
 
-    // 立即显示 loading / Immediately show loading
+    // Immediately show loading
     setStartLoading(true);
 
     try {
       if (enabled) {
         const localUrl = `http://localhost:${port}`;
 
-        // 减少启动超时到3秒（服务器启动很快）/ Reduce start timeout to 3s (server starts quickly)
+        // Reduce start timeout to 3s (server starts quickly)
         const startResult = await Promise.race([webui.start.invoke({ port, allowRemote }), new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000))]);
 
         if (startResult && startResult.success && startResult.data) {
@@ -264,10 +256,9 @@ const WebuiModalContent: React.FC = () => {
         }
 
         Message.success(t('settings.webui.startSuccess'));
-        // 启动返回的数据已经足够，不再需要延迟获取状态
         // Start result contains all needed data, no need for delayed status fetch
       } else {
-        // 立即更新UI，异步停止服务器 / Update UI immediately, stop server async
+        // Update UI immediately, stop server async
         setStatus((prev) => (prev ? { ...prev, running: false } : null));
         Message.success(t('settings.webui.stopSuccess'));
         webui.stop.invoke().catch((err) => console.error('WebUI stop error:', err));
@@ -280,24 +271,23 @@ const WebuiModalContent: React.FC = () => {
     }
   };
 
-  // 处理允许远程访问切换 / Handle allow remote toggle
-  // 需要重启服务器才能更改绑定地址 / Need to restart server to change binding address
+  // Handle allow remote toggle
+  // Need to restart server to change binding address
   const handleAllowRemoteChange = async (checked: boolean) => {
     const wasRunning = status?.running;
 
-    // 如果服务器正在运行，需要重启以应用新的绑定设置
     // If server is running, need to restart to apply new binding settings
     if (wasRunning) {
       setStartLoading(true);
       try {
-        // 1. 先停止服务器 / First stop the server
+        // 1. First stop the server
         try {
           await Promise.race([webui.stop.invoke(), new Promise((resolve) => setTimeout(resolve, 1500))]);
         } catch (err) {
           console.error('WebUI stop error:', err);
         }
 
-        // 2. 立即重新启动（服务器停止很快）/ Restart immediately (server stops quickly)
+        // 2. Restart immediately (server stops quickly)
         const startResult = await Promise.race([webui.start.invoke({ port, allowRemote: checked }), new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000))]);
 
         if (startResult && startResult.success && startResult.data) {
@@ -321,7 +311,6 @@ const WebuiModalContent: React.FC = () => {
 
           Message.success(t('settings.webui.restartSuccess'));
         } else {
-          // 响应为空或失败，但服务器可能已启动，检查状态
           // Response is null or failed, but server might have started, check status
           let statusResult: { success: boolean; data?: IWebUIStatus } | null = null;
           if (window.electronAPI?.webuiGetStatus) {
@@ -331,7 +320,7 @@ const WebuiModalContent: React.FC = () => {
           }
 
           if (statusResult?.success && statusResult?.data?.running) {
-            // 服务器实际上已启动 / Server actually started
+            // Server actually started
             const responseIP = statusResult.data.lanIP;
             if (responseIP) setCachedIP(responseIP);
 
@@ -339,7 +328,7 @@ const WebuiModalContent: React.FC = () => {
             setStatus(statusResult.data);
             Message.success(t('settings.webui.restartSuccess'));
           } else {
-            // 真的启动失败 / Really failed to start
+            // Really failed to start
             Message.error(t('settings.webui.operationFailed'));
             setStatus((prev) => (prev ? { ...prev, running: false } : null));
           }
@@ -351,10 +340,10 @@ const WebuiModalContent: React.FC = () => {
         setStartLoading(false);
       }
     } else {
-      // 服务器未运行，只更新状态 / Server not running, just update state
+      // Server not running, just update state
       setAllowRemote(checked);
 
-      // 获取 IP 用于显示 / Get IP for display
+      // Get IP for display
       let newIP: string | undefined;
       try {
         if (window.electronAPI?.webuiGetStatus) {
@@ -382,30 +371,30 @@ const WebuiModalContent: React.FC = () => {
     }
   };
 
-  // 复制内容 / Copy content
+  // Copy content
   const handleCopy = (text: string) => {
     void navigator.clipboard.writeText(text);
     Message.success(t('common.copySuccess'));
   };
 
-  // 复制密码（复制后立即变密文）/ Copy password (immediately hide after copying)
+  // Copy password (immediately hide after copying)
   const handleCopyPassword = async () => {
     const password = status?.initialPassword || cachedPassword;
     if (password) {
       void navigator.clipboard.writeText(password);
       Message.success(t('common.copySuccess'));
-      // 复制后立即隐藏明文，图标变成重置 / Hide plaintext immediately after copying, icon changes to reset
+      // Hide plaintext immediately after copying, icon changes to reset
       setCanShowPlainPassword(false);
     }
   };
 
-  // 打开设置新密码弹窗 / Open set new password modal
+  // Open set new password modal
   const handleResetPassword = () => {
     form.resetFields();
     setSetPasswordModalVisible(true);
   };
 
-  // 提交新密码 / Submit new password
+  // Submit new password
   const handleSetNewPassword = async () => {
     try {
       const values = await form.validate();
@@ -413,11 +402,11 @@ const WebuiModalContent: React.FC = () => {
 
       let result: { success: boolean; msg?: string };
 
-      // 优先使用直接 IPC（Electron 环境）/ Prefer direct IPC (Electron environment)
+      // Prefer direct IPC (Electron environment)
       if (window.electronAPI?.webuiChangePassword) {
         result = await window.electronAPI.webuiChangePassword(values.newPassword);
       } else {
-        // 后备方案：使用 bridge / Fallback: use bridge
+        // Fallback: use bridge
         result = await webui.changePassword.invoke({
           newPassword: values.newPassword,
         });
@@ -427,7 +416,7 @@ const WebuiModalContent: React.FC = () => {
         Message.success(t('settings.webui.passwordChanged'));
         setSetPasswordModalVisible(false);
         form.resetFields();
-        // 更新缓存的密码为新密码，不再显示明文 / Update cached password, no longer show plaintext
+        // Update cached password, no longer show plaintext
         setCachedPassword(values.newPassword);
         setCanShowPlainPassword(false);
         setStatus((prev) => (prev ? { ...prev, initialPassword: undefined } : null));
@@ -442,19 +431,19 @@ const WebuiModalContent: React.FC = () => {
     }
   };
 
-  // 生成二维码 / Generate QR code
+  // Generate QR code
   const generateQRCode = useCallback(async () => {
     if (!status?.running) return;
 
     setQrLoading(true);
     try {
-      // 优先使用直接 IPC（Electron 环境）/ Prefer direct IPC (Electron environment)
+      // Prefer direct IPC (Electron environment)
       let result: { success: boolean; data?: { token: string; expiresAt: number; qrUrl: string }; msg?: string } | null = null;
 
       if (window.electronAPI?.webuiGenerateQRToken) {
         result = await window.electronAPI.webuiGenerateQRToken();
       } else {
-        // 后备方案：使用 bridge / Fallback: use bridge
+        // Fallback: use bridge
         result = await webui.generateQRToken.invoke();
       }
 
@@ -462,7 +451,6 @@ const WebuiModalContent: React.FC = () => {
         setQrUrl(result.data.qrUrl);
         setQrExpiresAt(result.data.expiresAt);
 
-        // 设置自动刷新定时器（4分钟后自动刷新，因为 token 5分钟过期）
         // Set auto-refresh timer (refresh after 4 minutes, as token expires in 5 minutes)
         if (qrRefreshTimerRef.current) {
           clearTimeout(qrRefreshTimerRef.current);
@@ -485,12 +473,12 @@ const WebuiModalContent: React.FC = () => {
     }
   }, [status?.running, t]);
 
-  // 当服务器启动且允许远程访问时自动生成二维码 / Auto-generate QR code when server starts and remote access is allowed
+  // Auto-generate QR code when server starts and remote access is allowed
   useEffect(() => {
     if (status?.running && allowRemote && !qrUrl) {
       void generateQRCode();
     }
-    // 清理定时器 / Cleanup timer
+    // Cleanup timer
     return () => {
       if (qrRefreshTimerRef.current) {
         clearTimeout(qrRefreshTimerRef.current);
@@ -498,7 +486,7 @@ const WebuiModalContent: React.FC = () => {
     };
   }, [status?.running, allowRemote, generateQRCode, qrUrl]);
 
-  // 服务器停止或关闭远程访问时清除二维码 / Clear QR code when server stops or remote access is disabled
+  // Clear QR code when server stops or remote access is disabled
   useEffect(() => {
     if (!status?.running || !allowRemote) {
       setQrUrl(null);
@@ -510,27 +498,27 @@ const WebuiModalContent: React.FC = () => {
     }
   }, [status?.running, allowRemote]);
 
-  // 格式化过期时间 / Format expiration time
+  // Format expiration time
   const formatExpiresAt = (timestamp: number) => {
     const date = new Date(timestamp);
     return date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
   };
 
-  // 获取实际密码 / Get actual password
+  // Get actual password
   const actualPassword = status?.initialPassword || cachedPassword;
-  // 获取显示的密码 / Get display password
-  // 密码默认显示 ***，只在首次启动时显示明文 / Password shows *** by default, only show plaintext on first startup
-  // 重置中显示加载状态 / Show loading state when resetting
+  // Get display password
+  // Password shows *** by default, only show plaintext on first startup
+  // Show loading state when resetting
   const getDisplayPassword = () => {
     if (resetLoading) return t('common.loading');
-    // 可以显示明文且有密码时显示明文 / Show plaintext when allowed and has password
+    // Show plaintext when allowed and has password
     if (canShowPlainPassword && actualPassword) return actualPassword;
-    // 否则显示 ****** / Otherwise show ******
+    // Otherwise show ******
     return t('settings.webui.passwordHidden');
   };
   const displayPassword = getDisplayPassword();
 
-  // 浏览器端不显示 WebUI 设置，出于安全考虑 / Don't show WebUI settings in browser for security reasons
+  // Don't show WebUI settings in browser for security reasons
   if (!isDesktop) {
     return (
       <div className='flex flex-col h-full w-full'>
@@ -546,23 +534,23 @@ const WebuiModalContent: React.FC = () => {
     <div className='flex flex-col h-full w-full'>
       <AionScrollArea className='flex-1 min-h-0 pb-16px' disableOverflow={isPageMode}>
         <div className='space-y-16px'>
-          {/* 标题 / Title */}
+          {/* Title */}
           <h2 className='text-20px font-500 text-t-primary m-0'>WebUI</h2>
 
-          {/* 描述说明 / Description */}
+          {/* Description */}
           <div className='p-16px bg-fill-2 rd-12px border border-line text-13px text-t-secondary leading-relaxed'>
             <p className='m-0'>{t('settings.webui.description')}</p>
             <p className='m-0 mt-4px'>{t('settings.webui.steps')}</p>
           </div>
 
-          {/* WebUI 服务卡片 / WebUI Service Card */}
+          {/* WebUI Service Card */}
           <div className='px-[12px] md:px-[32px] py-16px bg-2 rd-16px'>
-            {/* 启用 WebUI / Enable WebUI */}
+            {/* Enable WebUI */}
             <PreferenceRow label={t('settings.webui.enable')} extra={startLoading ? <span className='text-12px text-warning'>{t('settings.webui.starting')}</span> : status?.running ? <span className='text-12px text-green-500'>✓ {t('settings.webui.running')}</span> : null}>
               <Switch checked={status?.running || startLoading} loading={startLoading} onChange={handleToggle} />
             </PreferenceRow>
 
-            {/* 访问地址（仅运行时显示）/ Access URL (only when running) */}
+            {/* Access URL (only when running) */}
             {status?.running && (
               <PreferenceRow label={t('settings.webui.accessUrl')}>
                 <div className='flex items-center gap-8px'>
@@ -578,7 +566,7 @@ const WebuiModalContent: React.FC = () => {
               </PreferenceRow>
             )}
 
-            {/* 允许局域网访问 / Allow LAN Access */}
+            {/* Allow LAN Access */}
             <PreferenceRow
               label={t('settings.webui.allowRemote')}
               description={
@@ -595,27 +583,27 @@ const WebuiModalContent: React.FC = () => {
             </PreferenceRow>
           </div>
 
-          {/* 登录信息卡片 / Login Info Card */}
+          {/* Login Info Card */}
           <div className='px-[12px] md:px-[32px] py-16px bg-2 rd-16px'>
             <div className='text-14px font-500 mb-8px text-t-primary'>{t('settings.webui.loginInfo')}</div>
 
-            {/* 用户名 / Username */}
+            {/* Username */}
             <InfoRow label='Username:' value={status?.adminUsername || 'admin'} onCopy={() => handleCopy(status?.adminUsername || 'admin')} />
 
-            {/* 密码 / Password */}
+            {/* Password */}
             <div className='flex items-center justify-between py-12px'>
               <span className='text-14px text-t-secondary'>Password:</span>
               <div className='flex items-center gap-8px'>
                 <span className='text-14px text-t-primary'>{displayPassword}</span>
                 {canShowPlainPassword && actualPassword ? (
-                  // 可以显示明文时，显示复制图标 / Show copy icon when plaintext is visible
+                  // Show copy icon when plaintext is visible
                   <Tooltip content={t('settings.webui.copyPasswordTooltip')}>
                     <button className='p-4px bg-transparent border-none text-t-tertiary hover:text-t-primary cursor-pointer' onClick={handleCopyPassword}>
                       <Copy size={16} />
                     </button>
                   </Tooltip>
                 ) : (
-                  // 密文状态时，显示重置图标 / Show reset icon when password is hidden
+                  // Show reset icon when password is hidden
                   <Tooltip content={t('settings.webui.resetPasswordTooltip')}>
                     <button className='p-4px bg-transparent border-none text-t-tertiary hover:text-t-primary cursor-pointer' onClick={handleResetPassword} disabled={resetLoading}>
                       <Refresh size={16} className={resetLoading ? 'animate-spin' : ''} />
@@ -625,7 +613,7 @@ const WebuiModalContent: React.FC = () => {
               </div>
             </div>
 
-            {/* 二维码登录（仅服务器运行且允许远程访问时显示）/ QR Code Login (only when server running and remote access allowed) */}
+            {/* QR Code Login (only when server running and remote access allowed) */}
             {status?.running && allowRemote && (
               <>
                 <div className='border-t border-line my-12px' />
@@ -633,7 +621,7 @@ const WebuiModalContent: React.FC = () => {
                 <div className='text-12px text-t-tertiary mb-12px'>{t('settings.webui.qrLoginHint')}</div>
 
                 <div className='flex flex-col items-center gap-12px'>
-                  {/* 二维码显示区域 / QR Code display area */}
+                  {/* QR Code display area */}
                   <div className='p-12px bg-white rd-10px'>
                     {qrLoading ? (
                       <div className='w-140px h-140px flex items-center justify-center'>
@@ -648,7 +636,7 @@ const WebuiModalContent: React.FC = () => {
                     )}
                   </div>
 
-                  {/* 过期时间和刷新按钮 / Expiration time and refresh button */}
+                  {/* Expiration time and refresh button */}
                   <div className='flex items-center gap-8px'>
                     {qrExpiresAt && <span className='text-12px text-t-tertiary'>{t('settings.webui.qrExpires', { time: formatExpiresAt(qrExpiresAt) })}</span>}
                     <Tooltip content={t('settings.webui.refreshQr')}>
@@ -662,7 +650,7 @@ const WebuiModalContent: React.FC = () => {
             )}
           </div>
 
-          {/* Channels 配置 / Channels Configuration */}
+          {/* Channels Configuration */}
           <div className='mt-24px'>
             <h2 className='text-20px font-500 text-t-primary m-0 mb-16px'>{t('settings.channels', 'Channels')}</h2>
             <ChannelModalContent />
@@ -670,7 +658,7 @@ const WebuiModalContent: React.FC = () => {
         </div>
       </AionScrollArea>
 
-      {/* 设置新密码弹窗 / Set New Password Modal */}
+      {/* Set New Password Modal */}
       <AionModal visible={setPasswordModalVisible} onCancel={() => setSetPasswordModalVisible(false)} onOk={handleSetNewPassword} confirmLoading={passwordLoading} title={t('settings.webui.setNewPassword')} size='small'>
         <Form form={form} layout='vertical' className='pt-16px'>
           <Form.Item

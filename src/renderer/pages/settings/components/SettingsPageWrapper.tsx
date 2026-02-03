@@ -1,7 +1,7 @@
+import { SettingsViewModeProvider } from '@/renderer/components/SettingsModal/settingsViewContext';
+import { useLayoutContext } from '@/renderer/context/LayoutContext';
 import classNames from 'classnames';
 import React from 'react';
-import { useLayoutContext } from '@/renderer/context/LayoutContext';
-import { SettingsViewModeProvider } from '@/renderer/components/SettingsModal/settingsViewContext';
 
 interface SettingsPageWrapperProps {
   children: React.ReactNode;

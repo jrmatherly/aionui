@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Message } from '@arco-design/web-react';
 import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Message } from '@arco-design/web-react';
 import type { FileMetadata } from '../services/FileService';
-import { isSupportedFile, FileService } from '../services/FileService';
+import { FileService, isSupportedFile } from '../services/FileService';
 
 export interface UseDragUploadOptions {
   supportedExts?: string[];
@@ -19,7 +19,7 @@ export const useDragUpload = ({ supportedExts = [], onFilesAdded }: UseDragUploa
   const { t } = useTranslation();
   const [isFileDragging, setIsFileDragging] = useState(false);
 
-  // 拖拽计数器，防止状态闪烁
+  // Drag counter to prevent state flickering
   const dragCounter = useRef(0);
 
   const handleDragOver = useCallback(
@@ -60,7 +60,7 @@ export const useDragUpload = ({ supportedExts = [], onFilesAdded }: UseDragUploa
       e.preventDefault();
       e.stopPropagation();
 
-      // 重置状态
+      // Reset state
       dragCounter.current = 0;
       setIsFileDragging(false);
 
@@ -69,7 +69,7 @@ export const useDragUpload = ({ supportedExts = [], onFilesAdded }: UseDragUploa
       try {
         const droppedFiles = e.nativeEvent.dataTransfer!.files;
 
-        // 第一步：先校验文件类型，筛选出支持的文件
+        // Step 1: Validate file types first, filter out supported files
         const validFiles: File[] = [];
 
         for (let i = 0; i < droppedFiles.length; i++) {
@@ -77,12 +77,12 @@ export const useDragUpload = ({ supportedExts = [], onFilesAdded }: UseDragUploa
           if (supportedExts.length === 0 || isSupportedFile(file.name, supportedExts)) {
             validFiles.push(file);
           }
-          // 注意：不支持的文件会被静默过滤，与原逻辑保持一致
+          // Note: Unsupported files are silently filtered, consistent with original logic
         }
 
-        // 第二步：只处理校验通过的文件
+        // Step 2: Only process validated files
         if (validFiles.length > 0) {
-          // 创建 FileList 对象给 processDroppedFiles
+          // Create FileList object for processDroppedFiles
           const validFileList = Object.assign(validFiles, {
             length: validFiles.length,
             item: (index: number) => validFiles[index] || null,

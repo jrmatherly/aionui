@@ -12,8 +12,8 @@ import type { IConfirmation } from '../../common/chatLib';
 type AgentType = 'gemini' | 'acp' | 'codex';
 
 /**
- * @description agent任务基础类
- * */
+ * @description Base class for agent tasks
+ */
 class BaseAgentManager<Data, ConfirmationOption extends any = any> extends ForkTask<{
   type: AgentType;
   data: Data;
@@ -43,15 +43,12 @@ class BaseAgentManager<Data, ConfirmationOption extends any = any> extends ForkT
     ipcBridge.conversation.confirmation.add.emit({ ...data, conversation_id: this.conversation_id });
   }
   confirm(_msg_id: string, callId: string, _data: ConfirmationOption) {
-    // 查找要移除的确认项（根据 callId 匹配）
     // Find the confirmation to remove (match by callId)
     const confirmationToRemove = this.confirmations.find((p) => p.callId === callId);
 
-    // 从缓存中移除
     // Remove from cache
     this.confirmations = this.confirmations.filter((p) => p.callId !== callId);
 
-    // 通知前端移除确认项
     // Notify frontend to remove the confirmation
     if (confirmationToRemove) {
       ipcBridge.conversation.confirmation.remove.emit({

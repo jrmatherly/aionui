@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import type { PreviewHistoryTarget, PreviewSnapshotInfo } from '@/common/types/preview';
 import type React from 'react';
 import { useTranslation } from 'react-i18next';
-import type { PreviewHistoryTarget, PreviewSnapshotInfo } from '@/common/types/preview';
 
 /**
  * PreviewHistoryDropdown component props

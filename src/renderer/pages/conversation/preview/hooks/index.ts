@@ -8,9 +8,9 @@
  * Preview panel custom hooks exports
  */
 
-export * from './useThemeDetection';
+export * from './usePreviewHistory';
 export * from './usePreviewKeyboardShortcuts';
-export * from './useTabOverflow';
 export * from './useScrollSync';
 export * from './useScrollSyncHelpers';
-export * from './usePreviewHistory';
+export * from './useTabOverflow';
+export * from './useThemeDetection';

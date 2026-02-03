@@ -8,12 +8,12 @@
  * Preview panel sub-components exports
  */
 
-export type { CloseTabConfirmState } from './PreviewConfirmModals';
 export { default as PreviewConfirmModals } from './PreviewConfirmModals';
+export type { CloseTabConfirmState } from './PreviewConfirmModals';
 export type { ContextMenuState } from './PreviewContextMenu';
 
 export { default as PreviewContextMenu } from './PreviewContextMenu';
 export { default as PreviewHistoryDropdown } from './PreviewHistoryDropdown';
-export type { PreviewTab } from './PreviewTabs';
 export { default as PreviewTabs } from './PreviewTabs';
+export type { PreviewTab } from './PreviewTabs';
 export { default as PreviewToolbar } from './PreviewToolbar';

@@ -4,20 +4,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { EventEmitter } from 'events';
 import type { IResponseMessage } from '@/common/ipcBridge';
+import { EventEmitter } from 'events';
 
 /**
- * Channel 全局事件类型
  * Channel global event types
  */
 export const ChannelEvents = {
-  /** Agent 消息事件 / Agent message event */
+  /** Agent message event */
   AGENT_MESSAGE: 'channel.agent.message',
 } as const;
 
 /**
- * Agent 消息事件数据
  * Agent message event data
  */
 export interface IAgentMessageEvent extends IResponseMessage {
@@ -25,30 +23,29 @@ export interface IAgentMessageEvent extends IResponseMessage {
 }
 
 /**
- * ChannelEventBus - 全局事件总线
+ * ChannelEventBus - Global event bus
  *
- * 用于 Agent 消息的全局分发，解耦 ChannelMessageService 与 Agent Task
+ * Used for global distribution of Agent messages, decoupling ChannelMessageService from Agent Task
  *
  * Usage:
  * ```typescript
- * // 发送事件（在 GeminiAgentManager 等中）
+ * // Emit event (in GeminiAgentManager, etc.)
  * channelEventBus.emitAgentMessage(conversationId, data);
  *
- * // 监听事件（在 ChannelMessageService 中）
+ * // Listen to event (in ChannelMessageService)
  * channelEventBus.onAgentMessage((event) => {
- *   // 处理消息
+ *   // Handle message
  * });
  * ```
  */
 class ChannelEventBus extends EventEmitter {
   constructor() {
     super();
-    // 增加监听器上限，避免警告
+    // Increase listener limit to avoid warnings
     this.setMaxListeners(100);
   }
 
   /**
-   * 发送 Agent 消息事件
    * Emit agent message event
    */
   emitAgentMessage(conversationId: string, data: IResponseMessage): void {
@@ -60,7 +57,6 @@ class ChannelEventBus extends EventEmitter {
   }
 
   /**
-   * 监听 Agent 消息事件
    * Listen to agent message event
    */
   onAgentMessage(handler: (event: IAgentMessageEvent) => void): () => void {
@@ -71,7 +67,6 @@ class ChannelEventBus extends EventEmitter {
   }
 
   /**
-   * 移除 Agent 消息监听器
    * Remove agent message listener
    */
   offAgentMessage(handler: (event: IAgentMessageEvent) => void): void {
@@ -79,5 +74,5 @@ class ChannelEventBus extends EventEmitter {
   }
 }
 
-// 单例
+// Singleton
 export const channelEventBus = new ChannelEventBus();

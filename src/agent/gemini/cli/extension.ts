@@ -4,16 +4,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import type { MCPServerConfig, GeminiCLIExtension } from '@office-ai/aioncli-core';
+import type { GeminiCLIExtension, MCPServerConfig } from '@office-ai/aioncli-core';
 import * as fs from 'fs';
-import * as path from 'path';
 import * as os from 'os';
+import * as path from 'path';
 
 export const EXTENSIONS_DIRECTORY_NAME = path.join('.gemini', 'extensions');
 export const EXTENSIONS_CONFIG_FILENAME = 'gemini-extension.json';
 
 /**
- * 扩展配置文件结构（gemini-extension.json）
  * Extension config file structure (gemini-extension.json)
  */
 interface ExtensionConfigFile {
@@ -25,7 +24,6 @@ interface ExtensionConfigFile {
 }
 
 /**
- * 加载工作区和用户目录下的所有扩展
  * Load all extensions from workspace and user home directory
  */
 export function loadExtensions(workspaceDir: string): GeminiCLIExtension[] {
@@ -86,7 +84,7 @@ function loadExtension(extensionDir: string): GeminiCLIExtension | null {
     return {
       name: config.name,
       version: config.version,
-      isActive: true, // 默认激活，后续由 annotateActiveExtensions 调整
+      isActive: true, // Default to active; adjusted later by annotateActiveExtensions
       path: extensionDir,
       contextFiles,
       id: `${config.name}-${config.version}`,
@@ -109,18 +107,17 @@ function getContextFileNames(config: ExtensionConfigFile): string[] {
 }
 
 /**
- * 根据启用的扩展名列表标记扩展的激活状态
  * Mark extension activation status based on enabled extension names list
  */
 export function annotateActiveExtensions(extensions: GeminiCLIExtension[], enabledExtensionNames: string[]): GeminiCLIExtension[] {
-  // 如果没有指定启用列表，所有扩展都激活
+  // If no list provided, all extensions are activated
   if (enabledExtensionNames.length === 0) {
     return extensions.map((ext) => ({ ...ext, isActive: true }));
   }
 
   const lowerCaseEnabledExtensions = new Set(enabledExtensionNames.map((e) => e.trim().toLowerCase()));
 
-  // 如果指定 'none'，禁用所有扩展
+  // If 'none' specified, disable all extensions
   if (lowerCaseEnabledExtensions.size === 1 && lowerCaseEnabledExtensions.has('none')) {
     return extensions.map((ext) => ({ ...ext, isActive: false }));
   }

@@ -10,26 +10,22 @@ import { uuid } from '@/common/utils';
 
 /**
  * Navigation tools that should be intercepted for preview
- * 需要拦截到预览面板的导航工具
  */
 export const NAVIGATION_TOOLS = ['navigate_page', 'new_page'] as const;
 export type NavigationToolName = (typeof NAVIGATION_TOOLS)[number];
 
 /**
  * Chrome DevTools MCP server identifiers
- * Chrome DevTools MCP 服务器标识符
  */
 export const CHROME_DEVTOOLS_IDENTIFIERS = ['chrome-devtools', 'chrome_devtools', 'chromedevtools'] as const;
 
 /**
  * Common MCP prefixes to strip when normalizing tool names
- * 需要去除的常见 MCP 前缀
  */
 export const MCP_PREFIXES = ['mcp__chrome-devtools__', 'chrome-devtools__', 'chrome-devtools.'] as const;
 
 /**
  * Preview open event data structure
- * 预览打开事件数据结构
  */
 export interface PreviewOpenData {
   content: string;
@@ -41,7 +37,6 @@ export interface PreviewOpenData {
 
 /**
  * Navigation tool data that can come from different agent formats
- * 来自不同 agent 格式的导航工具数据
  */
 export interface NavigationToolData {
   // Tool identification
@@ -57,7 +52,6 @@ export interface NavigationToolData {
 
 /**
  * Interception result indicating what action was taken
- * 拦截结果，指示采取了什么行动
  */
 export interface InterceptionResult {
   intercepted: boolean;
@@ -67,12 +61,10 @@ export interface InterceptionResult {
 
 /**
  * Unified Navigation Interceptor for all agents
- * 所有 agent 的统一导航拦截器
  */
 export class NavigationInterceptor {
   /**
    * Normalize tool name by stripping MCP prefixes and suffixes
-   * 规范化工具名称，去除 MCP 前缀和后缀
    */
   static normalizeToolName(toolName: string): string {
     if (!toolName) return '';
@@ -100,7 +92,6 @@ export class NavigationInterceptor {
 
   /**
    * Check if a string contains chrome-devtools identifier
-   * 检查字符串是否包含 chrome-devtools 标识符
    */
   static isChromeDevToolsIdentifier(str: string): boolean {
     if (!str) return false;
@@ -110,7 +101,6 @@ export class NavigationInterceptor {
 
   /**
    * Check if a tool is a chrome-devtools navigation tool
-   * 检查工具是否为 chrome-devtools 导航工具
    *
    * Handles various formats:
    * - "navigate_page"
@@ -148,7 +138,6 @@ export class NavigationInterceptor {
 
   /**
    * Extract URL from navigation tool data
-   * 从导航工具数据中提取 URL
    *
    * Tries multiple sources in order:
    * 1. Direct url field
@@ -201,7 +190,6 @@ export class NavigationInterceptor {
 
   /**
    * Extract URL from an object with common URL field names
-   * 从具有常见 URL 字段名的对象中提取 URL
    */
   private static extractUrlFromObject(obj: Record<string, unknown>): string | null {
     const urlFields = ['url', 'URL', 'uri', 'URI', 'href', 'target'];
@@ -221,7 +209,6 @@ export class NavigationInterceptor {
 
   /**
    * Create a preview_open response message
-   * 创建 preview_open 响应消息
    */
   static createPreviewMessage(url: string, conversationId: string, title?: string): IResponseMessage {
     return {
@@ -240,7 +227,6 @@ export class NavigationInterceptor {
 
   /**
    * Attempt to intercept navigation tool and create preview message
-   * 尝试拦截导航工具并创建预览消息
    *
    * @returns InterceptionResult with intercepted status and optional preview message
    */

@@ -1,13 +1,13 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import classNames from 'classnames';
 import { ExpandLeft, ExpandRight, MenuFold, MenuUnfold } from '@icon-park/react';
+import classNames from 'classnames';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import WindowControls from '../WindowControls';
-import { WORKSPACE_STATE_EVENT, dispatchWorkspaceToggleEvent } from '@renderer/utils/workspaceEvents';
-import type { WorkspaceStateDetail } from '@renderer/utils/workspaceEvents';
 import { useLayoutContext } from '@/renderer/context/LayoutContext';
 import { isElectronDesktop, isMacOS } from '@/renderer/utils/platform';
+import type { WorkspaceStateDetail } from '@renderer/utils/workspaceEvents';
+import { WORKSPACE_STATE_EVENT, dispatchWorkspaceToggleEvent } from '@renderer/utils/workspaceEvents';
+import WindowControls from '../WindowControls';
 
 interface TitlebarProps {
   workspaceAvailable: boolean;
@@ -19,7 +19,7 @@ const Titlebar: React.FC<TitlebarProps> = ({ workspaceAvailable }) => {
   const [workspaceCollapsed, setWorkspaceCollapsed] = useState(true);
   const layout = useLayoutContext();
 
-  // 监听工作空间折叠状态，保持按钮图标一致 / Sync workspace collapsed state for toggle button
+  // Sync workspace collapsed state for toggle button
   useEffect(() => {
     if (typeof window === 'undefined') {
       return undefined;
@@ -38,13 +38,13 @@ const Titlebar: React.FC<TitlebarProps> = ({ workspaceAvailable }) => {
 
   const isDesktopRuntime = isElectronDesktop();
   const isMacRuntime = isDesktopRuntime && isMacOS();
-  // Windows/Linux 显示自定义窗口按钮；macOS 在标题栏给工作区一个切换入口
+  // Windows/Linux show custom window buttons; macOS provides workspace toggle entry in titlebar
   const showWindowControls = isDesktopRuntime && !isMacRuntime;
-  // WebUI 和 macOS 桌面都需要在标题栏放工作区开关
+  // WebUI and macOS desktop both need workspace toggle in titlebar
   const showWorkspaceButton = workspaceAvailable && (!isDesktopRuntime || isMacRuntime);
 
   const workspaceTooltip = workspaceCollapsed ? t('conversation.workspace.expand', { defaultValue: 'Expand workspace' }) : t('conversation.workspace.collapse', { defaultValue: 'Collapse workspace' });
-  // 统一在标题栏左侧展示主侧栏开关 / Always expose sidebar toggle on titlebar left side
+  // Always expose sidebar toggle on titlebar left side
   const showSiderToggle = Boolean(layout?.setSiderCollapsed);
   const siderTooltip = layout?.siderCollapsed ? t('sidebar.expand', { defaultValue: '展开侧栏' }) : t('sidebar.collapse', { defaultValue: '收起侧栏' });
 

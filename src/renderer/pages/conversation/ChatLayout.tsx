@@ -22,7 +22,7 @@ import OpenCodeLogo from '@/renderer/assets/logos/opencode.svg';
 import QwenLogo from '@/renderer/assets/logos/qwen.svg';
 import type { AcpBackend } from '@/types/acpTypes';
 
-// Agent Logo 映射
+// Agent Logo mapping
 const AGENT_LOGO_MAP: Partial<Record<AcpBackend, string>> = {
   claude: ClaudeLogo,
   gemini: GeminiLogo,
@@ -79,7 +79,6 @@ const WorkspacePanelHeader: React.FC<WorkspaceHeaderProps> = ({ children, showTo
   </div>
 );
 
-// headerExtra 用于在会话头部右侧插入自定义操作（如模型选择）
 // headerExtra allows injecting custom actions (e.g., model picker) into the header's right area
 const ChatLayout: React.FC<{
   children: React.ReactNode;
@@ -88,15 +87,14 @@ const ChatLayout: React.FC<{
   siderTitle?: React.ReactNode;
   backend?: string;
   agentName?: string;
-  /** 自定义 agent logo（可以是 SVG 路径或 emoji 字符串）/ Custom agent logo (can be SVG path or emoji string) */
+  /** Custom agent logo (can be SVG path or emoji string) */
   agentLogo?: string;
-  /** 是否为 emoji 类型的 logo / Whether the logo is an emoji */
+  /** Whether the logo is an emoji */
   agentLogoIsEmoji?: boolean;
   headerExtra?: React.ReactNode;
   headerLeft?: React.ReactNode;
   workspaceEnabled?: boolean;
 }> = (props) => {
-  // 工作空间面板折叠状态 - 全局持久化
   // Workspace panel collapse state - globally persisted
   const [rightSiderCollapsed, setRightSiderCollapsed] = useState(() => {
     try {
@@ -105,11 +103,10 @@ const ChatLayout: React.FC<{
         return stored === 'true';
       }
     } catch {
-      // 忽略错误
+      // Ignore error
     }
-    return true; // 默认折叠
+    return true; // Default to collapsed
   });
-  // 当前活跃的会话 ID（用于记录用户手动操作偏好）
   // Current active conversation ID (for recording user manual operation preference)
   const currentConversationIdRef = useRef<string | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -118,13 +115,13 @@ const ChatLayout: React.FC<{
   const layout = useLayoutContext();
   const isMacRuntime = isMacEnvironment();
   const isWindowsRuntime = isWindowsEnvironment();
-  // 右侧栏折叠状态引用 / Mirror ref for collapse state
+  // Mirror ref for collapse state
   const rightCollapsedRef = useRef(rightSiderCollapsed);
   const previousWorkspaceCollapsedRef = useRef<boolean | null>(null);
   const previousSiderCollapsedRef = useRef<boolean | null>(null);
   const previousPreviewOpenRef = useRef(false);
 
-  // 预览面板状态 / Preview panel state
+  // Preview panel state
   const { isOpen: isPreviewOpen } = usePreviewContext();
 
   // Fetch custom agents config as fallback when agentName is not provided
@@ -133,7 +130,7 @@ const ChatLayout: React.FC<{
   // Compute display name with fallback chain (use first custom agent as fallback for backward compatibility)
   const displayName = agentName || (backend === 'custom' && customAgents?.[0]?.name) || ACP_BACKENDS_ALL[backend as keyof typeof ACP_BACKENDS_ALL]?.name || backend;
 
-  // 获取 tabs 状态，有 tabs 时隐藏会话标题
+  // Get tabs state, hide conversation title when tabs exist
   const { openTabs } = useConversationTabs();
   const hasTabs = openTabs.length > 0;
 
@@ -147,13 +144,13 @@ const ChatLayout: React.FC<{
       }
       setRightSiderCollapsed((prev) => {
         const newState = !prev;
-        // 记录用户手动操作偏好 / Record user manual operation preference
+        // Record user manual operation preference
         const conversationId = currentConversationIdRef.current;
         if (conversationId) {
           try {
             localStorage.setItem(`workspace-preference-${conversationId}`, newState ? 'collapsed' : 'expanded');
           } catch {
-            // 忽略错误
+            // Ignore error
           }
         }
         return newState;
@@ -165,7 +162,6 @@ const ChatLayout: React.FC<{
     };
   }, [workspaceEnabled]);
 
-  // 根据文件状态自动展开/折叠工作空间面板（优先使用用户手动偏好）
   // Auto expand/collapse workspace panel based on files state (user preference takes priority)
   useEffect(() => {
     if (typeof window === 'undefined' || !workspaceEnabled) {
@@ -175,10 +171,10 @@ const ChatLayout: React.FC<{
       const detail = (event as CustomEvent<WorkspaceHasFilesDetail>).detail;
       const conversationId = detail.conversationId;
 
-      // 更新当前会话 ID / Update current conversation ID
+      // Update current conversation ID
       currentConversationIdRef.current = conversationId;
 
-      // 检查用户是否有手动设置的偏好 / Check if user has manual preference
+      // Check if user has manual preference
       let userPreference: 'expanded' | 'collapsed' | null = null;
       if (conversationId) {
         try {
@@ -187,11 +183,10 @@ const ChatLayout: React.FC<{
             userPreference = stored;
           }
         } catch {
-          // 忽略错误
+          // Ignore error
         }
       }
 
-      // 如果有用户偏好，按偏好设置；否则按文件状态决定
       // If user has preference, use it; otherwise decide by file state
       if (userPreference) {
         const shouldCollapse = userPreference === 'collapsed';
@@ -199,7 +194,6 @@ const ChatLayout: React.FC<{
           setRightSiderCollapsed(shouldCollapse);
         }
       } else {
-        // 无用户偏好：有文件展开，没文件折叠
         // No user preference: expand if has files, collapse if not
         if (detail.hasFiles && rightSiderCollapsed) {
           setRightSiderCollapsed(false);
@@ -245,13 +239,12 @@ const ChatLayout: React.FC<{
     rightCollapsedRef.current = rightSiderCollapsed;
   }, [rightSiderCollapsed]);
 
-  // 持久化工作空间面板折叠状态
   // Persist workspace panel collapse state
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEYS.WORKSPACE_PANEL_COLLAPSE, String(rightSiderCollapsed));
     } catch {
-      // 忽略错误
+      // Ignore error
     }
   }, [rightSiderCollapsed]);
 
@@ -304,7 +297,7 @@ const ChatLayout: React.FC<{
     if (workspaceSplitRatio > maxWorkspace) {
       setWorkspaceSplitRatio(maxWorkspace);
     }
-    // 故意不将 workspaceSplitRatio 加入依赖，避免拖动工作空间时触发额外的 effect
+    // Intentionally not including workspaceSplitRatio in dependencies to avoid extra effect triggers when dragging workspace
   }, [chatSplitRatio, isDesktop, isPreviewOpen, rightSiderCollapsed, setWorkspaceSplitRatio, workspaceEnabled]);
 
   useEffect(() => {
@@ -316,10 +309,10 @@ const ChatLayout: React.FC<{
     if (chatSplitRatio > maxChat) {
       setChatSplitRatio(maxChat);
     }
-    // 故意不将 workspaceSplitRatio 加入依赖，避免拖动工作空间时影响会话面板
+    // Intentionally not including workspaceSplitRatio in dependencies to avoid affecting chat panel when dragging workspace
   }, [chatSplitRatio, isDesktop, isPreviewOpen, rightSiderCollapsed, setChatSplitRatio, workspaceEnabled]);
 
-  // 预览打开时自动收起侧边栏和工作空间 / Auto-collapse sidebar and workspace when preview opens
+  // Auto-collapse sidebar and workspace when preview opens
   useEffect(() => {
     if (!workspaceEnabled || !isDesktop) {
       previousPreviewOpenRef.current = false;
@@ -367,13 +360,13 @@ const ChatLayout: React.FC<{
         }
       }
     >
-      {/* 主内容区域：会话面板 + 工作空间面板 + 预览面板 / Main content area: chat + workspace + preview */}
+      {/* Main content area: chat + workspace + preview */}
       <div ref={containerRef} className='flex flex-1 relative w-full overflow-hidden'>
-        {/* 会话面板（带拖动句柄）/ Chat panel (with drag handle) */}
+        {/* Chat panel (with drag handle) */}
         <div
           className='flex flex-col relative'
           style={{
-            // 使用 flexBasis 设置宽度，避免 width 和 flexBasis 冲突
+            // Use flexBasis to set width, avoiding conflict between width and flexBasis
             flexGrow: isPreviewOpen && isDesktop ? 0 : chatFlex,
             flexShrink: 0,
             flexBasis: isPreviewOpen && isDesktop ? `${chatFlex}%` : 0,
@@ -390,7 +383,7 @@ const ChatLayout: React.FC<{
               }
             }}
           >
-            {/* 会话 Tabs 栏 / Conversation tabs bar */}
+            {/* Conversation tabs bar */}
             <ConversationTabs />
             <ArcoLayout.Header className={classNames('h-36px flex items-center justify-between p-16px gap-16px !bg-1 chat-layout-header')}>
               <div>{props.headerLeft}</div>
@@ -398,7 +391,7 @@ const ChatLayout: React.FC<{
                 {!hasTabs && <span className='font-bold text-16px text-t-primary inline-block overflow-hidden text-ellipsis whitespace-nowrap shrink-0 max-w-[50%]'>{props.title}</span>}
               </FlexFullContainer>
               <div className='flex items-center gap-12px'>
-                {/* headerExtra 会在右上角优先渲染，例如模型切换按钮 / headerExtra renders at top-right for items like model switchers */}
+                {/* headerExtra renders at top-right for items like model switchers */}
                 {props.headerExtra}
                 {(backend || agentLogo) && (
                   <div className='ml-16px flex items-center gap-2 bg-2 w-fit rounded-full px-[8px] py-[2px]'>
@@ -416,7 +409,7 @@ const ChatLayout: React.FC<{
             <ArcoLayout.Content className='flex flex-col flex-1 bg-1 overflow-hidden'>{props.children}</ArcoLayout.Content>
           </ArcoLayout.Content>
 
-          {/* 会话右侧拖动手柄：在桌面模式下调节会话和预览的宽度比例 */}
+          {/* Chat right drag handle: adjust width ratio between chat and preview in desktop mode */}
           {isPreviewOpen &&
             !layout?.isMobile &&
             createPreviewDragHandle({
@@ -425,12 +418,12 @@ const ChatLayout: React.FC<{
             })}
         </div>
 
-        {/* 预览面板（移到中间位置）/ Preview panel (moved to middle position) */}
+        {/* Preview panel (moved to middle position) */}
         {isPreviewOpen && (
           <div
             className='preview-panel flex flex-col relative my-[12px] mr-[12px] ml-[8px] rounded-[15px]'
             style={{
-              // 使用 flexGrow: 1 填充剩余空间（会话和工作空间使用固定 flexBasis）
+              // Use flexGrow: 1 to fill remaining space (chat and workspace use fixed flexBasis)
               flexGrow: layout?.isMobile ? 0 : 1,
               flexShrink: layout?.isMobile ? 0 : 1,
               flexBasis: layout?.isMobile ? '100%' : 0,
@@ -442,12 +435,12 @@ const ChatLayout: React.FC<{
           </div>
         )}
 
-        {/* 工作空间面板（移到最右边）/ Workspace panel (moved to rightmost position) */}
+        {/* Workspace panel (moved to rightmost position) */}
         {workspaceEnabled && !layout?.isMobile && (
           <div
             className={classNames('!bg-1 relative chat-layout-right-sider layout-sider')}
             style={{
-              // 使用 flexBasis 设置宽度，避免 width 和 flexBasis 冲突
+              // Use flexBasis to set width, avoiding conflict between width and flexBasis
               flexGrow: isPreviewOpen ? 0 : workspaceFlex,
               flexShrink: 0,
               flexBasis: rightSiderCollapsed ? '0px' : isPreviewOpen ? `${workspaceFlex}%` : 0,
@@ -470,10 +463,10 @@ const ChatLayout: React.FC<{
           </div>
         )}
 
-        {/* 移动端工作空间遮罩层 / Mobile workspace backdrop */}
+        {/* Mobile workspace backdrop */}
         {workspaceEnabled && layout?.isMobile && !rightSiderCollapsed && <div className='fixed inset-0 bg-black/30 z-90' onClick={() => setRightSiderCollapsed(true)} aria-hidden='true' />}
 
-        {/* 移动端工作空间（保持原有的固定定位）/ Mobile workspace (keep original fixed positioning) */}
+        {/* Mobile workspace (keep original fixed positioning) */}
         {workspaceEnabled && layout?.isMobile && (
           <div
             className='!bg-1 relative chat-layout-right-sider'

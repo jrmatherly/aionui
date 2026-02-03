@@ -6,15 +6,15 @@
 
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import type { IMcpServer } from '../../../../common/storage';
 import type { McpOperationResult } from '../McpProtocol';
 import { AbstractMcpAgent } from '../McpProtocol';
-import type { IMcpServer } from '../../../../common/storage';
 
 const execAsync = promisify(exec);
 
 /**
- * iFlow CLI MCP代理实现
- * 注意：iFlow CLI 支持 stdio、SSE、HTTP 传输类型，支持 headers，不支持 streamable_http
+ * iFlow CLI MCP agent implementation
+ * Note: iFlow CLI supports stdio, SSE, HTTP transport types and headers, but does not support streamable_http
  */
 export class IflowMcpAgent extends AbstractMcpAgent {
   constructor() {
@@ -26,31 +26,31 @@ export class IflowMcpAgent extends AbstractMcpAgent {
   }
 
   /**
-   * 检测iFlow CLI的MCP配置（内部实现，不使用锁）
+   * Detect iFlow CLI MCP configuration (internal implementation, without lock)
    */
   private async detectMcpServersInternal(_cliPath?: string): Promise<IMcpServer[]> {
     try {
-      // 使用iFlow CLI list命令获取MCP配置
+      // Use iFlow CLI list command to get MCP configuration
       const { stdout: result } = await execAsync('iflow mcp list', { timeout: this.timeout });
 
-      // 如果没有配置任何MCP服务器，返回空数组
+      // If no MCP servers are configured, return empty array
       if (result.trim() === 'No MCP servers configured.' || !result.trim()) {
         return [];
       }
 
-      // 解析文本输出
+      // Parse text output
       const mcpServers: IMcpServer[] = [];
       const lines = result.split('\n');
 
       for (const line of lines) {
-        // 清除 ANSI 颜色代码 (支持多种格式)
+        // Remove ANSI color codes (supports multiple formats)
         /* eslint-disable no-control-regex */
         const cleanLine = line
           .replace(/\u001b\[[0-9;]*m/g, '')
           .replace(/\[[0-9;]*m/g, '')
           .trim();
         /* eslint-enable no-control-regex */
-        // 查找格式如: "✓ Bazi: npx bazi-mcp (stdio) - Connected" 或 "✓ Bazi: npx bazi-mcp (stdio) - 已连接"
+        // Find format like: "✓ Bazi: npx bazi-mcp (stdio) - Connected" or Chinese locale output with status text
         const match = cleanLine.match(/[✓✗]\s+([^:]+):\s+(.+?)\s+\(([^)]+)\)\s*-\s*(Connected|Disconnected|已连接|已断开)/);
         if (match) {
           const [, name, commandStr, transport, statusRaw] = match;
@@ -58,12 +58,12 @@ export class IflowMcpAgent extends AbstractMcpAgent {
           const command = commandParts[0];
           const args = commandParts.slice(1);
 
-          // 将中文状态映射为英文
+          // Map Chinese status to English
           const status = statusRaw === '已连接' ? 'Connected' : statusRaw === '已断开' ? 'Disconnected' : statusRaw;
 
           const transportType = transport as 'stdio' | 'sse' | 'http';
 
-          // 构建transport对象
+          // Build transport object
           const transportObj: any =
             transportType === 'stdio'
               ? {
@@ -82,7 +82,7 @@ export class IflowMcpAgent extends AbstractMcpAgent {
                     url: commandStr.trim(),
                   };
 
-          // 尝试获取tools信息（对所有已连接的服务器）
+          // Try to get tools information (for all connected servers)
           let tools: Array<{ name: string; description?: string }> = [];
           if (status === 'Connected') {
             try {
@@ -90,7 +90,7 @@ export class IflowMcpAgent extends AbstractMcpAgent {
               tools = testResult.tools || [];
             } catch (error) {
               console.warn(`[IflowMcpAgent] Failed to get tools for ${name.trim()}:`, error);
-              // 如果获取tools失败，继续使用空数组
+              // If getting tools fails, continue with empty array
             }
           }
 
@@ -137,25 +137,25 @@ export class IflowMcpAgent extends AbstractMcpAgent {
   }
 
   /**
-   * 检测iFlow CLI的MCP配置（公共接口，使用锁）
+   * Detect iFlow CLI MCP configuration (public interface, with lock)
    */
   detectMcpServers(cliPath?: string): Promise<IMcpServer[]> {
     return this.withLock(() => this.detectMcpServersInternal(cliPath));
   }
 
   /**
-   * 安装MCP服务器到iFlow agent
+   * Install MCP servers to iFlow agent
    */
   installMcpServers(mcpServers: IMcpServer[]): Promise<McpOperationResult> {
     const installOperation = async () => {
       try {
-        // 获取当前已配置的iFlow MCP服务器列表（使用内部方法避免死锁）
+        // Get current configured iFlow MCP server list (using internal method to avoid deadlock)
         const existingServers = await this.detectMcpServersInternal();
         const existingServerNames = new Set(existingServers.map((s) => s.name));
 
-        // 为每个启用的MCP服务器添加到iFlow配置中
+        // Add each enabled MCP server to iFlow configuration
         for (const server of mcpServers.filter((s) => s.enabled)) {
-          // 跳过已经存在的服务器
+          // Skip servers that already exist
           if (existingServerNames.has(server.name)) {
             continue;
           }
@@ -168,7 +168,7 @@ export class IflowMcpAgent extends AbstractMcpAgent {
           try {
             let addCommand = `iflow mcp add "${server.name}"`;
 
-            // 根据传输类型构建命令
+            // Build command based on transport type
             if (server.transport.type === 'stdio' && 'command' in server.transport) {
               addCommand += ` "${server.transport.command}"`;
               if (server.transport.args && server.transport.args.length > 0) {
@@ -176,7 +176,7 @@ export class IflowMcpAgent extends AbstractMcpAgent {
               }
               addCommand += ' --transport stdio';
 
-              // 添加环境变量 (仅stdio支持)
+              // Add environment variables (stdio only)
               if (server.transport.env) {
                 for (const [key, value] of Object.entries(server.transport.env)) {
                   addCommand += ` --env ${key}="${value}"`;
@@ -186,7 +186,7 @@ export class IflowMcpAgent extends AbstractMcpAgent {
               addCommand += ` "${server.transport.url}"`;
               addCommand += ` --transport ${server.transport.type}`;
 
-              // 添加headers支持
+              // Add headers support
               if (server.transport.headers) {
                 for (const [key, value] of Object.entries(server.transport.headers)) {
                   addCommand += ` -H "${key}: ${value}"`;
@@ -194,19 +194,19 @@ export class IflowMcpAgent extends AbstractMcpAgent {
               }
             }
 
-            // 添加描述
+            // Add description
             if (server.description) {
               addCommand += ` --description "${server.description}"`;
             }
 
-            // 添加作用域参数，使用user作用域
+            // Add scope parameter, use user scope
             addCommand += ' -s user';
 
-            // 执行添加命令
+            // Execute add command
             await execAsync(addCommand, { timeout: 10000 });
           } catch (error) {
             console.warn(`Failed to add MCP server ${server.name} to iFlow:`, error);
-            // 继续处理其他服务器，不要因为一个失败就停止整个过程
+            // Continue processing other servers, don't stop the entire process due to one failure
           }
         }
 
@@ -221,31 +221,31 @@ export class IflowMcpAgent extends AbstractMcpAgent {
   }
 
   /**
-   * 从iFlow agent删除MCP服务器
+   * Remove MCP server from iFlow agent
    */
   removeMcpServer(mcpServerName: string): Promise<McpOperationResult> {
     const removeOperation = async () => {
       try {
-        // 使用iFlow CLI remove命令删除MCP服务器（尝试不同作用域）
-        // 首先尝试user作用域（与安装时保持一致），然后尝试project作用域
+        // Use iFlow CLI remove command to delete MCP server (try different scopes)
+        // First try user scope (consistent with installation), then try project scope
         try {
           const removeCommand = `iflow mcp remove "${mcpServerName}" -s user`;
           await execAsync(removeCommand, { timeout: 5000 });
           return { success: true };
         } catch (userError) {
-          // user作用域失败，尝试project作用域
+          // User scope failed, try project scope
           try {
             const removeCommand = `iflow mcp remove "${mcpServerName}" -s project`;
             const { stdout } = await execAsync(removeCommand, { timeout: 5000 });
 
-            // 检查输出是否包含"not found"，如果是则继续尝试user作用域
+            // Check if output contains "not found", if so continue trying user scope
             if (stdout && stdout.includes('not found')) {
               throw new Error('Server not found in project settings');
             }
 
             return { success: true };
           } catch (projectError) {
-            // 如果服务器不存在，也认为是成功的
+            // If server doesn't exist, also consider it successful
             if (userError instanceof Error && (userError.message.includes('not found') || userError.message.includes('does not exist'))) {
               return { success: true };
             }

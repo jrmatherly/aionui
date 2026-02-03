@@ -176,10 +176,10 @@ export class AcpAdapter {
   private createOrUpdateAcpToolCall(update: ToolCallUpdate): IMessageAcpToolCall | null {
     const toolCallId = update.update.toolCallId;
 
-    // 使用 toolCallId 作为 msg_id，确保同一个工具调用的消息可以被合并
+    // Use toolCallId as msg_id to ensure messages from the same tool call can be merged
     const baseMessage = {
       id: uuid(),
-      msg_id: toolCallId, // 关键：使用 toolCallId 作为 msg_id
+      msg_id: toolCallId, // Key: use toolCallId as msg_id
       conversation_id: this.conversationId,
       createdAt: Date.now(),
       position: 'left' as const,
@@ -188,7 +188,7 @@ export class AcpAdapter {
     const acpToolCallMessage: IMessageAcpToolCall = {
       ...baseMessage,
       type: 'acp_tool_call',
-      content: update, // 直接使用 ToolCallUpdate 作为 content
+      content: update, // Use ToolCallUpdate directly as content
     };
 
     this.activeToolCalls.set(toolCallId, acpToolCallMessage);
@@ -223,9 +223,9 @@ export class AcpAdapter {
     // Create updated message with the SAME msg_id so composeMessage will merge it
     const updatedMessage: IMessageAcpToolCall = {
       ...existingMessage,
-      msg_id: toolCallId, // 确保 msg_id 一致，这样 composeMessage 会合并消息
+      msg_id: toolCallId, // Ensure msg_id is consistent so composeMessage will merge messages
       content: updatedContent,
-      createdAt: Date.now(), // 更新时间戳
+      createdAt: Date.now(), // Update timestamp
     };
 
     // Update stored message
@@ -248,7 +248,7 @@ export class AcpAdapter {
   private convertPlanUpdate(update: PlanUpdate): IMessagePlan | null {
     const baseMessage = {
       id: uuid(),
-      msg_id: uuid(), // 生成独立的 msg_id，避免与其他消息合并
+      msg_id: uuid(), // Generate independent msg_id to avoid merging with other messages
       conversation_id: this.conversationId,
       createdAt: Date.now(),
       position: 'left' as const,
@@ -275,7 +275,7 @@ export class AcpAdapter {
   private convertAvailableCommandsUpdate(update: AvailableCommandsUpdate): TMessage | null {
     const baseMessage = {
       id: uuid(),
-      msg_id: uuid(), // 生成独立的 msg_id，避免与其他消息合并
+      msg_id: uuid(), // Generate independent msg_id to avoid merging with other messages
       conversation_id: this.conversationId,
       createdAt: Date.now(),
       position: 'left' as const,

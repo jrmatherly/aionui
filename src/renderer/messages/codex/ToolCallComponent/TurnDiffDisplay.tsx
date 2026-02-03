@@ -18,7 +18,7 @@ const TurnDiffDisplay: React.FC<{ content: TurnDiffContent }> = ({ content }) =>
   const { toolCallId, data } = content;
   const { unified_diff } = data;
 
-  // 解析统一diff格式，提取文件信息
+  // Parse unified diff format and extract file info
   const extractFileInfo = (diff: string) => {
     const lines = diff.split('\n');
     const gitLine = lines.find((line) => line.startsWith('diff --git'));
@@ -26,7 +26,7 @@ const TurnDiffDisplay: React.FC<{ content: TurnDiffContent }> = ({ content }) =>
       const match = gitLine.match(/diff --git a\/(.+) b\/(.+)/);
       if (match) {
         const fullPath = match[1];
-        const fileName = fullPath.split('/').pop() || fullPath; // 只取文件名
+        const fileName = fullPath.split('/').pop() || fullPath; // Extract only filename
         return {
           fileName,
           fullPath,
@@ -46,19 +46,19 @@ const TurnDiffDisplay: React.FC<{ content: TurnDiffContent }> = ({ content }) =>
   const fileInfo = extractFileInfo(unified_diff);
   const { fileName, fullPath, isNewFile, isDeletedFile } = fileInfo;
 
-  // 截断长路径的函数
+  // Function to truncate long paths
   const truncatePath = (path: string, maxLength: number = 60) => {
     if (path.length <= maxLength) return path;
     const parts = path.split('/');
     if (parts.length <= 2) return path;
 
-    // 保留开头和结尾，中间用 ... 代替
+    // Keep start and end, replace middle with ...
     const start = parts.slice(0, 2).join('/');
     const end = parts.slice(-2).join('/');
     return `${start}/.../${end}`;
   };
 
-  // 生成额外的标签来显示文件状态
+  // Generate additional tags to show file status
   const additionalTags = (
     <>
       {isNewFile && <Tag color='green'>{t('tools.newFile', { defaultValue: 'New File' })}</Tag>}

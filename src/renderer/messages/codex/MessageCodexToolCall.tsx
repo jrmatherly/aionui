@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import type { IMessageCodexToolCall, CodexToolCallUpdate } from '@/common/chatLib';
+import type { CodexToolCallUpdate, IMessageCodexToolCall } from '@/common/chatLib';
 import React from 'react';
 import ExecCommandDisplay from './ToolCallComponent/ExecCommandDisplay';
-import WebSearchDisplay from './ToolCallComponent/WebSearchDisplay';
-import PatchDisplay from './ToolCallComponent/PatchDisplay';
-import McpToolDisplay from './ToolCallComponent/McpToolDisplay';
-import TurnDiffDisplay from './ToolCallComponent/TurnDiffDisplay';
 import GenericDisplay from './ToolCallComponent/GenericDisplay';
+import McpToolDisplay from './ToolCallComponent/McpToolDisplay';
+import PatchDisplay from './ToolCallComponent/PatchDisplay';
+import TurnDiffDisplay from './ToolCallComponent/TurnDiffDisplay';
+import WebSearchDisplay from './ToolCallComponent/WebSearchDisplay';
 
 type ExecCommandContent = Extract<CodexToolCallUpdate, { subtype: 'exec_command_begin' | 'exec_command_output_delta' | 'exec_command_end' }>;
 type WebSearchContent = Extract<CodexToolCallUpdate, { subtype: 'web_search_begin' | 'web_search_end' }>;

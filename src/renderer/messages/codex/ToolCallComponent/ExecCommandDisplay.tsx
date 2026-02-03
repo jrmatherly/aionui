@@ -59,7 +59,7 @@ const ExecCommandDisplay: React.FC<{ content: ExecCommandUpdate }> = ({ content 
 
   return (
     <BaseToolCallDisplay toolCallId={toolCallId} title={getDisplayTitle()} status={status} description={description} icon='🔧' additionalTags={getAdditionalTags()}>
-      {/* Display command if available 显示命令 */}
+      {/* Display command if available */}
       {subtype === 'exec_command_begin' && 'command' in data && data.command && Array.isArray(data.command) && data.command.length > 0 && (
         <div className='text-sm mb-2'>
           <div className='text-xs text-t-secondary mb-1'>{t('tools.labels.command')}</div>
@@ -75,7 +75,7 @@ const ExecCommandDisplay: React.FC<{ content: ExecCommandUpdate }> = ({ content 
         </div>
       )}
 
-      {/* Display output content 显示输出内容 */}
+      {/* Display output content */}
       {contentArray && contentArray.length > 0 && (
         <div>
           {contentArray.map((content, index) => (

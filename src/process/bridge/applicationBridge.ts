@@ -13,9 +13,9 @@ import { getZoomFactor, setZoomFactor } from '../utils/zoom';
 
 export function initApplicationBridge(): void {
   ipcBridge.application.restart.provider(() => {
-    // 清理所有工作进程
+    // Clear all worker processes
     WorkerManage.clear();
-    // 重启应用 - 使用标准的 Electron 重启方式
+    // Restart the application using standard Electron relaunch method
     app.relaunch();
     app.exit(0);
     return Promise.resolve();

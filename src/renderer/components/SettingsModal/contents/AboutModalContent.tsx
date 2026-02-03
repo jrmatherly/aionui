@@ -5,13 +5,13 @@
  */
 
 import { ipcBridge } from '@/common';
-import { Divider, Typography, Button, Switch } from '@arco-design/web-react';
+import { Button, Divider, Switch, Typography } from '@arco-design/web-react';
 import { Github, Right } from '@icon-park/react';
+import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import classNames from 'classnames';
-import { useSettingsViewMode } from '../settingsViewContext';
 import packageJson from '../../../../../package.json';
+import { useSettingsViewMode } from '../settingsViewContext';
 
 const AboutModalContent: React.FC = () => {
   const { t } = useTranslation();
@@ -39,7 +39,6 @@ const AboutModalContent: React.FC = () => {
   };
 
   const checkUpdate = () => {
-    // 使用 window 自定义事件在渲染进程内部通信（buildEmitter 只支持主进程->渲染进程）
     // Use window custom event for renderer-side communication (buildEmitter only works main->renderer)
     window.dispatchEvent(new CustomEvent('aionui-open-update-modal', { detail: { source: 'about' } }));
   };

@@ -103,6 +103,7 @@ python3 assistant/ui-ux-pro-max/scripts/search.py "<keyword>" --domain <domain> 
    ```
 
 8. **Stack** - Get stack-specific guidelines (default: html-tailwind)
+
    ```bash
    python3 assistant/ui-ux-pro-max/scripts/search.py "layout responsive" --stack html-tailwind
    ```

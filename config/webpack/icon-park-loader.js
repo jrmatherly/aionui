@@ -1,5 +1,5 @@
 module.exports = function (source) {
-  // 将import语句转换为HOC组件导入语句
+  // Transform import statements to HOC component import statements
   const transformedSource = source.replace(
     /import\s+\{\s+([a-zA-Z, ]*)\s+\}\s+from\s+['"]@icon-park\/react['"](;?)/g,
     function (str, match) {

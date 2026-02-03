@@ -6,32 +6,31 @@
 
 import type { ICssTheme } from '@/common/storage';
 
-// 导入预设主题封面图片 base64 数据 / Import preset theme cover images as base64 data
-// 注意: webpack 存在 UTF-8 编码问题会损坏二进制文件，因此使用预生成的 base64 数据
-import { defaultThemeCover, misakaMikotoCover, helloKittyCover, retroWindowsCover } from './themeCovers';
+// Import preset theme cover images as base64 data
+// Note: webpack has UTF-8 encoding issues that corrupt binary files, so we use pre-generated base64 data
+import { defaultThemeCover, helloKittyCover, misakaMikotoCover, retroWindowsCover } from './themeCovers';
 
 /**
- * 默认主题 ID / Default theme ID
- * 用于标识默认主题（无自定义 CSS）/ Used to identify the default theme (no custom CSS)
+ * Default theme ID
+ * Used to identify the default theme (no custom CSS)
  */
 export const DEFAULT_THEME_ID = 'default-theme';
 
 /**
- * 预设 CSS 主题列表 / Preset CSS themes list
- * 这些主题是内置的，用户可以直接选择使用 / These themes are built-in and can be directly used by users
+ * Preset CSS themes list
+ * These themes are built-in and can be directly used by users
  */
 export const PRESET_THEMES: ICssTheme[] = [
   {
     id: DEFAULT_THEME_ID,
     name: 'Default',
     isPreset: true,
-    cover: defaultThemeCover, // 仅用于预览展示 / Only for preview display
-    css: `/* Default Theme - AOU Purple Theme / 默认主题 */
-/* 此主题展示了系统默认的颜色变量，您可以基于此进行自定义 */
+    cover: defaultThemeCover, // Only for preview display
+    css: `/* Default Theme - AOU Purple Theme */
 /* This theme shows the system default color variables, you can customize based on this */
 
 :root {
-  /* Primary Colors - 主色调 */
+  /* Primary Colors */
   --color-primary: #165dff;
   --primary: #165dff;
   --color-primary-light-1: #4080ff;
@@ -40,14 +39,14 @@ export const PRESET_THEMES: ICssTheme[] = [
   --color-primary-dark-1: #0e42d2;
   --primary-rgb: 22, 93, 255;
 
-  /* Brand Colors - 品牌色 */
+  /* Brand Colors */
   --brand: #7583b2;
   --brand-light: #eff0f6;
   --brand-hover: #b5bcd6;
   --color-brand-fill: #7583b2;
   --color-brand-bg: #eff0f6;
 
-  /* AOU Brand Colors - AOU 品牌色板 */
+  /* AOU Brand Colors - Color Palette */
   --aou-1: #eff0f6;
   --aou-2: #e5e7f0;
   --aou-3: #d1d5e5;
@@ -59,7 +58,7 @@ export const PRESET_THEMES: ICssTheme[] = [
   --aou-9: #262c41;
   --aou-10: #0d101c;
 
-  /* Background Colors - 背景色 */
+  /* Background Colors */
   --color-bg-1: #f7f8fa;
   --bg-1: #f7f8fa;
   --color-bg-2: #f2f3f5;
@@ -75,11 +74,11 @@ export const PRESET_THEMES: ICssTheme[] = [
   --bg-9: #1d2129;
   --bg-10: #0c0e12;
 
-  /* Interactive State Colors - 交互状态色 */
+  /* Interactive State Colors */
   --bg-hover: #f3f4f6;
   --bg-active: #e5e6eb;
 
-  /* Fill Colors - 填充色 */
+  /* Fill Colors */
   --fill: #f7f8fa;
   --color-fill: #f7f8fa;
   --fill-0: #ffffff;
@@ -87,7 +86,7 @@ export const PRESET_THEMES: ICssTheme[] = [
   --dialog-fill-0: #ffffff;
   --inverse: #ffffff;
 
-  /* Text Colors - 文字色 */
+  /* Text Colors */
   --color-text-1: #1d2129;
   --text-primary: #1d2129;
   --color-text-2: #4e5969;
@@ -97,7 +96,7 @@ export const PRESET_THEMES: ICssTheme[] = [
   --text-0: #000000;
   --text-white: #ffffff;
 
-  /* Border Colors - 边框色 */
+  /* Border Colors */
   --color-border: #e5e6eb;
   --color-border-1: #e5e6eb;
   --color-border-2: #f2f3f5;
@@ -105,19 +104,19 @@ export const PRESET_THEMES: ICssTheme[] = [
   --border-light: #f2f3f5;
   --border-special: var(--bg-3);
 
-  /* Semantic Colors - 语义色 */
+  /* Semantic Colors */
   --success: #00b42a;
   --warning: #ff7d00;
   --danger: #f53f3f;
   --info: #165dff;
 
-  /* Message & UI Component Colors - 消息和组件色 */
+  /* Message & UI Component Colors */
   --message-user-bg: #e9efff;
   --message-tips-bg: #f0f4ff;
   --workspace-btn-bg: #eff0f1;
 }
 
-/* Dark Mode Overrides - 深色模式覆盖 */
+/* Dark Mode Overrides */
 [data-theme='dark'] {
   /* Primary Colors - Dark Mode */
   --color-primary: #4d9fff;
@@ -213,12 +212,12 @@ export const PRESET_THEMES: ICssTheme[] = [
     isPreset: true,
     cover: misakaMikotoCover,
     css: `
-/* Misaka Mikoto Theme - 御坂美琴主题 (优化版) */
-/* 参考《科学超电磁炮》配色风格 */
+/* Misaka Mikoto Theme - Optimized Version */
+/* Based on "A Certain Scientific Railgun" color style */
 
 :root {
-  /* ========== 核心颜色变量 ========== */
-  /* 主色调 - Tokiwadai Blue & Electric Blue */
+  /* ========== Core Color Variables ========== */
+  /* Primary Colors - Tokiwadai Blue & Electric Blue */
   --color-primary-base: #1e3a8a;
   --color-primary: var(--color-primary-base);
   --primary: var(--color-primary-base);
@@ -228,14 +227,14 @@ export const PRESET_THEMES: ICssTheme[] = [
   --color-primary-dark-1: #1e40af;
   --primary-rgb: 30, 58, 138;
 
-  /* 品牌色 - 使用变量引用减少重复 */
+  /* Brand Colors - Using variable references to reduce repetition */
   --brand: var(--color-primary-base);
   --brand-light: #dbeafe;
   --brand-hover: var(--color-primary-light-1);
   --color-brand-fill: var(--color-primary-base);
   --color-brand-bg: #dbeafe;
 
-  /* AOU 品牌色板 - 蓝色系渐变（常盘台校服色） */
+  /* AOU Brand Palette - Blue gradient (Tokiwadai uniform colors) */
   --aou-1: #eff6ff;
   --aou-2: #dbeafe;
   --aou-3: #bfdbfe;
@@ -247,7 +246,7 @@ export const PRESET_THEMES: ICssTheme[] = [
   --aou-9: #1e3a8a;
   --aou-10: #172554;
 
-  /* 背景色 - 完整定义以兼容所有组件 */
+  /* Background Colors - Full definition to ensure compatibility with all components */
   --bg-base-color: #f0f9ff;
   --bg-base: #ffffff;
   --bg-1: var(--bg-base-color);
@@ -272,7 +271,7 @@ export const PRESET_THEMES: ICssTheme[] = [
   --color-fill-2: #e0f2fe;
   --color-fill-3: #bae6fd;
 
-  /* 文字色 - 完整定义 */
+  /* Text Colors - Full definition */
   --text-base-color: #1e293b;
   --text-0: #000000;
   --text-primary: var(--text-base-color);
@@ -284,7 +283,7 @@ export const PRESET_THEMES: ICssTheme[] = [
   --color-text-3: #94a3b8;
   --color-text-4: #cbd5e1;
 
-  /* 边框色 - 完整定义 */
+  /* Border Colors - Full definition */
   --border-base-color: #93c5fd;
   --border-base: var(--border-base-color);
   --border-light: #bfdbfe;
@@ -295,30 +294,30 @@ export const PRESET_THEMES: ICssTheme[] = [
   --color-border-3: #dbeafe;
   --color-border-4: #eff6ff;
 
-  /* 语义色 */
+  /* Semantic Colors */
   --success: #10b981;
   --warning: #f59e0b;
   --danger: #ef4444;
   --info: var(--color-primary-light-1);
 
-  /* 消息背景色 */
+  /* Message Background Colors */
   --message-user-bg: #dbeafe;
   --message-tips-bg: var(--bg-base-color);
   --workspace-btn-bg: #e0f2fe;
 
-  /* 对话框颜色 */
+  /* Dialog Colors */
   --dialog-fill-0: rgba(255, 255, 255, 0.9);
 
-  /* ========== 动画变量 ========== */
+  /* ========== Animation Variables ========== */
   --transition-duration: 0.3s;
   --transition-timing: ease;
 
-  /* ========== 渐变背景 ========== */
+  /* ========== Gradient Backgrounds ========== */
   --gradient-primary: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
   --gradient-primary-hover: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
 }
 
-/* ========== 全局样式 ========== */
+/* ========== Global Styles ========== */
 body {
   font-family: "Inter", "SF Pro Display", "Segoe UI", "Microsoft YaHei", sans-serif;
   background-color: var(--bg-1);
@@ -328,7 +327,7 @@ html {
   background-color: var(--bg-1);
 }
 
-/* ========== 布局样式 ========== */
+/* ========== Layout Styles ========== */
 .arco-layout,
 [class*="layout"] {
   background-color: var(--bg-1);
@@ -338,7 +337,7 @@ html {
   background-color: var(--bg-1);
 }
 
-/* ========== 侧边栏 ========== */
+/* ========== Sidebar ========== */
 .layout-sider {
   background-color: #e0f2fe;
   border-right: 2px solid var(--border-base-color);
@@ -366,8 +365,8 @@ html {
   color: white;
 }
 
-/* ========== 图标样式 - 简化选择器 ========== */
-/* 全局图标默认颜色 */
+/* ========== Icon Styles - Simplified Selectors ========== */
+/* Global Icon Default Colors */
 .theme-icon svg,
 svg:not([class*="model"] svg):not([class*="Model"] svg) {
   fill: none;
@@ -384,7 +383,7 @@ svg:not([class*="model"] svg):not([class*="Model"] svg):hover {
   color: var(--color-primary-light-1);
 }
 
-/* 按钮内图标 */
+/* Button Icons */
 button:not([class*="model"]) svg,
 .arco-btn:not([class*="model"]) svg {
   fill: none;
@@ -400,19 +399,19 @@ button:not([class*="model"]) svg:hover,
   color: var(--color-primary-light-1);
 }
 
-/* 主要按钮内的图标为白色 */
+/* Primary Button Icons - White */
 .arco-btn-primary svg {
   stroke: white;
   color: white;
 }
 
-/* ========== 背景图片设置 ========== */
+/* ========== Background Image Settings ========== */
 .layout-content.bg-1 {
   background-color: var(--bg-1);
   position: relative;
 }
 
-/* 半透明遮罩层 */
+/* Semi-transparent Overlay Layer */
 .layout-content.bg-1::before {
   content: "";
   position: absolute;
@@ -430,7 +429,7 @@ button:not([class*="model"]) svg:hover,
   pointer-events: none;
 }
 
-/* 聊天页面背景图 */
+/* Chat Page Background */
 .chat-layout-header,
 [class*="chat-layout"] .arco-layout-content,
 [class*="conversation"] .arco-layout-content {
@@ -448,7 +447,7 @@ button:not([class*="model"]) svg:hover,
   pointer-events: none;
 }
 
-/* 确保内容在背景之上 */
+/* Ensure Content is Above Background */
 .layout-content.bg-1 > *,
 [class*="chat-layout"] .arco-layout-content > *,
 [class*="conversation"] .arco-layout-content > * {
@@ -456,7 +455,7 @@ button:not([class*="model"]) svg:hover,
   z-index: 1;
 }
 
-/* ========== 输入框和发送框 ========== */
+/* ========== Input Box and Send Box ========== */
 .guidLayout,
 [class*="guid"] {
   position: relative;
@@ -477,7 +476,7 @@ button:not([class*="model"]) svg:hover,
   color: var(--color-text-1);
 }
 
-/* 发送框样式 */
+/* Send Box Styles */
 .sendbox-container:not([class*="model"]):not([class*="Model"]),
 [class*="sendbox"]:not([class*="input"]):not([class*="textarea"]):not([class*="model"]):not([class*="Model"]):not([class*="tools"]) {
   border-radius: 16px;
@@ -516,7 +515,7 @@ button:not([class*="model"]) svg:hover,
   transform: scale(1.1);
 }
 
-/* ========== 消息气泡 ========== */
+/* ========== Message Bubbles ========== */
 .message-item.user .message-bubble,
 [class*="message"][class*="user"] .message-content {
   background: var(--gradient-primary);
@@ -538,7 +537,7 @@ button:not([class*="model"]) svg:hover,
   padding: 12px 16px;
 }
 
-/* 工具调用相关样式 */
+/* Tool Call Related Styles */
 .message-item.ai .arco-alert,
 [class*="message"][class*="ai"] .arco-alert,
 [class*="message"][class*="assistant"] .arco-alert,
@@ -571,7 +570,7 @@ button:not([class*="model"]) svg:hover,
   padding: 2px 6px;
 }
 
-/* ========== 按钮样式 ========== */
+/* ========== Button Styles ========== */
 .arco-btn-primary:not([class*="icon"]):not([class*="circle"]):not([class*="model"]),
 button[type="primary"]:not([class*="icon"]):not([class*="circle"]):not([class*="model"]) {
   background: var(--gradient-primary);
@@ -603,7 +602,7 @@ button[type="secondary"]:not([class*="model"]) svg:hover {
   color: var(--color-primary-light-1);
 }
 
-/* ========== 滚动条 ========== */
+/* ========== Scrollbar ========== */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -632,7 +631,7 @@ button[type="secondary"]:not([class*="model"]) svg:hover {
   border-radius: 4px;
 }
 
-/* ========== 选中和链接 ========== */
+/* ========== Selection and Links ========== */
 ::selection {
   background-color: var(--color-primary-light-1);
   color: white;
@@ -648,7 +647,7 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   text-decoration: underline;
 }
 
-/* ========== Tooltip 和 Popover ========== */
+/* ========== Tooltip and Popover ========== */
 .arco-tooltip-popup,
 .arco-popover-popup {
   pointer-events: none;
@@ -675,7 +674,7 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   border-color: var(--color-primary-dark-1);
 }
 
-/* ========== 对话框 ========== */
+/* ========== Dialog ========== */
 .arco-modal-body {
   background-color: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(10px);
@@ -693,11 +692,11 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
 }
 
 /* ========================================================= */
-/* ==================== 深色模式 Dark Mode ================= */
+/* ==================== Dark Mode ==================== */
 /* ========================================================= */
 
 [data-theme='dark'] {
-  /* 主色调 */
+  /* Primary Colors */
   --color-primary-base: #60a5fa;
   --color-primary: var(--color-primary-base);
   --primary: var(--color-primary-base);
@@ -707,14 +706,14 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   --color-primary-dark-1: #3b82f6;
   --primary-rgb: 96, 165, 250;
 
-  /* 品牌色 */
+  /* Brand Colors */
   --brand: var(--color-primary-base);
   --brand-light: #1e3a5a;
   --brand-hover: var(--color-primary-light-1);
   --color-brand-fill: var(--color-primary-base);
   --color-brand-bg: #1e3a5a;
 
-  /* AOU 品牌色板 */
+  /* AOU Brand Palette */
   --aou-1: #0f1729;
   --aou-2: #1e2a47;
   --aou-3: #1e3a5a;
@@ -726,7 +725,7 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   --aou-9: #dbeafe;
   --aou-10: #eff6ff;
 
-  /* 背景色 */
+  /* Background Colors */
   --bg-base-color: #0f1729;
   --color-bg-1: var(--bg-base-color);
   --bg-1: var(--bg-base-color);
@@ -742,7 +741,7 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   --fill: var(--bg-base-color);
   --color-fill: var(--bg-base-color);
 
-  /* 文字色 */
+  /* Text Colors */
   --text-base-color: #e0f2fe;
   --color-text-1: var(--text-base-color);
   --text-primary: var(--text-base-color);
@@ -752,7 +751,7 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   --text-disabled: #93c5fd;
   --text-0: #ffffff;
 
-  /* 边框色 */
+  /* Border Colors */
   --border-base-color: #3d5a8f;
   --color-border: var(--border-base-color);
   --color-border-1: var(--border-base-color);
@@ -760,26 +759,26 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   --border-base: var(--border-base-color);
   --border-light: #2d4a6f;
 
-  /* 语义色 */
+  /* Semantic Colors */
   --success: #34d399;
   --warning: #fbbf24;
   --danger: #f87171;
   --info: var(--color-primary-base);
 
-  /* 消息背景色 */
+  /* Message Background Colors */
   --message-user-bg: #2d4a6f;
   --message-tips-bg: #1e3a5a;
   --workspace-btn-bg: #1a2332;
 
-  /* 对话框颜色 */
+  /* Dialog Colors */
   --dialog-fill-0: rgba(15, 23, 41, 0.95);
 
-  /* 渐变 */
+  /* Gradients */
   --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
   --gradient-primary-hover: linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%);
 }
 
-/* 深色模式侧边栏 */
+/* Dark Mode Sidebar */
 [data-theme='dark'] .layout-sider {
   background: linear-gradient(180deg, #1e3a5a 0%, #1a2332 100%);
   border-right: 3px solid var(--color-primary-base);
@@ -792,7 +791,7 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
 }
 
-/* 深色模式图标 */
+/* Dark Mode Icons */
 [data-theme='dark'] svg:not([class*="model"] svg),
 [data-theme='dark'] .theme-icon svg {
   stroke: var(--color-primary-base);
@@ -819,7 +818,7 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   filter: drop-shadow(0 0 8px rgba(147, 197, 253, 0.6));
 }
 
-/* 深色模式背景图 */
+/* Dark Mode Background */
 [data-theme='dark'] .layout-content.bg-1::before {
   background: linear-gradient(135deg, rgba(15, 23, 41, 0.8) 0%, rgba(30, 58, 90, 0.85) 50%, rgba(15, 23, 41, 0.8) 100%);
 }
@@ -830,7 +829,7 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   filter: brightness(1.1) saturate(1.3) hue-rotate(-10deg);
 }
 
-/* 深色模式输入框 */
+/* Dark Mode Input Box */
 [data-theme='dark'] .guidInputCard {
   background: linear-gradient(135deg, rgba(30, 58, 90, 0.9) 0%, rgba(45, 74, 111, 0.9) 100%);
   border: 3px solid var(--color-primary-base);
@@ -870,7 +869,7 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   filter: drop-shadow(0 0 8px rgba(147, 197, 253, 0.8));
 }
 
-/* 深色模式消息气泡 */
+/* Dark Mode Message Bubbles */
 [data-theme='dark'] .message-item.user .message-bubble,
 [data-theme='dark'] [class*="message"][class*="user"] .message-content {
   background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #93c5fd 100%);
@@ -912,7 +911,7 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   border: 1px solid var(--border-base-color);
 }
 
-/* 深色模式按钮 */
+/* Dark Mode Buttons */
 [data-theme='dark'] .arco-btn-primary:not([class*="icon"]):not([class*="circle"]):not([class*="model"]),
 [data-theme='dark'] button[type="primary"]:not([class*="icon"]):not([class*="circle"]):not([class*="model"]) {
   background: var(--gradient-primary);
@@ -927,7 +926,7 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   transform: translateY(-2px);
 }
 
-/* 深色模式滚动条 */
+/* Dark Mode Scrollbar */
 [data-theme='dark'] *:hover::-webkit-scrollbar-thumb {
   background: rgba(96, 165, 250, 0.5);
 }
@@ -937,13 +936,13 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   box-shadow: 0 0 8px rgba(96, 165, 250, 0.6);
 }
 
-/* 深色模式选中文字 */
+/* Dark Mode Selected Text */
 [data-theme='dark'] ::selection {
   background-color: var(--color-primary-dark-1);
   text-shadow: 0 0 4px rgba(59, 130, 246, 0.5);
 }
 
-/* 深色模式链接 */
+/* Dark Mode Links */
 [data-theme='dark'] a:not([class*="button"]):not([class*="btn"]) {
   color: var(--color-primary-base);
   text-decoration-color: rgba(96, 165, 250, 0.4);
@@ -954,7 +953,7 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   text-shadow: 0 0 8px rgba(147, 197, 253, 0.5);
 }
 
-/* 深色模式 Tooltip */
+/* Dark Mode Tooltip */
 [data-theme='dark'] .arco-tooltip-inner,
 [data-theme='dark'] .arco-popover-inner,
 [data-theme='dark'] .arco-popover-content {
@@ -969,7 +968,7 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   border-color: var(--color-primary-base);
 }
 
-/* 深色模式对话框 */
+/* Dark Mode Dialog */
 [data-theme='dark'] .arco-modal,
 [data-theme='dark'] .arco-modal-wrapper {
   color: var(--text-base-color);
@@ -992,7 +991,7 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   border-top: 2px solid var(--color-primary-base);
 }
 
-/* 深色模式表单 */
+/* Dark Mode Forms */
 [data-theme='dark'] .arco-form-label,
 [data-theme='dark'] .arco-form-label-item,
 [data-theme='dark'] label {
@@ -1034,7 +1033,7 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   opacity: 0.5;
 }
 
-/* 深色模式开关 */
+/* Dark Mode Switch */
 [data-theme='dark'] .arco-switch {
   background-color: var(--border-base-color);
 }
@@ -1043,14 +1042,14 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   background-color: var(--color-primary-base);
 }
 
-/* 深色模式文字 */
+/* Dark Mode Text */
 [data-theme='dark'] .arco-typography,
 [data-theme='dark'] p,
 [data-theme='dark'] span:not([class*="icon"]) {
   color: var(--color-text-2);
 }
 
-/* 深色模式分割线 */
+/* Dark Mode Divider */
 [data-theme='dark'] .arco-divider {
   border-color: var(--color-primary-base);
   opacity: 0.3;
@@ -1066,13 +1065,13 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
     cover: helloKittyCover,
     css: `
 /* ========================================
-   Hello Kitty 主题 - 优化版
-   粉色系可爱风格，支持明暗双模式
+   Hello Kitty Theme - Optimized Version
+   Pink cute style, supports light and dark modes
    ======================================== */
 
-/* ==================== 明亮模式 (Light Mode) ==================== */
+/* ==================== Light Mode ==================== */
 :root {
-  /* ===== 主色调 - Primary ===== */
+  /* ===== Primary Colors ===== */
   --hk-primary: #ff85a2;
   --hk-primary-light: #ffb7c5;
   --hk-primary-lighter: #ffe4e8;
@@ -1081,7 +1080,7 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   --hk-primary-darker: #c95a75;
   --hk-primary-rgb: 255, 133, 162;
 
-  /* ===== 品牌色板渐变 ===== */
+  /* ===== Brand Palette Gradients ===== */
   --hk-shade-1: #fff0f3;
   --hk-shade-2: #ffe4e8;
   --hk-shade-3: #ffcad4;
@@ -1093,7 +1092,7 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   --hk-shade-9: #a84a62;
   --hk-shade-10: #8c3d4f;
 
-  /* ===== 背景色 ===== */
+  /* ===== Background Colors ===== */
   --hk-bg-base: #ffffff;
   --hk-bg-1: #fff0f3;
   --hk-bg-2: #ffffff;
@@ -1102,36 +1101,36 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   --hk-bg-hover: #ffe4e8;
   --hk-bg-active: #ffcad4;
 
-  /* ===== 文字色 ===== */
+  /* ===== Text Colors ===== */
   --hk-text-primary: #5a3e45;
   --hk-text-secondary: #8c6b74;
   --hk-text-tertiary: #bfa5ac;
   --hk-text-disabled: #d4c0c6;
   --hk-text-inverse: #ffffff;
 
-  /* ===== 边框色 ===== */
+  /* ===== Border Colors ===== */
   --hk-border-base: #ffcad4;
   --hk-border-light: #ffe4e8;
   --hk-border-strong: #ffb7c5;
 
-  /* ===== 语义色 ===== */
+  /* ===== Semantic Colors ===== */
   --hk-success: #52c41a;
   --hk-warning: #faad14;
   --hk-error: #f5222d;
   --hk-info: #ff85a2;
 
-  /* ===== 阴影 ===== */
+  /* ===== Shadows ===== */
   --hk-shadow-sm: 0 2px 8px rgba(255, 133, 162, 0.15);
   --hk-shadow-md: 0 4px 16px rgba(255, 133, 162, 0.2);
   --hk-shadow-lg: 0 8px 24px rgba(255, 133, 162, 0.25);
   --hk-shadow-glow: 0 0 20px rgba(255, 133, 162, 0.3);
 
-  /* ===== 渐变 ===== */
+  /* ===== Gradients ===== */
   --hk-gradient-primary: linear-gradient(135deg, #ff85a2 0%, #ff9db6 100%);
   --hk-gradient-light: linear-gradient(135deg, #fff0f3 0%, #ffe4e8 100%);
   --hk-gradient-button: linear-gradient(135deg, #ff85a2 0%, #ffb7c5 100%);
 
-  /* ===== 映射到系统变量 ===== */
+  /* ===== Map to System Variables ===== */
   --color-primary: var(--hk-primary);
   --primary: var(--hk-primary);
   --brand: var(--hk-primary);
@@ -1151,14 +1150,14 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   --info: var(--hk-info);
 }
 
-/* ===== 字体设置 ===== */
+/* ===== Font Settings ===== */
 body {
   font-family: "Varela Round", "Nunito", "PingFang SC", "Microsoft YaHei", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ===== 全局背景 ===== */
+/* ===== Global Background ===== */
 body,
 html {
   background-color: var(--hk-bg-1);
@@ -1174,13 +1173,13 @@ html {
   background-color: var(--hk-bg-1);
 }
 
-/* ===== 背景图设置 ===== */
+/* ===== Background Image Settings ===== */
 .layout-content.bg-1 {
   position: relative;
   background-color: var(--hk-bg-1);
 }
 
-/* 半透明遮罩层 */
+/* Semi-transparent Overlay Layer */
 .layout-content.bg-1::before {
   content: "";
   position: absolute;
@@ -1203,7 +1202,7 @@ html {
   z-index: 1;
 }
 
-/* 聊天页面背景 */
+/* Chat Page Background */
 [class*="chat-layout"] .arco-layout-content,
 [class*="conversation"] .arco-layout-content {
   position: relative;
@@ -1226,7 +1225,7 @@ html {
   z-index: 1;
 }
 
-/* ==================== 侧边栏 Sidebar ==================== */
+/* ==================== Sidebar ==================== */
 .layout-sider {
   background-color: var(--hk-bg-1);
   border-right: 2px solid var(--hk-border-strong);
@@ -1239,7 +1238,7 @@ html {
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* 侧边栏图标 */
+/* Sidebar Icons */
 .layout-sider-header svg {
   color: rgba(255, 255, 255, 0.9);
   transition: color 0.3s ease, transform 0.2s ease;
@@ -1250,8 +1249,8 @@ html {
   transform: scale(1.1);
 }
 
-/* ==================== 输入框 Input ==================== */
-/* 首页输入框 */
+/* ==================== Input ==================== */
+/* Home Page Input Box */
 .guidInputCard {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
@@ -1272,7 +1271,7 @@ html {
   border: none;
 }
 
-/* 发送框 */
+/* Send Box */
 .sendbox-container {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
@@ -1294,8 +1293,8 @@ html {
   color: var(--hk-text-primary);
 }
 
-/* ==================== 消息气泡 Message ==================== */
-/* 用户消息 */
+/* ==================== Message Bubbles ==================== */
+/* User Messages */
 .message-item.user .message-bubble,
 [class*="message-user"] .message-content {
   background: var(--hk-gradient-primary);
@@ -1306,7 +1305,7 @@ html {
   border: none;
 }
 
-/* AI 消息 */
+/* AI Messages */
 .message-item.ai .message-bubble,
 .message-item.assistant .message-bubble,
 [class*="message-ai"] .message-content,
@@ -1320,7 +1319,7 @@ html {
   color: var(--hk-text-primary);
 }
 
-/* 工具调用提示 - 保持简洁 */
+/* Tool Call Prompts - Keep Simple */
 .message-item.ai .arco-alert,
 .message-item.assistant .arco-alert {
   background-color: rgba(255, 255, 255, 0.7);
@@ -1337,7 +1336,7 @@ html {
   margin: 8px 0;
 }
 
-/* ==================== 按钮 Button ==================== */
+/* ==================== Button ==================== */
 .arco-btn-primary,
 button[type="primary"] {
   background: var(--hk-gradient-button);
@@ -1380,7 +1379,7 @@ button[type="secondary"]:hover {
   transform: translateY(-1px);
 }
 
-/* 按钮禁用状态 */
+/* Button Disabled State */
 .arco-btn:disabled,
 button:disabled {
   background: var(--hk-bg-3);
@@ -1390,8 +1389,8 @@ button:disabled {
   opacity: 0.6;
 }
 
-/* ==================== 图标 Icon ==================== */
-/* 基础图标颜色 - 仅针对需要的图标 */
+/* ==================== Icon ==================== */
+/* Base Icon Colors - Only for Required Icons */
 .arco-icon {
   color: var(--hk-primary);
   transition: color 0.3s ease, transform 0.2s ease;
@@ -1402,13 +1401,13 @@ button:disabled {
   transform: scale(1.1);
 }
 
-/* 按钮内图标 */
+/* Button Icons */
 .arco-btn-primary .arco-icon,
 button[type="primary"] .arco-icon {
   color: var(--hk-text-inverse);
 }
 
-/* ==================== 滚动条 Scrollbar ==================== */
+/* ==================== Scrollbar ==================== */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -1433,8 +1432,8 @@ button[type="primary"] .arco-icon {
   background: var(--hk-gradient-primary);
 }
 
-/* ==================== 其他元素 ==================== */
-/* 链接 */
+/* ==================== Other Elements ==================== */
+/* Links */
 a {
   color: var(--hk-primary);
   text-decoration: none;
@@ -1446,7 +1445,7 @@ a:hover {
   text-decoration: underline;
 }
 
-/* 选中文本 */
+/* Selected Text */
 ::selection {
   background-color: var(--hk-primary);
   color: var(--hk-text-inverse);
@@ -1468,7 +1467,7 @@ a:hover {
   border-color: var(--hk-primary-dark);
 }
 
-/* Modal 对话框 */
+/* Modal Dialog */
 .arco-modal-header {
   background: var(--hk-gradient-light);
   border-bottom: 1px solid var(--hk-border-light);
@@ -1486,9 +1485,9 @@ a:hover {
   border-top: 1px solid var(--hk-border-light);
 }
 
-/* ==================== 深色模式 (Dark Mode) ==================== */
+/* ==================== Dark Mode ==================== */
 [data-theme='dark'] {
-  /* ===== 主色调 - 调亮以提高可见度 ===== */
+  /* ===== Primary Colors - Brightened for Better Visibility ===== */
   --hk-primary: #ffb7c5;
   --hk-primary-light: #ffcad4;
   --hk-primary-lighter: #ffe4e8;
@@ -1497,7 +1496,7 @@ a:hover {
   --hk-primary-darker: #ff85a2;
   --hk-primary-rgb: 255, 183, 197;
 
-  /* ===== 品牌色板 - 深色模式反转 ===== */
+  /* ===== Brand Palette - Dark Mode Inverted ===== */
   --hk-shade-1: #2d1a24;
   --hk-shade-2: #3d2431;
   --hk-shade-3: #4a2f3a;
@@ -1509,7 +1508,7 @@ a:hover {
   --hk-shade-9: #fff0f3;
   --hk-shade-10: #fff5f7;
 
-  /* ===== 背景色 - 温暖的深粉紫色 ===== */
+  /* ===== Background Colors - Warm Deep Pink-Purple ===== */
   --hk-bg-base: #1f1119;
   --hk-bg-1: #2d1a24;
   --hk-bg-2: #3d2431;
@@ -1518,36 +1517,36 @@ a:hover {
   --hk-bg-hover: #3d2431;
   --hk-bg-active: #4a2f3a;
 
-  /* ===== 文字色 - 高对比度粉白色 ===== */
+  /* ===== Text Colors - High Contrast Pink-White ===== */
   --hk-text-primary: #fff0f3;
   --hk-text-secondary: #ffcad4;
   --hk-text-tertiary: #ff9db6;
   --hk-text-disabled: #8c6b74;
   --hk-text-inverse: #ffffff;
 
-  /* ===== 边框色 ===== */
+  /* ===== Border Colors ===== */
   --hk-border-base: #7a4d5f;
   --hk-border-light: #5d3b4a;
   --hk-border-strong: #ff9db6;
 
-  /* ===== 语义色 - 深色模式调整 ===== */
+  /* ===== Semantic Colors - Dark Mode Adjusted ===== */
   --hk-success: #95de64;
   --hk-warning: #ffc53d;
   --hk-error: #ff7875;
   --hk-info: #ffb7c5;
 
-  /* ===== 阴影 - 增强发光效果 ===== */
+  /* ===== Shadows - Enhanced Glow Effects ===== */
   --hk-shadow-sm: 0 2px 12px rgba(255, 183, 197, 0.2);
   --hk-shadow-md: 0 4px 20px rgba(255, 183, 197, 0.3);
   --hk-shadow-lg: 0 8px 32px rgba(255, 183, 197, 0.4);
   --hk-shadow-glow: 0 0 24px rgba(255, 183, 197, 0.4);
 
-  /* ===== 渐变 - 深色模式保持鲜艳 ===== */
+  /* ===== Gradients - Dark Mode Keeping Vivid ===== */
   --hk-gradient-primary: linear-gradient(135deg, #ff85a2 0%, #ffb7c5 100%);
   --hk-gradient-light: linear-gradient(135deg, #4a2f3a 0%, #5d3b4a 100%);
   --hk-gradient-button: linear-gradient(135deg, #ff85a2 0%, #ffb7c5 100%);
 
-  /* ===== 重新映射系统变量 ===== */
+  /* ===== Remap System Variables ===== */
   --color-primary: var(--hk-primary);
   --primary: var(--hk-primary);
   --brand: var(--hk-primary);
@@ -1565,14 +1564,14 @@ a:hover {
   --border-base: var(--hk-border-base);
 }
 
-/* ===== 深色模式全局样式 ===== */
+/* ===== Dark Mode Global Styles ===== */
 [data-theme='dark'] body,
 [data-theme='dark'] html {
   background-color: var(--hk-bg-1);
   color: var(--hk-text-primary);
 }
 
-/* ===== 深色模式标题栏 ===== */
+/* ===== Dark Mode Title Bar ===== */
 [data-theme='dark'] .app-titlebar {
   background-color: var(--hk-bg-2);
   border-color: var(--hk-border-base);
@@ -1600,7 +1599,7 @@ a:hover {
   background-color: var(--hk-bg-1);
 }
 
-/* ===== 深色模式背景图 ===== */
+/* ===== Dark Mode Background Image ===== */
 [data-theme='dark'] .layout-content.bg-1::before {
   background: linear-gradient(
     135deg,
@@ -1616,7 +1615,7 @@ a:hover {
   filter: brightness(0.9) saturate(1.2);
 }
 
-/* ===== 深色模式侧边栏 ===== */
+/* ===== Dark Mode Sidebar ===== */
 [data-theme='dark'] .layout-sider {
   background: linear-gradient(180deg, #4a2f3a 0%, #3d2431 100%);
   border-right: 2px solid var(--hk-border-strong);
@@ -1629,7 +1628,7 @@ a:hover {
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-/* ===== 深色模式输入框 ===== */
+/* ===== Dark Mode Input Box ===== */
 [data-theme='dark'] .guidInputCard {
   background: linear-gradient(135deg, rgba(74, 47, 58, 0.95) 0%, rgba(93, 59, 74, 0.95) 100%);
   backdrop-filter: blur(16px);
@@ -1662,7 +1661,7 @@ a:hover {
   color: var(--hk-text-primary);
 }
 
-/* ===== 深色模式消息气泡 ===== */
+/* ===== Dark Mode Message Bubbles ===== */
 [data-theme='dark'] .message-item.user .message-bubble,
 [data-theme='dark'] [class*="message-user"] .message-content {
   background: var(--hk-gradient-primary);
@@ -1693,7 +1692,7 @@ a:hover {
   border-color: var(--hk-border-light);
 }
 
-/* ===== 深色模式按钮 ===== */
+/* ===== Dark Mode Buttons ===== */
 [data-theme='dark'] .arco-btn-primary,
 [data-theme='dark'] button[type="primary"] {
   background: var(--hk-gradient-primary);
@@ -1720,7 +1719,7 @@ a:hover {
   box-shadow: 0 0 12px rgba(255, 183, 197, 0.3);
 }
 
-/* ===== 深色模式图标 ===== */
+/* ===== Dark Mode Icons ===== */
 [data-theme='dark'] .arco-icon {
   color: var(--hk-primary);
 }
@@ -1730,7 +1729,7 @@ a:hover {
   filter: drop-shadow(0 0 8px rgba(255, 183, 197, 0.5));
 }
 
-/* ===== 深色模式滚动条 ===== */
+/* ===== Dark Mode Scrollbar ===== */
 [data-theme='dark'] *:hover::-webkit-scrollbar-thumb {
   background: rgba(255, 183, 197, 0.4);
 }
@@ -1740,7 +1739,7 @@ a:hover {
   box-shadow: 0 0 8px rgba(255, 183, 197, 0.5);
 }
 
-/* ===== 深色模式其他元素 ===== */
+/* ===== Dark Mode Other Elements ===== */
 [data-theme='dark'] a {
   color: var(--hk-primary);
 }
@@ -1785,7 +1784,7 @@ a:hover {
   border-top: 1px solid var(--hk-border-base);
 }
 
-/* ==================== 动画效果 ==================== */
+/* ==================== Animation Effects ==================== */
 @keyframes hk-float {
   0%, 100% {
     transform: translateY(0);
@@ -1804,14 +1803,14 @@ a:hover {
   }
 }
 
-/* 可选：给某些元素添加悬浮动画 */
+/* Optional: Add hover animation to certain elements */
 .arco-btn-primary:hover {
   animation: hk-float 2s ease-in-out infinite;
 }
 
-/* ==================== 响应式调整 ==================== */
+/* ==================== Responsive Adjustments ==================== */
 @media (max-width: 768px) {
-  /* 移动端优化 */
+  /* Mobile Optimization */
   .guidInputCard,
   .sendbox-container {
     border-radius: 16px;
@@ -1831,9 +1830,9 @@ a:hover {
   }
 }
 
-/* ==================== 打印样式 ==================== */
+/* ==================== Print Styles ==================== */
 @media print {
-  /* 打印时移除背景图和阴影 */
+  /* Remove background image and shadow when printing */
   .layout-content.bg-1::before,
   [class*="chat-layout"] .arco-layout-content::before {
     display: none;
@@ -1855,15 +1854,15 @@ a:hover {
     isPreset: true,
     cover: retroWindowsCover,
     css: `/* ========================================
-   Windows Classic Theme - 优化版
-   复古 Windows 配色，支持明暗双模式
-   确保可读性，适度添加 Windows 经典元素
+   Windows Classic Theme - Optimized Version
+   Retro Windows color scheme, supports light and dark modes
+   Ensures readability, moderately adds Windows classic elements
    ======================================== */
 
-/* ==================== 明色模式 (Light Mode) ==================== */
-/* 核心颜色变量 - 复古 Windows 配色 */
+/* ==================== Light Mode ==================== */
+/* Core Color Variables - Retro Windows Colors */
 :root {
-  /* 主色调 - Classic Windows Blue */
+  /* Primary Colors - Classic Windows Blue */
   --color-primary: #0078d4;
   --primary: #0078d4;
   --color-primary-light-1: #1a86d9;
@@ -1872,14 +1871,14 @@ a:hover {
   --color-primary-dark-1: #005a9e;
   --primary-rgb: 0, 120, 212;
   
-  /* 品牌色 - Windows Classic */
+  /* Brand Colors - Windows Classic */
   --brand: #0078d4;
   --brand-light: #e6f2fa;
   --brand-hover: #1a86d9;
   --color-brand-fill: #0078d4;
   --color-brand-bg: #e6f2fa;
   
-  /* AOU 品牌色板 - 蓝色系渐变 */
+  /* AOU Brand Palette - Blue Gradient */
   --aou-1: #e6f2fa;
   --aou-2: #cce5f5;
   --aou-3: #b3d8f0;
@@ -1891,7 +1890,7 @@ a:hover {
   --aou-9: #003052;
   --aou-10: #001b2c;
   
-  /* 背景色 - Classic Windows Gray/Beige */
+  /* Background Colors - Classic Windows Gray/Beige */
   --color-bg-1: #f0f0f0;
   --bg-1: #f0f0f0;
   --color-bg-2: #ffffff;
@@ -1906,7 +1905,7 @@ a:hover {
   --fill: #f0f0f0;
   --color-fill: #f0f0f0;
   
-  /* 文字色 - Classic Windows Text */
+  /* Text Colors - Classic Windows Text */
   --color-text-1: #000000;
   --text-primary: #000000;
   --color-text-2: #404040;
@@ -1915,57 +1914,57 @@ a:hover {
   --text-disabled: #808080;
   --text-0: #000000;
   
-  /* 边框色 - Classic Windows Border */
+  /* Border Colors - Classic Windows Border */
   --color-border: #808080;
   --color-border-1: #808080;
   --color-border-2: #c0c0c0;
   --border-base: #808080;
   --border-light: #c0c0c0;
   
-  /* 语义色 - Classic Windows Colors */
-  --success: #00a300; /* Windows 绿 */
+  /* Semantic Colors - Classic Windows Colors */
+  --success: #00a300; /* Windows Green */
   --warning: #ff8c00;
   --danger: #d13438;
-  --info: #0078d4; /* Windows 蓝 */
+  --info: #0078d4; /* Windows Blue */
   
-  /* Windows 经典绿色 - 适度使用 */
+  /* Windows Classic Green - Use Moderately */
   --windows-green: #00a300;
   --windows-green-light: #00c300;
   --windows-green-dark: #008000;
   
-  /* 消息背景色 - Message Backgrounds */
+  /* Message Background Colors */
   --message-user-bg: #d0e8f5;
   --message-tips-bg: #f0f0f0;
   --workspace-btn-bg: #e0e0e0;
   
-  /* 对话框颜色 - Dialog Colors */
+  /* Dialog Colors */
   --dialog-fill-0: rgba(255, 255, 255, 0.95);
 }
 
-/* 全局字体 - 经典 Windows 字体 */
+/* Global Font - Classic Windows Font */
 body {
   font-family: "MS Sans Serif", "Tahoma", "Arial", "Microsoft YaHei", sans-serif;
 }
 
-/* 全局背景色 - 经典 Windows 米色 */
+/* Global Background - Classic Windows Beige */
 body,
 html {
   background-color: var(--bg-1, #f0f0f0);
 }
 
-/* 全局主要背景区域 */
+/* Global Main Background Area */
 .arco-layout,
 [class*="layout"] {
   background-color: var(--bg-1, #f0f0f0);
 }
 
-/* 全局内容区域背景 */
+/* Global Content Area Background */
 .arco-layout-content {
   background-color: var(--bg-1, #f0f0f0);
 }
 
-/* ==================== 侧边栏 Sidebar ==================== */
-/* 侧边栏样式 - 只保留基础样式，其他使用系统默认 */
+/* ==================== Sidebar ==================== */
+/* Sidebar Styles - Keep only basic styles, use system defaults for others */
 .layout-sider {
   background-color: #e0e0e0;
   border-right: 2px solid #808080;
@@ -1993,25 +1992,25 @@ html {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-/* 按钮内的图标 - 保持原有样式，不强制设置 */
+/* Button Icons - Keep original style, don't force settings */
 button:not(.sendbox-model-btn):not([class*="model"]):not([class*="Model"]) svg,
 .arco-btn:not(.sendbox-model-btn):not([class*="model"]):not([class*="Model"]) svg {
-  /* 保持图标原有样式 */
+  /* Keep original icon style */
 }
 
-/* 主要按钮内的图标 - 保持原有样式 */
+/* Primary Button Icons - Keep original style */
 .arco-btn-primary:not(.sendbox-model-btn):not([class*="model"]):not([class*="Model"]) svg {
-  /* 保持图标原有样式 */
+  /* Keep original icon style */
 }
 
-/* ==================== 背景图设置 ==================== */
-/* 背景图片设置 - 让背景图穿透显示 */
+/* ==================== Background Image Settings ==================== */
+/* Background Image Settings - Allow background to show through */
 .layout-content.bg-1 {
   background-color: var(--bg-1, #f0f0f0);
   position: relative;
 }
 
-/* 半透明遮罩层 */
+/* Semi-transparent Overlay Layer */
 .layout-content.bg-1::before {
   content: "";
   position: absolute;
@@ -2029,7 +2028,7 @@ button:not(.sendbox-model-btn):not([class*="model"]):not([class*="Model"]) svg,
   pointer-events: none;
 }
   
-/* 聊天页面背景图 - Windows 经典配色 */
+/* Chat Page Background - Windows Classic Colors */
 .chat-layout-header,
 [class*="chat-layout"] .arco-layout-content,
 [class*="conversation"] .arco-layout-content {
@@ -2047,69 +2046,69 @@ button:not(.sendbox-model-btn):not([class*="model"]):not([class*="Model"]) svg,
   pointer-events: none;
 }
 
-/* 确保聊天内容在背景图之上 */
+/* Ensure chat content is above background */
 [class*="chat-layout"] .arco-layout-content > *,
 [class*="conversation"] .arco-layout-content > * {
   position: relative;
   z-index: 1;
 }
 
-/* 确保内容在遮罩之上 */
+/* Ensure content is above overlay */
 .layout-content.bg-1 > * {
   position: relative;
   z-index: 1;
 }
 
-/* 首页对话框和输入区域 - 确保完全可见 */
+/* Home Dialog and Input Area - Ensure Fully Visible */
 .guidLayout,
 [class*="guid"] {
   position: relative;
   z-index: 10;
 }
 
-/* 输入框文本域 - 确保文字清晰可见 */
+/* Input Textarea - Ensure Text is Clearly Visible */
 .guidInputCard textarea,
 [class*="guidInputCard"] textarea {
   background-color: rgba(255, 255, 255, 0.98);
   color: var(--color-text-1);
 }
 
-/* ==================== 输入框 Input ==================== */
-/* 发送框样式 - 只针对可见的发送框容器，排除模型选择器等系统组件 */
+/* ==================== Input ==================== */
+/* Send Box Styles - Only target visible send box container, exclude model selector and other system components */
 .sendbox-container:not([class*="model"]):not([class*="Model"]),
 [class*="sendbox"]:not([class*="input"]):not([class*="textarea"]):not([class*="model"]):not([class*="Model"]):not([class*="tools"]) {
-  border-radius: 4px; /* 经典 Windows 方角 */
-  border: 2px outset #c0c0c0; /* 经典 3D 边框效果 */
+  border-radius: 4px; /* Classic Windows Square Corners */
+  border: 2px outset #c0c0c0; /* Classic 3D Border Effect */
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(4px);
   box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.8), inset -1px -1px 0 rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
 }
 
-/* 首页输入框对话框 - 白色90%不透明度，确保用户看得清 */
+/* Home Input Dialog - 90% white opacity, ensure user visibility */
 .guidInputCard {
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(4px);
-  border: 2px outset #c0c0c0; /* 经典 3D 边框 */
+  border: 2px outset #c0c0c0; /* Classic 3D Border */
   border-radius: 4px;
   box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.8), inset -1px -1px 0 rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* 发送框内的文本域 - 保持原有样式，只调整边框 */
+/* Send Box Textarea - Keep original style, only adjust border */
 .sendbox-container textarea,
 [class*="sendbox"] textarea {
   border: none;
   background: transparent;
-  color: var(--color-text-1); /* 确保文字清晰 */
+  color: var(--color-text-1); /* Ensure text is clear */
 }
 
 .sendbox-container:focus-within,
 [class*="sendbox"]:focus-within {
-  border: 2px inset #808080; /* 聚焦时变为内陷效果 */
+  border: 2px inset #808080; /* Change to inset effect on focus */
   box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* 发送框内图标颜色调整 - 排除模型选择按钮和系统组件 */
+/* Send Box Icon Color Adjustment - Exclude model selector button and system components */
 .sendbox-container svg:not(.sendbox-model-btn svg):not([class*="model"] svg),
 [class*="sendbox"]:not([class*="model"]):not([class*="Model"]) svg:not(.sendbox-model-btn svg) {
   color: #0078d4;
@@ -2122,32 +2121,32 @@ button:not(.sendbox-model-btn):not([class*="model"]):not([class*="Model"]) svg,
   transform: scale(1.1);
 }
 
-/* ==================== 消息气泡 Message ==================== */
-/* 用户消息气泡 - 经典 Windows 蓝色 */
+/* ==================== Message Bubbles ==================== */
+/* User Message Bubbles - Classic Windows Blue */
 .message-item.user .message-bubble,
 [class*="message"][class*="user"] .message-content {
   background: linear-gradient(180deg, #0078d4 0%, #005a9e 100%);
   color: white;
-  border-radius: 4px; /* 方角 */
+  border-radius: 4px; /* Square Corners */
   border: 1px solid #005a9e;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
   padding: 12px 16px;
 }
 
-/* AI 消息气泡 - 经典 Windows 白色 */
+/* AI Message Bubbles - Classic Windows White */
 .message-item.ai .message-bubble,
 [class*="message"][class*="ai"] .message-content,
 [class*="message"][class*="assistant"] .message-content {
   background-color: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(4px);
   border: 1px solid #c0c0c0;
-  border-radius: 4px; /* 方角 */
+  border-radius: 4px; /* Square Corners */
   box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.8), inset -1px -1px 0 rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 12px 16px;
-  color: var(--color-text-1); /* 确保文字清晰 */
+  color: var(--color-text-1); /* Ensure text is clear */
 }
 
-/* 工具调用消息 - 保持原有样式，只微调背景色以融入主题 */
+/* Tool Call Messages - Keep original style, only fine-tune background to fit theme */
 .message-item.ai .arco-alert,
 [class*="message"][class*="ai"] .arco-alert,
 [class*="message"][class*="assistant"] .arco-alert,
@@ -2160,10 +2159,10 @@ button:not(.sendbox-model-btn):not([class*="model"]):not([class*="Model"]) svg,
   box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.8), inset -1px -1px 0 rgba(0, 0, 0, 0.1);
   backdrop-filter: none;
   margin: 4px 0;
-  color: var(--color-text-1); /* 确保文字清晰 */
+  color: var(--color-text-1); /* Ensure text is clear */
 }
 
-/* 工具调用卡片 - 恢复原有样式，微调 */
+/* Tool Call Cards - Restore original style with fine-tuning */
 .message-item.ai .arco-card,
 [class*="message"][class*="ai"] .arco-card,
 [class*="message"][class*="assistant"] .arco-card,
@@ -2176,10 +2175,10 @@ button:not(.sendbox-model-btn):not([class*="model"]):not([class*="Model"]) svg,
   box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.8), inset -1px -1px 0 rgba(0, 0, 0, 0.1);
   backdrop-filter: none;
   margin: 4px 0;
-  color: var(--color-text-1); /* 确保文字清晰 */
+  color: var(--color-text-1); /* Ensure text is clear */
 }
 
-/* 工具调用相关的内容区域 - 恢复简洁样式 */
+/* Tool Call Content Areas - Restore simple style */
 .message-item.ai [class*="tool"]:not([class*="message"]):not([class*="bubble"]),
 [class*="message"][class*="ai"] [class*="tool"]:not([class*="message"]):not([class*="bubble"]),
 .message-item.ai [class*="Tool"]:not([class*="message"]):not([class*="bubble"]),
@@ -2199,7 +2198,7 @@ button:not(.sendbox-model-btn):not([class*="model"]):not([class*="Model"]) svg,
   margin: 0;
 }
 
-/* 工具调用状态标签 - 恢复简洁样式 */
+/* Tool Call Status Labels - Restore simple style */
 .message-item.ai [class*="status"]:not([class*="message"]):not([class*="bubble"]),
 [class*="message"][class*="ai"] [class*="status"]:not([class*="message"]):not([class*="bubble"]),
 .message-item.ai [class*="Status"]:not([class*="message"]):not([class*="bubble"]),
@@ -2208,16 +2207,16 @@ button:not(.sendbox-model-btn):not([class*="model"]):not([class*="Model"]) svg,
   border: 1px solid #c0c0c0;
   border-radius: 4px;
   padding: 2px 6px;
-  color: var(--color-text-1); /* 确保文字清晰 */
+  color: var(--color-text-1); /* Ensure text is clear */
 }
 
-/* ==================== 按钮 Button ==================== */
-/* 主要按钮样式 - 经典 Windows 3D 按钮效果 */
+/* ==================== Button ==================== */
+/* Primary Button Styles - Classic Windows 3D Button Effect */
 .arco-btn-primary:not([class*="icon"]):not([class*="circle"]):not([class*="model"]):not([class*="Model"]),
 button[type="primary"]:not([class*="icon"]):not([class*="circle"]):not([class*="model"]):not([class*="Model"]) {
   background: linear-gradient(180deg, #0078d4 0%, #005a9e 100%);
   border: 2px outset #0078d4;
-  border-radius: 4px; /* 方角 */
+  border-radius: 4px; /* Square Corners */
   font-weight: normal;
   color: white;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -2236,7 +2235,7 @@ button[type="primary"]:active:not([class*="icon"]):not([class*="circle"]):not([c
   box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* 成功状态按钮 - Windows 绿（适度使用） */
+/* Success State Buttons - Windows Green (Use Moderately) */
 .arco-btn-success,
 button[type="success"] {
   background: linear-gradient(180deg, #00a300 0%, #008000 100%);
@@ -2259,7 +2258,7 @@ button[type="success"]:active {
   box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Windows 绿点缀 - 用于成功提示、确认按钮等 */
+/* Windows Green Accents - For success prompts, confirm buttons, etc. */
 .arco-alert[class*="success"],
 [class*="alert"][class*="success"],
 .arco-message-success,
@@ -2269,7 +2268,7 @@ button[type="success"]:active {
   border-left: 3px solid #00a300;
 }
 
-/* 链接 hover 时可以使用 Windows 绿 */
+/* Links can use Windows Green on hover */
 a:not([class*="button"]):not([class*="btn"])[class*="success"],
 a:not([class*="button"]):not([class*="btn"])[class*="confirm"] {
   color: #00a300;
@@ -2281,7 +2280,7 @@ a:not([class*="button"]):not([class*="btn"])[class*="confirm"]:hover {
   text-decoration: underline;
 }
 
-/* Windows 绿点缀 - 复选框选中状态 */
+/* Windows Green Accents - Checkbox Checked State */
 .arco-checkbox-checked .arco-checkbox-icon,
 input[type="checkbox"]:checked {
   background-color: #00a300;
@@ -2292,7 +2291,7 @@ input[type="checkbox"]:checked {
   border-color: white;
 }
 
-/* Windows 绿点缀 - 单选框选中状态 */
+/* Windows Green Accents - Radio Button Checked State */
 .arco-radio-checked .arco-radio-button,
 input[type="radio"]:checked {
   border-color: #00a300;
@@ -2302,7 +2301,7 @@ input[type="radio"]:checked {
   background-color: #00a300;
 }
 
-/* Windows 绿点缀 - 进度条成功状态 */
+/* Windows Green Accents - Progress Bar Success State */
 .arco-progress-line[class*="success"],
 .arco-progress-line[data-status="success"] {
   background-color: rgba(0, 163, 0, 0.1);
@@ -2313,7 +2312,7 @@ input[type="radio"]:checked {
   background-color: #00a300;
 }
 
-/* Windows 绿点缀 - 标签成功状态 */
+/* Windows Green Accents - Tag Success State */
 .arco-tag[class*="success"],
 .arco-tag[data-color="green"] {
   background-color: rgba(0, 163, 0, 0.1);
@@ -2321,12 +2320,12 @@ input[type="radio"]:checked {
   color: #00a300;
 }
 
-/* 明确排除模型选择按钮及其所有子元素，保持系统默认样式 */
+/* Explicitly exclude model selector button and all child elements, keep system default styles */
 .sendbox-model-btn,
 [class*="sendbox-model"],
 .sendbox-model-btn *,
 [class*="sendbox-model"] * {
-  /* 重置所有可能被影响的样式 */
+  /* Reset all potentially affected styles */
   color: inherit;
   fill: inherit;
   background: inherit;
@@ -2336,7 +2335,7 @@ input[type="radio"]:checked {
   transform: none;
 }
 
-/* 排除发送框工具区域（包含模型选择器） */
+/* Exclude send box tool area (contains model selector) */
 .sendbox-tools,
 [class*="sendbox-tools"],
 .sendbox-tools *,
@@ -2350,8 +2349,8 @@ input[type="radio"]:checked {
   transform: none;
 }
 
-/* ==================== 滚动条 Scrollbar ==================== */
-/* 滚动条美化 - 经典 Windows 滚动条样式 */
+/* ==================== Scrollbar ==================== */
+/* Scrollbar Styling - Classic Windows Scrollbar Style */
 ::-webkit-scrollbar {
   width: 16px;
   height: 16px;
@@ -2360,7 +2359,7 @@ input[type="radio"]:checked {
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, #c0c0c0 0%, #808080 100%);
   border: 1px solid #808080;
-  border-radius: 0; /* 方角 */
+  border-radius: 0; /* Square Corners */
   box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.5), inset -1px -1px 0 rgba(0, 0, 0, 0.2);
   transition: background 0.2s ease;
 }
@@ -2369,7 +2368,7 @@ input[type="radio"]:checked {
   background: linear-gradient(180deg, #d0d0d0 0%, #909090 100%);
 }
 
-/* 当容器hover时，滚动条也显示 */
+/* Show scrollbar when container is hovered */
 *:hover::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, #c0c0c0 0%, #808080 100%);
 }
@@ -2381,7 +2380,7 @@ input[type="radio"]:checked {
 ::-webkit-scrollbar-track {
   background: #f0f0f0;
   border: 1px solid #808080;
-  border-radius: 0; /* 方角 */
+  border-radius: 0; /* Square Corners */
   box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -2395,14 +2394,14 @@ input[type="radio"]:checked {
   background: #d0d0d0;
 }
 
-/* ==================== 其他元素 ==================== */
-/* 选中文字 */
+/* ==================== Other Elements ==================== */
+/* Selected Text */
 ::selection {
   background-color: #0078d4;
   color: white;
 }
 
-/* 链接样式 */
+/* Link Styles */
 a:not([class*="button"]):not([class*="btn"]) {
   color: #0078d4;
   transition: color 0.2s ease;
@@ -2413,7 +2412,7 @@ a:hover:not([class*="button"]):not([class*="btn"]) {
   text-decoration: underline;
 }
 
-/* 次要按钮图标颜色 - 排除模型选择器 */
+/* Secondary Button Icon Colors - Exclude Model Selector */
 .arco-btn-secondary:not(.sendbox-model-btn):not([class*="model"]):not([class*="Model"]) svg,
 button[type="secondary"]:not(.sendbox-model-btn):not([class*="model"]):not([class*="Model"]) svg {
   color: #0078d4;
@@ -2425,7 +2424,7 @@ button[type="secondary"]:not(.sendbox-model-btn):not([class*="model"]):not([clas
   color: #1a86d9;
 }
 
-/* 消息区域图标颜色 - 只针对消息气泡内的图标 */
+/* Message Area Icon Colors - Only for icons inside message bubbles */
 .message-item .message-content svg,
 [class*="message"] [class*="content"] svg {
   color: #404040;
@@ -2437,22 +2436,22 @@ button[type="secondary"]:not(.sendbox-model-btn):not([class*="model"]):not([clas
   color: #0078d4;
 }
 
-/* ==================== Tooltip 和 Popover ==================== */
-/* Tooltip 和 Popover 样式优化 - 经典 Windows 灰色背景，黑色文字 */
+/* ==================== Tooltip and Popover ==================== */
+/* Tooltip and Popover Style Optimization - Classic Windows Gray Background, Black Text */
 .arco-tooltip-popup,
 .arco-popover-popup {
-  pointer-events: none; /* 避免遮挡鼠标事件 */
-  z-index: 10000 !important; /* 确保 tooltip 在最上层 */
+  pointer-events: none; /* Avoid blocking mouse events */
+  z-index: 10000 !important; /* Ensure tooltip is on top layer */
 }
 
-/* 内部容器样式 */
+/* Inner Container Styles */
 .arco-tooltip-inner,
 .arco-popover-inner,
 .arco-popover-content {
-  background-color: #ffffe1 !important; /* 经典 Windows 米黄色 */
-  color: #000000 !important; /* 黑色文字 */
+  background-color: #ffffe1 !important; /* Classic Windows Light Yellow */
+  color: #000000 !important; /* Black Text */
   border: 1px solid #808080 !important;
-  border-radius: 0 !important; /* 方角 */
+  border-radius: 0 !important; /* Square Corners */
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3) !important;
   backdrop-filter: none !important;
   padding: 4px 8px !important;
@@ -2462,7 +2461,7 @@ button[type="secondary"]:not(.sendbox-model-btn):not([class*="model"]):not([clas
   word-wrap: break-word !important;
 }
 
-/* 强制内部文字颜色为黑色 */
+/* Force Inner Text Color to Black */
 .arco-tooltip-inner *,
 .arco-popover-inner *,
 .arco-popover-content * {
@@ -2470,25 +2469,25 @@ button[type="secondary"]:not(.sendbox-model-btn):not([class*="model"]):not([clas
   background-color: transparent !important;
 }
 
-/* 箭头样式 */
+/* Arrow Styles */
 .arco-tooltip-arrow,
 .arco-popover-arrow {
   border-color: #808080 !important;
 }
 
-/* 侧边栏 tooltip - 使用系统默认配色 */
+/* Sidebar Tooltip - Use System Default Colors */
 .layout-sider ~ .arco-tooltip-popup,
 .layout-sider .arco-tooltip-popup {
   z-index: 10001 !important;
 }
 
-/* ==================== 对话框 Modal ==================== */
-/* 对话框背景和透明度 */
+/* ==================== Modal Dialog ==================== */
+/* Dialog Background and Opacity */
 .arco-modal-body {
   background-color: rgba(240, 240, 240, 0.98);
   backdrop-filter: blur(4px);
   border: 2px outset #c0c0c0;
-  color: var(--color-text-1); /* 确保文字清晰 */
+  color: var(--color-text-1); /* Ensure text is clear */
 }
 
 .arco-modal-header {
@@ -2501,11 +2500,11 @@ button[type="secondary"]:not(.sendbox-model-btn):not([class*="model"]):not([clas
 .arco-modal-footer {
   background-color: rgba(240, 240, 240, 0.98);
   border-top: 1px solid #c0c0c0;
-  color: var(--color-text-1); /* 确保文字清晰 */
+  color: var(--color-text-1); /* Ensure text is clear */
 }
 
-/* ==================== Windows 经典元素（适度添加） ==================== */
-/* 经典输入框 - Windows 95/98 风格 */
+/* ==================== Windows Classic Elements (Added Moderately) ==================== */
+/* Classic Input Box - Windows 95/98 Style */
 .arco-input,
 input[type="text"],
 input[type="password"],
@@ -2518,7 +2517,7 @@ input[type="search"] {
   border-radius: 0;
   padding: 4px 6px;
   font-size: 13px;
-  color: var(--color-text-1); /* 确保文字清晰 */
+  color: var(--color-text-1); /* Ensure text is clear */
   transition: all 0.1s ease;
 }
 
@@ -2529,7 +2528,7 @@ input:focus {
   outline: none;
 }
 
-/* 经典复选框和单选框 - Windows 95/98 风格 */
+/* Classic Checkbox and Radio - Windows 95/98 Style */
 .arco-checkbox,
 .arco-radio,
 input[type="checkbox"],
@@ -2581,8 +2580,8 @@ input[type="radio"]:checked::after {
   margin: 2px auto;
 }
 
-/* ==================== 表单标签样式 - 保持简洁 ==================== */
-/* 表单标签 - 移除不必要的背景色和边框，只作为标题显示 */
+/* ==================== Form Label Styles - Keep Simple ==================== */
+/* Form Labels - Remove unnecessary background and border, only display as title */
 .arco-form-label-item,
 [class*="form-label"],
 [class*="arco-form-label"],
@@ -2597,7 +2596,7 @@ input[type="radio"]:checked::after {
   color: var(--color-text-1) !important;
 }
 
-/* 表单标签文字 - 确保清晰可见 */
+/* Form Label Text - Ensure Clearly Visible */
 .arco-form-label-item *,
 [class*="form-label"] *,
 [class*="arco-form-label"] *,
@@ -2608,7 +2607,7 @@ input[type="radio"]:checked::after {
   background-color: transparent !important;
 }
 
-/* 深色模式表单标签 */
+/* Dark Mode Form Labels */
 [data-theme='dark'] .arco-form-label-item,
 [data-theme='dark'] [class*="form-label"],
 [data-theme='dark'] [class*="arco-form-label"],
@@ -2631,9 +2630,9 @@ input[type="radio"]:checked::after {
   background-color: transparent !important;
 }
 
-/* ==================== 深色模式 (Dark Mode) ==================== */
+/* ==================== Dark Mode ==================== */
 [data-theme='dark'] {
-  /* 主色调 - 深色模式调亮以提高可见度 */
+  /* Primary Colors - Brightened for Dark Mode Visibility */
   --color-primary: #4da6f0;
   --primary: #4da6f0;
   --color-primary-light-1: #66b1e1;
@@ -2642,14 +2641,14 @@ input[type="radio"]:checked::after {
   --color-primary-dark-1: #3399e6;
   --primary-rgb: 77, 166, 240;
 
-  /* 品牌色 - 深色模式 */
+  /* Brand Colors - Dark Mode */
   --brand: #4da6f0;
   --brand-light: #1a2a3a;
   --brand-hover: #66b1e1;
   --color-brand-fill: #4da6f0;
   --color-brand-bg: #1a2a3a;
 
-  /* AOU 品牌色板 - 深色模式反转 */
+  /* AOU Brand Palette - Dark Mode Inverted */
   --aou-1: #001b2c;
   --aou-2: #003052;
   --aou-3: #004578;
@@ -2661,7 +2660,7 @@ input[type="radio"]:checked::after {
   --aou-9: #99cbeb;
   --aou-10: #b3d8f0;
 
-  /* 背景色 - 深色 Windows 风格 */
+  /* Background Colors - Dark Windows Style */
   --color-bg-1: #1a1a1a;
   --bg-1: #1a1a1a;
   --color-bg-2: #262626;
@@ -2676,7 +2675,7 @@ input[type="radio"]:checked::after {
   --fill: #1a1a1a;
   --color-fill: #1a1a1a;
 
-  /* 文字色 - 高对比度 */
+  /* Text Colors - High Contrast */
   --color-text-1: #e0e0e0;
   --text-primary: #e0e0e0;
   --color-text-2: #b0b0b0;
@@ -2685,34 +2684,34 @@ input[type="radio"]:checked::after {
   --text-disabled: #808080;
   --text-0: #ffffff;
 
-  /* 边框色 */
+  /* Border Colors */
   --color-border: #5a5a5a;
   --color-border-1: #5a5a5a;
   --color-border-2: #404040;
   --border-base: #5a5a5a;
   --border-light: #404040;
 
-  /* 语义色 - 深色模式调整 */
-  --success: #4caf50; /* Windows 绿（深色模式调亮） */
+  /* Semantic Colors - Dark Mode Adjusted */
+  --success: #4caf50; /* Windows Green (Brightened for Dark Mode) */
   --warning: #ff9800;
   --danger: #f44336;
   --info: #4da6f0;
   
-  /* Windows 经典绿色 - 深色模式 */
+  /* Windows Classic Green - Dark Mode */
   --windows-green: #4caf50;
   --windows-green-light: #66bb6a;
   --windows-green-dark: #388e3c;
 
-  /* 消息和组件色 */
+  /* Message and Component Colors */
   --message-user-bg: #1a2a3a;
   --message-tips-bg: #1a1a1a;
   --workspace-btn-bg: #2d2d2d;
   
-  /* 对话框颜色 */
+  /* Dialog Colors */
   --dialog-fill-0: rgba(26, 26, 26, 0.95);
 }
 
-/* ===== 深色模式全局样式 ===== */
+/* ===== Dark Mode Global Styles ===== */
 [data-theme='dark'] body,
 [data-theme='dark'] html {
   background-color: var(--bg-1);
@@ -2728,7 +2727,7 @@ input[type="radio"]:checked::after {
   background-color: var(--bg-1);
 }
 
-/* ===== 深色模式侧边栏 ===== */
+/* ===== Dark Mode Sidebar ===== */
 [data-theme='dark'] .layout-sider {
   background-color: var(--bg-3);
   border-right: 2px solid var(--border-base);
@@ -2753,8 +2752,8 @@ input[type="radio"]:checked::after {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
-/* ===== 深色模式背景图 ===== */
-/* 参考 Hello Kitty 模式：只在 ::before 上设置半透明遮罩 */
+/* ===== Dark Mode Background Image ===== */
+/* Reference Hello Kitty mode: only set semi-transparent overlay on ::before */
 [data-theme='dark'] .layout-content.bg-1::before {
   background: linear-gradient(
     135deg,
@@ -2770,7 +2769,7 @@ input[type="radio"]:checked::after {
   filter: brightness(0.9) saturate(1.1);
 }
 
-/* ===== 深色模式输入框 ===== */
+/* ===== Dark Mode Input Box ===== */
 [data-theme='dark'] .guidInputCard textarea,
 [data-theme='dark'] [class*="guidInputCard"] textarea {
   background-color: rgba(38, 38, 38, 0.98);
@@ -2795,7 +2794,7 @@ input[type="radio"]:checked::after {
   box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.1), inset -1px -1px 0 rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* ===== 深色模式消息气泡 ===== */
+/* ===== Dark Mode Message Bubbles ===== */
 [data-theme='dark'] .message-item.user .message-bubble,
 [data-theme='dark'] [class*="message"][class*="user"] .message-content {
   background: linear-gradient(180deg, #005a9e 0%, #004578 100%);
@@ -2832,7 +2831,7 @@ input[type="radio"]:checked::after {
   color: var(--text-primary);
 }
 
-/* ===== 深色模式按钮 ===== */
+/* ===== Dark Mode Buttons ===== */
 [data-theme='dark'] .arco-btn-primary:not([class*="icon"]):not([class*="circle"]):not([class*="model"]):not([class*="Model"]),
 [data-theme='dark'] button[type="primary"]:not([class*="icon"]):not([class*="circle"]):not([class*="model"]):not([class*="Model"]) {
   background: linear-gradient(180deg, #005a9e 0%, #004578 100%);
@@ -2859,7 +2858,7 @@ input[type="radio"]:checked::after {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 3px 6px rgba(0, 0, 0, 0.5);
 }
 
-/* 深色模式 Windows 绿点缀 */
+/* Dark Mode Windows Green Accents */
 [data-theme='dark'] .arco-alert[class*="success"],
 [data-theme='dark'] [class*="alert"][class*="success"],
 [data-theme='dark'] .arco-message-success,
@@ -2880,14 +2879,14 @@ input[type="radio"]:checked::after {
   text-decoration: underline;
 }
 
-/* 深色模式 Windows 绿点缀 - 复选框选中状态 */
+/* Dark Mode Windows Green Accents - Checkbox Checked State */
 [data-theme='dark'] .arco-checkbox-checked .arco-checkbox-icon,
 [data-theme='dark'] input[type="checkbox"]:checked {
   background-color: #4caf50;
   border-color: #4caf50;
 }
 
-/* 深色模式 Windows 绿点缀 - 单选框选中状态 */
+/* Dark Mode Windows Green Accents - Radio Button Checked State */
 [data-theme='dark'] .arco-radio-checked .arco-radio-button,
 [data-theme='dark'] input[type="radio"]:checked {
   border-color: #4caf50;
@@ -2897,7 +2896,7 @@ input[type="radio"]:checked::after {
   background-color: #4caf50;
 }
 
-/* 深色模式 Windows 绿点缀 - 进度条成功状态 */
+/* Dark Mode Windows Green Accents - Progress Bar Success State */
 [data-theme='dark'] .arco-progress-line[class*="success"],
 [data-theme='dark'] .arco-progress-line[data-status="success"] {
   background-color: rgba(76, 175, 80, 0.15);
@@ -2908,7 +2907,7 @@ input[type="radio"]:checked::after {
   background-color: #4caf50;
 }
 
-/* 深色模式 Windows 绿点缀 - 标签成功状态 */
+/* Dark Mode Windows Green Accents - Tag Success State */
 [data-theme='dark'] .arco-tag[class*="success"],
 [data-theme='dark'] .arco-tag[data-color="green"] {
   background-color: rgba(76, 175, 80, 0.15);
@@ -2916,7 +2915,7 @@ input[type="radio"]:checked::after {
   color: #4caf50;
 }
 
-/* ===== 深色模式滚动条 ===== */
+/* ===== Dark Mode Scrollbar ===== */
 [data-theme='dark'] ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, #5a5a5a 0%, #404040 100%);
   border: 1px solid #5a5a5a;
@@ -2939,7 +2938,7 @@ input[type="radio"]:checked::after {
   box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.1), inset -1px -1px 0 rgba(0, 0, 0, 0.4);
 }
 
-/* ===== 深色模式其他元素 ===== */
+/* ===== Dark Mode Other Elements ===== */
 [data-theme='dark'] ::selection {
   background-color: var(--color-primary);
   color: var(--text-white);
@@ -2955,7 +2954,7 @@ input[type="radio"]:checked::after {
 
 [data-theme='dark'] .arco-tooltip-popup,
 [data-theme='dark'] .arco-popover-popup {
-  z-index: 10000 !important; /* 确保 tooltip 在最上层 */
+  z-index: 10000 !important; /* Ensure tooltip is on top layer */
 }
 
 [data-theme='dark'] .arco-tooltip-inner,
@@ -2979,7 +2978,7 @@ input[type="radio"]:checked::after {
   background-color: transparent !important;
 }
 
-/* 深色模式侧边栏 tooltip - 使用系统默认配色 */
+/* Dark Mode Sidebar Tooltip - Use System Default Colors */
 [data-theme='dark'] .layout-sider ~ .arco-tooltip-popup,
 [data-theme='dark'] .layout-sider .arco-tooltip-popup {
   z-index: 10001 !important;
@@ -3005,7 +3004,7 @@ input[type="radio"]:checked::after {
   color: var(--text-primary);
 }
 
-/* ===== 深色模式输入框 ===== */
+/* ===== Dark Mode Input Box ===== */
 [data-theme='dark'] .arco-input,
 [data-theme='dark'] input[type="text"],
 [data-theme='dark'] input[type="password"],
@@ -3024,7 +3023,7 @@ input[type="radio"]:checked::after {
   box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--color-primary);
 }
 
-/* ===== 深色模式复选框和单选框 ===== */
+/* ===== Dark Mode Checkbox and Radio ===== */
 [data-theme='dark'] .arco-checkbox,
 [data-theme='dark'] .arco-radio,
 [data-theme='dark'] input[type="checkbox"],
@@ -3043,7 +3042,7 @@ input[type="radio"]:checked::after {
   box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* ==================== 响应式调整 ==================== */
+/* ==================== Responsive Adjustments ==================== */
 @media (max-width: 768px) {
   .guidInputCard,
   .sendbox-container {
@@ -3064,7 +3063,7 @@ input[type="radio"]:checked::after {
   }
 }
 
-/* ==================== 打印样式 ==================== */
+/* ==================== Print Styles ==================== */
 @media print {
   .layout-content.bg-1::before,
   [class*="chat-layout"] .arco-layout-content::before {

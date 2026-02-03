@@ -5,16 +5,16 @@
  */
 
 import { IconLeft, IconRight } from '@arco-design/web-react/icon';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface HorizontalFileListProps {
   children: React.ReactNode;
 }
 
 /**
- * 横向滚动文件列表组件
- * 支持左右滚动，自动显示/隐藏滚动按钮
- * 用于文件预览列表的横向展示
+ * Horizontal scrolling file list component
+ * Supports left/right scrolling with auto show/hide scroll buttons
+ * Used for horizontal display of file preview lists
  */
 const HorizontalFileList: React.FC<HorizontalFileListProps> = ({ children }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -23,25 +23,25 @@ const HorizontalFileList: React.FC<HorizontalFileListProps> = ({ children }) => 
   const [canScrollLeft, setCanScrollLeft] = useState(false);
 
   /**
-   * 检查滚动状态，判断是否需要显示左右滚动按钮
-   * 计算容器是否可滚动，以及当前是否在起始/结束位置
+   * Check scroll state to determine whether to show left/right scroll buttons
+   * Calculate if container is scrollable and if currently at start/end position
    */
   const checkScroll = React.useCallback(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    // 判断是否有横向滚动
+    // Check if horizontal scrolling is available
     const hasScroll = container.scrollWidth > container.clientWidth;
-    // 是否在起始位置（左边）
+    // Check if at start position (left edge)
     const isAtStart = container.scrollLeft <= 1;
-    // 是否在结束位置（右边）
+    // Check if at end position (right edge)
     const isAtEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 1;
 
     const nextShowScrollButton = hasScroll;
     const nextCanScrollRight = hasScroll && !isAtEnd;
     const nextCanScrollLeft = hasScroll && !isAtStart;
 
-    // 仅在状态确实发生变化时才更新，避免不必要的重渲染
+    // Only update state when it actually changes to avoid unnecessary re-renders
     setShowScrollButton((prev) => (prev !== nextShowScrollButton ? nextShowScrollButton : prev));
     setCanScrollRight((prev) => (prev !== nextCanScrollRight ? nextCanScrollRight : prev));
     setCanScrollLeft((prev) => (prev !== nextCanScrollLeft ? nextCanScrollLeft : prev));
@@ -64,12 +64,12 @@ const HorizontalFileList: React.FC<HorizontalFileListProps> = ({ children }) => 
       }
     };
 
-    // 使用 ResizeObserver 监听容器大小变化，自动更新滚动状态
-    // ResizeObserver 已经能很好地处理大部分布局变化
+    // Use ResizeObserver to listen for container size changes and auto-update scroll state
+    // ResizeObserver handles most layout changes well
     const resizeObserver = new ResizeObserver(scheduleCheck);
     resizeObserver.observe(container);
 
-    // 监听滚动事件，实时更新按钮显示状态
+    // Listen for scroll events to update button display state in real-time
     container.addEventListener('scroll', checkScroll, { passive: true });
 
     return () => {
@@ -81,13 +81,13 @@ const HorizontalFileList: React.FC<HorizontalFileListProps> = ({ children }) => 
     };
   }, [checkScroll]);
 
-  // 当 children 变化时也需要检查一次，但不需要作为 useEffect 的依赖导致频繁重运行
+  // Also check once when children change, but no need to add as useEffect dependency to avoid frequent re-runs
   useEffect(() => {
     checkScroll();
   }, [children, checkScroll]);
 
   /**
-   * 向右滚动 200px
+   * Scroll right by 200px
    */
   const handleScrollRight = () => {
     const container = scrollContainerRef.current;
@@ -100,7 +100,7 @@ const HorizontalFileList: React.FC<HorizontalFileListProps> = ({ children }) => 
   };
 
   /**
-   * 向左滚动 200px
+   * Scroll left by 200px
    */
   const handleScrollLeft = () => {
     const container = scrollContainerRef.current;
@@ -114,7 +114,7 @@ const HorizontalFileList: React.FC<HorizontalFileListProps> = ({ children }) => 
 
   return (
     <div className='relative'>
-      {/* 横向滚动容器，隐藏滚动条 */}
+      {/* Horizontal scroll container with hidden scrollbar */}
       <div
         ref={scrollContainerRef}
         className='flex items-center gap-8px overflow-x-auto overflow-y-hidden scrollbar-hide pt-5px pb-5px'
@@ -125,21 +125,21 @@ const HorizontalFileList: React.FC<HorizontalFileListProps> = ({ children }) => 
       >
         {children}
       </div>
-      {/* 左侧滚动按钮 - 在非起始位置时显示 */}
+      {/* Left scroll button - shown when not at start position */}
       {showScrollButton && canScrollLeft && (
         <div
           className='absolute left-0 top-0 h-full flex items-center cursor-pointer'
           style={{
-            background: 'linear-gradient(to left, transparent, var(--dialog-fill-0) 30%)', // 左侧渐变遮罩
+            background: 'linear-gradient(to left, transparent, var(--dialog-fill-0) 30%)', // Left gradient mask
             width: '60px',
-            pointerEvents: 'none', // 遮罩层不响应点击
+            pointerEvents: 'none', // Mask layer does not respond to clicks
           }}
         >
           <button
             onClick={handleScrollLeft}
             className='ml-0px w-28px h-28px rd-50% bg-1 flex items-center justify-center hover:bg-2 transition-colors border-1 border-solid b-color-border-2'
             style={{
-              pointerEvents: 'auto', // 按钮响应点击
+              pointerEvents: 'auto', // Button responds to clicks
               boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
             }}
           >
@@ -147,21 +147,21 @@ const HorizontalFileList: React.FC<HorizontalFileListProps> = ({ children }) => 
           </button>
         </div>
       )}
-      {/* 右侧滚动按钮 - 在非结束位置时显示 */}
+      {/* Right scroll button - shown when not at end position */}
       {showScrollButton && canScrollRight && (
         <div
           className='absolute right-0 top-0 h-full flex items-center cursor-pointer'
           style={{
-            background: 'linear-gradient(to right, transparent, var(--dialog-fill-0) 30%)', // 右侧渐变遮罩
+            background: 'linear-gradient(to right, transparent, var(--dialog-fill-0) 30%)', // Right gradient mask
             width: '60px',
-            pointerEvents: 'none', // 遮罩层不响应点击
+            pointerEvents: 'none', // Mask layer does not respond to clicks
           }}
         >
           <button
             onClick={handleScrollRight}
             className='ml-auto mr-0px w-28px h-28px rd-50% bg-1 flex items-center justify-center hover:bg-2 transition-colors border-1 border-solid b-color-border-2'
             style={{
-              pointerEvents: 'auto', // 按钮响应点击
+              pointerEvents: 'auto', // Button responds to clicks
               boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
             }}
           >
