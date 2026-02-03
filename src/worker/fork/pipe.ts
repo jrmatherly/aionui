@@ -6,7 +6,6 @@
 
 const uuid = (len = 4) => {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const crypto = require('crypto');
     const bytes = crypto.randomBytes(Math.ceil(len / 2));
     return bytes.toString('hex').slice(0, len);

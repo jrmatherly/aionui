@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any -- IPC messages carry arbitrary serialized data */
+
 import type { IConfirmation } from '@/common/chatLib';
 import { bridge } from '@office-ai/platform';
 import type { OpenDialogOptions } from 'electron';

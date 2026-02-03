@@ -32,7 +32,6 @@ type QRCodeTerminal = {
 
 function loadQRCodeTerminal(): QRCodeTerminal | null {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const module = require('qrcode-terminal') as QRCodeTerminal;
     return module;
   } catch {

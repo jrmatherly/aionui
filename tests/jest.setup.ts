@@ -3,6 +3,8 @@
  * Global configuration for MCP integration tests
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
+
 // Jest types are automatically available
 
 // Make this a module
@@ -10,7 +12,6 @@ export {};
 
 // Extend global types for testing
 declare global {
-  // eslint-disable-next-line no-var
   var electronAPI: any;
 }
 

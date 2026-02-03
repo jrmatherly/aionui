@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any -- Monkey-patching native browser APIs requires flexible typing */
+
 // Centralize renderer runtime patches so the entry file stays tidy
 
 declare global {

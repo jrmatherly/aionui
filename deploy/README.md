@@ -29,7 +29,7 @@ docker build -f deploy/docker/Dockerfile -t aionui .
 ### Access
 
 - **Local:** http://localhost:25808
-- **Network:** http://<host-ip>:25808
+- **Network:** `http://<host-ip>:25808`
 
 ### Default Credentials
 

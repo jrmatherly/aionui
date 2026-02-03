@@ -457,7 +457,7 @@ const PreviewPanel: React.FC = () => {
               </div>
               <div className='flex flex-col flex-1 overflow-hidden'>
                 {/* prettier-ignore */}
-                {/* eslint-disable-next-line max-len */}
+                {}
                 <HTMLRenderer content={content} filePath={metadata?.filePath} containerRef={previewContainerRef} onScroll={handlePreviewScroll} inspectMode={inspectMode} copySuccessMessage={t('preview.html.copySuccess')} onElementSelected={handleElementSelected} />
               </div>
             </div>
@@ -584,13 +584,6 @@ const PreviewPanel: React.FC = () => {
               setIsSplitScreenEnabled(false); // Disable split when switching view mode
             }}
             onSplitScreenToggle={() => setIsSplitScreenEnabled(!isSplitScreenEnabled)}
-            onEditClick={() => {
-              setIsEditMode(true);
-              // Auto enable split screen for Code/TXT when entering edit mode
-              if (contentType === 'code') {
-                setIsSplitScreenEnabled(true);
-              }
-            }}
             onEditClick={() => {
               setIsEditMode(true);
               // Auto enable split screen for Code/TXT when entering edit mode

@@ -350,7 +350,6 @@ export class CodexAgent {
 
   private generateConversationId(): string {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const crypto = require('crypto');
       if (typeof crypto.randomUUID === 'function') {
         return crypto.randomUUID();

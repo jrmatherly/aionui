@@ -1,6 +1,7 @@
 /**
  * Type declarations for pptx2json
  */
+/* eslint-disable @typescript-eslint/no-explicit-any -- Third-party library without shipped types */
 declare module 'pptx2json' {
   export default class PPTX2Json {
     constructor();

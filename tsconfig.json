@@ -10,25 +10,13 @@
     "baseUrl": ".",
     "outDir": "dist",
     "resolveJsonModule": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@process/*": [
-        "./src/process/*"
-      ],
-      "@renderer/*": [
-        "./src/renderer/*"
-      ],
-      "@worker/*": [
-        "./src/worker/*"
-      ]
+      "@/*": ["./src/*"],
+      "@process/*": ["./src/process/*"],
+      "@renderer/*": ["./src/renderer/*"],
+      "@worker/*": ["./src/worker/*"]
     }
   },
-  "include": [
-    "src/**/*",
-    "uno.config.ts",
-    "src/renderer/types.d.ts"
-  ]
+  "include": ["src/**/*", "uno.config.ts", "src/renderer/types.d.ts"]
 }
