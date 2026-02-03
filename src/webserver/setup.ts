@@ -75,7 +75,7 @@ export function setupBasicMiddleware(app: Express): void {
     csrf(
       CSRF_SECRET,
       ['POST', 'PUT', 'DELETE', 'PATCH'], // Protected methods
-      ['/login', '/api/auth/qr-login', '/api/auth/refresh'], // Excluded: login form, QR login, and token refresh (uses httpOnly refresh cookie as credential)
+      ['/login', '/logout', '/api/auth/qr-login', '/api/auth/refresh'], // Excluded: login form, logout, QR login, and token refresh (cookie-only auth)
       [] // No service worker URLs
     )
   );
