@@ -5,7 +5,7 @@
  */
 
 import { TokenMiddleware } from '@/webserver/auth/middleware/TokenMiddleware';
-import { app } from 'electron';
+import { app as electronApp } from 'electron';
 import type { Express, Request, Response } from 'express';
 import express from 'express';
 import fs from 'fs';
@@ -18,8 +18,8 @@ import { createRateLimiter } from '../middleware/security';
  */
 const resolveRendererPath = () => {
   // Webpack assets are always inside app.asar in production or project directory in development
-  // app.getAppPath() returns the correct path for both cases
-  const appPath = app.getAppPath();
+  // electronApp.getAppPath() returns the correct path for both cases
+  const appPath = electronApp.getAppPath();
   const baseRoot = path.join(appPath, '.webpack', 'renderer');
   const indexHtml = path.join(baseRoot, 'main_window', 'index.html');
 
@@ -72,7 +72,16 @@ export function registerStaticRoutes(app: Express): void {
    * GET /favicon.ico
    */
   app.get('/favicon.ico', (_req: Request, res: Response) => {
-    res.status(204).end(); // No Content
+    // Try packaged resources first (electron-builder extraResource), then project root
+    const candidates = [path.join(process.resourcesPath || '', 'app.ico'), path.join(electronApp.getAppPath(), '..', 'app.ico'), path.join(electronApp.getAppPath(), 'resources', 'app.ico')];
+    for (const candidate of candidates) {
+      if (fs.existsSync(candidate)) {
+        res.setHeader('Cache-Control', 'public, max-age=86400');
+        res.sendFile(candidate);
+        return;
+      }
+    }
+    res.status(204).end();
   });
 
   /**
