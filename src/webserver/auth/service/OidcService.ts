@@ -21,6 +21,20 @@ interface StateEntry {
   redirectTo?: string;
 }
 
+/**
+ * Normalize display names from identity providers.
+ * Microsoft EntraID often returns "Last, First" — flip to "First Last".
+ */
+function normalizeDisplayName(name: string | undefined): string | undefined {
+  if (!name) return undefined;
+  // "Last, First" or "Last, First Middle" → "First Last" / "First Middle Last"
+  const commaMatch = name.match(/^([^,]+),\s*(.+)$/);
+  if (commaMatch) {
+    return `${commaMatch[2]} ${commaMatch[1]}`.trim();
+  }
+  return name.trim();
+}
+
 export interface OidcCallbackResult {
   success: boolean;
   user?: {
@@ -135,7 +149,7 @@ export class OidcService {
 
       const oidcSubject = claims.sub;
       const email = claims.email as string | undefined;
-      const displayName = claims.name as string | undefined;
+      const displayName = normalizeDisplayName(claims.name as string | undefined);
 
       // Groups come from the configured claim (often 'groups' or '_claim_names')
       const groups = (claims[OIDC_CONFIG.groupsClaim] as string[]) || [];

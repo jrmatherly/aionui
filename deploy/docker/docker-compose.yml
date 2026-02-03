@@ -55,16 +55,15 @@ services:
       - OIDC_REDIRECT_URI=${OIDC_REDIRECT_URI:-}
       - OIDC_SCOPES=${OIDC_SCOPES:-openid profile email}
       - OIDC_GROUPS_CLAIM=${OIDC_GROUPS_CLAIM:-groups}
-      - GROUP_MAPPINGS_JSON=${GROUP_MAPPINGS_JSON:-}
-      - GROUP_MAPPINGS_FILE=${GROUP_MAPPINGS_FILE:-/etc/aionui/group-mappings.json}
+      # GROUP_MAPPINGS_JSON and GROUP_MAPPINGS_FILE are passed through via env_file
+      # Do NOT override here — JSON values break docker-compose variable interpolation
 
     # Persistent storage
     volumes:
       # Database, config, and session data
       - aionui_data:/home/aionui/.config/AionUi
-      # OIDC group→role mappings (uncomment when using EntraID SSO)
-      # Copy group-mappings-example.json to group-mappings.json and customize
-      # - ./group-mappings.json:/etc/aionui/group-mappings.json:ro
+      # OIDC group→role mappings (file-based, see GROUP_MAPPINGS_FILE in .env)
+      - ./group-mappings.json:/etc/aionui/group-mappings.json:ro
       # Optional: Mount custom skills (read-only)
       # - ./custom-skills:/app/resources/skills:ro
 

@@ -25,9 +25,9 @@ export interface IGroupRoleMapping {
  *   3. Empty array → all SSO users get 'user' role
  */
 export function loadGroupMappings(): IGroupRoleMapping[] {
-  // 1. Try file
+  // 1. Try file (only when explicitly configured or default path exists as a regular file)
   const configPath = process.env.GROUP_MAPPINGS_FILE || '/etc/aionui/group-mappings.json';
-  if (fs.existsSync(configPath)) {
+  if (fs.existsSync(configPath) && fs.statSync(configPath).isFile()) {
     try {
       const content = fs.readFileSync(configPath, 'utf-8');
       const mappings = JSON.parse(content) as IGroupRoleMapping[];

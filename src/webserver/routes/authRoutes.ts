@@ -216,6 +216,8 @@ export function registerAuthRoutes(app: Express): void {
    */
   // Add rate limiting for authenticated user info endpoint
   app.get('/api/auth/user', apiRateLimiter, AuthMiddleware.authenticateToken, authenticatedActionLimiter, (req: Request, res: Response) => {
+    // Look up full user record for display_name/email (token only has id/username/role)
+    const fullUser = UserRepository.findById(req.user!.id);
     res.json({
       success: true,
       user: {
@@ -223,6 +225,8 @@ export function registerAuthRoutes(app: Express): void {
         username: req.user!.username,
         role: req.user!.role,
         authMethod: req.user!.auth_method,
+        displayName: fullUser?.display_name ?? undefined,
+        email: fullUser?.email ?? undefined,
       },
     });
   });

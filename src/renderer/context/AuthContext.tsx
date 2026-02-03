@@ -8,6 +8,8 @@ export interface AuthUser {
   username: string;
   role?: 'admin' | 'user' | 'viewer';
   authMethod?: 'local' | 'oidc';
+  displayName?: string;
+  email?: string;
 }
 
 interface LoginParams {

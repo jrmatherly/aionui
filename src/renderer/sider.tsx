@@ -3,6 +3,7 @@ import { ArrowCircleLeft, Plus, SettingTwo } from '@icon-park/react';
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
+import UserMenu from './components/UserMenu';
 import WorkspaceGroupedHistory from './pages/conversation/WorkspaceGroupedHistory';
 import { usePreviewContext } from './pages/conversation/preview';
 import SettingsSider from './pages/settings/SettingsSider';
@@ -74,8 +75,9 @@ const Sider: React.FC<SiderProps> = ({ onSessionClick, collapsed = false }) => {
           </div>
         )}
       </div>
-      {/* Footer - settings button */}
+      {/* Footer - user menu + settings button */}
       <div className='shrink-0 sider-footer'>
+        <UserMenu collapsed={collapsed} />
         <Tooltip disabled={!collapsed} content={isSettings ? t('common.back') : t('common.settings')} position='right'>
           <div onClick={handleSettingsClick} className='flex items-center justify-start gap-10px px-12px py-8px hover:bg-hover rd-0.5rem mb-8px cursor-pointer'>
             {isSettings ? <ArrowCircleLeft className='flex' theme='outline' size='24' fill={iconColors.primary} /> : <SettingTwo className='flex' theme='outline' size='24' fill={iconColors.primary} />}
