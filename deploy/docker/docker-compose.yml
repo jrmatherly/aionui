@@ -47,6 +47,15 @@ services:
       # Security (set in .env for production)
       - JWT_SECRET=${JWT_SECRET}
       # - AIONUI_HTTPS=${AIONUI_HTTPS:-false}
+      # OIDC / EntraID SSO (optional)
+      - OIDC_ENABLED=${OIDC_ENABLED:-false}
+      - OIDC_ISSUER=${OIDC_ISSUER:-}
+      - OIDC_CLIENT_ID=${OIDC_CLIENT_ID:-}
+      - OIDC_CLIENT_SECRET=${OIDC_CLIENT_SECRET:-}
+      - OIDC_REDIRECT_URI=${OIDC_REDIRECT_URI:-}
+      - OIDC_SCOPES=${OIDC_SCOPES:-openid profile email}
+      - OIDC_GROUPS_CLAIM=${OIDC_GROUPS_CLAIM:-groups}
+      - GROUP_MAPPINGS_JSON=${GROUP_MAPPINGS_JSON:-}
 
     # Persistent storage
     volumes:

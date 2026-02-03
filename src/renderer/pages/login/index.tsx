@@ -31,6 +31,9 @@ const deobfuscate = (text: string): string => {
   }
 };
 
+/** Whether running inside Electron (desktop app). */
+const isDesktopRuntime = typeof window !== 'undefined' && Boolean((window as any).electronAPI);
+
 const LoginPage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
@@ -42,6 +45,7 @@ const LoginPage: React.FC = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [message, setMessage] = useState<MessageState | null>(null);
   const [loading, setLoading] = useState(false);
+  const [oidcEnabled, setOidcEnabled] = useState(false);
 
   const usernameRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
@@ -54,6 +58,21 @@ const LoginPage: React.FC = () => {
       if (messageTimer.current) {
         window.clearTimeout(messageTimer.current);
       }
+    };
+  }, []);
+
+  // Check if OIDC (e.g. EntraID SSO) is available
+  useEffect(() => {
+    if (isDesktopRuntime) return; // desktop never uses OIDC
+    let cancelled = false;
+    fetch('/api/auth/status', { credentials: 'include' })
+      .then((r) => r.json())
+      .then((data: { oidcEnabled?: boolean }) => {
+        if (!cancelled && data.oidcEnabled) setOidcEnabled(true);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
     };
   }, []);
 
@@ -281,6 +300,33 @@ const LoginPage: React.FC = () => {
           <div role='alert' aria-live='polite' className={`login-page__message ${message ? 'login-page__message--visible' : ''} ${message ? (message.type === 'success' ? 'login-page__message--success' : 'login-page__message--error') : ''}`} hidden={!message}>
             {message?.text}
           </div>
+
+          {/* OIDC / SSO login */}
+          {oidcEnabled && (
+            <>
+              <div className='login-page__divider'>
+                <span>{t('login.orDivider', 'or')}</span>
+              </div>
+
+              <button
+                type='button'
+                className='login-page__oidc-button'
+                disabled={loading}
+                onClick={() => {
+                  window.location.href = '/api/auth/oidc/login';
+                }}
+              >
+                {/* Microsoft logo — four-colour squares */}
+                <svg className='login-page__oidc-icon' viewBox='0 0 21 21' fill='none' aria-hidden='true'>
+                  <rect x='1' y='1' width='9' height='9' fill='#f25022' />
+                  <rect x='1' y='11' width='9' height='9' fill='#00a4ef' />
+                  <rect x='11' y='1' width='9' height='9' fill='#7fba00' />
+                  <rect x='11' y='11' width='9' height='9' fill='#ffb900' />
+                </svg>
+                {t('login.signInWithMicrosoft', 'Sign in with Microsoft')}
+              </button>
+            </>
+          )}
         </form>
 
         <div className='login-page__footer'>

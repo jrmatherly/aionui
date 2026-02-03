@@ -7,8 +7,10 @@
 import { verifyQRTokenDirect } from '@/process/bridge/webuiBridge';
 import { AuthMiddleware } from '@/webserver/auth/middleware/AuthMiddleware';
 import { TokenUtils } from '@/webserver/auth/middleware/TokenMiddleware';
+import { OIDC_CONFIG } from '@/webserver/auth/config/oidcConfig';
 import { UserRepository } from '@/webserver/auth/repository/UserRepository';
 import { AuthService } from '@/webserver/auth/service/AuthService';
+import { OidcService } from '@/webserver/auth/service/OidcService';
 import type { Express, Request, Response } from 'express';
 import { AUTH_CONFIG, getCookieOptions } from '../config/constants';
 import { createAppError } from '../middleware/errorHandler';
@@ -176,6 +178,7 @@ export function registerAuthRoutes(app: Express): void {
         needsSetup: !hasUsers,
         userCount,
         isAuthenticated: false, // Will be determined by frontend based on token
+        oidcEnabled: OIDC_CONFIG.enabled && OidcService.isReady(),
       });
     } catch (error) {
       console.error('Auth status error:', error);
@@ -396,6 +399,88 @@ export function registerAuthRoutes(app: Express): void {
    */
   app.get('/qr-login', (_req: Request, res: Response) => {
     res.send(QR_LOGIN_PAGE_HTML);
+  });
+
+  /* ================================================================== */
+  /*  OIDC / EntraID SSO Routes                                         */
+  /* ================================================================== */
+
+  /**
+   * Initiate OIDC login — redirects to EntraID authorization endpoint.
+   * GET /api/auth/oidc/login
+   */
+  app.get('/api/auth/oidc/login', apiRateLimiter, (req: Request, res: Response) => {
+    try {
+      if (!OIDC_CONFIG.enabled || !OidcService.isReady()) {
+        res.status(404).json({ success: false, error: 'OIDC authentication is not enabled' });
+        return;
+      }
+
+      const redirectTo = typeof req.query.redirect === 'string' ? req.query.redirect : undefined;
+      const { authUrl, state } = OidcService.getAuthorizationUrl(redirectTo);
+
+      // Store state in a short-lived cookie for double-check on callback
+      res.cookie('oidc_state', state, {
+        httpOnly: true,
+        secure: getCookieOptions().secure,
+        sameSite: 'lax',
+        maxAge: 10 * 60 * 1000, // 10 min
+      });
+
+      res.redirect(authUrl);
+    } catch (error) {
+      console.error('[OIDC] Login initiation error:', error);
+      res.status(500).json({ success: false, error: 'Failed to initiate OIDC login' });
+    }
+  });
+
+  /**
+   * OIDC callback — exchanges authorization code for tokens, provisions user.
+   * GET /api/auth/oidc/callback
+   */
+  app.get('/api/auth/oidc/callback', apiRateLimiter, async (req: Request, res: Response) => {
+    try {
+      if (!OIDC_CONFIG.enabled || !OidcService.isReady()) {
+        res.status(404).send('OIDC authentication is not enabled');
+        return;
+      }
+
+      // Verify state cookie matches query param (double CSRF check)
+      const stateCookie = req.cookies?.['oidc_state'];
+      if (!stateCookie || stateCookie !== req.query.state) {
+        res.status(400).send('Invalid state token — possible CSRF attack. Please try again.');
+        return;
+      }
+      res.clearCookie('oidc_state');
+
+      const result = await OidcService.handleCallback(req.query as Record<string, string>);
+
+      if (!result.success || !result.user) {
+        // Show a simple error page with a link back to login
+        res.status(401).send(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Auth Failed</title>` + `<style>body{font-family:system-ui;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;background:#f5f5f5}` + `.box{text-align:center;padding:40px;background:#fff;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.1)}` + `a{color:#3498db}</style></head><body><div class="box">` + `<h2>Authentication Failed</h2><p>${result.error || 'Unknown error'}</p>` + `<a href="/#/login">Back to login</a></div></body></html>`);
+        return;
+      }
+
+      // Issue a session JWT and set it as a cookie
+      const sessionToken = AuthService.generateToken({
+        id: result.user.id,
+        username: result.user.username,
+        role: result.user.role,
+        auth_method: result.user.auth_method,
+      });
+
+      res.cookie(AUTH_CONFIG.COOKIE.NAME, sessionToken, {
+        ...getCookieOptions(),
+        maxAge: AUTH_CONFIG.TOKEN.COOKIE_MAX_AGE,
+      });
+
+      // Redirect to the originally requested page, or home
+      const redirectTo = result.redirectTo || '/';
+      res.redirect(redirectTo);
+    } catch (error) {
+      console.error('[OIDC] Callback error:', error);
+      res.status(500).send('Authentication failed — please try again.');
+    }
   });
 }
 

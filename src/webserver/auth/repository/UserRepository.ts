@@ -10,7 +10,7 @@ import type { AuthMethod, IQueryResult, IUser, UserRole } from '@process/databas
 /**
  * Authentication user type containing essential auth + RBAC fields
  */
-export type AuthUser = Pick<IUser, 'id' | 'username' | 'password_hash' | 'jwt_secret' | 'role' | 'auth_method' | 'oidc_subject' | 'display_name' | 'groups' | 'created_at' | 'updated_at' | 'last_login'>;
+export type AuthUser = Pick<IUser, 'id' | 'username' | 'email' | 'password_hash' | 'jwt_secret' | 'role' | 'auth_method' | 'oidc_subject' | 'display_name' | 'groups' | 'created_at' | 'updated_at' | 'last_login'>;
 
 /**
  * Unwrap database query result, throw error on failure
@@ -34,6 +34,7 @@ function mapUser(row: IUser): AuthUser {
   return {
     id: row.id,
     username: row.username,
+    email: row.email,
     password_hash: row.password_hash,
     jwt_secret: row.jwt_secret ?? null,
     role: row.role ?? 'user',
