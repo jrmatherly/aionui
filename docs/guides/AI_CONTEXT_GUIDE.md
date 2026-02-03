@@ -181,24 +181,37 @@ In your AI tool, try these prompts:
 
 ### Adding a New Feature
 
-1. **Get context from Drift:**
-   Ask your AI assistant to check Drift for patterns related to your feature area.
+1. **Get pre-task context:**
 
-2. **Find relevant code with Serena:**
+   ```bash
+   drift memory why "feature area" --intent add_feature
+   ```
+
+2. **Find similar existing code:**
+   Use `drift similar` (via MCP) with intent and description to find template code.
+   AI agents: call `drift_context` with `intent: "add_feature"` and `focus: "area"`.
+
+3. **Find relevant code with Serena:**
    Ask to find symbols, references, and file structure related to the feature.
 
-3. **Generate code with combined context:**
+4. **Generate code with combined context:**
    The AI uses Drift patterns for conventions and Serena for exact code locations.
 
-4. **Validate before committing:**
-   Run `drift check` to verify pattern compliance.
+5. **Validate before committing:**
+
+   ```bash
+   drift check                             # Pattern compliance
+   drift gate --policy strict <files...>   # Quality gates on changed files
+   drift boundaries check                  # Data access boundaries
+   ```
 
 ### Fixing a Bug
 
-1. **Check warnings:** Ask Drift about known gotchas in the affected area.
+1. **Check warnings:** `drift memory why "area" --intent fix_bug`
 2. **Trace code:** Use Serena to follow the call chain.
-3. **Analyze impact:** Use Drift's call graph for affected functions.
-4. **Learn from the fix:** Add a Drift memory so the knowledge persists.
+3. **Analyze impact:** `drift callgraph reach src/path/to/file.ts` for affected functions.
+4. **Check security impact:** `drift callgraph status --security` if touching auth code.
+5. **Learn from the fix:** Add a Drift memory so the knowledge persists.
 
 ```bash
 drift memory add tribal "Description of gotcha and fix" --topic "Area"
@@ -208,15 +221,43 @@ drift memory add tribal "Description of gotcha and fix" --topic "Area"
 
 1. **Understand structure:** Serena `get_symbols_overview` and `find_referencing_symbols`.
 2. **Check patterns:** Drift patterns show established conventions.
-3. **Execute:** Serena's `replace_symbol_body`, `rename_symbol` for safe changes.
-4. **Verify:** `drift check` + Serena reference verification.
+3. **Analyze impact:** `drift callgraph reach <file>` for blast radius.
+4. **Execute:** Serena's `replace_symbol_body`, `rename_symbol` for safe changes.
+5. **Verify:** `drift check` + `drift gate --policy strict` + Serena reference verification.
+
+### Security Review
+
+1. **Overview:** `drift callgraph status --security` — shows critical data access points.
+2. **Trace sensitive data:** `drift callgraph reach <file>` with `--sensitive-only`.
+3. **Inverse trace:** `drift callgraph inverse users.password_hash` — who can access credentials?
+4. **Boundary check:** `drift boundaries check` — verify rules aren't violated.
+5. **Env audit:** `drift env secrets` — review sensitive variable access.
 
 ### Code Review Preparation
 
 ```bash
-drift check              # Pattern compliance
-drift memory search "relevant area"  # Any known gotchas?
+drift check                                 # Pattern compliance
+drift gate --policy strict <changed files>  # Quality gates
+drift boundaries check                      # Data access boundaries
+drift memory search "relevant area"         # Any known gotchas?
 ```
+
+### MCP Navigation Guide (for AI Agents)
+
+When using Drift via MCP tools, follow this decision tree:
+
+| Task | Start With | Then |
+|------|-----------|------|
+| Code generation | `drift_context` | `drift_code_examples` → `drift_validate_change` |
+| Quick lookup | `drift_signature`, `drift_callers`, `drift_type` | — |
+| Understanding code | `drift_explain` | `drift_callers` → `drift_impact_analysis` |
+| Security review | `drift_security_summary` | `drift_reachability` → `drift_env` |
+| Refactoring | `drift_impact_analysis` | `drift_coupling` → `drift_test_topology` |
+| Find similar code | `drift_similar` | `drift_code_examples` |
+| Test work | `drift_test_topology` | `drift_test_template` |
+
+Always start with `drift_context` for code generation tasks — it synthesizes
+patterns, examples, and conventions in one call.
 
 ## Cortex Memory System
 
@@ -277,6 +318,7 @@ Serena stores detailed documentation in `.serena/memories/`:
 | `auth-system.md` | Multi-user authentication and RBAC |
 | `code-patterns.md` | IPC, worker, component, database patterns |
 | `common-pitfalls.md` | Known anti-patterns and gotchas |
+| `drift-integration.md` | Drift Detect integration, MCP tools, boundary rules |
 
 To add a new memory, create a markdown file in `.serena/memories/` and commit it.
 

@@ -157,5 +157,11 @@ initial_prompt: |
   - auth-system.md — Multi-user authentication and RBAC
   - code-patterns.md — IPC, worker, component, and database patterns
   - common-pitfalls.md — Known anti-patterns and gotchas
+  - drift-integration.md — Drift Detect MCP tools, data boundaries, and workflows
 
   Consult these memories for detailed information on specific subsystems.
+
+  ## AI Context Tools
+  This project also uses **Drift Detect** (via `.mcp.json`) for pattern analysis,
+  institutional memory (Cortex), call graph analysis, and data boundary enforcement.
+  See drift-integration.md memory for details on when to use Drift vs Serena.
