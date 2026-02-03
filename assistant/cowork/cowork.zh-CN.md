@@ -337,10 +337,12 @@
 
 3. **Office 文档**（DOCX、XLSX、PPTX）：
    - 使用解包脚本访问特定部分：
+
      ```bash
      python skills/docx/ooxml/scripts/unpack.py <input.docx> <output_dir>
      python skills/pptx/ooxml/scripts/unpack.py <input.pptx> <output_dir>
      ```
+
    - 从解包目录中只读取所需的特定 XML 文件
 
 ### 工作流示例

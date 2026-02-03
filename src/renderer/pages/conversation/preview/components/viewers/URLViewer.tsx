@@ -16,15 +16,13 @@ interface URLViewerProps {
 }
 
 /**
- * URL 预览组件 - 用于在应用内预览网页
  * URL Preview component - for previewing web pages within the app
  *
- * 使用 webview 标签加载外部 URL，支持：
  * Uses webview tag to load external URLs, supports:
- * - 前进/后退导航（自管理历史栈）/ Forward/back navigation (self-managed history stack)
- * - 刷新页面 / Refresh page
- * - 地址栏编辑 / URL editing
- * - 拦截所有链接点击，在内部导航 / Intercept all link clicks, navigate internally
+ * - Forward/back navigation (self-managed history stack)
+ * - Refresh page
+ * - URL editing
+ * - Intercept all link clicks, navigate internally
  */
 const URLViewer: React.FC<URLViewerProps> = ({ url }) => {
   const { t } = useTranslation();
@@ -32,18 +30,18 @@ const URLViewer: React.FC<URLViewerProps> = ({ url }) => {
   const contentRef = useRef<HTMLDivElement | null>(null);
   const webviewRef = useRef<Electron.WebviewTag | null>(null);
 
-  // 导航状态 / Navigation state
+  // Navigation state
   const [currentUrl, setCurrentUrl] = useState(url);
   const [inputUrl, setInputUrl] = useState(url);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 自管理的历史记录栈 / Self-managed history stacks
+  // Self-managed history stacks
   const historyBackRef = useRef<string[]>([]);
   const historyForwardRef = useRef<string[]>([]);
   const [canGoBack, setCanGoBack] = useState(false);
   const [canGoForward, setCanGoForward] = useState(false);
 
-  // 当 props.url 变化时重置 / Reset when props.url changes
+  // Reset when props.url changes
   useEffect(() => {
     historyBackRef.current = [];
     historyForwardRef.current = [];
@@ -53,20 +51,20 @@ const URLViewer: React.FC<URLViewerProps> = ({ url }) => {
     setInputUrl(url);
   }, [url]);
 
-  // 导航到新 URL（添加到历史）/ Navigate to new URL (add to history)
+  // Navigate to new URL (add to history)
   const navigateToWithHistory = useCallback(
     (targetUrl: string) => {
       const webviewEl = webviewRef.current;
       if (!webviewEl || !targetUrl) return;
 
-      // 如果 URL 相同，不做处理 / If URL is same, do nothing
+      // If URL is same, do nothing
       if (targetUrl === currentUrl) return;
 
-      // 将当前 URL 加入后退栈 / Add current URL to back stack
+      // Add current URL to back stack
       if (currentUrl) {
         historyBackRef.current.push(currentUrl);
       }
-      // 清空前进栈 / Clear forward stack
+      // Clear forward stack
       historyForwardRef.current = [];
 
       setCurrentUrl(targetUrl);
@@ -79,7 +77,7 @@ const URLViewer: React.FC<URLViewerProps> = ({ url }) => {
     [currentUrl]
   );
 
-  // 监听 webview 事件 / Listen to webview events
+  // Listen to webview events
   useEffect(() => {
     const webviewEl = webviewRef.current;
     if (!webviewEl) return;
@@ -87,20 +85,20 @@ const URLViewer: React.FC<URLViewerProps> = ({ url }) => {
     const handleStartLoading = () => setIsLoading(true);
     const handleStopLoading = () => setIsLoading(false);
 
-    // 注入脚本拦截所有链接点击 / Inject script to intercept all link clicks
+    // Inject script to intercept all link clicks
     const injectClickInterceptor = () => {
       webviewEl
         .executeJavaScript(
           `
         (function() {
-          // 避免重复注入 / Avoid duplicate injection
+          // Avoid duplicate injection
           if (window.__urlViewerInjected) return;
           window.__urlViewerInjected = true;
 
-          // 拦截所有点击事件 / Intercept all click events
+          // Intercept all click events
           document.addEventListener('click', function(e) {
             let target = e.target;
-            // 向上查找 a 标签 / Find anchor tag upwards
+            // Find anchor tag upwards
             while (target && target.tagName !== 'A') {
               target = target.parentElement;
             }
@@ -109,13 +107,13 @@ const URLViewer: React.FC<URLViewerProps> = ({ url }) => {
               if (href && /^https?:/i.test(href)) {
                 e.preventDefault();
                 e.stopPropagation();
-                // 发送消息到主进程 / Send message to main process
+                // Send message to main process
                 window.postMessage({ type: '__URL_VIEWER_NAVIGATE__', url: href }, '*');
               }
             }
           }, true);
 
-          // 拦截 window.open / Intercept window.open
+          // Intercept window.open
           const originalOpen = window.open;
           window.open = function(url) {
             if (url && /^https?:/i.test(url)) {
@@ -125,7 +123,7 @@ const URLViewer: React.FC<URLViewerProps> = ({ url }) => {
             return originalOpen.apply(this, arguments);
           };
 
-          // 拦截表单提交 / Intercept form submission
+          // Intercept form submission
           document.addEventListener('submit', function(e) {
             const form = e.target;
             if (form && form.action && /^https?:/i.test(form.action)) {
@@ -138,11 +136,11 @@ const URLViewer: React.FC<URLViewerProps> = ({ url }) => {
       `
         )
         .catch(() => {
-          // 忽略注入失败 / Ignore injection failure
+          // Ignore injection failure
         });
     };
 
-    // 监听来自 webview 的消息 / Listen to messages from webview
+    // Listen to messages from webview
     const handleIpcMessage = (event: Electron.IpcMessageEvent) => {
       if (event.channel === 'navigate') {
         const url = event.args?.[0];
@@ -152,9 +150,9 @@ const URLViewer: React.FC<URLViewerProps> = ({ url }) => {
       }
     };
 
-    // 监听 console-message 来接收导航请求 / Listen to console-message to receive navigation requests
+    // Listen to console-message to receive navigation requests
     const handleConsoleMessage = (event: Electron.ConsoleMessageEvent) => {
-      // 检查是否是我们的导航消息 / Check if it's our navigation message
+      // Check if it's our navigation message
       try {
         if (event.message.includes('__URL_VIEWER_NAVIGATE__')) {
           const match = event.message.match(/"url":"([^"]+)"/);
@@ -163,30 +161,30 @@ const URLViewer: React.FC<URLViewerProps> = ({ url }) => {
           }
         }
       } catch {
-        // 忽略解析错误 / Ignore parse errors
+        // Ignore parse errors
       }
     };
 
-    // 使用 did-navigate 来同步实际 URL / Use did-navigate to sync actual URL
+    // Use did-navigate to sync actual URL
     const handleDidNavigate = (event: Event & { url?: string }) => {
       const newUrl = (event as any).url;
       if (newUrl && newUrl !== currentUrl) {
-        // 外部导航（如重定向），更新状态但不添加历史 / External navigation (like redirect), update state without adding history
+        // External navigation (like redirect), update state without adding history
         setCurrentUrl(newUrl);
         setInputUrl(newUrl);
       }
     };
 
-    // DOM 准备好后注入脚本 / Inject script after DOM ready
+    // Inject script after DOM ready
     const handleDomReady = () => {
       injectClickInterceptor();
 
-      // 注入 viewport meta 标签以改善移动端适配 / Inject viewport meta tag for better mobile adaptation
+      // Inject viewport meta tag for better mobile adaptation
       webviewEl
         .executeJavaScript(
           `
         (function() {
-          // 检查是否已有 viewport meta / Check if viewport meta exists
+          // Check if viewport meta exists
           let viewport = document.querySelector('meta[name="viewport"]');
           if (!viewport) {
             viewport = document.createElement('meta');
@@ -200,7 +198,7 @@ const URLViewer: React.FC<URLViewerProps> = ({ url }) => {
         )
         .catch(() => {});
 
-      // 设置 webview 内部的消息监听 / Setup message listener inside webview
+      // Setup message listener inside webview
       webviewEl
         .executeJavaScript(
           `
@@ -234,7 +232,7 @@ const URLViewer: React.FC<URLViewerProps> = ({ url }) => {
     };
   }, [navigateToWithHistory, currentUrl]);
 
-  // 监听内容区域尺寸变化 / Monitor content area size changes
+  // Monitor content area size changes
   useEffect(() => {
     const contentEl = contentRef.current;
     const webviewEl = webviewRef.current;
@@ -255,12 +253,12 @@ const URLViewer: React.FC<URLViewerProps> = ({ url }) => {
     return () => observer.disconnect();
   }, []);
 
-  // 后退 / Go back
+  // Go back
   const handleGoBack = useCallback(() => {
     if (historyBackRef.current.length === 0) return;
 
     const prevUrl = historyBackRef.current.pop()!;
-    // 将当前 URL 加入前进栈 / Add current URL to forward stack
+    // Add current URL to forward stack
     historyForwardRef.current.push(currentUrl);
 
     setCanGoBack(historyBackRef.current.length > 0);
@@ -273,12 +271,12 @@ const URLViewer: React.FC<URLViewerProps> = ({ url }) => {
     }
   }, [currentUrl]);
 
-  // 前进 / Go forward
+  // Go forward
   const handleGoForward = useCallback(() => {
     if (historyForwardRef.current.length === 0) return;
 
     const nextUrl = historyForwardRef.current.pop()!;
-    // 将当前 URL 加入后退栈 / Add current URL to back stack
+    // Add current URL to back stack
     historyBackRef.current.push(currentUrl);
 
     setCanGoBack(true);
@@ -291,19 +289,19 @@ const URLViewer: React.FC<URLViewerProps> = ({ url }) => {
     }
   }, [currentUrl]);
 
-  // 刷新 / Refresh
+  // Refresh
   const handleRefresh = useCallback(() => {
     webviewRef.current?.reload();
   }, []);
 
-  // 地址栏提交 / URL bar submit
+  // URL bar submit
   const handleUrlSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
       let targetUrl = inputUrl.trim();
       if (!targetUrl) return;
 
-      // 自动补全协议 / Auto-complete protocol
+      // Auto-complete protocol
       if (!/^https?:\/\//i.test(targetUrl)) {
         targetUrl = 'https://' + targetUrl;
       }
@@ -313,7 +311,7 @@ const URLViewer: React.FC<URLViewerProps> = ({ url }) => {
     [inputUrl, navigateToWithHistory]
   );
 
-  // 地址栏按键处理 / URL bar key handling
+  // URL bar key handling
   const handleUrlKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Escape') {
@@ -326,30 +324,30 @@ const URLViewer: React.FC<URLViewerProps> = ({ url }) => {
 
   return (
     <div ref={containerRef} className='h-full w-full flex flex-col bg-bg-1'>
-      {/* 导航栏 / Navigation bar */}
+      {/* Navigation bar */}
       <div className='flex items-center gap-4px h-36px px-8px bg-bg-2 border-b border-border-1 flex-shrink-0'>
-        {/* 后退按钮 / Back button */}
+        {/* Back button */}
         <button onClick={handleGoBack} disabled={!canGoBack} className={`flex items-center justify-center w-28px h-28px transition-colors ${canGoBack ? 'hover:bg-bg-3 cursor-pointer text-t-secondary' : 'cursor-not-allowed text-t-quaternary'}`} title={t('common.back', { defaultValue: 'Back' })}>
           <Left theme='outline' size={16} />
         </button>
 
-        {/* 前进按钮 / Forward button */}
+        {/* Forward button */}
         <button onClick={handleGoForward} disabled={!canGoForward} className={`flex items-center justify-center w-28px h-28px transition-colors ${canGoForward ? 'hover:bg-bg-3 cursor-pointer text-t-secondary' : 'cursor-not-allowed text-t-quaternary'}`} title={t('common.forward', { defaultValue: 'Forward' })}>
           <Right theme='outline' size={16} />
         </button>
 
-        {/* 刷新按钮 / Refresh button */}
+        {/* Refresh button */}
         <button onClick={handleRefresh} className='flex items-center justify-center w-28px h-28px hover:bg-bg-3 transition-colors cursor-pointer text-t-secondary' title={t('common.refresh', { defaultValue: 'Refresh' })}>
           {isLoading ? <Loading theme='outline' size={16} className='animate-spin' /> : <Refresh theme='outline' size={16} />}
         </button>
 
-        {/* 地址栏 / URL bar */}
+        {/* URL bar */}
         <form onSubmit={handleUrlSubmit} className='flex-1 ml-4px'>
           <input type='text' value={inputUrl} onChange={(e) => setInputUrl(e.target.value)} onKeyDown={handleUrlKeyDown} onFocus={(e) => e.target.select()} className='w-full h-26px pl-4px pr-0 rd-4px bg-bg-3 border border-border-1 text-12px text-t-primary outline-none focus:border-primary transition-colors' placeholder='Enter URL...' />
         </form>
       </div>
 
-      {/* Webview 内容区域 / Webview content area */}
+      {/* Webview content area */}
       <div ref={contentRef} className='flex-1 overflow-hidden bg-white relative' style={{ minHeight: 0 }}>
         <webview
           ref={webviewRef as any}

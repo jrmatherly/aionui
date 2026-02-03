@@ -333,6 +333,7 @@ python skills/pdf/scripts/check_fillable_fields.py <file.pdf>
    ```
 
 4. Fill the form:
+
    ```bash
    python skills/pdf/scripts/fill_fillable_fields.py <input.pdf> <field_values.json> <output.pdf>
    ```
@@ -376,6 +377,7 @@ python skills/pdf/scripts/check_fillable_fields.py <file.pdf>
    ```
 
 5. Fill the form with annotations:
+
    ```bash
    python skills/pdf/scripts/fill_pdf_form_with_annotations.py <input.pdf> <fields.json> <output.pdf>
    ```

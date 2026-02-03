@@ -1,0 +1,452 @@
+openapi: 3.0.3
+info:
+  title: AionUI WebUI API
+  version: 1.8.1
+  description: |
+    REST API for AionUI WebUI server providing authentication, conversation management,
+    and AI agent interaction capabilities.
+
+    ## Authentication
+    All protected endpoints require JWT authentication via:
+    - Cookie: `aion_session`
+    - Header: `Authorization: Bearer <token>`
+
+    ## Rate Limiting
+    - Login endpoints: 5 requests per minute
+    - API endpoints: 100 requests per minute
+    - Authenticated actions: 30 requests per minute
+
+  contact:
+    name: AionUI Support
+    email: service@aionui.com
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+  - url: https://{host}:{port}
+    description: Production server
+    variables:
+      host:
+        default: localhost
+      port:
+        default: "3000"
+
+tags:
+  - name: Authentication
+    description: User authentication and session management
+  - name: Directory
+    description: File system directory operations
+  - name: WebSocket
+    description: Real-time communication endpoints
+
+paths:
+  /login:
+    post:
+      tags: [Authentication]
+      summary: User login
+      description: Authenticate user with username and password
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login successful
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: Session cookie (aion_session)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /logout:
+    post:
+      tags: [Authentication]
+      summary: User logout
+      description: Invalidate current session and clear cookies
+      operationId: logout
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Logged out successfully"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/auth/status:
+    get:
+      tags: [Authentication]
+      summary: Get authentication status
+      description: Check if system needs initial setup and user count
+      operationId: getAuthStatus
+      responses:
+        "200":
+          description: Authentication status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthStatusResponse"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /api/auth/user:
+    get:
+      tags: [Authentication]
+      summary: Get current user
+      description: Retrieve current authenticated user information
+      operationId: getCurrentUser
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      responses:
+        "200":
+          description: User information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/auth/change-password:
+    post:
+      tags: [Authentication]
+      summary: Change password
+      description: Change the current user's password
+      operationId: changePassword
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePasswordRequest"
+      responses:
+        "200":
+          description: Password changed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Password changed successfully"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/auth/refresh:
+    post:
+      tags: [Authentication]
+      summary: Refresh token
+      description: Get a new JWT token using current valid token
+      operationId: refreshToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token]
+              properties:
+                token:
+                  type: string
+                  description: Current valid JWT token
+      responses:
+        "200":
+          description: Token refreshed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  token:
+                    type: string
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/auth/qr-login:
+    post:
+      tags: [Authentication]
+      summary: QR code login
+      description: Authenticate using QR code token (for mobile/desktop pairing)
+      operationId: qrLogin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [qrToken]
+              properties:
+                qrToken:
+                  type: string
+                  description: QR token from scanned code
+      responses:
+        "200":
+          description: QR login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/ws-token:
+    get:
+      tags: [WebSocket]
+      summary: Get WebSocket token
+      description: Get token for WebSocket connection (reuses main session token)
+      operationId: getWsToken
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      responses:
+        "200":
+          description: WebSocket token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  wsToken:
+                    type: string
+                  expiresIn:
+                    type: integer
+                    description: Token expiry in milliseconds
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/directory:
+    get:
+      tags: [Directory]
+      summary: List directory contents
+      description: List files and directories at specified path
+      operationId: listDirectory
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      parameters:
+        - name: path
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Directory path to list
+      responses:
+        "200":
+          description: Directory listing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DirectoryListing"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Directory not found
+
+  /qr-login:
+    get:
+      tags: [Authentication]
+      summary: QR login page
+      description: Static HTML page for QR code login flow
+      operationId: qrLoginPage
+      responses:
+        "200":
+          description: QR login HTML page
+          content:
+            text/html:
+              schema:
+                type: string
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: aion_session
+
+  schemas:
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          minLength: 1
+          example: admin
+        password:
+          type: string
+          minLength: 8
+          format: password
+
+    LoginResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        user:
+          $ref: "#/components/schemas/User"
+        token:
+          type: string
+          description: JWT token
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+
+    AuthStatusResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        needsSetup:
+          type: boolean
+          description: True if no users exist
+        userCount:
+          type: integer
+        isAuthenticated:
+          type: boolean
+
+    UserResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        user:
+          $ref: "#/components/schemas/User"
+
+    ChangePasswordRequest:
+      type: object
+      required: [currentPassword, newPassword]
+      properties:
+        currentPassword:
+          type: string
+          format: password
+        newPassword:
+          type: string
+          format: password
+          minLength: 8
+          description: Must meet security requirements
+
+    DirectoryListing:
+      type: object
+      properties:
+        success:
+          type: boolean
+        path:
+          type: string
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              type:
+                type: string
+                enum: [file, directory]
+              size:
+                type: integer
+              modified:
+                type: string
+                format: date-time
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+        message:
+          type: string
+        code:
+          type: string
+
+  responses:
+    Unauthorized:
+      description: Authentication required or invalid
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            success: false
+            message: "Invalid username or password"
+
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    TooManyRequests:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            success: false
+            error: "Too many requests, please try again later"
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            success: false
+            message: "Internal server error"

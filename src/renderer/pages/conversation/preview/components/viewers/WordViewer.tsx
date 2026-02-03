@@ -13,17 +13,17 @@ import MarkdownPreview from './MarkdownViewer';
 
 interface WordPreviewProps {
   filePath?: string;
-  content?: string; // Base64 或 ArrayBuffer
+  content?: string; // Base64 or ArrayBuffer
   hideToolbar?: boolean;
 }
 
 /**
- * Word 文档预览组件
+ * Word document preview component
  *
- * 核心流程：
+ * Core workflow:
  * 1. Word → Markdown (mammoth + turndown)
- * 2. 使用 MarkdownPreview 渲染预览
- * 3. 点击"在 Word 中打开"可以用系统默认应用编辑
+ * 2. Use MarkdownPreview to render preview
+ * 3. Click "Open in Word" to edit with system default application
  */
 const WordPreview: React.FC<WordPreviewProps> = ({ filePath, hideToolbar = false }) => {
   const { t } = useTranslation();
@@ -40,7 +40,7 @@ const WordPreview: React.FC<WordPreviewProps> = ({ filePath, hideToolbar = false
   }, [messageApi]);
 
   /**
-   * 加载 Word 文档并转换为 Markdown
+   * Load Word document and convert to Markdown
    */
   useEffect(() => {
     const loadDocument = async () => {
@@ -52,8 +52,8 @@ const WordPreview: React.FC<WordPreviewProps> = ({ filePath, hideToolbar = false
           throw new Error(t('preview.errors.missingFilePath'));
         }
 
-        // 使用后端转换服务 / Use backend conversion service
-        // 通过统一的 document.convert IPC 请求转换 / Request conversion via unified document.convert IPC
+        // Use backend conversion service
+        // Request conversion via unified document.convert IPC
         const response = await ipcBridge.document.convert.invoke({ filePath, to: 'markdown' });
 
         if (response.to !== 'markdown') {
@@ -79,7 +79,6 @@ const WordPreview: React.FC<WordPreviewProps> = ({ filePath, hideToolbar = false
   }, [filePath, t]);
 
   /**
-   * 在系统默认应用中打开 Word 文档
    * Open Word document in system default application
    */
   const handleOpenInSystem = useCallback(async () => {
@@ -96,7 +95,6 @@ const WordPreview: React.FC<WordPreviewProps> = ({ filePath, hideToolbar = false
     }
   }, [filePath, messageApi, t]);
 
-  // 设置工具栏扩展（必须在所有条件返回之前调用）
   // Set toolbar extras (must be called before any conditional returns)
   useEffect(() => {
     if (!usePortalToolbar || !toolbarExtrasContext || loading || error) return;
@@ -134,14 +132,14 @@ const WordPreview: React.FC<WordPreviewProps> = ({ filePath, hideToolbar = false
     <div className='h-full w-full flex flex-col bg-bg-1'>
       {messageContextHolder}
 
-      {/* 工具栏 / Toolbar */}
+      {/* Toolbar */}
       {!usePortalToolbar && !hideToolbar && (
         <div className='flex items-center justify-between h-40px px-12px bg-bg-2 flex-shrink-0'>
           <div className='flex items-center gap-8px'>
             <span className='text-13px text-t-secondary'>📄 {t('preview.word.title')}</span>
           </div>
 
-          {/* 右侧按钮组 / Right button group */}
+          {/* Right button group */}
           <div className='flex items-center gap-8px'>
             <div className='flex items-center gap-4px px-8px py-4px rd-4px cursor-pointer hover:bg-bg-3 transition-colors text-12px text-t-secondary' onClick={handleOpenInSystem} title={t('preview.openWithApp', { app: 'Word' })}>
               <svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2'>
@@ -155,7 +153,7 @@ const WordPreview: React.FC<WordPreviewProps> = ({ filePath, hideToolbar = false
         </div>
       )}
 
-      {/* 内容区域 */}
+      {/* Content area */}
       <div className='flex-1 overflow-hidden'>
         <MarkdownPreview content={markdown} hideToolbar />
       </div>

@@ -1,9 +1,11 @@
 import { MakerDMG } from '@electron-forge/maker-dmg';
-import { MakerZIP } from '@electron-forge/maker-zip';
 import { MakerWix } from '@electron-forge/maker-wix';
+import { MakerZIP } from '@electron-forge/maker-zip';
+
 // Import MakerSquirrel conditionally to avoid issues on non-Windows
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const MakerSquirrel = process.platform === 'win32' ? require('@electron-forge/maker-squirrel').MakerSquirrel : null;
+
 import { AutoUnpackNativesPlugin } from '@electron-forge/plugin-auto-unpack-natives';
 import { FusesPlugin } from '@electron-forge/plugin-fuses';
 import { WebpackPlugin } from '@electron-forge/plugin-webpack';

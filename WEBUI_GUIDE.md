@@ -44,9 +44,11 @@ AionUi.exe --webui
 
 1. Right-click on desktop → **New** → **Shortcut**
 2. Enter target location:
-   ```
+
+   ```text
    "C:\Program Files\AionUi\AionUi.exe" --webui
    ```
+
 3. Name it **AionUi WebUI**
 4. Click **Finish**
 5. Double-click the shortcut to launch
@@ -101,9 +103,11 @@ chmod +x start-aionui-webui.sh
 2. Choose **Application**
 3. Add **Run Shell Script** action
 4. Enter:
+
    ```bash
    /Applications/AionUi.app/Contents/MacOS/AionUi --webui
    ```
+
 5. Save as **AionUi WebUI.app**
 6. Double-click to launch
 
@@ -311,7 +315,7 @@ AionUi --no-sandbox --webui
 
 Once started, open your browser and navigate to:
 
-```
+```text
 http://localhost:25808
 ```
 
@@ -321,7 +325,7 @@ http://localhost:25808
 
 You may see the following warnings in the terminal - these are normal and can be ignored:
 
-```
+```text
 [WARNING] Could not connect to session bus: Using X11 for dbus-daemon autolaunch was disabled at compile time
 [ERROR] Failed to connect to the bus: Failed to connect to socket: No such file or directory
 [WARNING] Multiple instances of the app detected, but not running on display server
@@ -643,7 +647,7 @@ aionui --resetpass username
 /opt/AionUi/aionui --resetpass
 ```
 
-### What happens when you run --resetpass:
+### What happens when you run --resetpass
 
 1. The command connects to the database
 2. Finds the specified user (default: `admin`)
@@ -652,7 +656,7 @@ aionui --resetpass username
 5. Rotates the JWT secret (invalidating all previous tokens)
 6. Displays the new password in the terminal
 
-### After running --resetpass:
+### After running --resetpass
 
 1. The command will display your new password - **copy it immediately**
 2. Refresh your browser (Cmd+R or Ctrl+R)

@@ -5,19 +5,15 @@
  */
 
 /**
- * 预览面板子组件导出
  * Preview panel sub-components exports
  */
 
-export { default as PreviewTabs } from './PreviewTabs';
-export type { PreviewTab } from './PreviewTabs';
-
-export { default as PreviewToolbar } from './PreviewToolbar';
-
-export { default as PreviewContextMenu } from './PreviewContextMenu';
+export type { CloseTabConfirmState } from './PreviewConfirmModals';
+export { default as PreviewConfirmModals } from './PreviewConfirmModals';
 export type { ContextMenuState } from './PreviewContextMenu';
 
-export { default as PreviewConfirmModals } from './PreviewConfirmModals';
-export type { CloseTabConfirmState } from './PreviewConfirmModals';
-
+export { default as PreviewContextMenu } from './PreviewContextMenu';
 export { default as PreviewHistoryDropdown } from './PreviewHistoryDropdown';
+export type { PreviewTab } from './PreviewTabs';
+export { default as PreviewTabs } from './PreviewTabs';
+export { default as PreviewToolbar } from './PreviewToolbar';

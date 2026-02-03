@@ -43,7 +43,7 @@
 
 ## Project Structure
 
-```
+```text
 src/
 ├── index.ts                 # Main process entry
 ├── preload.ts               # Electron preload (IPC bridge)
@@ -142,7 +142,7 @@ npm run dist:linux     # Linux build
 
 Examples:
 
-```
+```text
 feat(cron): implement scheduled task system
 fix(webui): correct modal z-index issue
 chore: remove debug console.log statements

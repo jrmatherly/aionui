@@ -61,7 +61,7 @@
 
 ### 🤖 **Multi-Agent Mode - Cowork for Your Command-Line AI Tools, Unified Graphical Interface**
 
-_AionUi comes with built-in Gemini CLI, ready to use out of the box with no additional installation required; if you have already installed command-line tools like Gemini CLI, Claude Code, CodeX, Qwen Code, Goose AI, Augment Code, AionUi will automatically detect them and provide a unified graphical interface for a richer experience_
+*AionUi comes with built-in Gemini CLI, ready to use out of the box with no additional installation required; if you have already installed command-line tools like Gemini CLI, Claude Code, CodeX, Qwen Code, Goose AI, Augment Code, AionUi will automatically detect them and provide a unified graphical interface for a richer experience*
 
 - ✅ **Auto Detection + Unified Interface** - Automatically recognizes local CLI tools, provides a unified graphical interface, say goodbye to command line
 - ✅ **Local Storage + Multi-Session** - Conversations saved locally, supports multiple parallel sessions, each session with independent context
@@ -74,7 +74,7 @@ _AionUi comes with built-in Gemini CLI, ready to use out of the box with no addi
 
 ### 🌐 **Access Your AionUi Anywhere**
 
-_Your 7×24 hour AI assistant - Access AionUi from any device, anywhere! On business trips, at home, in the office, use your AI tools anytime, anywhere through WebUI or Telegram_
+*Your 7×24 hour AI assistant - Access AionUi from any device, anywhere! On business trips, at home, in the office, use your AI tools anytime, anywhere through WebUI or Telegram*
 
 AionUi provides two remote access methods:
 
@@ -102,7 +102,7 @@ AionUi provides two remote access methods:
 
 ### ⏰ **Scheduled Tasks - Let AionUi Automate Your Work**
 
-_After setting up scheduled tasks, the AI assistant will automatically execute according to your set time, truly achieving 7×24 hours unattended operation_
+*After setting up scheduled tasks, the AI assistant will automatically execute according to your set time, truly achieving 7×24 hours unattended operation*
 
 - **Free Conversation** - Tell AI what to do using natural language, just like chatting normally
 - **Flexible Time Setting** - Daily, weekly, monthly are all possible
@@ -118,7 +118,7 @@ _After setting up scheduled tasks, the AI assistant will automatically execute a
 
 ### 📁 **Smart File Management (AI Cowork)**
 
-_Batch renaming, automatic organization, smart classification, file merging_
+*Batch renaming, automatic organization, smart classification, file merging*
 
 - **Auto Organize**: Intelligently identify content and auto-classify, keeping folders tidy.
 - **Efficient Batch**: One-click rename, merge files, say goodbye to tedious manual tasks.
@@ -131,7 +131,7 @@ _Batch renaming, automatic organization, smart classification, file merging_
 
 ### 📄 **Preview Panel - Quickly View AI-Generated Results**
 
-_Supports 9+ formats of visual preview (PDF, Word, Excel, PPT, code, Markdown, images, HTML, Diff, etc.)_
+*Supports 9+ formats of visual preview (PDF, Word, Excel, PPT, code, Markdown, images, HTML, Diff, etc.)*
 
 - ✅ **View Results Instantly** - After AI generates files, view preview immediately without switching apps
 - ✅ **Real-time Tracking + Editable** - Automatically tracks file changes, editor and preview sync intelligently; supports real-time editing of Markdown, code, HTML, WYSIWYG
@@ -144,7 +144,7 @@ _Supports 9+ formats of visual preview (PDF, Word, Excel, PPT, code, Markdown, i
 
 ### 🎨 **AI Image Generation & Editing**
 
-_Intelligent image generation, editing, and recognition, powered by Gemini_
+*Intelligent image generation, editing, and recognition, powered by Gemini*
 
 <p align="center">
   <img src="./resources/Image_Generation.gif" alt="AI Image Generation Demo" width="800">
@@ -156,7 +156,7 @@ _Intelligent image generation, editing, and recognition, powered by Gemini_
 
 ### 🤖 **Multi-Model Support**
 
-_Supports mainstream models like Gemini, OpenAI, Claude, Qwen, as well as local models like Ollama, LM Studio. Flexibly switch between different models to meet various task requirements._
+*Supports mainstream models like Gemini, OpenAI, Claude, Qwen, as well as local models like Ollama, LM Studio. Flexibly switch between different models to meet various task requirements.*
 
 <p align="center">
   <img src="./resources/multi-model.png" alt="Multi-Model Support" width="800">
@@ -166,7 +166,7 @@ _Supports mainstream models like Gemini, OpenAI, Claude, Qwen, as well as local 
 
 ### 🎨 **Personalized Interface Customization**
 
-_Customize with your own CSS code, make your interface match your preferences_
+*Customize with your own CSS code, make your interface match your preferences*
 
 <p align="center">
   <img src="./resources/css with skin.gif" alt="CSS Custom Interface Demo" width="800">
@@ -178,7 +178,7 @@ _Customize with your own CSS code, make your interface match your preferences_
 
 ### 💬 **Multi-Task Parallel Processing**
 
-_Open multiple conversations, tasks don't get mixed up, independent memory, double efficiency_
+*Open multiple conversations, tasks don't get mixed up, independent memory, double efficiency*
 
 <details>
 <summary><strong>🎬 Click to view demo ▶️</strong></summary>
@@ -225,6 +225,7 @@ A: AionUi is a **free and open-source** **Multi-AI Agent Desktop**. Compared to 
 - **Data Processing**: Deeply analyze and automatically beautify Excel reports.
 - **Document Generation**: Automatically write and format PPT, Word, and Markdown documents.
 - **Instant Preview**: Built-in 9+ format preview panels, making AI office collaboration results instantly visible.
+
 </details>
 
 <details>
@@ -259,7 +260,7 @@ A: All conversation data is stored in a local SQLite database and will not be up
 
 ## 🎬 See How People Use AionUi
 
-_Watch how content creators review and use AionUi in real-world scenarios_
+*Watch how content creators review and use AionUi in real-world scenarios*
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=yUU5E-U5B3M" target="_blank">
@@ -281,12 +282,6 @@ _Watch how content creators review and use AionUi in real-world scenarios_
 - [5500 Stars: How Open Source Breaks Anthropic's AI Tool Moat](https://mp.weixin.qq.com/s/saEk49cYV6MqBgw19Lw6Gw) — AI Silicon Moment
 
 > 💡 **Have you made a video about AionUi?** [Let us know on X](https://x.com/AionUi) and we'll feature it here! We value your feedback and will continue to improve based on your suggestions.
-
-### 📰 Community Articles
-
-- [🔥 Explosive! Open-source free version of Cowork, full model integration + autonomous file operations, redefining AI office work.](https://mp.weixin.qq.com/s/F3f-CCsVPaK3lK00jXhOOg) — Open Source AI Project Landing
-- [Making ordinary people use Claude Code like an APP, what is the ACP protocol](https://mp.weixin.qq.com/s/TsMojSbkUUFvsd-HQCazZg) — Lazy Cat Loves Fishing
-- [5500 Stars: How Open Source Breaks Anthropic's AI Tool Moat](https://mp.weixin.qq.com/s/saEk49cYV6MqBgw19Lw6Gw) — AI Silicon Moment
 
 ---
 

@@ -12,21 +12,19 @@ import { useTranslation } from 'react-i18next';
 interface PPTPreviewProps {
   /**
    * PPT file path (absolute path on disk)
-   * PPT 文件路径（磁盘上的绝对路径）
    */
   filePath?: string;
   /**
    * PPT content (not used, kept for compatibility)
-   * PPT 内容（暂不使用，保留用于兼容）
    */
   content?: string;
 }
 
 /**
- * PPT 演示文稿预览组件
+ * PPT presentation preview component
  *
- * 由于 PPT 格式复杂，无法在纯 JavaScript 中完美渲染，
- * 此组件引导用户在系统应用（PowerPoint/Keynote/WPS）中打开文件
+ * Due to the complexity of the PPT format, it cannot be rendered perfectly in pure JavaScript,
+ * so this component guides users to open the file in a system application (PowerPoint/Keynote/WPS)
  */
 const PPTPreview: React.FC<PPTPreviewProps> = ({ filePath }) => {
   const { t } = useTranslation();
@@ -35,7 +33,7 @@ const PPTPreview: React.FC<PPTPreviewProps> = ({ filePath }) => {
     try {
       await ipcBridge.shell.openFile.invoke(filePath);
     } catch (err) {
-      // 静默处理错误 / Silently handle error
+      // Silently handle error
     }
   };
 
@@ -44,7 +42,7 @@ const PPTPreview: React.FC<PPTPreviewProps> = ({ filePath }) => {
     try {
       await ipcBridge.shell.showItemInFolder.invoke(filePath);
     } catch (err) {
-      // 静默处理错误 / Silently handle error
+      // Silently handle error
     }
   };
 

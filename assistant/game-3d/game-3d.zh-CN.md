@@ -16,22 +16,27 @@
 - **0.1. 启动流程**: 游戏的主逻辑函数 `initGame()` 必须在 `window.onload` 事件中被调用，以确保所有页面资源（包括脚本）加载完毕。
 - **0.2. 资源加载检查**:
   - **强规定性指令**: `initGame()` 函数的**第一步**必须是检查 `THREE` 全局对象是否存在。这是为了处理 `three.min.js` 脚本加载失败的边界情况。必须使用以下精确代码实现此检查：
+
     ```javascript
     if (typeof THREE === 'undefined') {
       alert('Three.js 加载失败，请检查网络连接。');
       return;
     }
     ```
+
 - **0.3. 隐藏加载提示**:
   - **强规定性指令**: 在 `initGame()` 函数的**最后**，必须隐藏加载提示并启动游戏循环：
+
     ```javascript
     // 隐藏加载提示
     document.getElementById('loading').style.display = 'none';
     // 启动游戏循环
     animate();
     ```
+
 - **0.4. 游戏循环**:
   - **强规定性指令**: 必须定义 `animate()` 函数作为游戏主循环：
+
     ```javascript
     function animate() {
       requestAnimationFrame(animate);
@@ -44,6 +49,7 @@
       renderer.render(scene, camera);
     }
     ```
+
 - **0.5. 键盘事件**:
   - **强规定性指令**: 必须定义键盘状态对象和事件监听：
 
@@ -101,6 +107,7 @@
       - `shadow.camera.bottom`: `-30`
 - **2.4. 渲染器 (Renderer)**:
   - **强规定性指令**: 渲染器必须按照以下精确方式初始化，以避免 WebGL 错误：
+
     ```javascript
     // 创建渲染器 - 不传入 canvas 参数，让 Three.js 自动创建
     const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -109,6 +116,7 @@
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     document.body.appendChild(renderer.domElement);
     ```
+
   - **禁止**: 不要使用 `document.getElementById()` 或 `document.querySelector()` 获取 canvas 传入 WebGLRenderer
   - **禁止**: 不要在 HTML 中预先创建 `<canvas>` 标签
 
@@ -116,6 +124,7 @@
 
 - **3.1. 玩家对象结构**:
   - **强规定性指令**: 玩家必须定义为包含 mesh 和物理状态的对象：
+
     ```javascript
     const player = {
       mesh: null, // THREE.Group - 玩家的3D模型
@@ -123,12 +132,14 @@
       isGrounded: false, // 是否在地面上
     };
     ```
+
 - **3.2. 几何构成**: `player.mesh` 是由身体(球体)、眼睛(圆柱体)、红晕(圆形平面)、手臂(球体)、脚(变形球体)组成的`THREE.Group`。
 - **3.3. 身体材质**: 身体的`bodyMat`材质必须为`THREE.MeshStandardMaterial`，并包含以下精确属性：
   - `color`: `0xFFB6C1` (粉色)
   - `roughness`: `0.4`
 - **3.4. 物理与控制常量**:
   - **强规定性指令**: 必须定义 CONFIG 对象：
+
     ```javascript
     const CONFIG = {
       playerSpeed: 0.08,
@@ -166,6 +177,7 @@
 
 - **6.1. 游戏状态变量**:
   - **强规定性指令**: 必须定义 `gameState` 对象来管理游戏状态：
+
     ```javascript
     const gameState = {
       score: 0, // 当前收集的星星数

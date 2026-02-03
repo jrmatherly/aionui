@@ -54,7 +54,7 @@ npm run format
 
 提交信息必须遵循以下格式：
 
-```
+```text
 type(scope): description
 ```
 
@@ -70,7 +70,7 @@ type(scope): description
 
 示例：
 
-```
+```text
 feat: 添加用户登录功能
 fix(login): 修复登录验证问题
 docs: 更新API文档
