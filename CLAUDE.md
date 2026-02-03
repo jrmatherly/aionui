@@ -275,3 +275,13 @@ The following require special handling during build:
 - `tree-sitter` - Code parsing
 
 These are configured as externals in Webpack.
+
+## AI Context Tools
+
+This project uses **Drift Detect** and **Serena** for enhanced AI-assisted development:
+
+- **Drift Detect** — Pattern analysis, call graph, Cortex institutional memory (`.drift/`, `.driftignore`)
+- **Serena** — Symbolic code navigation via language server (`.serena/project.yml`, `.serena/memories/`)
+- **MCP config** — `.mcp.json` configures Drift as an MCP server for AI tools
+
+Run `drift status` and `drift memory status` to check health. See `docs/guides/AI_CONTEXT_GUIDE.md` for full setup and workflow documentation.
