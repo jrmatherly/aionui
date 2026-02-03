@@ -24,7 +24,7 @@ services:
       context: ../..
       dockerfile: deploy/docker/Dockerfile
       args:
-        TARGETARCH: x64
+        TARGETARCH: arm64
     container_name: aionui
     restart: unless-stopped
 
@@ -45,7 +45,7 @@ services:
       - DISPLAY_NUM=${DISPLAY_NUM:-99}
       - SCREEN_RESOLUTION=${SCREEN_RESOLUTION:-1024x768x24}
       # Security (set in .env for production)
-      # - JWT_SECRET=${JWT_SECRET}
+      - JWT_SECRET=${JWT_SECRET}
       # - AIONUI_HTTPS=${AIONUI_HTTPS:-false}
 
     # Persistent storage
