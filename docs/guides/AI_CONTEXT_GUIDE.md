@@ -315,6 +315,77 @@ When an architectural decision is made, update both:
 1. Drift: `drift memory add decision_context "..." --topic "..."`
 2. Serena: Edit or create `.serena/memories/relevant-topic.md`
 
+## Test Topology
+
+Drift includes a **test topology** feature that maps tests to source code, enabling
+intelligent test selection ("which tests should I run when I change this file?").
+
+### Current Status
+
+AionUI has 3 unit test files using Jest 30:
+
+| Test File | Coverage Area |
+|-----------|--------------|
+| `tests/unit/test_version_info.ts` | `VersionInfo` model — semver comparison, serialization |
+| `tests/unit/test_claude_yolo_mode.ts` | ACP YOLO mode — session permission bypass |
+| `tests/unit/test_custom_acp_agent.ts` | Custom ACP agent — config, spawn, validation |
+
+Jest configuration is in `jest.config.js` with `ts-jest` transform, path aliases matching
+webpack config, and `tests/jest.setup.ts` for Electron API mocks.
+
+**Known issue:** `drift test-topology build` currently reports 0 test files despite the
+`tests/**/*.ts` pattern in `.drift/config.json`. The test files use a `test_*.ts` naming
+convention (Python-style) rather than the more common `*.test.ts` / `*.spec.ts` (JS convention).
+Drift may require filename convention matching in addition to glob patterns. This is being
+tracked for resolution in a future Drift version or config adjustment.
+
+### Running Tests
+
+```bash
+npm test                 # Run all tests
+npm run test:watch       # Watch mode
+npm run test:coverage    # With coverage report
+npm run test:contract    # Contract tests only
+npm run test:integration # Integration tests only
+```
+
+### Future: CI Integration with Test Topology
+
+Once the detection issue is resolved, test topology enables:
+
+1. **Smart test selection in PRs** — Only run tests affected by changed files
+2. **Uncovered code detection** — `drift test-topology uncovered --min-risk high`
+3. **Mock analysis** — Identify over-mocked tests that don't actually validate behavior
+
+Example CI workflow (for future use):
+
+```bash
+# Get changed files from PR
+FILES=$(git diff --name-only origin/main...HEAD | grep -E '\.(ts|tsx)$' | tr '\n' ' ')
+
+# Get minimum test set
+TESTS=$(drift test-topology affected $FILES --format json | jq -r '.result.tests[].file' | sort -u)
+
+# Run only affected tests
+npx jest $TESTS
+```
+
+### Expanding Test Coverage
+
+When adding new tests, follow the existing convention:
+
+- Place in `tests/unit/` for unit tests
+- Name as `test_<subject>.ts` (current convention) or `<subject>.test.ts`
+- Import from `@jest/globals` for type-safe assertions
+- Mock Electron APIs via the shared `jest.setup.ts`
+
+As the test suite grows, periodically rebuild topology:
+
+```bash
+drift test-topology build
+drift test-topology status
+```
+
 ## Troubleshooting
 
 ### Drift scan finds 0 patterns
