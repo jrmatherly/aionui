@@ -151,4 +151,4 @@ npm run build        # Build (macOS)
 
 ---
 
-_Generated: 2026-02-02_
+*Generated: 2026-02-02*
