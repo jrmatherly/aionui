@@ -36,7 +36,9 @@ pip install serena
 
 ### Drift
 
-- **Config:** `.drift/config.json` (auto-generated, gitignored)
+- **Config:** `.drift/config.json` (tracked — project settings and feature flags)
+- **Approved patterns:** `.drift/patterns/approved/*.json` (tracked — team-shared golden standard)
+- **Transient data:** `.drift/lake/`, `.drift/cache/`, `.drift/memory/`, etc. (gitignored — rebuilt locally)
 - **Exclusions:** `.driftignore` (tracked — additional exclusions beyond `.gitignore`)
 - **MCP:** `.mcp.json` (tracked — project-level MCP server config)
 
