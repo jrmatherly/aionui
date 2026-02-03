@@ -74,11 +74,24 @@ git checkout .drift/config.json
 
 **Why the restore?** `drift init -y` overwrites `config.json` with defaults, which resets:
 
-- `project.id` — Regenerated UUID (the tracked one is the project's canonical ID)
-- `initializedAt` — New timestamp
-- `learning.autoApproveThreshold` — Reset to `0.95` (project uses `0.85`)
+| Setting | Default (after init) | Project Value | Why It Matters |
+|---------|---------------------|---------------|----------------|
+| `project.id` | New random UUID | `55d47f17-...` | Canonical project identifier |
+| `initializedAt` | Current timestamp | `2026-02-03T21:06:03.603Z` | Original init date |
+| `learning.autoApproveThreshold` | `0.95` | `0.85` | More permissive — approves patterns at 85%+ confidence |
 
-Always restore after init to keep team-consistent settings.
+All other settings (ignore patterns, CI config, performance, features) are also
+restored to the team-defined values. Always restore after init to keep consistent settings.
+
+If you don't have git available (or prefer manual), ensure these values in `.drift/config.json`:
+
+```json
+{
+  "learning": {
+    "autoApproveThreshold": 0.85
+  }
+}
+```
 
 ### 3. Rebuild Analysis Data
 
