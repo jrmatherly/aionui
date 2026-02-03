@@ -3,6 +3,7 @@ dist/
 build/
 .webpack/
 out/
+.drift/
 *.min.js
 *.min.css
 package-lock.json

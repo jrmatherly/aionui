@@ -11,7 +11,7 @@ export default defineConfig(
   // Global ignores (replaces .eslintignore)
   // Note: gemini/cli is handled as an override below, not ignored
   {
-    ignores: ['node_modules/', 'dist/', 'build/', '.webpack/', 'out/', '*.min.js', '*.min.css', 'package-lock.json', 'yarn.lock', 'pnpm-lock.yaml', '*.log', '.DS_Store', 'Thumbs.db', 'public/', 'resources/', 'docs/', 'config/webpack/', 'scripts/', 'skills/', '.scratchpad/', '.local_docs/', 'src/agent/gemini/cli/', 'deploy/'],
+    ignores: ['node_modules/', 'dist/', 'build/', '.webpack/', 'out/', '*.min.js', '*.min.css', 'package-lock.json', 'yarn.lock', 'pnpm-lock.yaml', '*.log', '.DS_Store', 'Thumbs.db', 'public/', 'resources/', 'docs/', 'config/webpack/', 'scripts/', 'skills/', '.scratchpad/', '.local_docs/', '.drift/', 'src/agent/gemini/cli/', 'deploy/'],
   },
 
   // Base ESLint recommended

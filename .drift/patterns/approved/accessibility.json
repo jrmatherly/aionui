@@ -1,0 +1,569 @@
+{
+  "version": "1.0.0",
+  "category": "accessibility",
+  "patterns": [
+    {
+      "id": "1599883860ef2cf4",
+      "subcategory": "alt-text",
+      "name": "Alt Text Detector",
+      "description": "Learns alt text patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "accessibility/alt-text",
+          "patternId": "accessibility/alt-text/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.09,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 6,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 239,
+          "column": 24,
+          "isOutlier": true,
+          "confidence": 0.97,
+          "outlierReason": "Value above IQR upper bound"
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 227,
+          "column": 24,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 44,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.8825
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 44,
+          "column": 49,
+          "isOutlier": false,
+          "confidence": 0.8825
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 44,
+          "column": 77,
+          "isOutlier": false,
+          "confidence": 0.8825
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 49,
+          "column": 55,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 49,
+          "column": 83,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-scheduled-triage.yml",
+          "line": 72,
+          "column": 101,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 78,
+          "column": 70,
+          "isOutlier": true,
+          "confidence": 0.76,
+          "outlierReason": "Value below IQR lower bound"
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.055Z",
+        "lastSeen": "2026-02-03T21:06:56.283Z",
+        "source": "auto-detected",
+        "tags": [
+          "accessibility",
+          "alt-text"
+        ],
+        "approvedAt": "2026-02-03T21:06:56.283Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "1788ae7d288642b9",
+      "subcategory": "aria-roles",
+      "name": "ARIA Roles Detector",
+      "description": "Learns ARIA roles patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "accessibility/aria-roles",
+          "patternId": "accessibility/aria-roles/assignment"
+        }
+      },
+      "confidence": {
+        "frequency": 0.32,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 5,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 4,
+          "column": 1,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 9,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 22,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 31,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 40,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 52,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 61,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 70,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 4,
+          "column": 1,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 9,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 18,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 27,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 36,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 51,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/question.yml",
+          "line": 4,
+          "column": 1,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/question.yml",
+          "line": 9,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/question.yml",
+          "line": 18,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/question.yml",
+          "line": 33,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/question.yml",
+          "line": 40,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/gemini-scheduled-triage.yml",
+          "line": 57,
+          "column": 26,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/gemini-scheduled-triage.yml",
+          "line": 57,
+          "column": 32,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 66,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 66,
+          "column": 32,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 66,
+          "column": 43,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 66,
+          "column": 52,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 68,
+          "column": 32,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 68,
+          "column": 51,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 68,
+          "column": 61,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 160,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 213,
+          "column": 17,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 215,
+          "column": 43,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 260,
+          "column": 21,
+          "isOutlier": false,
+          "confidence": 0.7651219512195122
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.055Z",
+        "lastSeen": "2026-02-03T21:06:56.300Z",
+        "source": "auto-detected",
+        "tags": [
+          "accessibility",
+          "aria-roles"
+        ],
+        "approvedAt": "2026-02-03T21:06:56.300Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "cc31b71683033c6b",
+      "subcategory": "alt-text",
+      "name": "Alt Text Detector",
+      "description": "Learns alt text patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "accessibility/alt-text",
+          "patternId": "accessibility/alt-text/assignment"
+        }
+      },
+      "confidence": {
+        "frequency": 0.05,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 4,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 3,
+          "column": 1,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 3,
+          "column": 1,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/question.yml",
+          "line": 3,
+          "column": 1,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 257,
+          "column": 34,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 377,
+          "column": 27,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.055Z",
+        "lastSeen": "2026-02-03T21:06:56.317Z",
+        "source": "auto-detected",
+        "tags": [
+          "accessibility",
+          "alt-text"
+        ],
+        "approvedAt": "2026-02-03T21:06:56.317Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "904a7a8778f123f3",
+      "subcategory": "keyboard-nav",
+      "name": "Keyboard Navigation Detector",
+      "description": "Learns keyboard navigation patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "accessibility/keyboard-nav",
+          "patternId": "accessibility/keyboard-nav/assignment"
+        }
+      },
+      "confidence": {
+        "frequency": 0.01,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 151,
+          "column": 29,
+          "isOutlier": false,
+          "confidence": 0.97
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.056Z",
+        "lastSeen": "2026-02-03T21:06:56.335Z",
+        "source": "auto-detected",
+        "tags": [
+          "accessibility",
+          "keyboard-nav"
+        ],
+        "approvedAt": "2026-02-03T21:06:56.335Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "ee5533849657d367",
+      "subcategory": "focus-management",
+      "name": "Focus Management Detector",
+      "description": "Learns focus management patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "accessibility/focus-management",
+          "patternId": "accessibility/focus-management/assignment"
+        }
+      },
+      "confidence": {
+        "frequency": 0.01,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 151,
+          "column": 29,
+          "isOutlier": false,
+          "confidence": 0.97
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.056Z",
+        "lastSeen": "2026-02-03T21:06:56.353Z",
+        "source": "auto-detected",
+        "tags": [
+          "accessibility",
+          "focus-management"
+        ],
+        "approvedAt": "2026-02-03T21:06:56.353Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "db08652b2b3b635a",
+      "subcategory": "aria-roles",
+      "name": "ARIA Roles Detector",
+      "description": "Learns ARIA roles patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "accessibility/aria-roles",
+          "patternId": "accessibility/aria-roles/class_definition"
+        }
+      },
+      "confidence": {
+        "frequency": 0.01,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.9151219512195122,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 141,
+          "column": 27,
+          "isOutlier": false,
+          "confidence": 0.9151219512195122
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.057Z",
+        "lastSeen": "2026-02-03T21:06:56.369Z",
+        "source": "auto-detected",
+        "tags": [
+          "accessibility",
+          "aria-roles"
+        ],
+        "approvedAt": "2026-02-03T21:06:56.369Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    }
+  ],
+  "lastUpdated": "2026-02-03T21:06:56.500Z",
+  "checksum": "a426faa6e2d24dc6"
+}

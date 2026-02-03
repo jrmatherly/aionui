@@ -1,0 +1,674 @@
+{
+  "version": "1.0.0",
+  "category": "testing",
+  "patterns": [
+    {
+      "id": "4bdb5c91f717538a",
+      "subcategory": "test-structure",
+      "name": "Test Structure Detector",
+      "description": "Learns test structure patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "testing/test-structure",
+          "patternId": "testing/test-structure/conditional"
+        }
+      },
+      "confidence": {
+        "frequency": 0.16,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 6,
+        "score": 0.9408333333333333,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 159,
+          "column": 56,
+          "isOutlier": false,
+          "confidence": 0.8999999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 215,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.9408333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 145,
+          "column": 94,
+          "isOutlier": false,
+          "confidence": 0.7790909090909091
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 167,
+          "column": 139,
+          "isOutlier": false,
+          "confidence": 0.7790909090909091
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 170,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.7569565217391304
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 170,
+          "column": 50,
+          "isOutlier": false,
+          "confidence": 0.7569565217391304
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 170,
+          "column": 69,
+          "isOutlier": false,
+          "confidence": 0.7569565217391304
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 170,
+          "column": 91,
+          "isOutlier": false,
+          "confidence": 0.7569565217391304
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 170,
+          "column": 149,
+          "isOutlier": false,
+          "confidence": 0.7569565217391304
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 168,
+          "column": 199,
+          "isOutlier": false,
+          "confidence": 0.7569565217391304
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 71,
+          "column": 68,
+          "isOutlier": false,
+          "confidence": 0.76
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 97,
+          "column": 67,
+          "isOutlier": false,
+          "confidence": 0.76
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 51,
+          "column": 112,
+          "isOutlier": false,
+          "confidence": 0.89
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 115,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.89
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 174,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.89
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 310,
+          "column": 20,
+          "isOutlier": false,
+          "confidence": 0.89
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.055Z",
+        "lastSeen": "2026-02-03T21:06:55.370Z",
+        "source": "auto-detected",
+        "tags": [
+          "testing",
+          "test-structure"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.370Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "bb3fd650f9942c4a",
+      "subcategory": "describe-naming",
+      "name": "Describe Naming Detector",
+      "description": "Learns test describe/it naming patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "testing/describe-naming",
+          "patternId": "testing/describe-naming/conditional"
+        }
+      },
+      "confidence": {
+        "frequency": 0.3,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 6,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 159,
+          "column": 56,
+          "isOutlier": false,
+          "confidence": 0.8825
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 215,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 145,
+          "column": 94,
+          "isOutlier": false,
+          "confidence": 0.7815384615384615
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 167,
+          "column": 139,
+          "isOutlier": false,
+          "confidence": 0.7815384615384615
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 170,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.7313636363636363
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 170,
+          "column": 50,
+          "isOutlier": false,
+          "confidence": 0.7313636363636363
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 170,
+          "column": 69,
+          "isOutlier": false,
+          "confidence": 0.7313636363636363
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 170,
+          "column": 91,
+          "isOutlier": false,
+          "confidence": 0.7313636363636363
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 170,
+          "column": 149,
+          "isOutlier": false,
+          "confidence": 0.7313636363636363
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 97,
+          "column": 67,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 71,
+          "column": 68,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 51,
+          "column": 112,
+          "isOutlier": false,
+          "confidence": 0.89
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 115,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.89
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 174,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.89
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 310,
+          "column": 20,
+          "isOutlier": false,
+          "confidence": 0.89
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.055Z",
+        "lastSeen": "2026-02-03T21:06:55.385Z",
+        "source": "auto-detected",
+        "tags": [
+          "testing",
+          "describe-naming"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.385Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "2474011724c263b5",
+      "subcategory": "mock-patterns",
+      "name": "Mock Patterns Detector",
+      "description": "Learns mocking patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "testing/mock-patterns",
+          "patternId": "testing/mock-patterns/import"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 53,
+          "column": 41,
+          "isOutlier": false,
+          "confidence": 0.97
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.055Z",
+        "lastSeen": "2026-02-03T21:06:55.398Z",
+        "source": "auto-detected",
+        "tags": [
+          "testing",
+          "mock-patterns"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.398Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "9ab4d5a52051ad45",
+      "subcategory": "fixture-patterns",
+      "name": "Fixture Patterns Detector",
+      "description": "Learns test fixture patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "testing/fixture-patterns",
+          "patternId": "testing/fixture-patterns/import"
+        }
+      },
+      "confidence": {
+        "frequency": 0.07,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 3,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 53,
+          "column": 41,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 234,
+          "column": 216,
+          "isOutlier": false,
+          "confidence": 0.7366666666666666
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 119,
+          "column": 52,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 119,
+          "column": 241,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 149,
+          "column": 84,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 208,
+          "column": 92,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.056Z",
+        "lastSeen": "2026-02-03T21:06:55.412Z",
+        "source": "auto-detected",
+        "tags": [
+          "testing",
+          "fixture-patterns"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.412Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "20fd8cd634da7d40",
+      "subcategory": "test-file-naming",
+      "name": "Test File Naming Detector",
+      "description": "Learns test file naming patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "testing/test-file-naming",
+          "patternId": "testing/test-file-naming/conditional"
+        }
+      },
+      "confidence": {
+        "frequency": 0.14,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 215,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 170,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.8066666666666666
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 170,
+          "column": 50,
+          "isOutlier": false,
+          "confidence": 0.8066666666666666
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 170,
+          "column": 69,
+          "isOutlier": false,
+          "confidence": 0.8066666666666666
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 170,
+          "column": 91,
+          "isOutlier": false,
+          "confidence": 0.8066666666666666
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 170,
+          "column": 149,
+          "isOutlier": false,
+          "confidence": 0.8066666666666666
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 168,
+          "column": 199,
+          "isOutlier": false,
+          "confidence": 0.8066666666666666
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.056Z",
+        "lastSeen": "2026-02-03T21:06:55.424Z",
+        "source": "auto-detected",
+        "tags": [
+          "testing",
+          "test-file-naming"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.424Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "7b8ebfeeabc55df9",
+      "subcategory": "test-co-location",
+      "name": "Test Co-Location Detector",
+      "description": "Learns test co-location patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "testing/test-co-location",
+          "patternId": "testing/test-co-location/conditional"
+        }
+      },
+      "confidence": {
+        "frequency": 0.14,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 215,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 170,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.8258823529411765
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 170,
+          "column": 50,
+          "isOutlier": false,
+          "confidence": 0.8258823529411765
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 170,
+          "column": 69,
+          "isOutlier": false,
+          "confidence": 0.8258823529411765
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 170,
+          "column": 91,
+          "isOutlier": false,
+          "confidence": 0.8258823529411765
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 170,
+          "column": 149,
+          "isOutlier": false,
+          "confidence": 0.8258823529411765
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 168,
+          "column": 199,
+          "isOutlier": false,
+          "confidence": 0.8258823529411765
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.056Z",
+        "lastSeen": "2026-02-03T21:06:55.440Z",
+        "source": "auto-detected",
+        "tags": [
+          "testing",
+          "test-co-location"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.440Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "c54f07f9e5bc65a5",
+      "subcategory": "test-file-naming",
+      "name": "Test File Naming Detector",
+      "description": "Learns test file naming patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "testing/test-file-naming",
+          "patternId": "testing/test-file-naming/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 50,
+          "column": 27,
+          "isOutlier": false,
+          "confidence": 0.97
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.057Z",
+        "lastSeen": "2026-02-03T21:06:55.454Z",
+        "source": "auto-detected",
+        "tags": [
+          "testing",
+          "test-file-naming"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.454Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "48e197dfaf9d0e7a",
+      "subcategory": "test-co-location",
+      "name": "Test Co-Location Detector",
+      "description": "Learns test co-location patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "testing/test-co-location",
+          "patternId": "testing/test-co-location/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 50,
+          "column": 27,
+          "isOutlier": false,
+          "confidence": 0.97
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.057Z",
+        "lastSeen": "2026-02-03T21:06:55.469Z",
+        "source": "auto-detected",
+        "tags": [
+          "testing",
+          "test-co-location"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.469Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    }
+  ],
+  "lastUpdated": "2026-02-03T21:06:56.497Z",
+  "checksum": "7fcc15324b1a7c84"
+}

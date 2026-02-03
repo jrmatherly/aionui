@@ -1,0 +1,422 @@
+{
+  "version": "1.0.0",
+  "category": "errors",
+  "patterns": [
+    {
+      "id": "efa1deec8a38b647",
+      "subcategory": "exception-hierarchy",
+      "name": "Exception Hierarchy Detector",
+      "description": "Learns exception and error handling patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "errors/exception-hierarchy",
+          "patternId": "errors/exception-hierarchy/class_definition"
+        }
+      },
+      "confidence": {
+        "frequency": 0.06,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 280,
+          "column": 26,
+          "isOutlier": false,
+          "confidence": 0.9644444444444444
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 268,
+          "column": 26,
+          "isOutlier": false,
+          "confidence": 0.9644444444444444
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.054Z",
+        "lastSeen": "2026-02-03T21:06:55.122Z",
+        "source": "auto-detected",
+        "tags": [
+          "errors",
+          "exception-hierarchy"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.122Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "d25595608c288a44",
+      "subcategory": "try-catch",
+      "name": "Try/Catch Detector",
+      "description": "Learns try/catch patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "errors/try-catch",
+          "patternId": "errors/try-catch/class_definition"
+        }
+      },
+      "confidence": {
+        "frequency": 0.04,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.91,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 280,
+          "column": 26,
+          "isOutlier": false,
+          "confidence": 0.91
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 268,
+          "column": 26,
+          "isOutlier": false,
+          "confidence": 0.91
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.054Z",
+        "lastSeen": "2026-02-03T21:06:55.133Z",
+        "source": "auto-detected",
+        "tags": [
+          "errors",
+          "try-catch"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.133Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "896e711f7666448b",
+      "subcategory": "error-logging",
+      "name": "Error Logging Detector",
+      "description": "Learns error logging patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "errors/error-logging",
+          "patternId": "errors/error-logging/class_definition"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.945,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 280,
+          "column": 26,
+          "isOutlier": false,
+          "confidence": 0.92
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 268,
+          "column": 26,
+          "isOutlier": false,
+          "confidence": 0.945
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.054Z",
+        "lastSeen": "2026-02-03T21:06:55.145Z",
+        "source": "auto-detected",
+        "tags": [
+          "errors",
+          "error-logging"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.145Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "95c3e0972f9b5167",
+      "subcategory": "circuit-breaker",
+      "name": "Circuit Breaker Detector",
+      "description": "Learns circuit breaker and resilience patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "errors/circuit-breaker",
+          "patternId": "errors/circuit-breaker/conditional"
+        }
+      },
+      "confidence": {
+        "frequency": 0.14,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 6,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 374,
+          "column": 37,
+          "isOutlier": false,
+          "confidence": 0.7489473684210526
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 374,
+          "column": 48,
+          "isOutlier": false,
+          "confidence": 0.7489473684210526
+        },
+        {
+          "file": ".github/workflows/bump-homebrew.yml",
+          "line": 62,
+          "column": 25,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 114,
+          "column": 52,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 116,
+          "column": 33,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 205,
+          "column": 123,
+          "isOutlier": true,
+          "confidence": 0.97,
+          "outlierReason": "Value above IQR upper bound"
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 199,
+          "column": 111,
+          "isOutlier": true,
+          "confidence": 0.97,
+          "outlierReason": "Value above IQR upper bound"
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 37,
+          "column": 43,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 158,
+          "column": 33,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 34,
+          "column": 66,
+          "isOutlier": false,
+          "confidence": 0.8144444444444444
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 51,
+          "column": 66,
+          "isOutlier": false,
+          "confidence": 0.8144444444444444
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 248,
+          "column": 29,
+          "isOutlier": false,
+          "confidence": 0.8144444444444444
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 85,
+          "column": 66,
+          "isOutlier": false,
+          "confidence": 0.8144444444444444
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 252,
+          "column": 36,
+          "isOutlier": false,
+          "confidence": 0.8144444444444444
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.056Z",
+        "lastSeen": "2026-02-03T21:06:55.157Z",
+        "source": "auto-detected",
+        "tags": [
+          "errors",
+          "circuit-breaker"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.157Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "1a8b3f56736d1a86",
+      "subcategory": "exception-hierarchy",
+      "name": "Exception Hierarchy Detector",
+      "description": "Learns exception and error handling patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "errors/exception-hierarchy",
+          "patternId": "errors/exception-hierarchy/conditional"
+        }
+      },
+      "confidence": {
+        "frequency": 0.12,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.9063636363636364,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 205,
+          "column": 25,
+          "isOutlier": false,
+          "confidence": 0.9063636363636364
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 205,
+          "column": 64,
+          "isOutlier": false,
+          "confidence": 0.9063636363636364
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 205,
+          "column": 193,
+          "isOutlier": false,
+          "confidence": 0.9063636363636364
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 162,
+          "column": 48,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.056Z",
+        "lastSeen": "2026-02-03T21:06:55.170Z",
+        "source": "auto-detected",
+        "tags": [
+          "errors",
+          "exception-hierarchy"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.170Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "3f96904d0eba175a",
+      "subcategory": "try-catch",
+      "name": "Try/Catch Detector",
+      "description": "Learns try/catch patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "errors/try-catch",
+          "patternId": "errors/try-catch/conditional"
+        }
+      },
+      "confidence": {
+        "frequency": 0.08,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 205,
+          "column": 25,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 205,
+          "column": 64,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 205,
+          "column": 193,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 162,
+          "column": 48,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.056Z",
+        "lastSeen": "2026-02-03T21:06:55.185Z",
+        "source": "auto-detected",
+        "tags": [
+          "errors",
+          "try-catch"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.185Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    }
+  ],
+  "lastUpdated": "2026-02-03T21:06:56.496Z",
+  "checksum": "5ec63892a0d3bf61"
+}

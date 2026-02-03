@@ -1,0 +1,667 @@
+{
+  "version": "1.0.0",
+  "category": "logging",
+  "patterns": [
+    {
+      "id": "be6112a96c732877",
+      "subcategory": "structured-logging",
+      "name": "Structured Logging Detector",
+      "description": "Learns structured logging patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "logging/structured-logging",
+          "patternId": "logging/structured-logging/class_definition"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.945,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 280,
+          "column": 26,
+          "isOutlier": false,
+          "confidence": 0.92
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 268,
+          "column": 26,
+          "isOutlier": false,
+          "confidence": 0.945
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.055Z",
+        "lastSeen": "2026-02-03T21:06:55.482Z",
+        "source": "auto-detected",
+        "tags": [
+          "logging",
+          "structured-logging"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.482Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "dcece4abdf956f16",
+      "subcategory": "log-levels",
+      "name": "Log Levels Detector",
+      "description": "Learns log level patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "logging/log-levels",
+          "patternId": "logging/log-levels/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.48,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 8,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 241,
+          "column": 24,
+          "isOutlier": false,
+          "confidence": 0.76
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 229,
+          "column": 24,
+          "isOutlier": false,
+          "confidence": 0.76
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 36,
+          "column": 25,
+          "isOutlier": false,
+          "confidence": 0.931111111111111
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 61,
+          "column": 44,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 64,
+          "column": 44,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 91,
+          "column": 44,
+          "isOutlier": false,
+          "confidence": 0.87
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 68,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.87
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 215,
+          "column": 20,
+          "isOutlier": false,
+          "confidence": 0.87
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 219,
+          "column": 20,
+          "isOutlier": false,
+          "confidence": 0.87
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 219,
+          "column": 85,
+          "isOutlier": false,
+          "confidence": 0.87
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 78,
+          "column": 22,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 80,
+          "column": 20,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 121,
+          "column": 20,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 213,
+          "column": 20,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 257,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 80,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 116,
+          "column": 20,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 140,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 175,
+          "column": 20,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 199,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 238,
+          "column": 20,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 242,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 265,
+          "column": 20,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 311,
+          "column": 22,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 322,
+          "column": 20,
+          "isOutlier": false,
+          "confidence": 0.97
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.055Z",
+        "lastSeen": "2026-02-03T21:06:55.497Z",
+        "source": "auto-detected",
+        "tags": [
+          "logging",
+          "log-levels"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.497Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "d658c111ca4ae967",
+      "subcategory": "log-levels",
+      "name": "Log Levels Detector",
+      "description": "Learns log level patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "logging/log-levels",
+          "patternId": "logging/log-levels/class_definition"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.91,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 280,
+          "column": 26,
+          "isOutlier": false,
+          "confidence": 0.91
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 268,
+          "column": 26,
+          "isOutlier": false,
+          "confidence": 0.91
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.055Z",
+        "lastSeen": "2026-02-03T21:06:55.511Z",
+        "source": "auto-detected",
+        "tags": [
+          "logging",
+          "log-levels"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.511Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "fa04640fa9fd0770",
+      "subcategory": "context-fields",
+      "name": "Context Fields Detector",
+      "description": "Learns logging context field patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "logging/context-fields",
+          "patternId": "logging/context-fields/assignment"
+        }
+      },
+      "confidence": {
+        "frequency": 0.06,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 4,
+        "score": 0.9430769230769231,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 228,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 216,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.8084615384615385
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 57,
+          "column": 21,
+          "isOutlier": false,
+          "confidence": 0.9395652173913043
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 176,
+          "column": 21,
+          "isOutlier": false,
+          "confidence": 0.9430769230769231
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.055Z",
+        "lastSeen": "2026-02-03T21:06:55.524Z",
+        "source": "auto-detected",
+        "tags": [
+          "logging",
+          "context-fields"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.524Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "4a330b2dbb1254b1",
+      "subcategory": "health-checks",
+      "name": "Health Checks Detector",
+      "description": "Learns health check patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "logging/health-checks",
+          "patternId": "logging/health-checks/function_call"
+        }
+      },
+      "confidence": {
+        "frequency": 0.04,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.9043749999999999,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 13,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.8144444444444444
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 127,
+          "column": 25,
+          "isOutlier": false,
+          "confidence": 0.9043749999999999
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.055Z",
+        "lastSeen": "2026-02-03T21:06:55.539Z",
+        "source": "auto-detected",
+        "tags": [
+          "logging",
+          "health-checks"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.539Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "243f844f98f45e66",
+      "subcategory": "health-checks",
+      "name": "Health Checks Detector",
+      "description": "Learns health check patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "logging/health-checks",
+          "patternId": "logging/health-checks/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.1,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 3,
+        "score": 0.9408333333333333,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 163,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.8144444444444444
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 165,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.8144444444444444
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 390,
+          "column": 22,
+          "isOutlier": false,
+          "confidence": 0.9408333333333333
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 24,
+          "column": 33,
+          "isOutlier": false,
+          "confidence": 0.9043749999999999
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 25,
+          "column": 28,
+          "isOutlier": false,
+          "confidence": 0.9043749999999999
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.055Z",
+        "lastSeen": "2026-02-03T21:06:55.553Z",
+        "source": "auto-detected",
+        "tags": [
+          "logging",
+          "health-checks"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.553Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "7eae68096de4b994",
+      "subcategory": "log-levels",
+      "name": "Log Levels Detector",
+      "description": "Learns log level patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "logging/log-levels",
+          "patternId": "logging/log-levels/assignment"
+        }
+      },
+      "confidence": {
+        "frequency": 0.18,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.931111111111111,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 186,
+          "column": 21,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 246,
+          "column": 12,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 34,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.931111111111111
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 43,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.931111111111111
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 44,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.931111111111111
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 45,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.931111111111111
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 46,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.931111111111111
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 47,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.931111111111111
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 48,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.931111111111111
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 49,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.931111111111111
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.056Z",
+        "lastSeen": "2026-02-03T21:06:55.567Z",
+        "source": "auto-detected",
+        "tags": [
+          "logging",
+          "log-levels"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.567Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "d320a2d19c18dee8",
+      "subcategory": "context-fields",
+      "name": "Context Fields Detector",
+      "description": "Learns logging context field patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "logging/context-fields",
+          "patternId": "logging/context-fields/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.03,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.9430769230769231,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 245,
+          "column": 41,
+          "isOutlier": false,
+          "confidence": 0.9395652173913043
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 65,
+          "column": 41,
+          "isOutlier": false,
+          "confidence": 0.9430769230769231
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 207,
+          "column": 45,
+          "isOutlier": false,
+          "confidence": 0.9430769230769231
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.056Z",
+        "lastSeen": "2026-02-03T21:06:55.581Z",
+        "source": "auto-detected",
+        "tags": [
+          "logging",
+          "context-fields"
+        ],
+        "approvedAt": "2026-02-03T21:06:55.581Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    }
+  ],
+  "lastUpdated": "2026-02-03T21:06:56.497Z",
+  "checksum": "1d72b8f92231541b"
+}

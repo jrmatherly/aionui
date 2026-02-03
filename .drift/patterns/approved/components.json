@@ -1,0 +1,918 @@
+{
+  "version": "1.0.0",
+  "category": "components",
+  "patterns": [
+    {
+      "id": "d3a837ef77c83bdb",
+      "subcategory": "component-structure",
+      "name": "Component Structure Detector",
+      "description": "Learns component structure patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "components/component-structure",
+          "patternId": "components/component-structure/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.18,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 4,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 61,
+          "column": 58,
+          "isOutlier": false,
+          "confidence": 0.8975862068965517
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 61,
+          "column": 77,
+          "isOutlier": false,
+          "confidence": 0.8975862068965517
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 53,
+          "column": 58,
+          "isOutlier": false,
+          "confidence": 0.8922222222222222
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 53,
+          "column": 77,
+          "isOutlier": false,
+          "confidence": 0.8922222222222222
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 339,
+          "column": 57,
+          "isOutlier": false,
+          "confidence": 0.8922222222222222
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 355,
+          "column": 73,
+          "isOutlier": false,
+          "confidence": 0.8922222222222222
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 72,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 103,
+          "column": 98,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 103,
+          "column": 152,
+          "isOutlier": false,
+          "confidence": 0.97
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.055Z",
+        "lastSeen": "2026-02-03T21:06:54.783Z",
+        "source": "auto-detected",
+        "tags": [
+          "components",
+          "component-structure"
+        ],
+        "approvedAt": "2026-02-03T21:06:54.783Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "67f415e696d80425",
+      "subcategory": "duplicate-detection",
+      "name": "Duplicate Detection Detector",
+      "description": "Learns duplicate component patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "components/duplicate-detection",
+          "patternId": "components/duplicate-detection/import"
+        }
+      },
+      "confidence": {
+        "frequency": 0.14,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 3,
+        "score": 0.92625,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 128,
+          "column": 66,
+          "isOutlier": false,
+          "confidence": 0.902258064516129
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 138,
+          "column": 55,
+          "isOutlier": false,
+          "confidence": 0.902258064516129
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 147,
+          "column": 38,
+          "isOutlier": false,
+          "confidence": 0.902258064516129
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 120,
+          "column": 66,
+          "isOutlier": false,
+          "confidence": 0.92625
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 130,
+          "column": 55,
+          "isOutlier": false,
+          "confidence": 0.92625
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 139,
+          "column": 38,
+          "isOutlier": false,
+          "confidence": 0.92625
+        },
+        {
+          "file": ".github/pull_request_template.md",
+          "line": 17,
+          "column": 65,
+          "isOutlier": true,
+          "confidence": 0.7949999999999999,
+          "outlierReason": "Value below IQR lower bound"
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.055Z",
+        "lastSeen": "2026-02-03T21:06:54.802Z",
+        "source": "auto-detected",
+        "tags": [
+          "components",
+          "duplicate-detection"
+        ],
+        "approvedAt": "2026-02-03T21:06:54.802Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "b06ffbfb0f1f23ef",
+      "subcategory": "near-duplicate",
+      "name": "Near Duplicate Detector",
+      "description": "Learns near-duplicate component patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "components/near-duplicate",
+          "patternId": "components/near-duplicate/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.06,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 19,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.942
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 103,
+          "column": 98,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 103,
+          "column": 152,
+          "isOutlier": false,
+          "confidence": 0.97
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.055Z",
+        "lastSeen": "2026-02-03T21:06:54.815Z",
+        "source": "auto-detected",
+        "tags": [
+          "components",
+          "near-duplicate"
+        ],
+        "approvedAt": "2026-02-03T21:06:54.815Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "122ee631cd2b4bd6",
+      "subcategory": "ref-forwarding",
+      "name": "Ref Forwarding Detector",
+      "description": "Learns ref forwarding patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "components/ref-forwarding",
+          "patternId": "components/ref-forwarding/import"
+        }
+      },
+      "confidence": {
+        "frequency": 0.08,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 3,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 148,
+          "column": 54,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 140,
+          "column": 54,
+          "isOutlier": false,
+          "confidence": 0.9199999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 148,
+          "column": 88,
+          "isOutlier": false,
+          "confidence": 0.97
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.055Z",
+        "lastSeen": "2026-02-03T21:06:54.829Z",
+        "source": "auto-detected",
+        "tags": [
+          "components",
+          "ref-forwarding"
+        ],
+        "approvedAt": "2026-02-03T21:06:54.829Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "97365e34d7a74471",
+      "subcategory": "props-patterns",
+      "name": "Props Patterns Detector",
+      "description": "Learns props patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "components/props-patterns",
+          "patternId": "components/props-patterns/assignment"
+        }
+      },
+      "confidence": {
+        "frequency": 0.6,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 12,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 8,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.92625
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 21,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.92625
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 30,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.92625
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 39,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.92625
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 51,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.92625
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 60,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.92625
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 69,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.92625
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 8,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.87
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 17,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.87
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 26,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.87
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 35,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.87
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 50,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.87
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/question.yml",
+          "line": 8,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/question.yml",
+          "line": 17,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/question.yml",
+          "line": 32,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/question.yml",
+          "line": 39,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 498,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.9381818181818182
+        },
+        {
+          "file": ".github/workflows/bump-homebrew.yml",
+          "line": 7,
+          "column": 5,
+          "isOutlier": true,
+          "confidence": 0.7366666666666666,
+          "outlierReason": "Value below IQR lower bound"
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 74,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.8999999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 5,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.8825
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 5,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-scheduled-triage.yml",
+          "line": 44,
+          "column": 5,
+          "isOutlier": true,
+          "confidence": 0.7075,
+          "outlierReason": "Value below IQR lower bound"
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 5,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.76
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 40,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.76
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 23,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 62,
+          "column": 47,
+          "isOutlier": false,
+          "confidence": 0.87
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 122,
+          "column": 47,
+          "isOutlier": false,
+          "confidence": 0.87
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 181,
+          "column": 47,
+          "isOutlier": false,
+          "confidence": 0.87
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 295,
+          "column": 47,
+          "isOutlier": false,
+          "confidence": 0.87
+        },
+        {
+          "file": ".github/workflows/project-automation.yml",
+          "line": 37,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.87
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.055Z",
+        "lastSeen": "2026-02-03T21:06:54.842Z",
+        "source": "auto-detected",
+        "tags": [
+          "components",
+          "props-patterns"
+        ],
+        "approvedAt": "2026-02-03T21:06:54.842Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "d929355356e70acf",
+      "subcategory": "duplicate-detection",
+      "name": "Duplicate Detection Detector",
+      "description": "Learns duplicate component patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "components/duplicate-detection",
+          "patternId": "components/duplicate-detection/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.04,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 103,
+          "column": 98,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 103,
+          "column": 152,
+          "isOutlier": false,
+          "confidence": 0.97
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.056Z",
+        "lastSeen": "2026-02-03T21:06:54.869Z",
+        "source": "auto-detected",
+        "tags": [
+          "components",
+          "duplicate-detection"
+        ],
+        "approvedAt": "2026-02-03T21:06:54.869Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "9140c830d4750680",
+      "subcategory": "ref-forwarding",
+      "name": "Ref Forwarding Detector",
+      "description": "Learns ref forwarding patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "components/ref-forwarding",
+          "patternId": "components/ref-forwarding/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.16,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.931111111111111,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 44,
+          "column": 16,
+          "isOutlier": false,
+          "confidence": 0.931111111111111
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 44,
+          "column": 24,
+          "isOutlier": false,
+          "confidence": 0.931111111111111
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 44,
+          "column": 51,
+          "isOutlier": false,
+          "confidence": 0.931111111111111
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 44,
+          "column": 59,
+          "isOutlier": false,
+          "confidence": 0.931111111111111
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 497,
+          "column": 30,
+          "isOutlier": false,
+          "confidence": 0.931111111111111
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 497,
+          "column": 38,
+          "isOutlier": false,
+          "confidence": 0.931111111111111
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 497,
+          "column": 65,
+          "isOutlier": false,
+          "confidence": 0.931111111111111
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 497,
+          "column": 73,
+          "isOutlier": false,
+          "confidence": 0.931111111111111
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.056Z",
+        "lastSeen": "2026-02-03T21:06:54.884Z",
+        "source": "auto-detected",
+        "tags": [
+          "components",
+          "ref-forwarding"
+        ],
+        "approvedAt": "2026-02-03T21:06:54.884Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "bee063615cfba212",
+      "subcategory": "ref-forwarding",
+      "name": "Ref Forwarding Detector",
+      "description": "Learns ref forwarding patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "components/ref-forwarding",
+          "patternId": "components/ref-forwarding/conditional"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.931111111111111,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 530,
+          "column": 53,
+          "isOutlier": false,
+          "confidence": 0.931111111111111
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.056Z",
+        "lastSeen": "2026-02-03T21:06:54.895Z",
+        "source": "auto-detected",
+        "tags": [
+          "components",
+          "ref-forwarding"
+        ],
+        "approvedAt": "2026-02-03T21:06:54.895Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "b098b77a39f88c05",
+      "subcategory": "state-patterns",
+      "name": "State Patterns Detector",
+      "description": "Learns state management patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "components/state-patterns",
+          "patternId": "components/state-patterns/assignment"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.92625,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 53,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.92625
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.056Z",
+        "lastSeen": "2026-02-03T21:06:54.906Z",
+        "source": "auto-detected",
+        "tags": [
+          "components",
+          "state-patterns"
+        ],
+        "approvedAt": "2026-02-03T21:06:54.906Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "b15b4065ed105322",
+      "subcategory": "state-patterns",
+      "name": "State Patterns Detector",
+      "description": "Learns state management patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "components/state-patterns",
+          "patternId": "components/state-patterns/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.14,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.92625,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 137,
+          "column": 17,
+          "isOutlier": false,
+          "confidence": 0.92625
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 145,
+          "column": 38,
+          "isOutlier": false,
+          "confidence": 0.92625
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 151,
+          "column": 17,
+          "isOutlier": false,
+          "confidence": 0.92625
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 159,
+          "column": 38,
+          "isOutlier": false,
+          "confidence": 0.92625
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 165,
+          "column": 17,
+          "isOutlier": false,
+          "confidence": 0.92625
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 173,
+          "column": 38,
+          "isOutlier": false,
+          "confidence": 0.92625
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 183,
+          "column": 59,
+          "isOutlier": false,
+          "confidence": 0.92625
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.056Z",
+        "lastSeen": "2026-02-03T21:06:54.917Z",
+        "source": "auto-detected",
+        "tags": [
+          "components",
+          "state-patterns"
+        ],
+        "approvedAt": "2026-02-03T21:06:54.917Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "474b8e7db389c9ff",
+      "subcategory": "component-structure",
+      "name": "Component Structure Detector",
+      "description": "Learns component structure patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "components/component-structure",
+          "patternId": "components/component-structure/assignment"
+        }
+      },
+      "confidence": {
+        "frequency": 0.04,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 171,
+          "column": 26,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 213,
+          "column": 28,
+          "isOutlier": false,
+          "confidence": 0.97
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.056Z",
+        "lastSeen": "2026-02-03T21:06:54.928Z",
+        "source": "auto-detected",
+        "tags": [
+          "components",
+          "component-structure"
+        ],
+        "approvedAt": "2026-02-03T21:06:54.928Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    }
+  ],
+  "lastUpdated": "2026-02-03T21:06:56.494Z",
+  "checksum": "d5633e0fb7140115"
+}

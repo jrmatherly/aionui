@@ -158,8 +158,30 @@ my-video
 .scratchpad/
 .local_docs/
 
-# Drift Detect data (local pattern analysis)
-.drift/
+# Drift Detect — track config + approved patterns, ignore transient data
+.drift/lake/
+.drift/cache/
+.drift/history/
+.drift/call-graph/
+.drift/indexes/
+.drift/memory/
+.drift/patterns/discovered/
+.drift/patterns/ignored/
+.drift/patterns/variants/
+.drift/patterns/approved/.backups/
+.drift/constraints/discovered/
+.drift/constraints/ignored/
+.drift/constraints/history/
+.drift/contracts/
+.drift/test-topology/
+.drift/module-coupling/
+.drift/boundaries/
+.drift/dna/
+.drift/environment/
+.drift/error-handling/
+.drift/audit/
+.drift/reports/
+.drift/views/
 
 # Docker — real group mappings contain tenant-specific EntraID group IDs
 deploy/docker/group-mappings.json

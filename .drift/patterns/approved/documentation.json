@@ -1,0 +1,575 @@
+{
+  "version": "1.0.0",
+  "category": "documentation",
+  "patterns": [
+    {
+      "id": "7133a6e34d90ccb4",
+      "subcategory": "jsdoc-patterns",
+      "name": "JSDoc Patterns Detector",
+      "description": "Learns JSDoc documentation patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "documentation/jsdoc-patterns",
+          "patternId": "documentation/jsdoc-patterns/assignment"
+        }
+      },
+      "confidence": {
+        "frequency": 0.35,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 10,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 220,
+          "column": 10,
+          "isOutlier": false,
+          "confidence": 0.931111111111111
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 208,
+          "column": 10,
+          "isOutlier": false,
+          "confidence": 0.9116666666666666
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 307,
+          "column": 40,
+          "isOutlier": false,
+          "confidence": 0.9116666666666666
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 2,
+          "column": 1,
+          "isOutlier": false,
+          "confidence": 0.935
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 10,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.935
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 23,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.935
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 32,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.935
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 32,
+          "column": 40,
+          "isOutlier": false,
+          "confidence": 0.935
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 41,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.935
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 53,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.935
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 62,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.935
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 71,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.935
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 2,
+          "column": 1,
+          "isOutlier": false,
+          "confidence": 0.8922222222222222
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 10,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.8922222222222222
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 10,
+          "column": 40,
+          "isOutlier": false,
+          "confidence": 0.8922222222222222
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 19,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.8922222222222222
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 28,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.8922222222222222
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 37,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.8922222222222222
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 52,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.8922222222222222
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/question.yml",
+          "line": 2,
+          "column": 1,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/question.yml",
+          "line": 10,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/question.yml",
+          "line": 19,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/question.yml",
+          "line": 34,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/question.yml",
+          "line": 41,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/bump-homebrew.yml",
+          "line": 9,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 8,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 45,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 8,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.8825
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 8,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 12,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 16,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 20,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 24,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 154,
+          "column": 21,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 98,
+          "column": 89,
+          "isOutlier": false,
+          "confidence": 0.97
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.055Z",
+        "lastSeen": "2026-02-03T21:06:56.385Z",
+        "source": "auto-detected",
+        "tags": [
+          "documentation",
+          "jsdoc-patterns"
+        ],
+        "approvedAt": "2026-02-03T21:06:56.385Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "de71da6f0328981c",
+      "subcategory": "todo-patterns",
+      "name": "Todo Patterns Detector",
+      "description": "Learns TODO/FIXME comment patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "documentation/todo-patterns",
+          "patternId": "documentation/todo-patterns/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.01,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.9116666666666666,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 4,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.9116666666666666
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.055Z",
+        "lastSeen": "2026-02-03T21:06:56.401Z",
+        "source": "auto-detected",
+        "tags": [
+          "documentation",
+          "todo-patterns"
+        ],
+        "approvedAt": "2026-02-03T21:06:56.401Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "28b86b5a1b49afd3",
+      "subcategory": "example-code",
+      "name": "Example Code Detector",
+      "description": "Learns example code patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "documentation/example-code",
+          "patternId": "documentation/example-code/import"
+        }
+      },
+      "confidence": {
+        "frequency": 0.04,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 53,
+          "column": 31,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 139,
+          "column": 190,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.056Z",
+        "lastSeen": "2026-02-03T21:06:56.417Z",
+        "source": "auto-detected",
+        "tags": [
+          "documentation",
+          "example-code"
+        ],
+        "approvedAt": "2026-02-03T21:06:56.417Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "cb5465e7583e9238",
+      "subcategory": "readme-structure",
+      "name": "Readme Structure Detector",
+      "description": "Learns README structure patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "documentation/readme-structure",
+          "patternId": "documentation/readme-structure/import"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 470,
+          "column": 24,
+          "isOutlier": false,
+          "confidence": 0.97
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.056Z",
+        "lastSeen": "2026-02-03T21:06:56.433Z",
+        "source": "auto-detected",
+        "tags": [
+          "documentation",
+          "readme-structure"
+        ],
+        "approvedAt": "2026-02-03T21:06:56.433Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "2b78333ddd119869",
+      "subcategory": "todo-patterns",
+      "name": "Todo Patterns Detector",
+      "description": "Learns TODO/FIXME comment patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "documentation/todo-patterns",
+          "patternId": "documentation/todo-patterns/assignment"
+        }
+      },
+      "confidence": {
+        "frequency": 0.03,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 3,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 394,
+          "column": 17,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/gemini-dispatch.yml",
+          "line": 12,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 53,
+          "column": 13,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.056Z",
+        "lastSeen": "2026-02-03T21:06:56.453Z",
+        "source": "auto-detected",
+        "tags": [
+          "documentation",
+          "todo-patterns"
+        ],
+        "approvedAt": "2026-02-03T21:06:56.453Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "3c23762cfcfb1828",
+      "subcategory": "todo-patterns",
+      "name": "Todo Patterns Detector",
+      "description": "Learns TODO/FIXME comment patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "documentation/todo-patterns",
+          "patternId": "documentation/todo-patterns/conditional"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 2,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 127,
+          "column": 128,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 97,
+          "column": 100,
+          "isOutlier": false,
+          "confidence": 0.97
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.056Z",
+        "lastSeen": "2026-02-03T21:06:56.469Z",
+        "source": "auto-detected",
+        "tags": [
+          "documentation",
+          "todo-patterns"
+        ],
+        "approvedAt": "2026-02-03T21:06:56.469Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "12da1eb556c8f21a",
+      "subcategory": "deprecation",
+      "name": "Deprecation Detector",
+      "description": "Learns deprecation patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "documentation/deprecation",
+          "patternId": "documentation/deprecation/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 78,
+          "column": 46,
+          "isOutlier": false,
+          "confidence": 0.97
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-03T21:06:36.057Z",
+        "lastSeen": "2026-02-03T21:06:56.485Z",
+        "source": "auto-detected",
+        "tags": [
+          "documentation",
+          "deprecation"
+        ],
+        "approvedAt": "2026-02-03T21:06:56.485Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    }
+  ],
+  "lastUpdated": "2026-02-03T21:06:56.501Z",
+  "checksum": "205433f875890636"
+}

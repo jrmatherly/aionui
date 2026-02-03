@@ -24,6 +24,8 @@ ignores:
   - '.venv/**'
   # Serena memories (auto-generated, not actively maintained)
   - '.serena/**'
+  # Drift Detect data
+  - '.drift/**'
   # Claude Code config files (have YAML frontmatter)
   - '.claude/**'
   # Gemini/Antigravity artifacts (AI-generated)
