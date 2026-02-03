@@ -3,6 +3,7 @@
   "project": {
     "id": "55d47f17-d9c7-4049-9b80-180e798be3f1",
     "name": "aionui",
+    "description": "AI agent platform — Electron 37 + React 19 + TypeScript + Express 5 + SQLite with multi-user auth, OIDC SSO, and WebUI",
     "initializedAt": "2026-02-03T21:06:03.603Z"
   },
   "severity": {},
@@ -51,5 +52,31 @@
     "boundaries": true,
     "dna": true,
     "contracts": true
+  },
+  "mcp": {
+    "tools": {
+      "languages": ["typescript"],
+      "exclude": ["drift_wpf"]
+    },
+    "cache": {
+      "enabled": true,
+      "ttl": 300000,
+      "maxSize": 100
+    }
+  },
+  "boundaries": {
+    "sensitiveFields": [
+      "password_hash",
+      "refresh_token",
+      "access_token",
+      "jwt_secret",
+      "csrf_secret",
+      "oidc_client_secret"
+    ],
+    "categories": {
+      "credentials": ["password_hash", "jwt_secret", "csrf_secret", "oidc_client_secret"],
+      "tokens": ["refresh_token", "access_token"],
+      "pii": ["email", "display_name", "avatar_url"]
+    }
   }
 }

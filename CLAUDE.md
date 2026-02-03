@@ -282,6 +282,19 @@ This project uses **Drift Detect** and **Serena** for enhanced AI-assisted devel
 
 - **Drift Detect** — Pattern analysis, call graph, Cortex institutional memory (`.drift/`, `.driftignore`)
 - **Serena** — Symbolic code navigation via language server (`.serena/project.yml`, `.serena/memories/`)
-- **MCP config** — `.mcp.json` configures Drift as an MCP server for AI tools
+- **MCP config** — `.mcp.json` configures Drift as an MCP server (TypeScript-only tool filtering)
+- **Data boundaries** — `.drift/boundaries/rules.json` enforces auth data access rules
+- **Env variable tracking** — `drift env secrets` audits sensitive variable access (7 secrets tracked)
 
-Run `drift status` and `drift memory status` to check health. See `docs/guides/AI_CONTEXT_GUIDE.md` for full setup and workflow documentation.
+Key commands:
+
+```bash
+drift status             # Pattern health (84/100, 379+ approved)
+drift memory status      # Cortex memory health (30+ memories)
+drift memory why "area"  # Get context before working on a feature area
+drift env secrets        # Audit sensitive env var access
+drift boundaries check   # Verify data access boundaries
+drift dna mutations      # Check style consistency
+```
+
+See `docs/guides/AI_CONTEXT_GUIDE.md` for full setup and workflow documentation.

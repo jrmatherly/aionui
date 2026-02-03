@@ -103,6 +103,10 @@ drift scan
 drift callgraph build
 drift test-topology build
 drift coupling build
+drift error-handling build
+
+# Scan environment variable access
+drift env scan
 ```
 
 ### 4. Initialize Cortex Memory
@@ -125,8 +129,10 @@ See [Cortex Memory](#cortex-memory-system) below for adding institutional knowle
 ### 5. Verify
 
 ```bash
-drift status         # Should show 128+ approved patterns and health score
-drift memory status  # Should show memory health
+drift status         # Should show 379+ approved patterns and health score ≥84
+drift memory status  # Should show 30+ memories, health 100/100
+drift env secrets    # Should show 7 secret variables
+drift boundaries check  # Should show 0 violations
 ```
 
 ### Summary: Complete Setup Sequence
@@ -145,6 +151,8 @@ drift scan
 drift callgraph build
 drift test-topology build
 drift coupling build
+drift error-handling build
+drift env scan
 
 # 4. Memory
 drift memory init
@@ -152,6 +160,7 @@ drift memory init
 # 5. Verify
 drift status
 drift memory status
+drift boundaries check
 ```
 
 ## MCP Integration
@@ -271,6 +280,114 @@ Serena stores detailed documentation in `.serena/memories/`:
 
 To add a new memory, create a markdown file in `.serena/memories/` and commit it.
 
+### Pre-Task Context Retrieval
+
+Before working on a feature area, use `drift memory why` to surface relevant knowledge:
+
+```bash
+# Get context for a feature area
+drift memory why "authentication" --intent add_feature
+
+# Security audit context
+drift memory why "token handling" --intent security_audit
+
+# Bug fix context
+drift memory why "OIDC login" --intent fix_bug
+```
+
+This retrieves relevant tribal knowledge, pattern rationale, and decision context
+specific to the area you're about to work on — surfacing gotchas before you hit them.
+
+## Environment Variable Analysis
+
+Drift tracks all environment variable access across the codebase, classifying them
+by sensitivity (secret, credential, config).
+
+### Current State
+
+- **52 variables** discovered across 539 files
+- **7 secrets** tracked: `OPENAI_API_KEY`, `GEMINI_API_KEY`, `GOOGLE_API_KEY`,
+  `ANTHROPIC_API_KEY`, `OIDC_CLIENT_SECRET`, `JWT_SECRET`, `CSRF_SECRET`
+
+### Commands
+
+```bash
+drift env scan           # Rescan after adding new env vars
+drift env secrets        # List all sensitive variables
+drift env required       # Variables without defaults (will crash if missing)
+drift env var JWT_SECRET # Details for a specific variable
+drift env file src/webserver/auth/config/oidcConfig.ts  # What env vars a file accesses
+```
+
+### When to Use
+
+- **Adding new env vars** — Run `drift env scan` afterward to keep the index current
+- **Security review** — `drift env secrets` shows all sensitive access points
+- **Maintaining `.env.example`** — `drift env required` identifies what must be set
+
+## Data Boundaries
+
+Data boundary rules enforce which code paths can access sensitive database fields.
+Rules are defined in `.drift/boundaries/rules.json`.
+
+### Configured Rules
+
+| Rule | Severity | What It Protects |
+|------|----------|------------------|
+| `credentials-access` | error | `users.password_hash` — only from `webserver/auth/**` and `process/database/**` |
+| `token-access` | error | `refresh_tokens`, `token_blacklist` tables — only from auth services |
+| `jwks-access` | error | `jwks` table (private keys) — only from auth services |
+| `user-pii-access` | warning | `users.email`, `display_name`, `avatar_url`, `oidc_subject` — auth, routes, renderer |
+
+### Commands
+
+```bash
+drift boundaries check    # Verify no violations (run in CI)
+drift boundaries          # Overview of data access patterns
+drift boundaries sensitive # All sensitive field access points
+```
+
+### Adding Rules
+
+Edit `.drift/boundaries/rules.json` to add new boundaries when new tables or
+sensitive fields are introduced. Follow the existing pattern:
+
+```json
+{
+  "id": "new-rule-id",
+  "description": "Human-readable description",
+  "fields": ["table.field"],
+  "allowedPaths": ["**/allowed/path/**"],
+  "excludePaths": ["**/*.test.ts", "**/tests/**"],
+  "severity": "error",
+  "enabled": true
+}
+```
+
+## DNA Mutations
+
+Drift DNA tracks styling and structural consistency. Mutations are deviations from
+the dominant patterns in the codebase.
+
+### Current State
+
+- **Health Score:** 73/100
+- **39 mutations** (1 high, 31 medium, 7 low)
+- **High:** `directoryApi.ts:271` — uses `direct-return` instead of `success-data-envelope`
+- **Medium:** Mostly config pattern variations across agent backends (`env-variables-direct`
+  vs `settings-class`)
+
+### Commands
+
+```bash
+drift dna status     # Overall DNA profile
+drift dna mutations  # List all style inconsistencies
+drift dna playbook   # Generate style playbook for the codebase
+```
+
+Mutations don't necessarily need fixing — agent-specific config code naturally varies
+from the main app patterns. Focus on high-impact mutations in core application code.
+
 ## When to Use Which Tool
 
 | Task | Drift | Serena |
@@ -283,6 +400,10 @@ To add a new memory, create a markdown file in `.serena/memories/` and commit it
 | "What's in this file?" | | ✅ `get_symbols_overview` |
 | "Check code against patterns" | ✅ `drift check` | |
 | "Modify a function body" | | ✅ `replace_symbol_body` |
+| "What env vars does this use?" | ✅ `drift env file` | |
+| "Who accesses sensitive data?" | ✅ `drift boundaries sensitive` | |
+| "Get context before a task" | ✅ `drift memory why` | |
+| "Find style inconsistencies" | ✅ `drift dna mutations` | |
 
 ## Maintenance
 
@@ -292,6 +413,8 @@ To add a new memory, create a markdown file in `.serena/memories/` and commit it
 drift scan --incremental   # Update pattern index (fast, changed files only)
 drift scan                 # Full rescan (after major refactoring)
 drift check                # Verify no violations
+drift env scan             # Update env var index if new vars added
+drift boundaries check     # Verify data access boundaries
 ```
 
 ### Weekly Review
@@ -300,6 +423,9 @@ drift check                # Verify no violations
 drift memory health                        # Check memory system
 drift patterns list --status discovered    # Review new patterns
 drift memory validate --scope stale        # Find stale memories
+drift env scan                             # Refresh env var index
+drift boundaries check                     # Verify data boundaries
+drift dna mutations                        # Check for new style drift
 ```
 
 ### Learning from Experience

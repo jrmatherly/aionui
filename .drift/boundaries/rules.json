@@ -1,0 +1,104 @@
+{
+  "version": "1.0",
+  "sensitivity": {
+    "critical": [
+      "users.password_hash",
+      "refresh_tokens.token",
+      "token_blacklist.token",
+      "jwks.private_key"
+    ],
+    "sensitive": [
+      "users.email",
+      "users.display_name",
+      "users.avatar_url",
+      "users.oidc_subject"
+    ],
+    "general": []
+  },
+  "boundaries": [
+    {
+      "id": "credentials-access",
+      "description": "Password hashes should only be accessed from auth services",
+      "fields": [
+        "users.password_hash"
+      ],
+      "allowedPaths": [
+        "**/webserver/auth/**",
+        "**/process/database/**"
+      ],
+      "excludePaths": [
+        "**/*.test.ts",
+        "**/*.spec.ts",
+        "**/tests/**"
+      ],
+      "severity": "error",
+      "enabled": true
+    },
+    {
+      "id": "token-access",
+      "description": "Refresh tokens and blacklist should only be accessed from auth and token middleware",
+      "tables": [
+        "refresh_tokens",
+        "token_blacklist"
+      ],
+      "allowedPaths": [
+        "**/webserver/auth/**",
+        "**/process/database/**"
+      ],
+      "excludePaths": [
+        "**/*.test.ts",
+        "**/*.spec.ts",
+        "**/tests/**"
+      ],
+      "severity": "error",
+      "enabled": true
+    },
+    {
+      "id": "jwks-access",
+      "description": "JWKS private keys should only be accessed from auth services",
+      "tables": [
+        "jwks"
+      ],
+      "allowedPaths": [
+        "**/webserver/auth/**",
+        "**/process/database/**"
+      ],
+      "excludePaths": [
+        "**/*.test.ts",
+        "**/*.spec.ts",
+        "**/tests/**"
+      ],
+      "severity": "error",
+      "enabled": true
+    },
+    {
+      "id": "user-pii-access",
+      "description": "User PII (email, display name, avatar) should be accessed from auth services or user-facing routes",
+      "fields": [
+        "users.email",
+        "users.display_name",
+        "users.avatar_url",
+        "users.oidc_subject"
+      ],
+      "allowedPaths": [
+        "**/webserver/auth/**",
+        "**/webserver/routes/**",
+        "**/process/database/**",
+        "**/renderer/**"
+      ],
+      "excludePaths": [
+        "**/*.test.ts",
+        "**/*.spec.ts",
+        "**/tests/**"
+      ],
+      "severity": "warning",
+      "enabled": true
+    }
+  ],
+  "globalExcludes": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/*.d.ts"
+  ]
+}
