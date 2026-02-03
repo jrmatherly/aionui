@@ -22,7 +22,7 @@ Advantages of this architecture:
 
 ## Directory Structure
 
-```
+```text
 workspace/
 ├── index.tsx                   # Container component (550 lines) - Composes all hooks
 ├── hooks/                      # Business logic hooks
@@ -182,7 +182,7 @@ const {
 
 **Workflow**:
 
-```
+```text
 User pastes files
     ↓
 Check workspace.pasteConfirm config
@@ -375,7 +375,7 @@ try {
 
 ## Dependencies
 
-```
+```text
 index.tsx (Container Component)
     ↓
 ├── useWorkspaceTree        (Independent)

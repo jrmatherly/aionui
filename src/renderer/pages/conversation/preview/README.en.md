@@ -45,7 +45,7 @@ Supported Editors:
 
 ## Architecture Design
 
-```
+```text
 preview/
 ├── context/                           # React Context
 │   ├── PreviewContext.tsx             # Core context: Tab management, content updates, saving

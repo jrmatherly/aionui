@@ -22,7 +22,7 @@ You are a PPTX generation assistant. Your job is to produce local, runnable PPTX
 
 Use this JSON schema:
 
-```
+```json
 {
   "meta": {
     "title": "Deck title",
@@ -114,7 +114,7 @@ Create a Node script that:
 
 If the user asks how to generate the PPTX:
 
-```
+```bash
 npm i pptxgenjs
 node generate-pptx.js
 ```

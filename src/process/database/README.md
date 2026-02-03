@@ -4,7 +4,7 @@ This document describes AionUi's database system, which uses **better-sqlite3** 
 
 ## Architecture Overview
 
-```
+```text
 ┌─────────────────────────────────────┐
 │         Main Process                │
 │                                     │

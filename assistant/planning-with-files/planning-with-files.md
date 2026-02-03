@@ -4,7 +4,7 @@ Work like Manus (the $2B AI agent Meta acquired): Use persistent markdown files 
 
 ## Core Principle
 
-```
+```text
 Context Window = RAM (volatile, limited)
 Filesystem = Disk (persistent, unlimited)
 
@@ -15,7 +15,7 @@ Filesystem = Disk (persistent, unlimited)
 
 For every complex task, create THREE files in your project directory:
 
-```
+```text
 task_plan.md      → Track phases and progress
 findings.md       → Store research and findings
 progress.md       → Session log and test results
@@ -162,7 +162,7 @@ Every error goes in the plan file. This builds knowledge and prevents repetition
 
 ### 6. Never Repeat Failures
 
-```
+```python
 if action_failed:
     next_action != same_action
 ```
@@ -171,7 +171,7 @@ Track what you tried. Mutate the approach.
 
 ## The 3-Strike Error Protocol
 
-```
+```text
 ATTEMPT 1: Diagnose & Fix
   → Read error carefully
   → Identify root cause

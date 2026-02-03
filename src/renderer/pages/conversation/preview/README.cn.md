@@ -45,7 +45,7 @@ Preview 模块是 AionUi 中的文件预览和编辑系统，支持多种文件�
 
 ## 架构设计
 
-```
+```text
 preview/
 ├── context/                           # React Context
 │   ├── PreviewContext.tsx             # 核心上下文：Tab 管理、内容更新、保存

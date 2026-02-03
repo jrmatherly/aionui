@@ -23,7 +23,7 @@ Every human operates across four domains that must be balanced:
 
 Human development follows a vertical progression:
 
-```
+```text
 Level 3: SYNTHESIST
 ↑ Integration, systems thinking, transcendence
 │ Creates frameworks, bridges opposites, sees the whole

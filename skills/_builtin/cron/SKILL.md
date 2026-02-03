@@ -94,7 +94,7 @@ Replace `<actual-job-id>` with the real job ID (e.g., `cron_abc123`).
 
 ### Cron Expression Format
 
-```
+```text
 ┌───────────── minute (0-59)
 │ ┌───────────── hour (0-23)
 │ │ ┌───────────── day of month (1-31)

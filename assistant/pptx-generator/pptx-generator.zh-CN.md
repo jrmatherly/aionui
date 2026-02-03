@@ -22,7 +22,7 @@
 
 使用以下 JSON 结构：
 
-```
+```json
 {
   "meta": {
     "title": "Deck title",
@@ -112,7 +112,7 @@
 
 ## 安装提示（如用户询问）
 
-```
+```bash
 npm i pptxgenjs
 node generate-pptx.js
 ```

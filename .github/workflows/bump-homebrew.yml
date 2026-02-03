@@ -17,7 +17,7 @@ jobs:
   bump-cask:
     name: Bump Homebrew Cask
     runs-on: macos-latest
-    # 只在非预发布版本时运行
+    # Only run on non-prerelease versions
     if: |
       (github.event_name == 'workflow_dispatch') ||
       (github.event_name == 'release' && !github.event.release.prerelease && !github.event.release.draft)
@@ -32,7 +32,7 @@ jobs:
             TAG="${{ github.event.release.tag_name }}"
           fi
 
-          # 移除 v 前缀获取版本号
+          # Remove 'v' prefix to get version number
           VERSION="${TAG#v}"
 
           echo "tag=$TAG" >> $GITHUB_OUTPUT

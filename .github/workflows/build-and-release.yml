@@ -10,7 +10,7 @@ on:
     branches: [main, dev]
 
 jobs:
-  # 代码质量检查
+  # Code quality check
   code-quality:
     name: Code Quality
     runs-on: ubuntu-latest
@@ -142,9 +142,9 @@ jobs:
           echo "Runner Arch: ${{ runner.arch }}"
           echo "=========================================="
 
-      # macOS 代码签名证书安装
+      # Install macOS code signing certificate
       - name: Setup macOS code signing (macOS only)
-        if: startsWith(matrix.platform, 'macos') # Temporarily disable signing to speed up builds / 暂时关闭签名以加快构建
+        if: startsWith(matrix.platform, 'macos') # Temporarily disable signing to speed up builds
         env:
           BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
           P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
@@ -153,19 +153,19 @@ jobs:
           if [ -n "$BUILD_CERTIFICATE_BASE64" ]; then
             echo "Installing code signing certificate..."
 
-            # 创建证书文件
+            # Create certificate file
             echo $BUILD_CERTIFICATE_BASE64 | base64 --decode > certificate.p12
 
-            # 创建临时钥匙串
+            # Create temporary keychain
             security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
             security default-keychain -s build.keychain
             security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
 
-            # 导入证书
+            # Import certificate
             security import certificate.p12 -k build.keychain -P "$P12_PASSWORD" -T /usr/bin/codesign
             security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" build.keychain
 
-            # 清理证书文件
+            # Clean up certificate file
             rm certificate.p12
 
             echo "Certificate imported successfully"
@@ -183,7 +183,7 @@ jobs:
       - name: Rebuild native modules for Electron
         if: startsWith(matrix.platform, 'windows')
         shell: pwsh
-        continue-on-error: false # 修复：原生模块重建失败应该中止构建
+        continue-on-error: false # Fix: native module rebuild failure should abort build
         run: |
           $electronVersion = "${{ steps.electron-version.outputs.version }}"
           $arch = "${{ matrix.arch }}"
@@ -191,7 +191,7 @@ jobs:
           Write-Host "Rebuilding native modules for Electron $electronVersion ($arch)"
           Write-Host "=========================================="
 
-          # 先尝试使用 electron-builder 的原生重建（更可靠）
+          # First try using native rebuild from electron-builder (more reliable)
           Write-Host ""
           Write-Host "Step 1: Running electron-builder install-app-deps..."
           try {
@@ -201,12 +201,12 @@ jobs:
             Write-Warning "electron-builder install-app-deps failed, will try electron-rebuild"
           }
 
-          # 如果需要，使用 electron-rebuild 作为备选方案
+          # If needed, use electron-rebuild as a fallback
           Write-Host ""
           Write-Host "Step 2: Running electron-rebuild for critical modules..."
           npx electron-rebuild --only better-sqlite3 --force --arch $arch --version $electronVersion
 
-          # 验证关键模块是否存在
+          # Verify critical modules existence
           Write-Host ""
           Write-Host "Step 3: Verifying native modules..."
           $verified = $true
@@ -264,10 +264,10 @@ jobs:
           }
         env:
           WINDOWS_BUILD_COMMAND: ${{ matrix.command }}
-          # Target arch / 目标架构
+          # Target arch
           npm_config_arch: ${{ matrix.arch }}
           npm_config_target_arch: ${{ matrix.arch }}
-          # Native module compilation / 原生模块编译
+          # Native module compilation
           npm_config_runtime: electron
           npm_config_target: ${{ steps.electron-version.outputs.version }}
           npm_config_disturl: https://electronjs.org/headers
@@ -275,7 +275,7 @@ jobs:
           npm_config_cache: ${{ runner.temp }}/.npm
           ELECTRON_CACHE: ${{ runner.temp }}/.cache/electron
           ELECTRON_BUILDER_CACHE: ${{ runner.temp }}/.cache/electron-builder
-          # Signing & IDs / 签名与应用 ID 配置
+          # Signing & IDs
           APP_ID: ${{ secrets.APP_ID }}
           appleId: ${{ secrets.APPLE_ID }}
           appleIdPassword: ${{ secrets.APPLE_ID_PASSWORD }}
@@ -283,17 +283,17 @@ jobs:
           identity: ${{ secrets.IDENTITY }}
           CSC_NAME: ${{ secrets.IDENTITY }}
           CSC_IDENTITY_AUTO_DISCOVERY: false
-          # Windows build flags / Windows 构建参数
+          # Windows build flags
           MSVS_VERSION: 2022
           GYP_MSVS_VERSION: 2022
           WindowsTargetPlatformVersion: 10.0.19041.0
           _WIN32_WINNT: 0x0A00
-          # CI flag & GitHub token / CI 标识与 GitHub Token
+          # CI flag & GitHub token
           CI: true
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       # Clean up any stale disk images before DMG creation (macOS only)
-      # 清理可能残留的磁盘镜像，避免 hdiutil "Device not configured" 错误
+      # Clean up potentially stale disk images to avoid hdiutil "Device not configured" error
       - name: Clean up stale disk images (macOS only)
         if: startsWith(matrix.platform, 'macos')
         run: |
@@ -317,8 +317,8 @@ jobs:
           continue_on_error: ${{ startsWith(matrix.platform, 'macos') }}
           command: ${{ matrix.command }}
           on_retry_command: |
-            echo "⚠️ 构建超时或失败，5 分钟后进行第 2 次尝试..."
-            echo "这可能是临时网络问题或 Apple 公证服务延迟"
+            echo "⚠️ Build timed out or failed, retrying in 5 minutes..."
+            echo "This may be due to temporary network issues or Apple notarization service delays"
             # Clean up stale disk images before retry (macOS)
             if [[ "$RUNNER_OS" == "macOS" ]]; then
               echo "Cleaning up stale disk images before retry..."
@@ -328,44 +328,40 @@ jobs:
               rm -f /tmp/*.dmg 2>/dev/null || true
             fi
         env:
-          # Target architecture / 目标架构
+          # Target architecture
           npm_config_arch: ${{ matrix.arch }}
-          # App ID configuration / 应用 ID 配置
+          # App ID configuration
           APP_ID: ${{ secrets.APP_ID }}
-          # macOS signing configuration / macOS 签名配置
+          # macOS signing configuration
           appleId: ${{ secrets.APPLE_ID }}
           appleIdPassword: ${{ secrets.APPLE_ID_PASSWORD }}
           teamId: ${{ secrets.TEAM_ID }}
           identity: ${{ secrets.IDENTITY }}
-          # electron-builder signing configuration / electron-builder 签名配置
+          # electron-builder signing configuration
           CSC_NAME: ${{ secrets.IDENTITY }}
           CSC_IDENTITY_AUTO_DISCOVERY: false
-          # Native dependency compilation / 原生依赖编译缓存
+          # Native dependency compilation
           # Prefer prebuilt binaries for better compatibility (especially on Linux)
           npm_config_cache: ${{ runner.temp }}/.npm
           ELECTRON_CACHE: ${{ runner.temp }}/.cache/electron
           ELECTRON_BUILDER_CACHE: ${{ runner.temp }}/.cache/electron-builder
-          # Use official GitHub releases for electron-builder binaries (dmg-builder, etc.)
-          # npmmirror may be missing some binaries causing 404 errors
-          # 使用官方 GitHub 源下载 electron-builder 二进制文件（如 dmg-builder）
-          # npmmirror 可能缺少部分文件导致 404 错误
+          # Use official GitHub release for electron-builder binaries (e.g., dmg-builder)
+          # npmmirror may be missing some files causing 404 errors
           ELECTRON_BUILDER_BINARIES_MIRROR: https://github.com/electron-userland/electron-builder-binaries/releases/download/
           # Also set npm_config_ version to ensure electron-builder reads it correctly
-          # 同时设置 npm_config_ 版本以确保 electron-builder 正确读取
           npm_config_electron_builder_binaries_mirror: https://github.com/electron-userland/electron-builder-binaries/releases/download/
-          # Clear ELECTRON_MIRROR to prevent auto-derived (incorrect) binaries mirror
-          # 清除 ELECTRON_MIRROR 以防止自动派生错误的 binaries 镜像路径
+          # Clear ELECTRON_MIRROR to prevent auto-derived incorrect binaries mirror path
           ELECTRON_MIRROR: ""
-          # Electron headers download / Electron 头文件下载源
+          # Electron headers download source
           npm_config_disturl: https://electronjs.org/headers
           npm_config_runtime: electron
           npm_config_target: ${{ steps.electron-version.outputs.version }}
           npm_config_target_arch: ${{ matrix.arch }}
-          # CI flag & GitHub token / CI 标识与 GitHub Token
+          # CI flag & GitHub token
           CI: true
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      # macOS 钥匙串清理
+      # macOS keychain cleanup
       - name: Clean up keychain (macOS only)
         if: startsWith(matrix.platform, 'macos') && always()
         run: |
@@ -374,7 +370,7 @@ jobs:
             echo "Temporary keychain deleted"
           fi
 
-      # macOS 构建超时或失败通知
+      # macOS build timeout or failure notification
       - name: Notify on macOS build timeout or failure
         if: startsWith(matrix.platform, 'macos') && failure()
         run: |
@@ -434,12 +430,12 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
-  # 自动重试 workflow（当构建失败时）
+  # Automatically retry workflow (on build failure)
   auto-retry-workflow:
     name: Auto Retry on Build Failure
     runs-on: ubuntu-latest
     needs: build
-    # 关键：只在首次失败时触发，避免无限循环
+    # Critical: only trigger on first failure to avoid infinite loops
     if: |
       failure() &&
       github.run_attempt == 1 &&
@@ -449,29 +445,29 @@ jobs:
       - name: Log retry information
         run: |
           echo "=========================================="
-          echo "🔄 自动重试触发（首次失败）"
+          echo "🔄 Auto-retry triggered (first failure)"
           echo "=========================================="
-          echo "构建首次失败，准备自动重试..."
-          echo "当前尝试次数: ${{ github.run_attempt }}"
-          echo "等待策略: 1 小时后重试（给 Apple 公证服务处理时间）"
+          echo "Build failed for the first time, preparing auto-retry..."
+          echo "Current attempt: ${{ github.run_attempt }}"
+          echo "Wait strategy: Retry in 1 hour (giving Apple notarization service time to process)"
           echo ""
-          echo "根据 Apple 官方说明，首次公证可能需要数小时甚至数天"
-          echo "参考: https://developer.apple.com/forums/thread/756867"
+          echo "According to Apple's official documentation, the first notarization can take hours or even days"
+          echo "Reference: https://developer.apple.com/forums/thread/756867"
           echo "=========================================="
 
       - name: Wait before retry (1 hour for Apple notarization)
         run: |
-          echo "⏳ 等待 1 小时后重试，给 Apple 公证服务处理时间..."
-          echo "开始时间: $(date)"
+          echo "⏳ Waiting 1 hour before retrying, giving Apple notarization service time to process..."
+          echo "Start time: $(date)"
           sleep 3600
-          echo "等待结束: $(date)"
-          echo "准备触发重试..."
+          echo "Wait finished: $(date)"
+          echo "Preparing to trigger retry..."
 
       - name: Trigger workflow rerun
         run: |
-          echo "🔄 触发 workflow 完整重新运行（第 2 次尝试）..."
+          echo "🔄 Triggering full workflow rerun (2nd attempt)..."
 
-          # 使用 re-run API（不是 rerun-failed-jobs，避免循环）
+          # Use re-run API (not rerun-failed-jobs, to avoid loops)
           response=$(curl -X POST \
             -H "Accept: application/vnd.github.v3+json" \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
@@ -482,18 +478,18 @@ jobs:
 
           if [ "$http_code" = "201" ]; then
             echo ""
-            echo "✅ 重试已成功触发"
-            echo "这将是第 2 次尝试"
-            echo "查看详情: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo "✅ Retry triggered successfully"
+            echo "This will be the 2nd attempt"
+            echo "View details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           else
             echo ""
-            echo "❌ 重试触发失败，HTTP 状态码: $http_code"
-            echo "响应内容:"
+            echo "❌ Retry trigger failed, HTTP status code: $http_code"
+            echo "Response content:"
             echo "$response" | head -n-1
             exit 1
           fi
 
-  # 自动创建tag（main/dev分支推送时）
+  # Automatically create tags (on push to main/dev branches)
   create-tag:
     name: Create Tag from Branch
     runs-on: ubuntu-latest
@@ -516,7 +512,7 @@ jobs:
           COMMIT_SHORT=$(git rev-parse --short HEAD)
           BRANCH_NAME=${GITHUB_REF#refs/heads/}
 
-          # 根据分支确定 tag 格式
+          # Determine tag format based on branch
           if [ "$BRANCH_NAME" = "dev" ]; then
             TAG_NAME="v${VERSION}-dev-${COMMIT_SHORT}"
             IS_DEV="true"
@@ -530,10 +526,10 @@ jobs:
           echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
           echo "is_dev=$IS_DEV" >> $GITHUB_OUTPUT
 
-          # 检查远程tag是否已存在
+          # Check if remote tag already exists
           if git ls-remote --tags origin | grep -q "refs/tags/$TAG_NAME$"; then
             if [ "$IS_DEV" = "false" ]; then
-              # Main 分支：需要递增版本并修改 package.json
+              # Main branch: Need to increment version and modify package.json
               echo "⚠️ Tag $TAG_NAME already exists, auto-incrementing version..."
 
               if [[ $VERSION =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
@@ -545,20 +541,20 @@ jobs:
 
                 echo "📝 Updating package.json version to $NEW_VERSION"
 
-                # 更新 package.json 版本号
+                # Update package.json version
                 npm version $NEW_VERSION --no-git-tag-version
 
-                # 配置git用户信息
+                # Configure git user info
                 git config user.name "github-actions[bot]"
                 git config user.email "github-actions[bot]@users.noreply.github.com"
 
-                # 提交版本更新
+                # Commit version update
                 git add package.json package-lock.json
                 git commit -m "chore: bump version to $NEW_VERSION"
                 git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}.git
                 git push origin $BRANCH_NAME
 
-                # 获取新的 commit ID
+                # Get new commit ID
                 COMMIT_SHORT=$(git rev-parse --short HEAD)
                 TAG_NAME="v${NEW_VERSION}-${COMMIT_SHORT}"
 
@@ -570,17 +566,17 @@ jobs:
                 echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
               fi
             else
-              # Dev 分支 tag 已存在则失败（不应该发生）
+              # Dev branch tag already exists - failure (this should not happen)
               echo "⚠️ Dev tag $TAG_NAME already exists, this shouldn't happen"
               exit 1
             fi
           fi
 
-          # 配置git用户信息（如果前面没配置）
+          # Configure git user info (if not already configured)
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # 创建并推送tag
+          # Create and push tag
           echo "Creating tag: $TAG_NAME"
           git tag $TAG_NAME
           git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}.git
@@ -589,7 +585,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-  # 发布到 GitHub Releases
+  # Publish to GitHub Releases
   release:
     name: Create Release
     runs-on: ubuntu-latest

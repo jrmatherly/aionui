@@ -27,7 +27,7 @@ Configure the following Secrets in GitHub repository Settings → Secrets and va
 
 ### macOS App Signing (Optional, for publishing to Mac App Store)
 
-```
+```text
 APPLE_ID=your_apple_developer_account_email
 APPLE_ID_PASSWORD=app_specific_password
 TEAM_ID=apple_developer_team_id
@@ -36,7 +36,7 @@ IDENTITY=signing_certificate_name
 
 ### GitHub Token
 
-```
+```text
 GH_TOKEN=your_personal_access_token (starts with github_pat_)
 ```
 
@@ -46,7 +46,7 @@ GH_TOKEN=your_personal_access_token (starts with github_pat_)
 
 Also configure in Settings → Environments → release:
 
-```
+```text
 GH_TOKEN=same_personal_access_token
 ```
 

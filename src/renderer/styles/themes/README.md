@@ -25,7 +25,7 @@ The theme system separates light/dark mode from color schemes for better extensi
 
 ### File Structure 文件结构
 
-```
+```text
 styles/themes/
 ├── index.css                 # Entry point 入口文件
 ├── base.css                  # Theme-independent base styles 主题无关的基础样式

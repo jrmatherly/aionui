@@ -22,7 +22,7 @@ Workspace 模块遵循**容器组件模式（Container Component Pattern）**:
 
 ## 目录结构
 
-```
+```text
 workspace/
 ├── index.tsx                   # 容器组件 (550行) - 组合所有 Hook
 ├── hooks/                      # 业务逻辑 Hooks
@@ -182,7 +182,7 @@ const {
 
 **工作流程**:
 
-```
+```text
 用户粘贴文件
     ↓
 检查 workspace.pasteConfirm 配置
@@ -375,7 +375,7 @@ try {
 
 ## 依赖关系
 
-```
+```text
 index.tsx (容器组件)
     ↓
 ├── useWorkspaceTree        (独立)

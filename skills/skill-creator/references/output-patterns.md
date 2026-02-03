@@ -73,7 +73,7 @@ feat(auth): implement JWT-based authentication
 
 Add login endpoint and token validation middleware
 
-```
+```text
 
 **Example 2:**
 Input: Fixed bug where dates displayed incorrectly in reports
@@ -84,7 +84,7 @@ fix(reports): correct date formatting in timezone conversion
 
 Use UTC timestamps consistently across report generation
 
-```
+```text
 
 Follow this style: type(scope): brief description, then detailed explanation.
 ```
