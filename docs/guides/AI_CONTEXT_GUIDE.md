@@ -93,31 +93,31 @@ If you don't have git available (or prefer manual), ensure these values in `.dri
 }
 ```
 
-### 3. Rebuild Analysis Data
+### 3. Scan and Build Analysis Data
 
 ```bash
-# Rebuild transient analysis data (pattern indexes, call graph, etc.)
+# Scan codebase for patterns (populates indexes, detects patterns)
 drift scan
 
-# Build additional analysis features
+# Build deep analysis features
 drift callgraph build
 drift test-topology build
 drift coupling build
 ```
 
-If you get a `NODE_MODULE_VERSION` error on memory init:
-
-```bash
-# Find Drift's installation path and rebuild better-sqlite3
-cd $(npm root -g)/driftdetect && npm rebuild better-sqlite3
-# Retry
-cd /path/to/aionui && drift memory init
-```
-
-### 4. Initialize Cortex Memory (Optional)
+### 4. Initialize Cortex Memory
 
 ```bash
 drift memory init
+```
+
+If you get a `NODE_MODULE_VERSION` error:
+
+```bash
+# Rebuild better-sqlite3 in Drift's install directory
+cd $(npm root -g)/driftdetect && npm rebuild better-sqlite3
+# Return to project and retry
+cd /path/to/aionui && drift memory init
 ```
 
 See [Cortex Memory](#cortex-memory-system) below for adding institutional knowledge.
@@ -125,8 +125,33 @@ See [Cortex Memory](#cortex-memory-system) below for adding institutional knowle
 ### 5. Verify
 
 ```bash
-drift status         # Should show 128+ approved patterns
-drift memory status  # Should show memory health (if initialized)
+drift status         # Should show 128+ approved patterns and health score
+drift memory status  # Should show memory health
+```
+
+### Summary: Complete Setup Sequence
+
+```bash
+# 1. Install
+npm install -g driftdetect driftdetect-mcp
+
+# 2. Initialize + restore config
+cd /path/to/aionui
+drift init -y
+git checkout .drift/config.json
+
+# 3. Scan + build
+drift scan
+drift callgraph build
+drift test-topology build
+drift coupling build
+
+# 4. Memory
+drift memory init
+
+# 5. Verify
+drift status
+drift memory status
 ```
 
 ## MCP Integration
