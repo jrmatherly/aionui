@@ -36,6 +36,16 @@
     "incrementalAnalysis": true,
     "cacheTTL": 3600
   },
+  "testing": {
+    "patterns": [
+      "**/*.test.ts",
+      "**/*.test.tsx",
+      "**/*.spec.ts",
+      "**/*.spec.tsx",
+      "tests/**/*.ts",
+      "__tests__/**/*.ts"
+    ]
+  },
   "features": {
     "callGraph": true,
     "boundaries": true,

@@ -1,6 +1,9 @@
 # .driftignore - Additional exclusions for Drift scanning
 # (Note: .gitignore patterns are already respected automatically)
 
+# Dependencies (explicit for Drift performance)
+node_modules/
+
 # Serena data (avoid indexing Serena's memories and state)
 .serena/
 
