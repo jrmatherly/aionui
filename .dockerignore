@@ -94,10 +94,10 @@ temp/
 
 # -----------------------------------------------------------------------------
 # Project-specific exclusions
+# Note: scripts/, public/, resources/ are REQUIRED for build
 # -----------------------------------------------------------------------------
 assistant/
 homebrew/
-scripts/
 .serena/
 .specify/
 .aionui/
@@ -105,9 +105,14 @@ scripts/
 .gemini/
 .ruby-lsp/
 skills/
-public/
-resources/
 
-# Keep essential resources (override above if needed)
-!resources/app.png
-!public/index.html
+# -----------------------------------------------------------------------------
+# Exclude large media files from resources/ (keep only app icons)
+# Order matters: exclude first, then include exceptions
+# -----------------------------------------------------------------------------
+resources/*.gif
+resources/*readme*.png
+resources/*banner*.png
+resources/*contact*.png
+resources/*alart*.png
+resources/*copy*.png

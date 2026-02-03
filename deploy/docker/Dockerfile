@@ -29,11 +29,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy package files first for better layer caching
 COPY package*.json ./
 
-# Install all dependencies (including dev dependencies for build)
-RUN npm ci
+# Install dependencies without running postinstall (scripts not yet copied)
+# Set CI=true to use prebuilt binaries for native modules
+ENV CI=true
+RUN npm ci --ignore-scripts
 
 # Copy source code and build configuration
 COPY . .
+
+# Run postinstall manually after source is available
+# CI=true skips electron-builder install-app-deps (uses prebuilt binaries)
+RUN npm run postinstall
 
 # Build the application using Electron Forge
 # This creates the packaged application in out/AionUi-linux-x64/
