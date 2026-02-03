@@ -40,14 +40,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:55.482Z",
+        "firstSeen": "2026-02-03T22:02:56.586Z",
+        "lastSeen": "2026-02-03T22:02:56.586Z",
         "source": "auto-detected",
         "tags": [
           "logging",
           "structured-logging"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.482Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -251,14 +250,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:55.497Z",
+        "firstSeen": "2026-02-03T22:02:56.586Z",
+        "lastSeen": "2026-02-03T22:02:56.586Z",
         "source": "auto-detected",
         "tags": [
           "logging",
           "log-levels"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.497Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -301,14 +299,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:55.511Z",
+        "firstSeen": "2026-02-03T22:02:56.586Z",
+        "lastSeen": "2026-02-03T22:02:56.586Z",
         "source": "auto-detected",
         "tags": [
           "logging",
           "log-levels"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.511Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -365,14 +362,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:55.524Z",
+        "firstSeen": "2026-02-03T22:02:56.586Z",
+        "lastSeen": "2026-02-03T22:02:56.586Z",
         "source": "auto-detected",
         "tags": [
           "logging",
           "context-fields"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.524Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -415,14 +411,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:55.539Z",
+        "firstSeen": "2026-02-03T22:02:56.586Z",
+        "lastSeen": "2026-02-03T22:02:56.586Z",
         "source": "auto-detected",
         "tags": [
           "logging",
           "health-checks"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.539Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -486,14 +481,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:55.553Z",
+        "firstSeen": "2026-02-03T22:02:56.586Z",
+        "lastSeen": "2026-02-03T22:02:56.586Z",
         "source": "auto-detected",
         "tags": [
           "logging",
           "health-checks"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.553Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -592,14 +586,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:55.567Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "logging",
           "log-levels"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.567Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -649,19 +642,18 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:55.581Z",
+        "firstSeen": "2026-02-03T22:02:56.588Z",
+        "lastSeen": "2026-02-03T22:02:56.588Z",
         "source": "auto-detected",
         "tags": [
           "logging",
           "context-fields"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.581Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-03T21:06:56.497Z",
-  "checksum": "1d72b8f92231541b"
+  "lastUpdated": "2026-02-03T22:02:56.608Z",
+  "checksum": "e77c578df723acfb"
 }

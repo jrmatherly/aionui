@@ -89,14 +89,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:54.783Z",
+        "firstSeen": "2026-02-03T22:02:56.586Z",
+        "lastSeen": "2026-02-03T22:02:56.586Z",
         "source": "auto-detected",
         "tags": [
           "components",
           "component-structure"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.783Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -175,14 +174,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:54.802Z",
+        "firstSeen": "2026-02-03T22:02:56.586Z",
+        "lastSeen": "2026-02-03T22:02:56.586Z",
         "source": "auto-detected",
         "tags": [
           "components",
           "duplicate-detection"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.802Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -232,14 +230,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:54.815Z",
+        "firstSeen": "2026-02-03T22:02:56.586Z",
+        "lastSeen": "2026-02-03T22:02:56.586Z",
         "source": "auto-detected",
         "tags": [
           "components",
           "near-duplicate"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.815Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -289,14 +286,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:54.829Z",
+        "firstSeen": "2026-02-03T22:02:56.586Z",
+        "lastSeen": "2026-02-03T22:02:56.586Z",
         "source": "auto-detected",
         "tags": [
           "components",
           "ref-forwarding"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.829Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -537,14 +533,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:54.842Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "components",
           "props-patterns"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.842Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -587,14 +582,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:54.869Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "components",
           "duplicate-detection"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.869Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -679,14 +673,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:54.884Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "components",
           "ref-forwarding"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.884Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -722,14 +715,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:54.895Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "components",
           "ref-forwarding"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.895Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -765,14 +757,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:54.906Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "components",
           "state-patterns"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.906Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -850,14 +841,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:54.917Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "components",
           "state-patterns"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.917Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -900,19 +890,18 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:54.928Z",
+        "firstSeen": "2026-02-03T22:02:56.588Z",
+        "lastSeen": "2026-02-03T22:02:56.588Z",
         "source": "auto-detected",
         "tags": [
           "components",
           "component-structure"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.928Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-03T21:06:56.494Z",
-  "checksum": "d5633e0fb7140115"
+  "lastUpdated": "2026-02-03T22:02:56.604Z",
+  "checksum": "5908553774698fe1"
 }

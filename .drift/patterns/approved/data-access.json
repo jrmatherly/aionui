@@ -33,14 +33,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:55.198Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "data-access",
           "transaction"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.198Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -139,14 +138,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:55.211Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "data-access",
           "validation"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.211Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -211,14 +209,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:55.226Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "data-access",
           "validation"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.226Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -331,14 +328,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:55.241Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "data-access",
           "validation"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.241Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -769,14 +765,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:55.256Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "data-access",
           "repository-pattern"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.256Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -833,14 +828,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:55.271Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "data-access",
           "n-plus-one"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.271Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -1003,14 +997,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:55.288Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "data-access",
           "query-access"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.288Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -1095,14 +1088,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:55.303Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "data-access",
           "n-plus-one"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.303Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -1237,14 +1229,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:55.316Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "data-access",
           "query-access"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.316Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -1336,14 +1327,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:55.329Z",
+        "firstSeen": "2026-02-03T22:02:56.588Z",
+        "lastSeen": "2026-02-03T22:02:56.588Z",
         "source": "auto-detected",
         "tags": [
           "data-access",
           "n-plus-one"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.329Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -1386,14 +1376,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:55.342Z",
+        "firstSeen": "2026-02-03T22:02:56.588Z",
+        "lastSeen": "2026-02-03T22:02:56.588Z",
         "source": "auto-detected",
         "tags": [
           "data-access",
           "transaction"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.342Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -1429,19 +1418,18 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:55.356Z",
+        "firstSeen": "2026-02-03T22:02:56.588Z",
+        "lastSeen": "2026-02-03T22:02:56.588Z",
         "source": "auto-detected",
         "tags": [
           "data-access",
           "n-plus-one"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.356Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-03T21:06:56.496Z",
-  "checksum": "9e589c214778d388"
+  "lastUpdated": "2026-02-03T22:02:56.607Z",
+  "checksum": "bc342632c68b5f03"
 }

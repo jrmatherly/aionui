@@ -40,14 +40,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.054Z",
-        "lastSeen": "2026-02-03T21:06:55.122Z",
+        "firstSeen": "2026-02-03T22:02:56.585Z",
+        "lastSeen": "2026-02-03T22:02:56.585Z",
         "source": "auto-detected",
         "tags": [
           "errors",
           "exception-hierarchy"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.122Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -90,14 +89,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.054Z",
-        "lastSeen": "2026-02-03T21:06:55.133Z",
+        "firstSeen": "2026-02-03T22:02:56.585Z",
+        "lastSeen": "2026-02-03T22:02:56.585Z",
         "source": "auto-detected",
         "tags": [
           "errors",
           "try-catch"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.133Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -140,14 +138,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.054Z",
-        "lastSeen": "2026-02-03T21:06:55.145Z",
+        "firstSeen": "2026-02-03T22:02:56.585Z",
+        "lastSeen": "2026-02-03T22:02:56.585Z",
         "source": "auto-detected",
         "tags": [
           "errors",
           "error-logging"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.145Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -276,14 +273,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:55.157Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "errors",
           "circuit-breaker"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.157Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -340,14 +336,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:55.170Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "errors",
           "exception-hierarchy"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.170Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -404,19 +399,18 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:55.185Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "errors",
           "try-catch"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.185Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-03T21:06:56.496Z",
-  "checksum": "5ec63892a0d3bf61"
+  "lastUpdated": "2026-02-03T22:02:56.607Z",
+  "checksum": "9689b9be7d02ad53"
 }

@@ -726,14 +726,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.054Z",
-        "lastSeen": "2026-02-03T21:06:54.580Z",
+        "firstSeen": "2026-02-03T22:02:56.585Z",
+        "lastSeen": "2026-02-03T22:02:56.585Z",
         "source": "auto-detected",
         "tags": [
           "structural",
           "file-naming"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.580Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -776,14 +775,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.054Z",
-        "lastSeen": "2026-02-03T21:06:54.617Z",
+        "firstSeen": "2026-02-03T22:02:56.585Z",
+        "lastSeen": "2026-02-03T22:02:56.585Z",
         "source": "auto-detected",
         "tags": [
           "structural",
           "file-naming"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.617Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -862,14 +860,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.054Z",
-        "lastSeen": "2026-02-03T21:06:54.636Z",
+        "firstSeen": "2026-02-03T22:02:56.585Z",
+        "lastSeen": "2026-02-03T22:02:56.585Z",
         "source": "auto-detected",
         "tags": [
           "structural",
           "directory-structure"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.636Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -934,14 +931,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:54.651Z",
+        "firstSeen": "2026-02-03T22:02:56.586Z",
+        "lastSeen": "2026-02-03T22:02:56.586Z",
         "source": "auto-detected",
         "tags": [
           "structural",
           "co-location"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.651Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -1054,14 +1050,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:54.665Z",
+        "firstSeen": "2026-02-03T22:02:56.586Z",
+        "lastSeen": "2026-02-03T22:02:56.586Z",
         "source": "auto-detected",
         "tags": [
           "structural",
           "barrel-exports"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.665Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -1111,14 +1106,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:54.677Z",
+        "firstSeen": "2026-02-03T22:02:56.586Z",
+        "lastSeen": "2026-02-03T22:02:56.586Z",
         "source": "auto-detected",
         "tags": [
           "structural",
           "module-boundaries"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.677Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -1175,14 +1169,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:54.700Z",
+        "firstSeen": "2026-02-03T22:02:56.586Z",
+        "lastSeen": "2026-02-03T22:02:56.586Z",
         "source": "auto-detected",
         "tags": [
           "structural",
           "circular-deps"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.700Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -1232,14 +1225,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:54.714Z",
+        "firstSeen": "2026-02-03T22:02:56.586Z",
+        "lastSeen": "2026-02-03T22:02:56.586Z",
         "source": "auto-detected",
         "tags": [
           "structural",
           "import-ordering"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.714Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -1765,14 +1757,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:54.727Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "structural",
           "import-ordering"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.727Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -1956,14 +1947,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:54.740Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "structural",
           "circular-deps"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.740Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -2048,14 +2038,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:54.755Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "structural",
           "directory-structure"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.755Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -2141,19 +2130,18 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:54.769Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "structural",
           "co-location"
-        ],
-        "approvedAt": "2026-02-03T21:06:54.769Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-03T21:06:56.494Z",
-  "checksum": "e26dc8851ebcb522"
+  "lastUpdated": "2026-02-03T22:02:56.604Z",
+  "checksum": "f2d52a49b4f2e650"
 }

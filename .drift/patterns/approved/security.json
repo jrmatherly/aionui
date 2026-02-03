@@ -133,14 +133,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.054Z",
-        "lastSeen": "2026-02-03T21:06:55.594Z",
+        "firstSeen": "2026-02-03T22:02:56.585Z",
+        "lastSeen": "2026-02-03T22:02:56.585Z",
         "source": "auto-detected",
         "tags": [
           "security",
           "secret-management"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.594Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -428,14 +427,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.055Z",
-        "lastSeen": "2026-02-03T21:06:55.608Z",
+        "firstSeen": "2026-02-03T22:02:56.586Z",
+        "lastSeen": "2026-02-03T22:02:56.586Z",
         "source": "auto-detected",
         "tags": [
           "security",
           "csp-headers"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.608Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -583,14 +581,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:55.623Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "security",
           "csrf-protection"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.623Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -697,14 +694,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:55.637Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "security",
           "rate-limiting"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.637Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -789,19 +785,18 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T21:06:36.056Z",
-        "lastSeen": "2026-02-03T21:06:55.652Z",
+        "firstSeen": "2026-02-03T22:02:56.587Z",
+        "lastSeen": "2026-02-03T22:02:56.587Z",
         "source": "auto-detected",
         "tags": [
           "security",
           "input-sanitization"
-        ],
-        "approvedAt": "2026-02-03T21:06:55.652Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-03T21:06:56.498Z",
-  "checksum": "a1454f3a373b2d17"
+  "lastUpdated": "2026-02-03T22:02:56.609Z",
+  "checksum": "1515b37e3812215d"
 }
