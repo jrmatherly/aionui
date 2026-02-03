@@ -188,4 +188,4 @@ my-video
 
 # Docker — real group mappings contain tenant-specific EntraID group IDs
 deploy/docker/group-mappings.json
-# Note: .dockerignore is intentionally tracked
+# Note: .dockerignore is intentionally trackedSTYLING-PLAYBOOK.md

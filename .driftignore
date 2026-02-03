@@ -34,3 +34,4 @@ node_modules/
 
 # Docker-specific sensitive configs
 deploy/docker/group-mappings.json
+STYLING-PLAYBOOK.md

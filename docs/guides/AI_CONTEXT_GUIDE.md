@@ -421,12 +421,29 @@ the dominant patterns in the codebase.
 - **Medium:** Mostly config pattern variations across agent backends (`env-variables-direct`
   vs `settings-class`)
 
+### DNA Gene Profile
+
+| Gene | Detected Pattern | Confidence |
+|------|-----------------|------------|
+| Responsive Approach | CSS Media Queries | 100% |
+| State Styling | CSS Pseudo Classes | 100% |
+| Spacing Philosophy | Hardcoded values | 100% |
+| API Response Format | Success/Data Envelope | 88% |
+| Configuration Pattern | Settings/Config Class | 79% |
+| Error Response Format | Generic Try-Catch | 72% |
+| Logging Format | Logger with Levels | 67% |
+| Theming | CSS Variables | 60% |
+| Animation Approach | CSS Animations | 50% |
+| Variant Handling | Not established | 0% |
+
 ### Commands
 
 ```bash
 drift dna status     # Overall DNA profile
 drift dna mutations  # List all style inconsistencies
 drift dna playbook   # Generate style playbook for the codebase
+drift dna gene <id>  # Detailed analysis for a specific gene
+drift dna export     # Export DNA profile for AI context
 ```
 
 Mutations don't necessarily need fixing — agent-specific config code naturally varies
@@ -606,6 +623,88 @@ As the test suite grows, periodically rebuild topology:
 drift test-topology build
 drift test-topology status
 ```
+
+## CI Integration
+
+Drift can be added to GitHub Actions PR checks for automated pattern drift detection.
+
+### Adding Drift to PR Checks
+
+Add a job to `.github/workflows/pr-checks.yml`:
+
+```yaml
+drift-check:
+  name: Pattern Drift
+  runs-on: ubuntu-latest
+  timeout-minutes: 5
+  steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: "22"
+
+    - name: Cache Drift data
+      uses: actions/cache@v4
+      with:
+        path: .drift
+        key: drift-${{ runner.os }}-${{ hashFiles('**/*.ts', '**/*.tsx') }}
+        restore-keys: drift-${{ runner.os }}-
+
+    - name: Install Drift
+      run: npm install -g driftdetect
+
+    - name: Scan and Gate
+      run: |
+        drift scan --incremental
+        drift gate --ci --format github --fail-on error
+```
+
+### Output Formats
+
+- `--format github` — Creates inline PR annotations
+- `--format sarif` — Standard SARIF format (can upload to Code Scanning)
+- `--format json` — Raw JSON for custom processing
+- `--format gitlab` — GitLab Code Quality report
+
+### Notes
+
+- Use `--incremental` for PR checks (faster, only changed files)
+- Use `drift scan --force` on main branch pushes (full scan)
+- Cache `.drift/` across runs for 10-50x speedup
+- `--fail-on error` fails only on errors; use `--fail-on warning` for stricter gating
+
+## Code Examples (MCP Tool)
+
+AI agents can use `drift_code_examples` to get real code snippets from the codebase
+that demonstrate pattern implementation:
+
+```typescript
+drift_code_examples({
+  categories: ["api", "auth"],   // Filter by pattern categories
+  pattern: "api-rest-controller", // Or a specific pattern ID
+  maxExamples: 3,                 // Examples per pattern
+  contextLines: 10                // Lines of surrounding context
+})
+```
+
+This is particularly useful before writing new code — it shows how the team actually
+implements patterns rather than relying on generic examples.
+
+## Features Not Available (v0.9.48)
+
+These Drift features are documented but not functional in the current version:
+
+| Feature | Status | Details |
+|---------|--------|---------|
+| **Constants Analysis** | Not populating | `drift constants` shows no data despite scanning |
+| **Contract Detection** | 0 contracts found | Express routes and fetch calls not detected |
+| **Wrappers Detection** | 0 wrappers found | Native analyzer not recognizing React/Express patterns |
+| **Custom Constraints** | TypeError on load | Custom JSON in `.drift/constraints/custom/` crashes |
+| **Package Context** | N/A | Monorepo feature; AionUI is a single package |
+
+These should be re-evaluated when upgrading to a newer Drift version.
 
 ## Troubleshooting
 

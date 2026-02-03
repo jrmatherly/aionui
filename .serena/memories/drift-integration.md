@@ -65,12 +65,24 @@ Auth-related data access is governed by rules in `.drift/boundaries/rules.json`:
 - **Error handling:** No gaps detected (Express middleware patterns not recognized as boundaries)
 - **Constraints:** Extract found 0 (not enough pattern repetition); custom constraints format not working in v0.9.48
 
+## DNA Playbook
+
+Generate a style playbook with `drift dna playbook`. Key patterns detected:
+
+- **API Response Format**: Success/Data Envelope (`{ success: true, data: ... }`) — 88% confidence
+- **Config Pattern**: Settings/Config Class — 79% confidence
+- **Theming**: CSS Variables — 60% confidence
+- **1 high-impact mutation**: `directoryApi.ts:271` uses direct-return vs envelope
+
 ## Version Limitations (v0.9.48)
 
 - Custom constraint JSON files cause `TypeError: data.constraints is not iterable`
 - Constraints extract needs substantial code pattern repetition to discover anything
 - Error handling boundaries detection doesn't recognize Express-style error middleware
 - Audit duplicate detection reports but can't auto-merge
+- Constants analysis doesn't populate data (no `.drift/constants/` directory created)
+- Contract detection finds 0 contracts (Express/fetch patterns not recognized)
+- Wrappers detection finds 0 wrappers (native analyzer doesn't detect React/Express wrappers)
 - Node 25 works but isn't officially supported
 
 ## Configuration

@@ -40,14 +40,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.889Z",
-        "lastSeen": "2026-02-03T23:01:59.934Z",
+        "firstSeen": "2026-02-03T23:05:14.615Z",
+        "lastSeen": "2026-02-03T23:05:14.615Z",
         "source": "auto-detected",
         "tags": [
           "styling",
           "design-tokens"
-        ],
-        "approvedAt": "2026-02-03T23:01:59.934Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -188,8 +187,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.887Z",
-        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "firstSeen": "2026-02-03T23:05:14.613Z",
+        "lastSeen": "2026-02-03T23:05:14.613Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -426,8 +425,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.887Z",
-        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "firstSeen": "2026-02-03T23:05:14.613Z",
+        "lastSeen": "2026-02-03T23:05:14.613Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -597,8 +596,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.887Z",
-        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "firstSeen": "2026-02-03T23:05:14.613Z",
+        "lastSeen": "2026-02-03T23:05:14.613Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -786,8 +785,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.887Z",
-        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "firstSeen": "2026-02-03T23:05:14.613Z",
+        "lastSeen": "2026-02-03T23:05:14.613Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -835,8 +834,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.887Z",
-        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "firstSeen": "2026-02-03T23:05:14.613Z",
+        "lastSeen": "2026-02-03T23:05:14.613Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -898,8 +897,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.887Z",
-        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "firstSeen": "2026-02-03T23:05:14.613Z",
+        "lastSeen": "2026-02-03T23:05:14.613Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -968,8 +967,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.888Z",
-        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "firstSeen": "2026-02-03T23:05:14.615Z",
+        "lastSeen": "2026-02-03T23:05:14.615Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -1123,8 +1122,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.888Z",
-        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "firstSeen": "2026-02-03T23:05:14.615Z",
+        "lastSeen": "2026-02-03T23:05:14.615Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -1221,8 +1220,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.889Z",
-        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "firstSeen": "2026-02-03T23:05:14.615Z",
+        "lastSeen": "2026-02-03T23:05:14.615Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -1284,8 +1283,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.889Z",
-        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "firstSeen": "2026-02-03T23:05:14.615Z",
+        "lastSeen": "2026-02-03T23:05:14.615Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -1347,8 +1346,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.889Z",
-        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "firstSeen": "2026-02-03T23:05:14.615Z",
+        "lastSeen": "2026-02-03T23:05:14.615Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -1396,8 +1395,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.887Z",
-        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "firstSeen": "2026-02-03T23:05:14.613Z",
+        "lastSeen": "2026-02-03T23:05:14.613Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -1459,8 +1458,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.887Z",
-        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "firstSeen": "2026-02-03T23:05:14.613Z",
+        "lastSeen": "2026-02-03T23:05:14.613Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -1613,8 +1612,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.888Z",
-        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "firstSeen": "2026-02-03T23:05:14.615Z",
+        "lastSeen": "2026-02-03T23:05:14.615Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -1655,8 +1654,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.888Z",
-        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "firstSeen": "2026-02-03T23:05:14.615Z",
+        "lastSeen": "2026-02-03T23:05:14.615Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -1697,8 +1696,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.889Z",
-        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "firstSeen": "2026-02-03T23:05:14.615Z",
+        "lastSeen": "2026-02-03T23:05:14.615Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -1739,8 +1738,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.889Z",
-        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "firstSeen": "2026-02-03T23:05:14.615Z",
+        "lastSeen": "2026-02-03T23:05:14.615Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -1788,8 +1787,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.889Z",
-        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "firstSeen": "2026-02-03T23:05:14.615Z",
+        "lastSeen": "2026-02-03T23:05:14.615Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -1830,8 +1829,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.889Z",
-        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "firstSeen": "2026-02-03T23:05:14.616Z",
+        "lastSeen": "2026-02-03T23:05:14.616Z",
         "source": "auto-detected",
         "tags": [
           "styling",
@@ -1842,6 +1841,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-03T23:02:00.019Z",
-  "checksum": "a8f06a9c89bb95e1"
+  "lastUpdated": "2026-02-03T23:05:14.622Z",
+  "checksum": "e74c89a2f503d886"
 }

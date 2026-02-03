@@ -75,14 +75,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.888Z",
-        "lastSeen": "2026-02-03T23:01:59.985Z",
+        "firstSeen": "2026-02-03T23:05:14.615Z",
+        "lastSeen": "2026-02-03T23:05:14.615Z",
         "source": "auto-detected",
         "tags": [
           "security",
           "csp-headers"
-        ],
-        "approvedAt": "2026-02-03T23:01:59.985Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -132,14 +131,13 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.889Z",
-        "lastSeen": "2026-02-03T23:02:00.000Z",
+        "firstSeen": "2026-02-03T23:05:14.616Z",
+        "lastSeen": "2026-02-03T23:05:14.616Z",
         "source": "auto-detected",
         "tags": [
           "security",
           "sql-injection"
-        ],
-        "approvedAt": "2026-02-03T23:02:00.000Z"
+        ]
       },
       "severity": "info",
       "autoFixable": false
@@ -252,8 +250,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.886Z",
-        "lastSeen": "2026-02-03T22:47:07.886Z",
+        "firstSeen": "2026-02-03T23:05:14.613Z",
+        "lastSeen": "2026-02-03T23:05:14.613Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -406,8 +404,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.886Z",
-        "lastSeen": "2026-02-03T22:47:07.886Z",
+        "firstSeen": "2026-02-03T23:05:14.613Z",
+        "lastSeen": "2026-02-03T23:05:14.613Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -483,8 +481,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.886Z",
-        "lastSeen": "2026-02-03T22:47:07.886Z",
+        "firstSeen": "2026-02-03T23:05:14.613Z",
+        "lastSeen": "2026-02-03T23:05:14.613Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -700,8 +698,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.886Z",
-        "lastSeen": "2026-02-03T22:47:07.886Z",
+        "firstSeen": "2026-02-03T23:05:14.613Z",
+        "lastSeen": "2026-02-03T23:05:14.613Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -742,8 +740,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.887Z",
-        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "firstSeen": "2026-02-03T23:05:14.614Z",
+        "lastSeen": "2026-02-03T23:05:14.614Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -938,8 +936,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.887Z",
-        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "firstSeen": "2026-02-03T23:05:14.614Z",
+        "lastSeen": "2026-02-03T23:05:14.614Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -1402,8 +1400,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.887Z",
-        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "firstSeen": "2026-02-03T23:05:14.614Z",
+        "lastSeen": "2026-02-03T23:05:14.614Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -1472,8 +1470,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.888Z",
-        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "firstSeen": "2026-02-03T23:05:14.614Z",
+        "lastSeen": "2026-02-03T23:05:14.614Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -1514,8 +1512,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.888Z",
-        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "firstSeen": "2026-02-03T23:05:14.614Z",
+        "lastSeen": "2026-02-03T23:05:14.614Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -1577,8 +1575,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.888Z",
-        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "firstSeen": "2026-02-03T23:05:14.614Z",
+        "lastSeen": "2026-02-03T23:05:14.614Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -1626,8 +1624,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.888Z",
-        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "firstSeen": "2026-02-03T23:05:14.614Z",
+        "lastSeen": "2026-02-03T23:05:14.614Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -1696,8 +1694,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.888Z",
-        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "firstSeen": "2026-02-03T23:05:14.614Z",
+        "lastSeen": "2026-02-03T23:05:14.614Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -1745,8 +1743,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.888Z",
-        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "firstSeen": "2026-02-03T23:05:14.614Z",
+        "lastSeen": "2026-02-03T23:05:14.614Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -1801,8 +1799,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.888Z",
-        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "firstSeen": "2026-02-03T23:05:14.615Z",
+        "lastSeen": "2026-02-03T23:05:14.615Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -1843,8 +1841,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.888Z",
-        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "firstSeen": "2026-02-03T23:05:14.615Z",
+        "lastSeen": "2026-02-03T23:05:14.615Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -1892,8 +1890,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.888Z",
-        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "firstSeen": "2026-02-03T23:05:14.615Z",
+        "lastSeen": "2026-02-03T23:05:14.615Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -1941,8 +1939,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.889Z",
-        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "firstSeen": "2026-02-03T23:05:14.615Z",
+        "lastSeen": "2026-02-03T23:05:14.615Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -2011,8 +2009,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.889Z",
-        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "firstSeen": "2026-02-03T23:05:14.616Z",
+        "lastSeen": "2026-02-03T23:05:14.616Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -2089,8 +2087,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.887Z",
-        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "firstSeen": "2026-02-03T23:05:14.614Z",
+        "lastSeen": "2026-02-03T23:05:14.614Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -2215,8 +2213,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.887Z",
-        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "firstSeen": "2026-02-03T23:05:14.614Z",
+        "lastSeen": "2026-02-03T23:05:14.614Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -2635,8 +2633,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.888Z",
-        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "firstSeen": "2026-02-03T23:05:14.614Z",
+        "lastSeen": "2026-02-03T23:05:14.614Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -2789,8 +2787,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.888Z",
-        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "firstSeen": "2026-02-03T23:05:14.615Z",
+        "lastSeen": "2026-02-03T23:05:14.615Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -3104,8 +3102,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.888Z",
-        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "firstSeen": "2026-02-03T23:05:14.615Z",
+        "lastSeen": "2026-02-03T23:05:14.615Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -3160,8 +3158,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.888Z",
-        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "firstSeen": "2026-02-03T23:05:14.615Z",
+        "lastSeen": "2026-02-03T23:05:14.615Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -3209,8 +3207,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.889Z",
-        "lastSeen": "2026-02-03T22:47:07.889Z",
+        "firstSeen": "2026-02-03T23:05:14.615Z",
+        "lastSeen": "2026-02-03T23:05:14.615Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -3351,8 +3349,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.886Z",
-        "lastSeen": "2026-02-03T22:47:07.886Z",
+        "firstSeen": "2026-02-03T23:05:14.613Z",
+        "lastSeen": "2026-02-03T23:05:14.613Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -3645,8 +3643,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.887Z",
-        "lastSeen": "2026-02-03T22:47:07.887Z",
+        "firstSeen": "2026-02-03T23:05:14.614Z",
+        "lastSeen": "2026-02-03T23:05:14.614Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -3799,8 +3797,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.888Z",
-        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "firstSeen": "2026-02-03T23:05:14.614Z",
+        "lastSeen": "2026-02-03T23:05:14.614Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -3912,8 +3910,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.888Z",
-        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "firstSeen": "2026-02-03T23:05:14.614Z",
+        "lastSeen": "2026-02-03T23:05:14.614Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -4003,8 +4001,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-03T22:47:07.888Z",
-        "lastSeen": "2026-02-03T22:47:07.888Z",
+        "firstSeen": "2026-02-03T23:05:14.615Z",
+        "lastSeen": "2026-02-03T23:05:14.615Z",
         "source": "auto-detected",
         "tags": [
           "security",
@@ -4015,6 +4013,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-03T23:02:00.024Z",
-  "checksum": "c24a2dd9bf133277"
+  "lastUpdated": "2026-02-03T23:05:14.627Z",
+  "checksum": "6210b293dbf162a4"
 }
