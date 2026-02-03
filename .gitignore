@@ -159,6 +159,8 @@ my-video
 .local_docs/
 
 # Drift Detect — track config + approved patterns, ignore transient data
+.drift/manifest.json
+.drift/source-of-truth.json
 .drift/lake/
 .drift/cache/
 .drift/history/

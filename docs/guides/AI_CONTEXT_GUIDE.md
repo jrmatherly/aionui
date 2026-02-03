@@ -38,6 +38,7 @@ pip install serena
 
 - **Config:** `.drift/config.json` (tracked — project settings and feature flags)
 - **Approved patterns:** `.drift/patterns/approved/*.json` (tracked — team-shared golden standard)
+- **Local state:** `.drift/manifest.json`, `.drift/source-of-truth.json` (gitignored — contain absolute paths, rebuilt by `drift init`)
 - **Transient data:** `.drift/lake/`, `.drift/cache/`, `.drift/memory/`, etc. (gitignored — rebuilt locally)
 - **Exclusions:** `.driftignore` (tracked — additional exclusions beyond `.gitignore`)
 - **MCP:** `.mcp.json` (tracked — project-level MCP server config)
@@ -56,41 +57,51 @@ pip install serena
 npm install -g driftdetect driftdetect-mcp
 ```
 
-### 2. Initialize Drift
+### 2. Initialize Drift Locally
+
+The repo already includes `.drift/config.json` and approved patterns. You need to
+initialize the local directory structure and rebuild transient analysis data:
 
 ```bash
 cd /path/to/aionui
-drift setup -y
+
+# Recreate local directory structure (does NOT overwrite config or approved patterns)
+drift init -y
+
+# Rebuild transient analysis data (pattern indexes, call graph, etc.)
+drift scan
+
+# Build additional analysis features
+drift callgraph build
+drift test-topology build
+drift coupling build
 ```
 
-This creates `.drift/` with pattern indexes, call graph, and Cortex memory.
+> **Note:** `drift init -y` regenerates the local project ID and timestamp in `config.json`.
+> This is expected — do not commit this change. The approved patterns remain intact.
 
 If you get a `NODE_MODULE_VERSION` error on memory init:
 
 ```bash
-# Find Drift's installation path
-npm root -g
-# Then rebuild better-sqlite3 in that path
+# Find Drift's installation path and rebuild better-sqlite3
 cd $(npm root -g)/driftdetect && npm rebuild better-sqlite3
 # Retry
 cd /path/to/aionui && drift memory init
 ```
 
-### 3. Auto-Approve High-Confidence Patterns
+### 3. Initialize Cortex Memory (Optional)
 
 ```bash
-drift approve --auto
+drift memory init
 ```
 
-### 4. Bootstrap Cortex Memory
+See [Cortex Memory](#cortex-memory-system) below for adding institutional knowledge.
 
-See [Cortex Memory](#cortex-memory-system) below for recommended memories.
-
-### 5. Verify
+### 4. Verify
 
 ```bash
-drift status         # Should show patterns and health score
-drift memory status  # Should show memory health
+drift status         # Should show 128+ approved patterns
+drift memory status  # Should show memory health (if initialized)
 ```
 
 ## MCP Integration
@@ -228,7 +239,8 @@ To add a new memory, create a markdown file in `.serena/memories/` and commit it
 ### After Significant Code Changes
 
 ```bash
-drift scan --incremental   # Update pattern index
+drift scan --incremental   # Update pattern index (fast, changed files only)
+drift scan                 # Full rescan (after major refactoring)
 drift check                # Verify no violations
 ```
 
