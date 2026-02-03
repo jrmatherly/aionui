@@ -158,5 +158,6 @@ my-video
 .scratchpad/
 .local_docs/
 
-# Docker (keep deploy/ directory tracked)
+# Docker — real group mappings contain tenant-specific EntraID group IDs
+deploy/docker/group-mappings.json
 # Note: .dockerignore is intentionally tracked

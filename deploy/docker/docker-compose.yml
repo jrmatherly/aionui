@@ -56,11 +56,15 @@ services:
       - OIDC_SCOPES=${OIDC_SCOPES:-openid profile email}
       - OIDC_GROUPS_CLAIM=${OIDC_GROUPS_CLAIM:-groups}
       - GROUP_MAPPINGS_JSON=${GROUP_MAPPINGS_JSON:-}
+      - GROUP_MAPPINGS_FILE=${GROUP_MAPPINGS_FILE:-/etc/aionui/group-mappings.json}
 
     # Persistent storage
     volumes:
       # Database, config, and session data
       - aionui_data:/home/aionui/.config/AionUi
+      # OIDC group→role mappings (uncomment when using EntraID SSO)
+      # Copy group-mappings-example.json to group-mappings.json and customize
+      # - ./group-mappings.json:/etc/aionui/group-mappings.json:ro
       # Optional: Mount custom skills (read-only)
       # - ./custom-skills:/app/resources/skills:ro
 

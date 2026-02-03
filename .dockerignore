@@ -67,6 +67,7 @@ eslint.config.*
 .env.*
 *.local
 .npmrc
+deploy/docker/group-mappings.json
 
 # -----------------------------------------------------------------------------
 # macOS
