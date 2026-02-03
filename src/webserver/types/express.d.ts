@@ -9,7 +9,9 @@ import type { AuthUser } from '@/webserver/auth/repository/UserRepository';
 declare global {
   namespace Express {
     interface Request {
-      user?: Pick<AuthUser, 'id' | 'username'>;
+      user?: Pick<AuthUser, 'id' | 'username' | 'role' | 'auth_method'>;
+      /** User ID scoped by DataScopeMiddleware (admin can override via query param) */
+      scopedUserId?: string;
       cookies?: Record<string, string>;
       csrfToken?: () => string;
     }

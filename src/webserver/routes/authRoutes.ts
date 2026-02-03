@@ -7,12 +7,15 @@
 import { verifyQRTokenDirect } from '@/process/bridge/webuiBridge';
 import { AuthMiddleware } from '@/webserver/auth/middleware/AuthMiddleware';
 import { TokenUtils } from '@/webserver/auth/middleware/TokenMiddleware';
+import { OIDC_CONFIG } from '@/webserver/auth/config/oidcConfig';
 import { UserRepository } from '@/webserver/auth/repository/UserRepository';
 import { AuthService } from '@/webserver/auth/service/AuthService';
+import { OidcService } from '@/webserver/auth/service/OidcService';
 import type { Express, Request, Response } from 'express';
 import { AUTH_CONFIG, getCookieOptions } from '../config/constants';
 import { createAppError } from '../middleware/errorHandler';
 import { apiRateLimiter, authRateLimiter, authenticatedActionLimiter } from '../middleware/security';
+import { originGuard } from '@/webserver/auth/middleware/OriginGuard';
 
 /**
  * QR login page HTML (static, no user input embedded)
@@ -118,16 +121,24 @@ export function registerAuthRoutes(app: Express): void {
         return;
       }
 
-      // Generate JWT token
-      const token = AuthService.generateToken(user);
+      // Generate access token (short-lived) + refresh token (long-lived)
+      const accessToken = AuthService.generateToken(user);
+      const refreshToken = AuthService.generateRefreshToken(user.id);
 
       // Update last login
       UserRepository.updateLastLogin(user.id);
 
-      // Set secure cookie (enable secure flag in remote mode)
-      res.cookie(AUTH_CONFIG.COOKIE.NAME, token, {
+      // Set access token cookie (short-lived, used for API auth)
+      res.cookie(AUTH_CONFIG.COOKIE.NAME, accessToken, {
         ...getCookieOptions(),
         maxAge: AUTH_CONFIG.TOKEN.COOKIE_MAX_AGE,
+      });
+
+      // Set refresh token in httpOnly cookie (long-lived, used for silent renewal)
+      res.cookie('aionui-refresh', refreshToken, {
+        ...getCookieOptions(),
+        maxAge: AUTH_CONFIG.TOKEN.COOKIE_MAX_AGE,
+        path: '/api/auth/refresh', // Only sent to refresh endpoint
       });
 
       res.json({
@@ -137,7 +148,7 @@ export function registerAuthRoutes(app: Express): void {
           id: user.id,
           username: user.username,
         },
-        token,
+        token: accessToken,
       });
     } catch (error) {
       console.error('Login error:', error);
@@ -151,13 +162,25 @@ export function registerAuthRoutes(app: Express): void {
    */
   // Authenticated endpoints reuse shared limiter keyed by user/IP
   app.post('/logout', apiRateLimiter, AuthMiddleware.authenticateToken, authenticatedActionLimiter, (req: Request, res: Response) => {
-    // Blacklist current token
+    // Blacklist current access token
     const token = TokenUtils.extractFromRequest(req);
     if (token) {
       AuthService.blacklistToken(token);
     }
 
+    // Blacklist refresh token if present
+    const refreshToken = req.cookies?.['aionui-refresh'];
+    if (refreshToken) {
+      AuthService.blacklistToken(refreshToken);
+    }
+
+    // Revoke all refresh tokens for this user (belt + suspenders)
+    if (req.user?.id) {
+      AuthService.revokeAllUserTokens(req.user.id);
+    }
+
     res.clearCookie(AUTH_CONFIG.COOKIE.NAME);
+    res.clearCookie('aionui-refresh', { path: '/api/auth/refresh' });
     res.json({ success: true, message: 'Logged out successfully' });
   });
 
@@ -176,6 +199,7 @@ export function registerAuthRoutes(app: Express): void {
         needsSetup: !hasUsers,
         userCount,
         isAuthenticated: false, // Will be determined by frontend based on token
+        oidcEnabled: OIDC_CONFIG.enabled && OidcService.isReady(),
       });
     } catch (error) {
       console.error('Auth status error:', error);
@@ -192,9 +216,19 @@ export function registerAuthRoutes(app: Express): void {
    */
   // Add rate limiting for authenticated user info endpoint
   app.get('/api/auth/user', apiRateLimiter, AuthMiddleware.authenticateToken, authenticatedActionLimiter, (req: Request, res: Response) => {
+    // Look up full user record for display_name/email (token only has id/username/role)
+    const fullUser = UserRepository.findById(req.user!.id);
     res.json({
       success: true,
-      user: req.user,
+      user: {
+        id: req.user!.id,
+        username: req.user!.username,
+        role: req.user!.role,
+        authMethod: req.user!.auth_method,
+        displayName: fullUser?.display_name ?? undefined,
+        email: fullUser?.email ?? undefined,
+        avatarUrl: fullUser?.avatar_url ?? undefined,
+      },
     });
   });
 
@@ -248,13 +282,18 @@ export function registerAuthRoutes(app: Express): void {
       // Hash new password
       const newPasswordHash = await AuthService.hashPassword(newPassword);
 
-      // Update password
+      // Update password and invalidate all tokens
       UserRepository.updatePassword(user.id, newPasswordHash);
       AuthService.invalidateAllTokens();
+      AuthService.revokeAllUserTokens(user.id);
+
+      // Clear cookies — user must re-authenticate
+      res.clearCookie(AUTH_CONFIG.COOKIE.NAME);
+      res.clearCookie('aionui-refresh', { path: '/api/auth/refresh' });
 
       res.json({
         success: true,
-        message: 'Password changed successfully',
+        message: 'Password changed successfully. Please log in again.',
       });
     } catch (error) {
       console.error('Change password error:', error);
@@ -269,37 +308,56 @@ export function registerAuthRoutes(app: Express): void {
    * Token refresh endpoint
    * POST /api/auth/refresh
    */
-  app.post('/api/auth/refresh', apiRateLimiter, authenticatedActionLimiter, (req: Request, res: Response) => {
+  app.post('/api/auth/refresh', apiRateLimiter, originGuard, (req: Request, res: Response) => {
     try {
-      const { token } = req.body;
+      // Prefer refresh token from httpOnly cookie, fall back to body
+      const refreshToken = req.cookies?.['aionui-refresh'] || req.body?.refreshToken;
 
-      if (!token) {
-        res.status(400).json({
-          success: false,
-          error: 'Token is required',
-        });
+      if (!refreshToken) {
+        // Legacy fallback: try old-style access token refresh (body.token)
+        const { token } = req.body;
+        if (token) {
+          const newToken = AuthService.refreshToken(token);
+          if (!newToken) {
+            res.status(401).json({ success: false, error: 'Invalid or expired token' });
+            return;
+          }
+          res.json({ success: true, token: newToken });
+          return;
+        }
+
+        res.status(400).json({ success: false, error: 'Refresh token is required' });
         return;
       }
 
-      const newToken = AuthService.refreshToken(token);
-      if (!newToken) {
-        res.status(401).json({
-          success: false,
-          error: 'Invalid or expired token',
-        });
+      // Rotate refresh token: revoke old, issue new pair
+      const result = AuthService.rotateRefreshToken(refreshToken);
+      if (!result) {
+        res.clearCookie('aionui-refresh', { path: '/api/auth/refresh' });
+        res.status(401).json({ success: false, error: 'Invalid or expired refresh token' });
         return;
       }
+
+      // Set new access token cookie
+      res.cookie(AUTH_CONFIG.COOKIE.NAME, result.accessToken, {
+        ...getCookieOptions(),
+        maxAge: AUTH_CONFIG.TOKEN.COOKIE_MAX_AGE,
+      });
+
+      // Set new refresh token cookie (rotated)
+      res.cookie('aionui-refresh', result.refreshToken, {
+        ...getCookieOptions(),
+        maxAge: AUTH_CONFIG.TOKEN.COOKIE_MAX_AGE,
+        path: '/api/auth/refresh',
+      });
 
       res.json({
         success: true,
-        token: newToken,
+        token: result.accessToken,
       });
     } catch (error) {
       console.error('Token refresh error:', error);
-      res.status(500).json({
-        success: false,
-        error: 'Internal server error',
-      });
+      res.status(500).json({ success: false, error: 'Internal server error' });
     }
   });
 
@@ -396,6 +454,95 @@ export function registerAuthRoutes(app: Express): void {
    */
   app.get('/qr-login', (_req: Request, res: Response) => {
     res.send(QR_LOGIN_PAGE_HTML);
+  });
+
+  /* ================================================================== */
+  /*  OIDC / EntraID SSO Routes                                         */
+  /* ================================================================== */
+
+  /**
+   * Initiate OIDC login — redirects to EntraID authorization endpoint.
+   * GET /api/auth/oidc/login
+   */
+  app.get('/api/auth/oidc/login', apiRateLimiter, (req: Request, res: Response) => {
+    try {
+      if (!OIDC_CONFIG.enabled || !OidcService.isReady()) {
+        res.status(404).json({ success: false, error: 'OIDC authentication is not enabled' });
+        return;
+      }
+
+      const redirectTo = typeof req.query.redirect === 'string' ? req.query.redirect : undefined;
+      const { authUrl, state } = OidcService.getAuthorizationUrl(redirectTo);
+
+      // Store state in a short-lived cookie for double-check on callback
+      res.cookie('oidc_state', state, {
+        httpOnly: true,
+        secure: getCookieOptions().secure,
+        sameSite: 'lax',
+        maxAge: 10 * 60 * 1000, // 10 min
+      });
+
+      res.redirect(authUrl);
+    } catch (error) {
+      console.error('[OIDC] Login initiation error:', error);
+      res.status(500).json({ success: false, error: 'Failed to initiate OIDC login' });
+    }
+  });
+
+  /**
+   * OIDC callback — exchanges authorization code for tokens, provisions user.
+   * GET /api/auth/oidc/callback
+   */
+  app.get('/api/auth/oidc/callback', apiRateLimiter, async (req: Request, res: Response) => {
+    try {
+      if (!OIDC_CONFIG.enabled || !OidcService.isReady()) {
+        res.status(404).send('OIDC authentication is not enabled');
+        return;
+      }
+
+      // Verify state cookie matches query param (double CSRF check)
+      const stateCookie = req.cookies?.['oidc_state'];
+      if (!stateCookie || stateCookie !== req.query.state) {
+        res.status(400).send('Invalid state token — possible CSRF attack. Please try again.');
+        return;
+      }
+      res.clearCookie('oidc_state');
+
+      const result = await OidcService.handleCallback(req.query as Record<string, string>);
+
+      if (!result.success || !result.user) {
+        // Show a simple error page with a link back to login
+        res.status(401).send(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Auth Failed</title>` + `<style>body{font-family:system-ui;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;background:#f5f5f5}` + `.box{text-align:center;padding:40px;background:#fff;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.1)}` + `a{color:#3498db}</style></head><body><div class="box">` + `<h2>Authentication Failed</h2><p>${result.error || 'Unknown error'}</p>` + `<a href="/#/login">Back to login</a></div></body></html>`);
+        return;
+      }
+
+      // Issue access + refresh tokens
+      const sessionToken = AuthService.generateToken({
+        id: result.user.id,
+        username: result.user.username,
+        role: result.user.role,
+        auth_method: result.user.auth_method,
+      });
+      const refreshToken = AuthService.generateRefreshToken(result.user.id);
+
+      res.cookie(AUTH_CONFIG.COOKIE.NAME, sessionToken, {
+        ...getCookieOptions(),
+        maxAge: AUTH_CONFIG.TOKEN.COOKIE_MAX_AGE,
+      });
+
+      res.cookie('aionui-refresh', refreshToken, {
+        ...getCookieOptions(),
+        maxAge: AUTH_CONFIG.TOKEN.COOKIE_MAX_AGE,
+        path: '/api/auth/refresh',
+      });
+
+      // Redirect to the originally requested page, or home
+      const redirectTo = result.redirectTo || '/';
+      res.redirect(redirectTo);
+    } catch (error) {
+      console.error('[OIDC] Callback error:', error);
+      res.status(500).send('Authentication failed — please try again.');
+    }
   });
 }
 

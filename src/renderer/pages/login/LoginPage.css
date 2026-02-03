@@ -397,3 +397,140 @@ body.login-page-active {
     display: none;
   }
 }
+
+/* ─── OIDC / SSO — primary login ────────────────────────────────── */
+
+.login-page__form-container {
+  margin-bottom: 24px;
+}
+
+.login-page__sso-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.login-page__oidc-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 16px;
+  border: 1px solid #8c8c8c;
+  border-radius: 4px;
+  background: #fff;
+  color: #5e5e5e;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.login-page__oidc-button--primary {
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 15px;
+}
+
+.login-page__oidc-button--primary:hover:not(:disabled) {
+  background: #f5f5f5;
+  border-color: #555;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.login-page__oidc-button:hover:not(:disabled) {
+  background: #f5f5f5;
+  border-color: #555;
+}
+
+.login-page__oidc-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.login-page__oidc-icon {
+  width: 21px;
+  height: 21px;
+  flex-shrink: 0;
+}
+
+/* ─── Local login toggle ────────────────────────────────────────── */
+
+.login-page__local-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 16px;
+  padding: 6px 0;
+  border: none;
+  background: transparent;
+  color: #888;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  width: 100%;
+}
+
+.login-page__local-toggle:hover {
+  color: #667eea;
+}
+
+.login-page__local-toggle-chevron {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+}
+
+.login-page__local-toggle-chevron--open {
+  transform: rotate(180deg);
+}
+
+/* ─── Collapsible local login form ──────────────────────────────── */
+
+.login-page__form--hidden {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  margin: 0;
+  pointer-events: none;
+  transition:
+    max-height 0.3s ease,
+    opacity 0.2s ease,
+    margin 0.3s ease;
+}
+
+.login-page__form:not(.login-page__form--hidden) {
+  max-height: 500px;
+  opacity: 1;
+  transition:
+    max-height 0.4s ease,
+    opacity 0.3s ease 0.1s;
+}
+
+/* ─── Divider ───────────────────────────────────────────────────── */
+
+.login-page__divider {
+  display: flex;
+  align-items: center;
+  margin: 12px 0 16px;
+  color: #999;
+  font-size: 13px;
+}
+
+.login-page__divider::before,
+.login-page__divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e0e0e0;
+}
+
+.login-page__divider span {
+  padding: 0 12px;
+}

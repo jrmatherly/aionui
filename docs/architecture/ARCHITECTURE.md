@@ -33,6 +33,7 @@ graph TB
     subgraph "External Services"
         WebUI[WebUI Server<br/>Express + WebSocket]
         Telegram[Telegram Bot]
+        OIDC[OIDC Provider<br/>SSO Integration]
     end
 
     subgraph "AI Providers"
@@ -56,6 +57,7 @@ graph TB
     MP --> WebUI
     MP --> Telegram
 
+    WebUI --> OIDC
     WebUI -.-> React
 ```
 
@@ -194,14 +196,27 @@ graph TB
     subgraph "WebUI Server"
         Express[Express App]
         WS[WebSocketManager]
-        Auth[Auth Service]
+        AuthSvc[AuthService]
+        OidcSvc[OidcService]
+        Middleware[Middleware Layer]
+    end
+
+    subgraph "Middleware"
+        Token[TokenMiddleware]
+        Role[RoleMiddleware]
+        DataScope[DataScopeMiddleware]
     end
 
     Cron --> Schema
     MCP --> Schema
     Conv --> Schema
-    Express --> Auth
+    Express --> Middleware
     Express --> WS
+    Middleware --> Token
+    Middleware --> Role
+    Middleware --> DataScope
+    Token --> AuthSvc
+    AuthSvc --> OidcSvc
 ```
 
 ## Data Flow
@@ -231,6 +246,70 @@ sequenceDiagram
 
 ### Authentication Flow (WebUI)
 
+#### OIDC Authentication (Primary)
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant WebUI
+    participant OIDC as OIDC Provider
+    participant Auth as AuthService
+    participant DB
+
+    User->>WebUI: Click "Login"
+    WebUI->>WebUI: Generate state + CSRF token
+    WebUI->>User: Redirect to OIDC
+    User->>OIDC: Authenticate
+    OIDC->>WebUI: Callback with code
+    WebUI->>Auth: Validate state/CSRF
+    Auth->>OIDC: Exchange code for tokens
+    OIDC-->>Auth: ID token + access token
+    Auth->>Auth: Verify ID token
+    Auth->>DB: findByOidcSubject
+    alt User exists
+        DB-->>Auth: User record
+        Auth->>DB: updateOidcUserInfo
+    else New user (JIT provisioning)
+        Auth->>Auth: Map groups to role
+        Auth->>DB: createOidcUser
+        DB-->>Auth: New user record
+    end
+    Auth->>Auth: Generate access token (15min JWT)
+    Auth->>Auth: Generate refresh token (7d)
+    Auth->>DB: Store refresh token
+    Auth-->>WebUI: Tokens
+    WebUI-->>User: Set secure cookies
+```
+
+#### Token Refresh Flow
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant WebUI
+    participant Auth as AuthService
+    participant DB
+
+    Client->>WebUI: Request with expired access token
+    WebUI->>Client: 401 Unauthorized
+    Client->>WebUI: POST /api/auth/refresh (refresh token)
+    WebUI->>Auth: Validate refresh token
+    Auth->>DB: Check token_blacklist
+    DB-->>Auth: Not blacklisted
+    Auth->>DB: Verify refresh token exists
+    DB-->>Auth: Valid token
+    Auth->>Auth: Decode & validate
+    Auth->>DB: Add old refresh to blacklist
+    Auth->>Auth: Generate new access token (15min)
+    Auth->>Auth: Generate new refresh token (7d)
+    Auth->>DB: Store new refresh token
+    Auth->>DB: Delete old refresh token
+    Auth-->>WebUI: New tokens
+    WebUI-->>Client: Set new cookies
+```
+
+#### Local Authentication (Fallback)
+
 ```mermaid
 sequenceDiagram
     participant Client
@@ -242,10 +321,12 @@ sequenceDiagram
     WebUI->>Auth: Validate credentials
     Auth->>DB: Find user
     DB-->>Auth: User record
-    Auth->>Auth: Verify password (bcrypt)
-    Auth->>Auth: Generate JWT
-    Auth-->>WebUI: Token
-    WebUI-->>Client: Set cookie + token
+    Auth->>Auth: Verify password (bcrypt, 13 rounds)
+    Auth->>Auth: Generate access token (15min JWT)
+    Auth->>Auth: Generate refresh token (7d)
+    Auth->>DB: Store refresh token
+    Auth-->>WebUI: Tokens
+    WebUI-->>Client: Set secure cookies
 ```
 
 ## Database Schema
@@ -288,13 +369,35 @@ CREATE TABLE cron_jobs (
     next_run INTEGER
 );
 
--- Users (WebUI)
+-- Users (WebUI) - Schema v10
 CREATE TABLE users (
     id TEXT PRIMARY KEY,
     username TEXT UNIQUE,
     password_hash TEXT,
+    role TEXT DEFAULT 'user',           -- 'admin' or 'user'
+    auth_method TEXT DEFAULT 'local',    -- 'local' or 'oidc'
+    oidc_subject TEXT UNIQUE,            -- OIDC sub claim (for SSO users)
+    display_name TEXT,                   -- User's display name
+    groups TEXT,                         -- JSON array of group memberships
     created_at INTEGER,
     last_login INTEGER
+);
+
+-- Refresh Tokens - Schema v11
+CREATE TABLE refresh_tokens (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    token_hash TEXT NOT NULL,
+    expires_at INTEGER NOT NULL,
+    created_at INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Token Blacklist - Schema v11
+CREATE TABLE token_blacklist (
+    jti TEXT PRIMARY KEY,                -- JWT ID
+    exp INTEGER NOT NULL,                -- Expiration timestamp
+    blacklisted_at INTEGER NOT NULL
 );
 ```
 
@@ -340,19 +443,84 @@ contextBridge.exposeInMainWorld('electron', {
 
 ## Security Considerations
 
-### Authentication
+### Authentication & Authorization
 
-- **JWT Tokens**: Used for session management
-- **bcrypt**: Password hashing
-- **Token Blacklist**: Invalidated tokens stored
-- **Rate Limiting**: Per-endpoint limits
+#### Multi-Method Authentication
+
+- **OIDC (Primary)**: Authorization code flow with PKCE support
+  - State parameter validation for CSRF protection
+  - Nonce validation in ID tokens
+  - JIT (Just-In-Time) user provisioning
+  - Group-based role mapping (configurable via `groupMappings.ts`)
+- **Local (Fallback)**: Username/password with bcrypt (13 rounds)
+- **Auth Methods**: `auth_method` column tracks authentication source
+
+#### Token System
+
+- **Access Tokens**: Short-lived JWT (15 minutes)
+  - Contains: `userId`, `username`, `role`
+  - Signed with HS256
+  - Validated on every protected request
+- **Refresh Tokens**: Long-lived database tokens (7 days)
+  - Stored as bcrypt hash in `refresh_tokens` table
+  - Single-use with automatic rotation
+  - Revoked on logout or security events
+- **Token Blacklist**: Persistent SQLite table
+  - Tracks revoked JWT IDs (`jti` claim)
+  - Checked on every token validation
+  - Automatic cleanup of expired entries
+
+#### OIDC Security
+
+- **Provider Validation**: Issuer verification against discovery document
+- **Token Verification**: ID token signature and claims validation
+- **State/CSRF Protection**: Cryptographically random state parameter
+- **Secure Redirect**: Callback URL validation
+- **Subject Mapping**: OIDC `sub` claim → `users.oidc_subject`
+
+#### Role-Based Access Control (RBAC)
+
+- **Roles**: `admin`, `user`
+- **Middleware**: `RoleMiddleware` with route-level enforcement
+  - `requireAdmin`: Admin-only endpoints
+  - `requireRole(role)`: Specific role requirements
+  - `requireUser`: Any authenticated user
+- **Data Isolation**: `DataScopeMiddleware` filters queries by `userId`
+  - Conversations tagged with `__webUiUserId`
+  - Users can only access their own data
 
 ### WebUI Security
 
-- **CSRF Protection**: Token-based
-- **Secure Cookies**: HttpOnly, SameSite, Secure (in remote mode)
+- **CSRF Protection**: `tiny-csrf` middleware
+  - Excluded routes: `/login`, `/api/auth/refresh`
+  - Token validation on state-changing requests
+- **Secure Cookies**: 
+  - `HttpOnly`: Prevents XSS access
+  - `SameSite=Strict`: CSRF protection
+  - `Secure`: HTTPS-only in remote mode
+- **Security Headers**:
+  - `Strict-Transport-Security`: HSTS enforcement
+  - `X-Content-Type-Options: nosniff`
+  - `X-Frame-Options: DENY`
+  - `Permissions-Policy`: Restricts browser features
+  - `Content-Security-Policy`: XSS mitigation
 - **Input Validation**: Request body validation middleware
-- **Rate Limiting**: Brute-force protection on login
+- **Rate Limiting**: User-based rate limiting (keyed by `userId` when authenticated)
+  - Brute-force protection on login endpoints
+  - Per-endpoint configurable limits
+
+### WebSocket Security
+
+- **User Tracking**: Each connection tagged with `userId`
+- **User-Scoped Broadcasting**: `broadcastToUser(userId, event)`
+- **Authentication Required**: Token validation on connection upgrade
+- **Connection Isolation**: Users receive only their events
+
+### Password Security
+
+- **Hashing**: bcrypt with 13 rounds (cost factor)
+- **No Plaintext Storage**: Passwords never logged or stored unencrypted
+- **Hash Verification**: Timing-attack resistant comparison
 
 ### Agent Permissions
 
@@ -385,7 +553,7 @@ npm run webui:remote # Network access enabled
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `WEBUI_PORT` | WebUI server port | 3000 |
+| `AIONUI_PORT` | WebUI server port | 25808 |
 | `WEBUI_REMOTE` | Enable remote access | false |
 | `NODE_ENV` | Environment | development |
 

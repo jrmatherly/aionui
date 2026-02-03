@@ -23,7 +23,145 @@ WebUI mode starts AionUi with an embedded web server, allowing you to:
 - Use AionUi from remote devices on the same network (with `--remote` flag)
 - Run the application headless on servers
 
-Default access URL: `http://localhost:3000` (port may vary, check the application output)
+Default access URL: `http://localhost:25808` (port may vary, check the application output)
+
+---
+
+## Authentication & OIDC/SSO Setup
+
+AionUI WebUI supports multi-user authentication with enterprise SSO integration.
+
+### Authentication Methods
+
+1. **OIDC/SSO (Primary)**: Microsoft EntraID (Azure AD), Okta, Auth0, or any OpenID Connect provider
+2. **Local Authentication (Fallback)**: Built-in username/password for admin access
+
+### Quick Setup for OIDC
+
+#### Step 1: Register Application with Identity Provider
+
+**For Microsoft EntraID:**
+
+1. Navigate to **Azure Portal** → **App Registrations**
+2. Click **New registration**
+3. Set **Redirect URI**: `http://your-domain:25808/api/auth/oidc/callback`
+4. Under **Certificates & secrets**, create a new client secret
+5. Note your **Application (client) ID**, **Directory (tenant) ID**, and **client secret**
+
+**For other providers**: Follow their application registration process and obtain client credentials.
+
+#### Step 2: Configure Environment Variables
+
+Set the following in your deployment (see platform-specific sections below):
+
+```bash
+# Enable OIDC
+export OIDC_ENABLED=true
+
+# Identity Provider Configuration
+export OIDC_ISSUER=https://login.microsoftonline.com/{tenant-id}/v2.0
+export OIDC_CLIENT_ID=your-client-id
+export OIDC_CLIENT_SECRET=your-client-secret
+export OIDC_REDIRECT_URI=http://your-domain:25808/api/auth/oidc/callback
+
+# Optional: Customize scopes and groups
+export OIDC_SCOPES="openid profile email"
+export OIDC_GROUPS_CLAIM="groups"
+```
+
+#### Step 3: Configure Group-to-Role Mapping
+
+Map your organization's groups to AionUI roles:
+
+**Method 1: Configuration File (Recommended for Docker)**
+
+Create `group-mappings.json`:
+
+```json
+{
+  "admin": ["AionUI-Admins", "IT-Security"],
+  "user": ["AionUI-Users", "Engineering"],
+  "viewer": ["AionUI-Viewers", "Auditors"]
+}
+```
+
+Mount as volume in Docker or set path:
+
+```bash
+export GROUP_MAPPINGS_FILE=/path/to/group-mappings.json
+```
+
+**Method 2: Inline JSON**
+
+```bash
+export GROUP_MAPPINGS_JSON='{"admin":["AionUI-Admins"],"user":["AionUI-Users"],"viewer":["AionUI-Viewers"]}'
+```
+
+**Default Mapping**: If no mapping is configured, the first user to log in receives admin role. Subsequent users default to the `user` role.
+
+### Role-Based Access Control
+
+| Role       | Permissions                                                                |
+| ---------- | -------------------------------------------------------------------------- |
+| **admin**  | Full system access, user management, OIDC configuration, all conversations |
+| **user**   | Create conversations, manage own workspace, access own files               |
+| **viewer** | Read-only access to assigned conversations                                 |
+
+### User Interface Features
+
+- **OIDC Login Button**: Prominently displayed on login page
+- **Local Login**: Collapsible section for admin fallback authentication
+- **User Menu**: Located in sidebar with:
+  - User avatar and display name
+  - Profile page link
+  - Admin dashboard (admin role only)
+  - Sign out button
+
+### Security Features
+
+- **Access Tokens**: 15-minute lifespan, auto-refresh
+- **Refresh Tokens**: 7-day lifespan for session renewal
+- **Token Blacklist**: Persistent SQLite-based revocation system
+- **Data Isolation**: Users can only access their own conversations and files
+- **RBAC Enforcement**: Middleware validates role permissions on all routes
+
+### Production Security Recommendations
+
+**For Enterprise Deployments:**
+
+1. **Always use HTTPS**: Deploy behind a reverse proxy (nginx, Traefik) with valid SSL/TLS certificates
+
+   ```bash
+   export AIONUI_HTTPS=true
+   ```
+
+2. **Set Strong JWT Secret**: Use a cryptographically secure random string
+
+   ```bash
+   export JWT_SECRET=$(openssl rand -hex 32)
+   ```
+
+3. **Restrict Network Access**: Use firewalls and security groups
+   - Only allow access from corporate network or VPN
+   - Never expose directly to the public internet without additional protection
+
+4. **Enable Audit Logging**: Monitor authentication events and failed login attempts
+
+5. **Regular Secret Rotation**: Rotate `JWT_SECRET` and `OIDC_CLIENT_SECRET` periodically
+   - Note: Rotating JWT_SECRET invalidates all active sessions
+
+6. **Validate Redirect URIs**: Ensure IdP configuration only allows known callback URLs
+
+7. **Use Group-Based Access**: Leverage existing AD/LDAP groups rather than managing roles manually
+
+8. **Monitor Token Blacklist**: The blacklist grows over time; consider periodic cleanup of expired entries
+
+**Docker-Specific Security:**
+
+- Use Docker secrets for sensitive environment variables
+- Run container as non-root user (already configured in official image)
+- Keep base images updated for security patches
+- Use read-only volumes where possible
 
 ---
 
@@ -275,12 +413,21 @@ docker-compose -f deploy/docker/docker-compose.yml logs | grep -A5 "Initial Admi
 
 Environment variables can be set in `docker-compose.yml`:
 
-| Variable              | Default      | Description                          |
-| --------------------- | ------------ | ------------------------------------ |
-| `AIONUI_PORT`         | `25808`      | WebUI server port                    |
-| `AIONUI_ALLOW_REMOTE` | `true`       | Enable network access                |
-| `JWT_SECRET`          | (auto)       | JWT signing key (set for production) |
-| `NODE_ENV`            | `production` | Environment mode                     |
+| Variable              | Default                | Description                                                           |
+| --------------------- | ---------------------- | --------------------------------------------------------------------- |
+| `AIONUI_PORT`         | `25808`                | WebUI server port                                                     |
+| `AIONUI_ALLOW_REMOTE` | `true`                 | Enable network access                                                 |
+| `JWT_SECRET`          | (auto)                 | JWT signing key (set for production)                                  |
+| `NODE_ENV`            | `production`           | Environment mode                                                      |
+| `OIDC_ENABLED`        | `false`                | Enable OIDC/SSO authentication                                        |
+| `OIDC_ISSUER`         | -                      | Identity provider issuer URL                                          |
+| `OIDC_CLIENT_ID`      | -                      | OAuth client ID from IdP                                              |
+| `OIDC_CLIENT_SECRET`  | -                      | OAuth client secret from IdP                                          |
+| `OIDC_REDIRECT_URI`   | -                      | OAuth callback URL (e.g., `http://host:25808/api/auth/oidc/callback`) |
+| `OIDC_SCOPES`         | `openid profile email` | Space-separated OAuth scopes                                          |
+| `OIDC_GROUPS_CLAIM`   | `groups`               | JWT claim containing user groups                                      |
+| `GROUP_MAPPINGS_FILE` | -                      | Path to group-mappings.json file                                      |
+| `GROUP_MAPPINGS_JSON` | -                      | Inline JSON string for group-to-role mapping                          |
 
 ### Data Persistence
 
@@ -558,7 +705,7 @@ ip addr show
 
 Look for `inet` address (e.g., `192.168.1.100`).
 
-Access from other devices: `http://YOUR_IP_ADDRESS:3000`
+Access from other devices: `http://YOUR_IP_ADDRESS:25808`
 
 ---
 
@@ -566,7 +713,7 @@ Access from other devices: `http://YOUR_IP_ADDRESS:3000`
 
 ### Port Already in Use
 
-If port 3000 is already in use, the application will automatically try the next available port. Check the console output for the actual port number.
+If port 25808 is already in use, the application will automatically try the next available port. Check the console output for the actual port number.
 
 ### Cannot Access from Browser
 
@@ -585,13 +732,13 @@ If port 3000 is already in use, the application will automatically try the next 
 
 ```cmd
 # Allow through Windows Firewall
-netsh advfirewall firewall add rule name="AionUi WebUI" dir=in action=allow protocol=TCP localport=3000
+netsh advfirewall firewall add rule name="AionUi WebUI" dir=in action=allow protocol=TCP localport=25808
 ```
 
 **Linux (UFW):**
 
 ```bash
-sudo ufw allow 3000/tcp
+sudo ufw allow 25808/tcp
 ```
 
 **macOS:**
@@ -696,6 +843,8 @@ Settings from CLI flags take priority, followed by environment variables, then t
 ## Reset Admin Password
 
 If you forgot your admin password in WebUI mode, you can reset it using the `--resetpass` command.
+
+> **Note:** Password reset only applies to **local authentication** users. OIDC/SSO users are managed by your identity provider (e.g., EntraID, Okta). To reset passwords for OIDC users, use your organization's IdP password reset process.
 
 ### Using --resetpass Command
 

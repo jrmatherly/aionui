@@ -7,9 +7,22 @@ info:
     and AI agent interaction capabilities.
 
     ## Authentication
+    AionUI supports two authentication methods:
+    - **Local**: Username/password authentication with JWT tokens
+    - **OIDC/SSO**: Enterprise single sign-on via EntraID (Azure AD) or other OIDC providers
+
     All protected endpoints require JWT authentication via:
-    - Cookie: `aion_session`
+    - Cookie: `aion_session` (access token, 15 min expiry)
     - Header: `Authorization: Bearer <token>`
+    
+    Refresh tokens (7 day expiry) are issued via httpOnly `aionui-refresh` cookie.
+    Use `/api/auth/refresh` to rotate tokens without re-authentication.
+
+    ## Authorization (RBAC)
+    Users have one of three roles:
+    - **admin**: Full system access including user management
+    - **user**: Standard access to conversations and AI features
+    - **viewer**: Read-only access
 
     ## Rate Limiting
     - Login endpoints: 5 requests per minute
@@ -17,14 +30,14 @@ info:
     - Authenticated actions: 30 requests per minute
 
   contact:
-    name: AionUI Support
-    email: service@aionui.com
+    name: Jason Matherly
+    email: jason@mathrly.net
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
 
 servers:
-  - url: http://localhost:3000
+  - url: http://localhost:25808
     description: Local development server
   - url: https://{host}:{port}
     description: Production server
@@ -32,11 +45,13 @@ servers:
       host:
         default: localhost
       port:
-        default: "3000"
+        default: "25808"
 
 tags:
   - name: Authentication
     description: User authentication and session management
+  - name: Admin
+    description: Administrative user and system management (requires admin role)
   - name: Directory
     description: File system directory operations
   - name: WebSocket
@@ -172,34 +187,90 @@ paths:
   /api/auth/refresh:
     post:
       tags: [Authentication]
-      summary: Refresh token
-      description: Get a new JWT token using current valid token
+      summary: Refresh access token
+      description: |
+        Rotate refresh token and issue new access + refresh tokens.
+        Uses httpOnly `aionui-refresh` cookie for authentication.
       operationId: refreshToken
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [token]
-              properties:
-                token:
-                  type: string
-                  description: Current valid JWT token
       responses:
         "200":
-          description: Token refreshed
+          description: Tokens refreshed successfully
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: New httpOnly aionui-refresh cookie
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  token:
-                    type: string
+                $ref: "#/components/schemas/RefreshTokenResponse"
         "401":
           $ref: "#/components/responses/Unauthorized"
+
+  /api/auth/oidc/login:
+    get:
+      tags: [Authentication]
+      summary: Initiate OIDC login
+      description: |
+        Redirects to the configured OIDC identity provider (EntraID/Azure AD)
+        for authentication. Available when OIDC is enabled.
+      operationId: oidcLogin
+      responses:
+        "302":
+          description: Redirect to identity provider
+          headers:
+            Location:
+              schema:
+                type: string
+              description: OIDC authorization endpoint URL
+        "503":
+          description: OIDC not configured
+
+  /api/auth/oidc/callback:
+    get:
+      tags: [Authentication]
+      summary: OIDC callback handler
+      description: |
+        Handles the callback from OIDC provider. Exchanges authorization code
+        for tokens, performs JIT (just-in-time) user provisioning if needed,
+        and establishes session.
+      operationId: oidcCallback
+      parameters:
+        - name: code
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Authorization code from OIDC provider
+        - name: state
+          in: query
+          required: true
+          schema:
+            type: string
+          description: State parameter for CSRF protection
+        - name: session_state
+          in: query
+          schema:
+            type: string
+          description: Optional session state from provider
+      responses:
+        "302":
+          description: Redirect to application with session established
+          headers:
+            Location:
+              schema:
+                type: string
+              description: Application URL (typically /)
+            Set-Cookie:
+              schema:
+                type: string
+              description: Session cookies (aion_session, aionui-refresh)
+        "401":
+          description: Authentication failed
+          content:
+            text/html:
+              schema:
+                type: string
 
   /api/auth/qr-login:
     post:
@@ -255,6 +326,177 @@ paths:
         "401":
           $ref: "#/components/responses/Unauthorized"
 
+  /api/admin/users:
+    get:
+      tags: [Admin]
+      summary: List all users
+      description: |
+        Retrieve list of all users in the system. Password fields are sanitized.
+        Requires admin role.
+      operationId: listUsers
+      security:
+        - adminAuth: []
+      responses:
+        "200":
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  users:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/AdminUserResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
+  /api/admin/users/{id}:
+    get:
+      tags: [Admin]
+      summary: Get user details
+      description: Retrieve detailed information for a specific user. Requires admin role.
+      operationId: getUser
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User ID
+      responses:
+        "200":
+          description: User details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  user:
+                    $ref: "#/components/schemas/AdminUserResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          description: User not found
+
+    delete:
+      tags: [Admin]
+      summary: Deactivate user
+      description: |
+        Soft deactivate user by setting role to viewer. User cannot be deleted
+        if they are the last admin. Requires admin role.
+      operationId: deactivateUser
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User ID
+      responses:
+        "200":
+          description: User deactivated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          description: User not found
+
+  /api/admin/users/{id}/role:
+    patch:
+      tags: [Admin]
+      summary: Update user role
+      description: |
+        Change a user's role. Includes self-demotion guard to prevent admins
+        from demoting themselves if they are the last admin. Requires admin role.
+      operationId: updateUserRole
+      security:
+        - adminAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoleUpdateRequest"
+      responses:
+        "200":
+          description: Role updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  user:
+                    $ref: "#/components/schemas/AdminUserResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          description: User not found
+
+  /api/admin/group-mappings:
+    get:
+      tags: [Admin]
+      summary: Get OIDC group mappings
+      description: |
+        View configured OIDC group to role mappings. Shows how groups from
+        the identity provider map to AionUI roles. Requires admin role.
+      operationId: getGroupMappings
+      security:
+        - adminAuth: []
+      responses:
+        "200":
+          description: Group mappings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  mappings:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/GroupMapping"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+
   /api/directory:
     get:
       tags: [Directory]
@@ -303,10 +545,17 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+      description: JWT access token (15 min expiry)
     cookieAuth:
       type: apiKey
       in: cookie
       name: aion_session
+      description: Session cookie containing JWT access token
+    adminAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT access token with admin role required
 
   schemas:
     LoginRequest:
@@ -342,6 +591,23 @@ components:
           type: string
         username:
           type: string
+        role:
+          type: string
+          enum: [admin, user, viewer]
+          description: User's role determining access level
+        authMethod:
+          type: string
+          enum: [local, oidc]
+          description: Authentication method used
+        displayName:
+          type: string
+          nullable: true
+          description: User's display name (from OIDC or profile)
+        email:
+          type: string
+          format: email
+          nullable: true
+          description: User's email address
 
     AuthStatusResponse:
       type: object
@@ -355,6 +621,9 @@ components:
           type: integer
         isAuthenticated:
           type: boolean
+        oidcEnabled:
+          type: boolean
+          description: True if OIDC/SSO authentication is configured
 
     UserResponse:
       type: object
@@ -363,6 +632,71 @@ components:
           type: boolean
         user:
           $ref: "#/components/schemas/User"
+
+    AdminUserResponse:
+      type: object
+      description: User object with administrative fields (password sanitized)
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        role:
+          type: string
+          enum: [admin, user, viewer]
+        authMethod:
+          type: string
+          enum: [local, oidc]
+        displayName:
+          type: string
+          nullable: true
+        email:
+          type: string
+          format: email
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        lastLogin:
+          type: string
+          format: date-time
+          nullable: true
+
+    RoleUpdateRequest:
+      type: object
+      required: [role]
+      properties:
+        role:
+          type: string
+          enum: [admin, user, viewer]
+          description: New role to assign to user
+
+    GroupMapping:
+      type: object
+      description: OIDC group to role mapping configuration
+      properties:
+        group:
+          type: string
+          description: OIDC group name or ID from identity provider
+        role:
+          type: string
+          enum: [admin, user, viewer]
+          description: AionUI role to assign to members of this group
+        priority:
+          type: integer
+          description: Mapping priority (higher numbers take precedence)
+
+    RefreshTokenResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        token:
+          type: string
+          description: New access token (also set in aion_session cookie)
+        expiresIn:
+          type: integer
+          description: Access token expiry in seconds (900 = 15 min)
 
     ChangePasswordRequest:
       type: object
@@ -423,6 +757,16 @@ components:
           example:
             success: false
             message: "Invalid username or password"
+
+    Forbidden:
+      description: Insufficient permissions (requires admin role)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            success: false
+            message: "Admin access required"
 
     BadRequest:
       description: Invalid request parameters

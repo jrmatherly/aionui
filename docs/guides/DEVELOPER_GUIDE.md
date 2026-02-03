@@ -295,6 +295,517 @@ export const PLUGIN_TYPES = {
 };
 ```
 
+## Authentication & Authorization
+
+### Overview
+
+AionUI implements a multi-user authentication system with support for:
+- **OIDC (OpenID Connect)**: Primary authentication via SSO providers
+- **Local Authentication**: Fallback username/password system
+- **RBAC**: Role-based access control (admin/user)
+- **Token System**: JWT access tokens (15min) + refresh tokens (7d)
+
+### Adding RBAC-Protected Endpoints
+
+#### Using RoleMiddleware
+
+```typescript
+// src/webserver/routes/adminRoutes.ts
+import { requireAdmin, requireRole, requireUser } from '../middleware/RoleMiddleware';
+
+// Admin-only endpoint
+router.get('/api/admin/users', requireAdmin, async (req, res) => {
+  // Only accessible by users with role='admin'
+  const users = await userRepository.getAllUsers();
+  res.json({ users });
+});
+
+// Role-specific endpoint
+router.get('/api/moderator/reports', requireRole('moderator'), async (req, res) => {
+  // Only accessible by users with role='moderator'
+  const reports = await getReports();
+  res.json({ reports });
+});
+
+// Any authenticated user
+router.get('/api/profile', requireUser, async (req, res) => {
+  // Accessible by any authenticated user
+  // User info available in req.user
+  res.json({
+    id: req.user.id,
+    username: req.user.username,
+    role: req.user.role,
+  });
+});
+```
+
+#### Using DataScopeMiddleware
+
+```typescript
+// src/webserver/routes/conversationRoutes.ts
+import { scopeToUser } from '../middleware/DataScopeMiddleware';
+
+// Automatically filter by userId
+router.get('/api/conversations', requireUser, scopeToUser, async (req, res) => {
+  // req.userId is guaranteed to be set
+  const conversations = db.prepare(`
+    SELECT * FROM conversations 
+    WHERE json_extract(metadata, '$.webUiUserId') = ?
+  `).all(req.userId);
+  
+  res.json({ conversations });
+});
+
+// Create with automatic userId tagging
+router.post('/api/conversations', requireUser, scopeToUser, async (req, res) => {
+  const { title, type } = req.body;
+  
+  const conversation = {
+    id: generateId(),
+    title,
+    type,
+    metadata: JSON.stringify({ webUiUserId: req.userId }),
+    created_at: Date.now(),
+  };
+  
+  db.prepare(`
+    INSERT INTO conversations (id, title, type, metadata, created_at)
+    VALUES (?, ?, ?, ?, ?)
+  `).run(conversation.id, conversation.title, conversation.type, conversation.metadata, conversation.created_at);
+  
+  res.json({ conversation });
+});
+```
+
+#### Combining Middleware
+
+```typescript
+// Stack middleware for comprehensive protection
+router.delete('/api/admin/conversations/:id', 
+  requireAdmin,      // Must be admin
+  scopeToUser,       // Validates userId
+  async (req, res) => {
+    // Admin can delete any conversation
+    const { id } = req.params;
+    db.prepare('DELETE FROM conversations WHERE id = ?').run(id);
+    res.json({ success: true });
+  }
+);
+```
+
+### OIDC Development Setup
+
+#### Configuration
+
+Create `src/webserver/config/oidcConfig.ts`:
+
+```typescript
+export const oidcConfig = {
+  issuer: process.env.OIDC_ISSUER || 'https://accounts.google.com',
+  clientId: process.env.OIDC_CLIENT_ID || 'your-client-id',
+  clientSecret: process.env.OIDC_CLIENT_SECRET || 'your-client-secret',
+  redirectUri: process.env.OIDC_REDIRECT_URI || 'http://localhost:25808/api/auth/oidc/callback',
+  scopes: ['openid', 'profile', 'email'],
+};
+```
+
+Create `src/webserver/config/groupMappings.ts`:
+
+```typescript
+// Map OIDC groups to application roles
+export const groupMappings = {
+  admin: ['admins', 'super-users', 'sysadmins'],
+  moderator: ['moderators', 'content-managers'],
+  user: ['users', 'members'],
+};
+
+export function mapGroupsToRole(groups: string[]): 'admin' | 'user' {
+  if (!groups || groups.length === 0) return 'user';
+  
+  // Check for admin groups first
+  if (groupMappings.admin.some(g => groups.includes(g))) {
+    return 'admin';
+  }
+  
+  return 'user';
+}
+```
+
+#### Testing OIDC Locally
+
+1. **Use a test OIDC provider**: Google, Auth0, Okta, or Keycloak
+2. **Set environment variables**:
+
+```bash
+export OIDC_ISSUER="https://accounts.google.com"
+export OIDC_CLIENT_ID="your-client-id.apps.googleusercontent.com"
+export OIDC_CLIENT_SECRET="your-secret"
+export OIDC_REDIRECT_URI="http://localhost:25808/api/auth/oidc/callback"
+```
+
+3. **Test the flow**:
+
+```bash
+# Start WebUI server
+npm run webui
+
+# Navigate to http://localhost:25808/login
+# Click "Login with SSO"
+# Complete authentication
+# Verify callback and token generation
+```
+
+4. **Debug with logging**:
+
+```typescript
+// src/webserver/services/OidcService.ts
+console.log('[OIDC] Authorization URL:', authUrl);
+console.log('[OIDC] Token response:', tokenSet);
+console.log('[OIDC] ID token claims:', claims);
+```
+
+### Token Management Patterns
+
+#### Token Generation
+
+```typescript
+// src/webserver/services/AuthService.ts
+import jwt from 'jsonwebtoken';
+
+export class AuthService {
+  generateAccessToken(user: User): string {
+    return jwt.sign(
+      {
+        userId: user.id,
+        username: user.username,
+        role: user.role,
+      },
+      process.env.JWT_SECRET!,
+      {
+        expiresIn: '15m',
+        jwtid: generateJti(), // Unique token ID for blacklisting
+      }
+    );
+  }
+
+  async generateRefreshToken(userId: string): Promise<string> {
+    const token = randomBytes(32).toString('hex');
+    const hash = await bcrypt.hash(token, 13);
+    
+    db.prepare(`
+      INSERT INTO refresh_tokens (id, user_id, token_hash, expires_at, created_at)
+      VALUES (?, ?, ?, ?, ?)
+    `).run(generateId(), userId, hash, Date.now() + 7 * 24 * 60 * 60 * 1000, Date.now());
+    
+    return token;
+  }
+}
+```
+
+#### Token Validation
+
+```typescript
+// src/webserver/middleware/TokenMiddleware.ts
+import jwt from 'jsonwebtoken';
+
+export async function validateToken(token: string): Promise<TokenPayload> {
+  // 1. Verify JWT signature and expiration
+  const payload = jwt.verify(token, process.env.JWT_SECRET!) as TokenPayload;
+  
+  // 2. Check blacklist
+  const blacklisted = db.prepare(`
+    SELECT 1 FROM token_blacklist WHERE jti = ?
+  `).get(payload.jti);
+  
+  if (blacklisted) {
+    throw new Error('Token has been revoked');
+  }
+  
+  return payload;
+}
+```
+
+#### Token Refresh
+
+```typescript
+// src/webserver/routes/authRoutes.ts
+router.post('/api/auth/refresh', async (req, res) => {
+  const { refreshToken } = req.cookies;
+  
+  if (!refreshToken) {
+    return res.status(401).json({ error: 'No refresh token' });
+  }
+  
+  try {
+    // 1. Find and validate refresh token
+    const tokens = db.prepare(`
+      SELECT * FROM refresh_tokens WHERE expires_at > ?
+    `).all(Date.now());
+    
+    let validToken = null;
+    for (const t of tokens) {
+      if (await bcrypt.compare(refreshToken, t.token_hash)) {
+        validToken = t;
+        break;
+      }
+    }
+    
+    if (!validToken) {
+      return res.status(401).json({ error: 'Invalid refresh token' });
+    }
+    
+    // 2. Get user
+    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(validToken.user_id);
+    
+    // 3. Rotate tokens
+    // 3a. Blacklist old access token (if provided)
+    const oldAccessToken = req.headers.authorization?.split(' ')[1];
+    if (oldAccessToken) {
+      const decoded = jwt.decode(oldAccessToken) as any;
+      if (decoded?.jti) {
+        db.prepare(`
+          INSERT INTO token_blacklist (jti, exp, blacklisted_at)
+          VALUES (?, ?, ?)
+        `).run(decoded.jti, decoded.exp, Date.now());
+      }
+    }
+    
+    // 3b. Delete old refresh token
+    db.prepare('DELETE FROM refresh_tokens WHERE id = ?').run(validToken.id);
+    
+    // 3c. Generate new tokens
+    const newAccessToken = authService.generateAccessToken(user);
+    const newRefreshToken = await authService.generateRefreshToken(user.id);
+    
+    // 4. Set cookies
+    res.cookie('accessToken', newAccessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 15 * 60 * 1000, // 15 minutes
+    });
+    
+    res.cookie('refreshToken', newRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+    
+    res.json({ success: true, accessToken: newAccessToken });
+  } catch (error) {
+    console.error('[Auth] Refresh error:', error);
+    res.status(401).json({ error: 'Token refresh failed' });
+  }
+});
+```
+
+#### Token Blacklisting
+
+```typescript
+// Blacklist a token (e.g., on logout)
+export function blacklistToken(token: string): void {
+  const decoded = jwt.decode(token) as any;
+  
+  if (decoded?.jti && decoded?.exp) {
+    db.prepare(`
+      INSERT INTO token_blacklist (jti, exp, blacklisted_at)
+      VALUES (?, ?, ?)
+    `).run(decoded.jti, decoded.exp, Date.now());
+  }
+}
+
+// Cleanup expired blacklist entries (run periodically)
+export function cleanupBlacklist(): void {
+  db.prepare(`
+    DELETE FROM token_blacklist WHERE exp < ?
+  `).run(Date.now() / 1000);
+}
+```
+
+### Database Migration Patterns
+
+#### Creating Auth Migrations
+
+```typescript
+// src/process/database/migrations.ts
+
+// Schema v10: Multi-user support
+{
+  version: 10,
+  up: (db) => {
+    db.exec(`
+      ALTER TABLE users ADD COLUMN role TEXT DEFAULT 'user';
+      ALTER TABLE users ADD COLUMN auth_method TEXT DEFAULT 'local';
+      ALTER TABLE users ADD COLUMN oidc_subject TEXT UNIQUE;
+      ALTER TABLE users ADD COLUMN display_name TEXT;
+      ALTER TABLE users ADD COLUMN groups TEXT;
+    `);
+  },
+  down: (db) => {
+    // Note: SQLite doesn't support DROP COLUMN in older versions
+    // Create new table without columns, copy data, rename
+    db.exec(`
+      CREATE TABLE users_backup (
+        id TEXT PRIMARY KEY,
+        username TEXT UNIQUE,
+        password_hash TEXT,
+        created_at INTEGER,
+        last_login INTEGER
+      );
+      INSERT INTO users_backup SELECT id, username, password_hash, created_at, last_login FROM users;
+      DROP TABLE users;
+      ALTER TABLE users_backup RENAME TO users;
+    `);
+  },
+},
+
+// Schema v11: Token system
+{
+  version: 11,
+  up: (db) => {
+    db.exec(`
+      CREATE TABLE refresh_tokens (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        token_hash TEXT NOT NULL,
+        expires_at INTEGER NOT NULL,
+        created_at INTEGER NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+
+      CREATE TABLE token_blacklist (
+        jti TEXT PRIMARY KEY,
+        exp INTEGER NOT NULL,
+        blacklisted_at INTEGER NOT NULL
+      );
+
+      CREATE INDEX idx_refresh_tokens_user ON refresh_tokens(user_id);
+      CREATE INDEX idx_refresh_tokens_expires ON refresh_tokens(expires_at);
+      CREATE INDEX idx_blacklist_exp ON token_blacklist(exp);
+    `);
+  },
+  down: (db) => {
+    db.exec(`
+      DROP TABLE refresh_tokens;
+      DROP TABLE token_blacklist;
+    `);
+  },
+}
+```
+
+#### Running Migrations
+
+```typescript
+// Automatically runs on app start
+// src/process/database/index.ts
+import { migrations } from './migrations';
+
+export function initializeDatabase(dbPath: string): Database {
+  const db = new Database(dbPath);
+  
+  // Get current version
+  const currentVersion = db.pragma('user_version', { simple: true }) as number;
+  
+  // Run pending migrations
+  for (const migration of migrations) {
+    if (migration.version > currentVersion) {
+      console.log(`[DB] Running migration v${migration.version}`);
+      migration.up(db);
+      db.pragma(`user_version = ${migration.version}`);
+    }
+  }
+  
+  return db;
+}
+```
+
+### User Repository
+
+The `UserRepository` provides database operations for user management:
+
+```typescript
+// src/webserver/repositories/UserRepository.ts
+export class UserRepository {
+  // Find user by OIDC subject claim
+  findByOidcSubject(subject: string): User | null {
+    return db.prepare(`
+      SELECT * FROM users WHERE oidc_subject = ?
+    `).get(subject) as User | null;
+  }
+
+  // Create OIDC user (JIT provisioning)
+  createOidcUser(data: {
+    oidcSubject: string;
+    username: string;
+    displayName?: string;
+    groups?: string[];
+    role: 'admin' | 'user';
+  }): User {
+    const user = {
+      id: generateId(),
+      username: data.username,
+      password_hash: null, // OIDC users don't have passwords
+      role: data.role,
+      auth_method: 'oidc',
+      oidc_subject: data.oidcSubject,
+      display_name: data.displayName || data.username,
+      groups: data.groups ? JSON.stringify(data.groups) : null,
+      created_at: Date.now(),
+      last_login: Date.now(),
+    };
+
+    db.prepare(`
+      INSERT INTO users (id, username, password_hash, role, auth_method, oidc_subject, display_name, groups, created_at, last_login)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      user.id,
+      user.username,
+      user.password_hash,
+      user.role,
+      user.auth_method,
+      user.oidc_subject,
+      user.display_name,
+      user.groups,
+      user.created_at,
+      user.last_login
+    );
+
+    return user;
+  }
+
+  // Update OIDC user info (on login)
+  updateOidcUserInfo(userId: string, data: {
+    displayName?: string;
+    groups?: string[];
+  }): void {
+    const updates: string[] = ['last_login = ?'];
+    const values: any[] = [Date.now()];
+
+    if (data.displayName) {
+      updates.push('display_name = ?');
+      values.push(data.displayName);
+    }
+
+    if (data.groups) {
+      updates.push('groups = ?');
+      values.push(JSON.stringify(data.groups));
+    }
+
+    values.push(userId);
+
+    db.prepare(`
+      UPDATE users SET ${updates.join(', ')} WHERE id = ?
+    `).run(...values);
+  }
+
+  // Update user role
+  updateRole(userId: string, role: 'admin' | 'user'): void {
+    db.prepare('UPDATE users SET role = ? WHERE id = ?').run(role, userId);
+  }
+}
+```
+
 ## Database Operations
 
 ### Schema Migrations

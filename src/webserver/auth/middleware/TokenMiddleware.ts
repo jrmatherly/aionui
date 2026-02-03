@@ -16,6 +16,8 @@ import { AuthService } from '../service/AuthService';
 export interface TokenPayload {
   userId: string;
   username: string;
+  role: 'admin' | 'user' | 'viewer';
+  authMethod: 'local' | 'oidc';
 }
 
 /**
@@ -137,6 +139,8 @@ export const createAuthMiddleware = (type: 'json' | 'html' = 'json') => {
     req.user = {
       id: user.id,
       username: user.username,
+      role: user.role ?? 'user',
+      auth_method: user.auth_method ?? 'local',
     };
 
     next();

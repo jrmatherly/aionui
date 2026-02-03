@@ -196,8 +196,11 @@ webuiResetPassword()               // Reset password
 |------|----------|-------------|
 | Conversation | `src/renderer/pages/conversation/` | Main chat interface |
 | Settings | `src/renderer/pages/settings/` | Application settings |
+| UserManagement | `src/renderer/pages/settings/UserManagement.tsx` | Admin: User CRUD and role management |
+| GroupMappings | `src/renderer/pages/settings/GroupMappings.tsx` | Admin: OIDC group-to-role mappings |
+| ProfilePage | `src/renderer/pages/settings/ProfilePage.tsx` | User profile and password change |
 | Cron | `src/renderer/pages/cron/` | Scheduled task management |
-| Login | `src/renderer/pages/login/` | Authentication UI |
+| Login | `src/renderer/pages/login/` | Authentication UI (OIDC + local) |
 | Guide | `src/renderer/pages/guid/` | Onboarding guide |
 
 #### Context Providers
@@ -247,15 +250,40 @@ Provides remote access to AionUI via web browser.
 | `apiRoutes` | `routes/apiRoutes.ts` | API endpoints |
 | `staticRoutes` | `routes/staticRoutes.ts` | Static file serving |
 
-**Authentication**: JWT-based with bcrypt password hashing
+**Authentication**: Multi-user support with OIDC SSO and local admin account
 
 ```text
 src/webserver/auth/
-├── middleware/         # Auth middleware
-├── repository/         # User data access
-├── service/            # Auth business logic
+├── middleware/         # RoleMiddleware, DataScopeMiddleware, TokenMiddleware
+├── repository/         # User data access (UserRepository)
+├── service/            # AuthService (enhanced), OidcService
+├── config/             # oidcConfig.ts, groupMappings.ts
 └── index.ts            # Auth module exports
 ```
+
+**Authentication Routes**:
+
+| Route | Method | Description |
+|-------|--------|-------------|
+| `/api/auth/login` | POST | Local admin login |
+| `/api/auth/oidc/login` | GET | Initiate OIDC SSO flow |
+| `/api/auth/oidc/callback` | GET | Handle OIDC callback |
+| `/api/auth/refresh` | POST | Refresh JWT access token |
+| `/api/auth/logout` | POST | Logout (blacklist refresh token) |
+| `/api/auth/change-password` | POST | Change user password |
+
+**Admin Routes** (require admin role):
+
+| Route | Method | Description |
+|-------|--------|-------------|
+| `/api/admin/users` | GET | List all users |
+| `/api/admin/users` | POST | Create new user |
+| `/api/admin/users/:id` | GET | Get user details |
+| `/api/admin/users/:id` | PUT | Update user |
+| `/api/admin/users/:id` | DELETE | Delete user |
+| `/api/admin/users/:id/role` | PUT | Update user role |
+| `/api/admin/group-mappings` | GET | Get OIDC group mappings |
+| `/api/admin/group-mappings` | PUT | Update group mappings |
 
 ---
 
@@ -454,6 +482,13 @@ getDatabaseVersion(db: Database): number
 setDatabaseVersion(db: Database, version: number): void
 ```
 
+**Multi-User Schema Changes**:
+
+- **`users` table**: Enhanced with columns for `role` (admin/user/viewer), `oidc_sub`, `oidc_provider`, `last_login`, `is_active`
+- **`refresh_tokens` table**: New table for refresh token rotation and revocation
+- **`token_blacklist` table**: New table for invalidated tokens
+- **Data scoping**: Conversations and messages now include `user_id` foreign key for ownership filtering
+
 ---
 
 ## Key Services
@@ -563,6 +598,7 @@ class WebSocketManager {
 | `ThoughtDisplay` | `ThoughtDisplay.tsx` | AI thinking visualization |
 | `DirectorySelectionModal` | `DirectorySelectionModal.tsx` | Folder picker |
 | `HorizontalFileList` | `HorizontalFileList.tsx` | File list display |
+| `UserMenu` | `UserMenu/` | User menu sidebar (profile, logout) |
 
 ### Component Directories
 
@@ -619,6 +655,30 @@ Configured in `tsconfig.json`:
   }
 }
 ```
+
+### Environment Variables
+
+**OIDC/SSO Configuration**:
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `OIDC_ENABLED` | Enable OIDC authentication | `true` |
+| `OIDC_ISSUER` | OIDC provider issuer URL | `https://login.microsoftonline.com/{tenant}/v2.0` |
+| `OIDC_CLIENT_ID` | OIDC application client ID | `abc123...` |
+| `OIDC_CLIENT_SECRET` | OIDC client secret | `secret123...` |
+| `OIDC_REDIRECT_URI` | OAuth callback URL | `http://localhost:25808/api/auth/oidc/callback` |
+| `OIDC_SCOPES` | OAuth scopes (space-separated) | `openid profile email` |
+| `OIDC_GROUPS_CLAIM` | JWT claim containing user groups | `groups` |
+| `GROUP_MAPPINGS_FILE` | Path to group mappings file | `/path/to/mappings.json` |
+| `GROUP_MAPPINGS_JSON` | Inline group mappings JSON | `{"group1":"admin"}` |
+
+**WebUI Configuration**:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `AIONUI_PORT` | WebUI server port | `25808` |
+| `WEBUI_ALLOW_REMOTE` | Allow remote network access | `false` |
+| `JWT_SECRET` | JWT signing secret | auto-generated |
 
 ---
 
@@ -716,6 +776,41 @@ import { useTranslation } from 'react-i18next';
 const { t } = useTranslation();
 <span>{t('common.send')}</span>
 ```
+
+---
+
+## Security Considerations
+
+### Authentication & Authorization
+
+**Multi-User Authentication**:
+- **OIDC/SSO**: Production-grade integration with EntraID (Azure AD) and other OIDC providers
+- **Local Admin**: Fallback bcrypt-hashed password authentication for local deployments
+- **JWT Tokens**: Access tokens with configurable expiry and refresh token rotation
+- **Token Blacklist**: Revoked tokens stored in database to prevent reuse
+
+**Role-Based Access Control (RBAC)**:
+- **Three Roles**: `admin` (full access), `user` (standard access), `viewer` (read-only)
+- **RoleMiddleware**: Enforces role requirements on admin routes
+- **DataScopeMiddleware**: Filters database queries to user-owned resources only
+
+**Data Isolation**:
+- **User Ownership**: Conversations, messages, and sessions scoped by `user_id`
+- **Query Filtering**: Automatic filtering in DataScopeMiddleware prevents cross-user data leaks
+- **Session Management**: User sessions isolated with per-user refresh tokens
+
+**Security Best Practices**:
+- **Password Hashing**: bcrypt with salt rounds for local accounts
+- **HTTPS Required**: Production deployments should use HTTPS for WebUI
+- **CSRF Protection**: Token-based authentication prevents CSRF attacks
+- **Input Validation**: Zod schemas validate all API inputs
+- **SQL Injection Prevention**: Parameterized queries via better-sqlite3
+- **Rate Limiting**: Consider adding rate limiting for production deployments
+
+**Group Mapping**:
+- **OIDC Groups**: Map enterprise groups to application roles
+- **Configuration**: File-based (`GROUP_MAPPINGS_FILE`) or inline JSON (`GROUP_MAPPINGS_JSON`)
+- **Default Role**: Fallback to `viewer` if no group mapping matches
 
 ---
 

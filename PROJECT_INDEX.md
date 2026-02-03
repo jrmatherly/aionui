@@ -30,12 +30,17 @@ src/
 │   └── services/mcp*/    # McpService (multi-agent)
 ├── renderer/             # React UI
 │   ├── pages/            # conversation, settings, cron, login
+│   │   ├── settings/     # UserManagement, GroupMappings, ProfilePage
 │   ├── components/       # UI components
+│   │   ├── UserMenu/     # User menu sidebar component
 │   ├── context/          # Auth, Conversation, Theme, Layout
 │   ├── hooks/            # useAutoScroll, useTheme, etc.
 │   └── messages/         # Message rendering components
 ├── webserver/            # WebUI (Express + WebSocket)
-│   ├── auth/             # JWT authentication
+│   ├── auth/             # Authentication & authorization
+│   │   ├── service/      # AuthService, OidcService
+│   │   ├── middleware/   # RoleMiddleware, DataScopeMiddleware, TokenMiddleware
+│   │   └── config/       # oidcConfig.ts, groupMappings.ts
 │   ├── routes/           # api, auth, static routes
 │   └── websocket/        # WebSocketManager
 └── worker/               # Background workers
@@ -140,6 +145,7 @@ npm run build        # Build (macOS)
 - **Data**: SQLite (better-sqlite3), Zod
 - **AI SDKs**: @anthropic-ai/sdk, @google/genai, openai
 - **Server**: Express 5, WebSocket (ws)
+- **Auth**: openid-client 5.7.1 (OIDC/SSO), bcrypt, jsonwebtoken
 
 ---
 

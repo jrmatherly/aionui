@@ -98,8 +98,8 @@ export class AionUIDatabase {
     const now = Date.now();
     this.db
       .prepare(
-        `INSERT OR IGNORE INTO users (id, username, email, password_hash, avatar_path, created_at, updated_at, last_login, jwt_secret)
-         VALUES (?, ?, NULL, ?, NULL, ?, ?, NULL, NULL)`
+        `INSERT OR IGNORE INTO users (id, username, email, password_hash, avatar_path, role, auth_method, created_at, updated_at, last_login, jwt_secret)
+         VALUES (?, ?, NULL, ?, NULL, 'admin', 'local', ?, ?, NULL, NULL)`
       )
       .run(this.defaultUserId, this.defaultUserId, this.systemPasswordPlaceholder, now, now);
   }
@@ -146,8 +146,8 @@ export class AionUIDatabase {
       const now = Date.now();
 
       const stmt = this.db.prepare(`
-        INSERT INTO users (id, username, email, password_hash, avatar_path, created_at, updated_at, last_login)
-        VALUES (?, ?, ?, ?, NULL, ?, ?, NULL)
+        INSERT INTO users (id, username, email, password_hash, avatar_path, role, auth_method, created_at, updated_at, last_login)
+        VALUES (?, ?, ?, ?, NULL, 'user', 'local', ?, ?, NULL)
       `);
 
       stmt.run(userId, username, email ?? null, passwordHash, now, now);
@@ -159,6 +159,8 @@ export class AionUIDatabase {
           username,
           email,
           password_hash: passwordHash,
+          role: 'user' as const,
+          auth_method: 'local' as const,
           created_at: now,
           updated_at: now,
           last_login: null,
@@ -365,9 +367,9 @@ export class AionUIDatabase {
    * ==================
    */
 
-  createConversation(conversation: TChatConversation, userId?: string): IQueryResult<TChatConversation> {
+  createConversation(conversation: TChatConversation, userId: string = this.defaultUserId): IQueryResult<TChatConversation> {
     try {
-      const row = conversationToRow(conversation, userId || this.defaultUserId);
+      const row = conversationToRow(conversation, userId);
 
       const stmt = this.db.prepare(`
         INSERT INTO conversations (id, user_id, name, type, extra, model, status, source, created_at, updated_at)
@@ -414,9 +416,9 @@ export class AionUIDatabase {
   /**
    * Get the latest conversation by source type
    */
-  getLatestConversationBySource(source: 'aionui' | 'telegram', userId?: string): IQueryResult<TChatConversation | null> {
+  getLatestConversationBySource(source: 'aionui' | 'telegram', userId: string = this.defaultUserId): IQueryResult<TChatConversation | null> {
     try {
-      const finalUserId = userId || this.defaultUserId;
+      const finalUserId = userId;
       const row = this.db
         .prepare(
           `
@@ -440,9 +442,9 @@ export class AionUIDatabase {
     }
   }
 
-  getUserConversations(userId?: string, page = 0, pageSize = 50): IPaginatedResult<TChatConversation> {
+  getUserConversations(userId: string = this.defaultUserId, page = 0, pageSize = 50): IPaginatedResult<TChatConversation> {
     try {
-      const finalUserId = userId || this.defaultUserId;
+      const finalUserId = userId;
 
       const countResult = this.db.prepare('SELECT COUNT(*) as count FROM conversations WHERE user_id = ?').get(finalUserId) as {
         count: number;
@@ -1063,6 +1065,245 @@ export class AionUIDatabase {
       return { success: true, data: result.changes };
     } catch (error: any) {
       return { success: false, error: error.message, data: 0 };
+    }
+  }
+
+  /**
+   * ==================
+   * Multi-user auth operations
+   * ==================
+   */
+
+  /**
+   * Get user by OIDC subject identifier
+   */
+  getUserByOidcSubject(oidcSubject: string): IQueryResult<IUser | null> {
+    try {
+      const user = this.db.prepare('SELECT * FROM users WHERE oidc_subject = ?').get(oidcSubject) as IUser | undefined;
+      return {
+        success: true,
+        data: user ?? null,
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message,
+        data: null,
+      };
+    }
+  }
+
+  /**
+   * Create a user via OIDC provisioning (JIT - Just In Time)
+   */
+  createOidcUser(params: { username: string; oidcSubject: string; displayName?: string; email?: string; role: string; groups?: string[]; avatarUrl?: string }): IQueryResult<IUser> {
+    try {
+      const userId = `user_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      const now = Date.now();
+
+      const stmt = this.db.prepare(`
+        INSERT INTO users (id, username, email, password_hash, role, auth_method, oidc_subject, display_name, groups, avatar_url, created_at, updated_at)
+        VALUES (?, ?, ?, '', ?, 'oidc', ?, ?, ?, ?, ?, ?)
+      `);
+
+      stmt.run(userId, params.username, params.email ?? null, params.role, params.oidcSubject, params.displayName ?? null, params.groups ? JSON.stringify(params.groups) : null, params.avatarUrl ?? null, now, now);
+
+      return {
+        success: true,
+        data: {
+          id: userId,
+          username: params.username,
+          email: params.email,
+          password_hash: '',
+          role: params.role as IUser['role'],
+          auth_method: 'oidc' as const,
+          oidc_subject: params.oidcSubject,
+          display_name: params.displayName ?? null,
+          groups: params.groups ? JSON.stringify(params.groups) : null,
+          avatar_url: params.avatarUrl ?? null,
+          created_at: now,
+          updated_at: now,
+          last_login: null,
+        },
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  }
+
+  /**
+   * Update OIDC user info on subsequent logins
+   */
+  updateOidcUserInfo(
+    userId: string,
+    updates: {
+      role?: string;
+      groups?: string[];
+      displayName?: string;
+      avatarUrl?: string;
+    }
+  ): IQueryResult<boolean> {
+    try {
+      const now = Date.now();
+      const setClauses: string[] = ['updated_at = ?'];
+      const params: any[] = [now];
+
+      if (updates.role !== undefined) {
+        setClauses.push('role = ?');
+        params.push(updates.role);
+      }
+      if (updates.groups !== undefined) {
+        setClauses.push('groups = ?');
+        params.push(JSON.stringify(updates.groups));
+      }
+      if (updates.displayName !== undefined) {
+        setClauses.push('display_name = ?');
+        params.push(updates.displayName);
+      }
+      if (updates.avatarUrl !== undefined) {
+        setClauses.push('avatar_url = ?');
+        params.push(updates.avatarUrl);
+      }
+
+      params.push(userId);
+      this.db.prepare(`UPDATE users SET ${setClauses.join(', ')} WHERE id = ?`).run(...params);
+
+      return { success: true, data: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Update user role (admin override)
+   */
+  updateUserRole(userId: string, role: string): IQueryResult<boolean> {
+    try {
+      const now = Date.now();
+      this.db.prepare('UPDATE users SET role = ?, updated_at = ? WHERE id = ?').run(role, now, userId);
+      return { success: true, data: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Update the owner of a conversation (used for multi-user assignment)
+   */
+  updateConversationUserId(conversationId: string, userId: string): IQueryResult<boolean> {
+    try {
+      const now = Date.now();
+      this.db.prepare('UPDATE conversations SET user_id = ?, updated_at = ? WHERE id = ?').run(userId, now, conversationId);
+      return { success: true, data: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  // ─── Refresh Tokens ───────────────────────────────────────────────
+
+  /**
+   * Store a refresh token hash for a user
+   */
+  storeRefreshToken(id: string, userId: string, tokenHash: string, expiresAt: number): IQueryResult<boolean> {
+    try {
+      this.db.prepare('INSERT INTO refresh_tokens (id, user_id, token_hash, expires_at, created_at) VALUES (?, ?, ?, ?, ?)').run(id, userId, tokenHash, expiresAt, Math.floor(Date.now() / 1000));
+      return { success: true, data: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Find a valid (non-revoked, non-expired) refresh token by its hash
+   */
+  findRefreshToken(tokenHash: string): IQueryResult<{ id: string; user_id: string; expires_at: number } | null> {
+    try {
+      const now = Math.floor(Date.now() / 1000);
+      const row = this.db.prepare('SELECT id, user_id, expires_at FROM refresh_tokens WHERE token_hash = ? AND revoked = 0 AND expires_at > ?').get(tokenHash, now) as { id: string; user_id: string; expires_at: number } | undefined;
+      return { success: true, data: row ?? null };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Revoke a refresh token (and record its replacement)
+   */
+  revokeRefreshToken(tokenHash: string, replacedBy?: string): IQueryResult<boolean> {
+    try {
+      this.db.prepare('UPDATE refresh_tokens SET revoked = 1, replaced_by = ? WHERE token_hash = ?').run(replacedBy ?? null, tokenHash);
+      return { success: true, data: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Revoke all refresh tokens for a user (e.g. on password change or forced logout)
+   */
+  revokeAllUserRefreshTokens(userId: string): IQueryResult<boolean> {
+    try {
+      this.db.prepare('UPDATE refresh_tokens SET revoked = 1 WHERE user_id = ? AND revoked = 0').run(userId);
+      return { success: true, data: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Clean up expired refresh tokens
+   */
+  cleanupExpiredRefreshTokens(): IQueryResult<number> {
+    try {
+      const now = Math.floor(Date.now() / 1000);
+      const result = this.db.prepare('DELETE FROM refresh_tokens WHERE expires_at < ? OR revoked = 1').run(now);
+      return { success: true, data: result.changes };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  // ─── Token Blacklist (Persistent) ──────────────────────────────────
+
+  /**
+   * Add a token hash to the persistent blacklist
+   */
+  blacklistToken(tokenHash: string, expiresAt: number): IQueryResult<boolean> {
+    try {
+      this.db.prepare('INSERT OR IGNORE INTO token_blacklist (token_hash, expires_at, created_at) VALUES (?, ?, ?)').run(tokenHash, expiresAt, Math.floor(Date.now() / 1000));
+      return { success: true, data: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Check if a token hash is blacklisted
+   */
+  isTokenBlacklisted(tokenHash: string): IQueryResult<boolean> {
+    try {
+      const now = Math.floor(Date.now() / 1000);
+      const row = this.db.prepare('SELECT 1 FROM token_blacklist WHERE token_hash = ? AND expires_at > ?').get(tokenHash, now);
+      return { success: true, data: !!row };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Clean up expired blacklist entries
+   */
+  cleanupExpiredBlacklist(): IQueryResult<number> {
+    try {
+      const now = Math.floor(Date.now() / 1000);
+      const result = this.db.prepare('DELETE FROM token_blacklist WHERE expires_at < ?').run(now);
+      return { success: true, data: result.changes };
+    } catch (error: any) {
+      return { success: false, error: error.message };
     }
   }
 

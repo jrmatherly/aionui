@@ -24,7 +24,7 @@ export const authRateLimiter = rateLimit({
 });
 
 /**
- * Rate limiter for general API requests
+ * Rate limiter for general API requests (keyed by user ID when authenticated, else IP)
  */
 export const apiRateLimiter = rateLimit({
   standardHeaders: true,
@@ -33,6 +33,12 @@ export const apiRateLimiter = rateLimit({
   max: 60,
   message: {
     error: 'Too many API requests, please slow down.',
+  },
+  keyGenerator: (req: Request) => {
+    if (req.user?.id) {
+      return `user:${req.user.id}`;
+    }
+    return `ip:${req.ip || req.socket.remoteAddress || 'unknown'}`;
   },
 });
 

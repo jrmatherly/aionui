@@ -2,9 +2,12 @@ import React from 'react';
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import AppLoader from './components/AppLoader';
 import { useAuth } from './context/AuthContext';
+import GroupMappings from './pages/admin/GroupMappings';
+import UserManagement from './pages/admin/UserManagement';
 import Conversation from './pages/conversation';
 import Guid from './pages/guid';
 import LoginPage from './pages/login';
+import ProfilePage from './pages/profile/ProfilePage';
 import About from './pages/settings/About';
 import AgentSettings from './pages/settings/AgentSettings';
 import DisplaySettings from './pages/settings/DisplaySettings';
@@ -29,6 +32,15 @@ const ProtectedLayout: React.FC<{ layout: React.ReactElement }> = ({ layout }) =
   return React.cloneElement(layout);
 };
 
+/** Guard that requires admin role. Falls back to /guid for non-admins. */
+const AdminGuard: React.FC<{ children: React.ReactElement }> = ({ children }) => {
+  const { user } = useAuth();
+  if (user?.role !== 'admin') {
+    return <Navigate to='/guid' replace />;
+  }
+  return children;
+};
+
 const PanelRoute: React.FC<{ layout: React.ReactElement }> = ({ layout }) => {
   const { status } = useAuth();
 
@@ -49,6 +61,24 @@ const PanelRoute: React.FC<{ layout: React.ReactElement }> = ({ layout }) => {
           <Route path='/settings/about' element={<About />} />
           <Route path='/settings/tools' element={<ToolsSettings />} />
           <Route path='/settings' element={<Navigate to='/settings/gemini' replace />} />
+          <Route path='/profile' element={<ProfilePage />} />
+          <Route
+            path='/admin/users'
+            element={
+              <AdminGuard>
+                <UserManagement />
+              </AdminGuard>
+            }
+          />
+          <Route
+            path='/admin/group-mappings'
+            element={
+              <AdminGuard>
+                <GroupMappings />
+              </AdminGuard>
+            }
+          />
+          <Route path='/admin' element={<Navigate to='/admin/users' replace />} />
           <Route path='/test/components' element={<ComponentsShowcase />} />
         </Route>
         <Route path='*' element={<Navigate to={status === 'authenticated' ? '/guid' : '/login'} replace />} />

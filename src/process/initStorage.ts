@@ -374,7 +374,10 @@ const initBuiltinAssistantRules = async (): Promise<void> => {
       }
     }
 
-    console.warn(`[AionUi] Could not find builtin ${dirPath} directory, tried:`, candidates);
+    // 'rules' directory is optional — only warn for directories that should exist
+    if (dirPath !== 'rules') {
+      console.warn(`[AionUi] Could not find builtin ${dirPath} directory, tried:`, candidates);
+    }
     return candidates[0];
   };
 
@@ -382,7 +385,8 @@ const initBuiltinAssistantRules = async (): Promise<void> => {
   const builtinSkillsDir = resolveBuiltinDir('skills');
   const userSkillsDir = getSkillsDir();
 
-  console.log(`[AionUi] initBuiltinAssistantRules: rulesDir=${rulesDir}, builtinSkillsDir=${builtinSkillsDir}, userSkillsDir=${userSkillsDir}, assistantsDir=${assistantsDir}`);
+  // Debug-level: uncomment for troubleshooting asset resolution
+  // console.log(`[AionUi] initBuiltinAssistantRules: rulesDir=${rulesDir}, builtinSkillsDir=${builtinSkillsDir}, userSkillsDir=${userSkillsDir}, assistantsDir=${assistantsDir}`);
 
   // Copy skills scripts directory to user config directory
   if (existsSync(builtinSkillsDir)) {

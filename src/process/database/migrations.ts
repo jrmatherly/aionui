@@ -346,9 +346,142 @@ const migration_v9: IMigration = {
 };
 
 /**
+ * Migration v9 -> v10: Add multi-user auth columns to users table
+ * Adds role, auth_method, oidc_subject, display_name, and groups columns
+ * for OIDC SSO and RBAC support.
+ */
+const migration_v10: IMigration = {
+  version: 10,
+  name: 'Add multi-user auth columns to users table',
+  up: (db) => {
+    const tableInfo = db.prepare('PRAGMA table_info(users)').all() as Array<{ name: string }>;
+    const existingColumns = new Set(tableInfo.map((col) => col.name));
+
+    // role: admin | user | viewer (default 'user' for new users)
+    if (!existingColumns.has('role')) {
+      db.exec(`ALTER TABLE users ADD COLUMN role TEXT NOT NULL DEFAULT 'user' CHECK(role IN ('admin', 'user', 'viewer'));`);
+    }
+
+    // auth_method: local | oidc (default 'local' for existing users)
+    if (!existingColumns.has('auth_method')) {
+      db.exec(`ALTER TABLE users ADD COLUMN auth_method TEXT NOT NULL DEFAULT 'local' CHECK(auth_method IN ('local', 'oidc'));`);
+    }
+
+    // oidc_subject: unique identifier from OIDC provider (e.g., EntraID object ID)
+    if (!existingColumns.has('oidc_subject')) {
+      db.exec(`ALTER TABLE users ADD COLUMN oidc_subject TEXT;`);
+    }
+
+    // display_name: human-readable name from OIDC claims
+    if (!existingColumns.has('display_name')) {
+      db.exec(`ALTER TABLE users ADD COLUMN display_name TEXT;`);
+    }
+
+    // groups: JSON array of group IDs from OIDC token
+    if (!existingColumns.has('groups')) {
+      db.exec(`ALTER TABLE users ADD COLUMN groups TEXT;`);
+    }
+
+    // Mark existing system_default_user (admin) with role='admin', auth_method='local'
+    db.exec(`UPDATE users SET role = 'admin', auth_method = 'local' WHERE id = 'system_default_user';`);
+
+    // Add unique index for OIDC subject lookups (enforces one user per OIDC subject)
+    db.exec(`CREATE UNIQUE INDEX IF NOT EXISTS idx_users_oidc_subject ON users(oidc_subject) WHERE oidc_subject IS NOT NULL;`);
+    // Add index for role-based queries
+    db.exec(`CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);`);
+    // Add index for auth method queries
+    db.exec(`CREATE INDEX IF NOT EXISTS idx_users_auth_method ON users(auth_method);`);
+
+    console.log('[Migration v10] Added multi-user auth columns (role, auth_method, oidc_subject, display_name, groups)');
+  },
+  down: (db) => {
+    // SQLite doesn't support DROP COLUMN before 3.35.0, so just drop indexes
+    db.exec(`
+      DROP INDEX IF EXISTS idx_users_oidc_subject;
+      DROP INDEX IF EXISTS idx_users_role;
+      DROP INDEX IF EXISTS idx_users_auth_method;
+    `);
+    // Reset admin role back (column stays but won't cause issues)
+    db.exec(`UPDATE users SET role = 'user' WHERE id = 'system_default_user';`);
+    console.log('[Migration v10] Rolled back: Removed multi-user auth indexes');
+  },
+};
+
+/**
+ * Migration v11: Add refresh tokens and persistent token blacklist tables
+ *
+ * Supports access+refresh token pattern and survives restarts.
+ */
+const migration_v11: IMigration = {
+  version: 11,
+  name: 'add_refresh_tokens_and_blacklist',
+  up: (db) => {
+    // Refresh tokens table — stores active refresh tokens for rotation/revocation
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS refresh_tokens (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        token_hash TEXT NOT NULL UNIQUE,
+        expires_at INTEGER NOT NULL,
+        created_at INTEGER NOT NULL DEFAULT (strftime('%s', 'now')),
+        revoked INTEGER NOT NULL DEFAULT 0,
+        replaced_by TEXT,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+      CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user_id ON refresh_tokens(user_id);
+      CREATE INDEX IF NOT EXISTS idx_refresh_tokens_expires ON refresh_tokens(expires_at);
+    `);
+
+    // Persistent token blacklist — survives server restarts
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS token_blacklist (
+        token_hash TEXT PRIMARY KEY,
+        expires_at INTEGER NOT NULL,
+        created_at INTEGER NOT NULL DEFAULT (strftime('%s', 'now'))
+      );
+      CREATE INDEX IF NOT EXISTS idx_token_blacklist_expires ON token_blacklist(expires_at);
+    `);
+
+    console.log('[Migration v11] Added refresh_tokens and token_blacklist tables');
+  },
+  down: (db) => {
+    db.exec(`
+      DROP TABLE IF EXISTS token_blacklist;
+      DROP TABLE IF EXISTS refresh_tokens;
+    `);
+    console.log('[Migration v11] Rolled back: Removed refresh_tokens and token_blacklist tables');
+  },
+};
+
+/**
+ * Migration v11 -> v12: Add avatar_url column to users table
+ * Store user profile photos as base64 data URLs from Microsoft Graph
+ */
+const migration_v12: IMigration = {
+  version: 12,
+  name: 'Add avatar_url to users table',
+  up: (db) => {
+    const tableInfo = db.prepare('PRAGMA table_info(users)').all() as Array<{ name: string }>;
+    const hasAvatarUrl = tableInfo.some((col) => col.name === 'avatar_url');
+
+    if (!hasAvatarUrl) {
+      db.exec(`ALTER TABLE users ADD COLUMN avatar_url TEXT;`);
+      console.log('[Migration v12] Added avatar_url column to users table');
+    } else {
+      console.log('[Migration v12] avatar_url column already exists, skipping');
+    }
+  },
+  down: (db) => {
+    // SQLite doesn't support DROP COLUMN directly before 3.35.0
+    // For rollback, just log — column will remain but won't be used
+    console.log('[Migration v12] Rolled back: avatar_url column remains (cannot drop in older SQLite)');
+  },
+};
+
+/**
  * All migrations in order
  */
-export const ALL_MIGRATIONS: IMigration[] = [migration_v1, migration_v2, migration_v3, migration_v4, migration_v5, migration_v6, migration_v7, migration_v8, migration_v9];
+export const ALL_MIGRATIONS: IMigration[] = [migration_v1, migration_v2, migration_v3, migration_v4, migration_v5, migration_v6, migration_v7, migration_v8, migration_v9, migration_v10, migration_v11, migration_v12];
 
 /**
  * Get migrations needed to upgrade from one version to another

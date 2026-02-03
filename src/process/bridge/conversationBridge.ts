@@ -20,15 +20,28 @@ import { copyFilesToDirectory, readDirectoryRecursive } from '../utils';
 import { migrateConversationToDatabase } from './migrationUtils';
 
 export function initConversationBridge(): void {
-  ipcBridge.conversation.create.provider(async (params): Promise<TChatConversation> => {
+  ipcBridge.conversation.create.provider(async (params: any): Promise<TChatConversation> => {
+    // __webUiUserId is injected by the WebSocket adapter for user-scoped operations
+    const { __webUiUserId, ...createParams } = params;
+
     // Use ConversationService to create conversation
     const result = await ConversationService.createConversation({
-      ...params,
+      ...createParams,
       source: 'aionui', // Mark conversations created by AionUI as aionui
     });
 
     if (!result.success || !result.conversation) {
       throw new Error(result.error || 'Failed to create conversation');
+    }
+
+    // If we have a WebUI userId, update the conversation's user_id in the database
+    if (__webUiUserId) {
+      try {
+        const db = getDatabase();
+        db.updateConversationUserId(result.conversation.id, __webUiUserId);
+      } catch (err) {
+        console.warn('[conversationBridge] Failed to set conversation userId:', err);
+      }
     }
 
     return result.conversation;

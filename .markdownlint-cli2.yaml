@@ -171,9 +171,9 @@ config:
   MD048: false
 
   # MD049 - Emphasis style
-  # Use asterisks for emphasis
+  # Use underscores for emphasis (matches prettier's markdown output)
   MD049:
-    style: 'asterisk'
+    style: 'underscore'
 
   # MD050 - Strong style
   # Use asterisks for strong

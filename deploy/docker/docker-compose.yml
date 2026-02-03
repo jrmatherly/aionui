@@ -47,11 +47,23 @@ services:
       # Security (set in .env for production)
       - JWT_SECRET=${JWT_SECRET}
       # - AIONUI_HTTPS=${AIONUI_HTTPS:-false}
+      # OIDC / EntraID SSO (optional)
+      - OIDC_ENABLED=${OIDC_ENABLED:-false}
+      - OIDC_ISSUER=${OIDC_ISSUER:-}
+      - OIDC_CLIENT_ID=${OIDC_CLIENT_ID:-}
+      - OIDC_CLIENT_SECRET=${OIDC_CLIENT_SECRET:-}
+      - OIDC_REDIRECT_URI=${OIDC_REDIRECT_URI:-}
+      - OIDC_SCOPES=${OIDC_SCOPES:-openid profile email}
+      - OIDC_GROUPS_CLAIM=${OIDC_GROUPS_CLAIM:-groups}
+      # GROUP_MAPPINGS_JSON and GROUP_MAPPINGS_FILE are passed through via env_file
+      # Do NOT override here — JSON values break docker-compose variable interpolation
 
     # Persistent storage
     volumes:
       # Database, config, and session data
       - aionui_data:/home/aionui/.config/AionUi
+      # OIDC group→role mappings (file-based, see GROUP_MAPPINGS_FILE in .env)
+      - ./group-mappings.json:/etc/aionui/group-mappings.json:ro
       # Optional: Mount custom skills (read-only)
       # - ./custom-skills:/app/resources/skills:ro
 

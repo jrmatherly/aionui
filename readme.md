@@ -61,7 +61,7 @@
 
 ### 🤖 **Multi-Agent Mode - Cowork for Your Command-Line AI Tools, Unified Graphical Interface**
 
-*AionUi comes with built-in Gemini CLI, ready to use out of the box with no additional installation required; if you have already installed command-line tools like Gemini CLI, Claude Code, CodeX, Qwen Code, Goose AI, Augment Code, AionUi will automatically detect them and provide a unified graphical interface for a richer experience*
+_AionUi comes with built-in Gemini CLI, ready to use out of the box with no additional installation required; if you have already installed command-line tools like Gemini CLI, Claude Code, CodeX, Qwen Code, Goose AI, Augment Code, AionUi will automatically detect them and provide a unified graphical interface for a richer experience_
 
 - ✅ **Auto Detection + Unified Interface** - Automatically recognizes local CLI tools, provides a unified graphical interface, say goodbye to command line
 - ✅ **Local Storage + Multi-Session** - Conversations saved locally, supports multiple parallel sessions, each session with independent context
@@ -74,13 +74,13 @@
 
 ### 🌐 **Access Your AionUi Anywhere**
 
-*Your 7×24 hour AI assistant - Access AionUi from any device, anywhere! On business trips, at home, in the office, use your AI tools anytime, anywhere through WebUI or Telegram*
+_Your 7×24 hour AI assistant - Access AionUi from any device, anywhere! On business trips, at home, in the office, use your AI tools anytime, anywhere through WebUI or Telegram_
 
 AionUi provides two remote access methods:
 
 - **🌐 WebUI Mode**
 
-  Access AionUi from any device via browser - phone, tablet, computer. Supports LAN, cross-network, and server deployment. You can log in by scanning a QR code or using account password, making it simple and convenient.
+  Access AionUi from any device via browser - phone, tablet, computer. Supports LAN, cross-network, and server deployment. Features enterprise-grade authentication with SSO/OIDC support and role-based access control (RBAC). You can log in by scanning a QR code, using account password, or through your organization's single sign-on, making it simple and convenient.
 
   > 💡 **Need detailed configuration guide?** Check out [Remote Internet Access Tutorial](https://github.com/iOfficeAI/AionUi/wiki/Remote-Internet-Access-Guide-Chinese)
 
@@ -102,7 +102,7 @@ AionUi provides two remote access methods:
 
 ### ⏰ **Scheduled Tasks - Let AionUi Automate Your Work**
 
-*After setting up scheduled tasks, the AI assistant will automatically execute according to your set time, truly achieving 7×24 hours unattended operation*
+_After setting up scheduled tasks, the AI assistant will automatically execute according to your set time, truly achieving 7×24 hours unattended operation_
 
 - **Free Conversation** - Tell AI what to do using natural language, just like chatting normally
 - **Flexible Time Setting** - Daily, weekly, monthly are all possible
@@ -118,7 +118,7 @@ AionUi provides two remote access methods:
 
 ### 📁 **Smart File Management (AI Cowork)**
 
-*Batch renaming, automatic organization, smart classification, file merging*
+_Batch renaming, automatic organization, smart classification, file merging_
 
 - **Auto Organize**: Intelligently identify content and auto-classify, keeping folders tidy.
 - **Efficient Batch**: One-click rename, merge files, say goodbye to tedious manual tasks.
@@ -131,7 +131,7 @@ AionUi provides two remote access methods:
 
 ### 📄 **Preview Panel - Quickly View AI-Generated Results**
 
-*Supports 9+ formats of visual preview (PDF, Word, Excel, PPT, code, Markdown, images, HTML, Diff, etc.)*
+_Supports 9+ formats of visual preview (PDF, Word, Excel, PPT, code, Markdown, images, HTML, Diff, etc.)_
 
 - ✅ **View Results Instantly** - After AI generates files, view preview immediately without switching apps
 - ✅ **Real-time Tracking + Editable** - Automatically tracks file changes, editor and preview sync intelligently; supports real-time editing of Markdown, code, HTML, WYSIWYG
@@ -144,7 +144,7 @@ AionUi provides two remote access methods:
 
 ### 🎨 **AI Image Generation & Editing**
 
-*Intelligent image generation, editing, and recognition, powered by Gemini*
+_Intelligent image generation, editing, and recognition, powered by Gemini_
 
 <p align="center">
   <img src="./resources/Image_Generation.gif" alt="AI Image Generation Demo" width="800">
@@ -156,7 +156,7 @@ AionUi provides two remote access methods:
 
 ### 🤖 **Multi-Model Support**
 
-*Supports mainstream models like Gemini, OpenAI, Claude, Qwen, as well as local models like Ollama, LM Studio. Flexibly switch between different models to meet various task requirements.*
+_Supports mainstream models like Gemini, OpenAI, Claude, Qwen, as well as local models like Ollama, LM Studio. Flexibly switch between different models to meet various task requirements._
 
 <p align="center">
   <img src="./resources/multi-model.png" alt="Multi-Model Support" width="800">
@@ -166,7 +166,7 @@ AionUi provides two remote access methods:
 
 ### 🎨 **Personalized Interface Customization**
 
-*Customize with your own CSS code, make your interface match your preferences*
+_Customize with your own CSS code, make your interface match your preferences_
 
 <p align="center">
   <img src="./resources/css with skin.gif" alt="CSS Custom Interface Demo" width="800">
@@ -178,7 +178,7 @@ AionUi provides two remote access methods:
 
 ### 💬 **Multi-Task Parallel Processing**
 
-*Open multiple conversations, tasks don't get mixed up, independent memory, double efficiency*
+_Open multiple conversations, tasks don't get mixed up, independent memory, double efficiency_
 
 <details>
 <summary><strong>🎬 Click to view demo ▶️</strong></summary>
@@ -260,7 +260,7 @@ A: All conversation data is stored in a local SQLite database and will not be up
 
 ## 🎬 See How People Use AionUi
 
-*Watch how content creators review and use AionUi in real-world scenarios*
+_Watch how content creators review and use AionUi in real-world scenarios_
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=yUU5E-U5B3M" target="_blank">
@@ -316,6 +316,7 @@ A: All conversation data is stored in a local SQLite database and will not be up
 ### 🌐 **WebUI Remote Access**
 
 - **Cross-Device Access** - Access from any device on the network via browser, supports mobile devices
+- **Enterprise Authentication** - SSO/OIDC integration with role-based access control (admin/user/viewer) for team deployments
 - **Local Data Security** - All data stored locally in SQLite database, suitable for server deployment
 
 ---

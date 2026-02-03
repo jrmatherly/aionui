@@ -1,0 +1,17 @@
+[
+  {
+    "groupId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "groupName": "AI-Platform-Admins",
+    "role": "admin"
+  },
+  {
+    "groupId": "e5f6a7b8-c9d0-1234-5678-abcdef901234",
+    "groupName": "AI-Platform-Users",
+    "role": "user"
+  },
+  {
+    "groupId": "c9d0e1f2-a3b4-5678-9012-cdef34567890",
+    "groupName": "AI-Platform-Viewers",
+    "role": "viewer"
+  }
+]

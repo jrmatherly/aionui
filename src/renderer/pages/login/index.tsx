@@ -31,6 +31,9 @@ const deobfuscate = (text: string): string => {
   }
 };
 
+/** Whether running inside Electron (desktop app). */
+const isDesktopRuntime = typeof window !== 'undefined' && Boolean((window as any).electronAPI);
+
 const LoginPage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
@@ -42,6 +45,8 @@ const LoginPage: React.FC = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [message, setMessage] = useState<MessageState | null>(null);
   const [loading, setLoading] = useState(false);
+  const [oidcEnabled, setOidcEnabled] = useState(false);
+  const [showLocalLogin, setShowLocalLogin] = useState(false);
 
   const usernameRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
@@ -54,6 +59,21 @@ const LoginPage: React.FC = () => {
       if (messageTimer.current) {
         window.clearTimeout(messageTimer.current);
       }
+    };
+  }, []);
+
+  // Check if OIDC (e.g. EntraID SSO) is available
+  useEffect(() => {
+    if (isDesktopRuntime) return; // desktop never uses OIDC
+    let cancelled = false;
+    fetch('/api/auth/status', { credentials: 'include' })
+      .then((r) => r.json())
+      .then((data: { oidcEnabled?: boolean }) => {
+        if (!cancelled && data.oidcEnabled) setOidcEnabled(true);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
     };
   }, []);
 
@@ -222,66 +242,116 @@ const LoginPage: React.FC = () => {
           <p className='login-page__subtitle'>{t('login.subtitle')}</p>
         </div>
 
-        <form className='login-page__form' onSubmit={handleSubmit}>
-          <div className='login-page__form-item'>
-            <label className='login-page__label' htmlFor='username'>
-              {t('login.username')}
-            </label>
-            <div className='login-page__input-wrapper'>
-              <svg className='login-page__input-icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' aria-hidden='true'>
-                <path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2' />
-                <circle cx='12' cy='7' r='4' />
-              </svg>
-              <input ref={usernameRef} id='username' name='username' className='login-page__input' placeholder={t('login.usernamePlaceholder')} autoComplete='username' value={username} onChange={(event) => setUsername(event.target.value)} aria-required='true' />
-            </div>
-          </div>
+        <div className='login-page__form-container'>
+          {/* ── OIDC / SSO — primary login method ────────────────────── */}
+          {oidcEnabled && (
+            <div className='login-page__sso-section'>
+              <button
+                type='button'
+                className='login-page__oidc-button login-page__oidc-button--primary'
+                disabled={loading}
+                onClick={() => {
+                  window.location.href = '/api/auth/oidc/login';
+                }}
+              >
+                {/* Microsoft logo — four-colour squares */}
+                <svg className='login-page__oidc-icon' viewBox='0 0 21 21' fill='none' aria-hidden='true'>
+                  <rect x='1' y='1' width='9' height='9' fill='#f25022' />
+                  <rect x='1' y='11' width='9' height='9' fill='#00a4ef' />
+                  <rect x='11' y='1' width='9' height='9' fill='#7fba00' />
+                  <rect x='11' y='11' width='9' height='9' fill='#ffb900' />
+                </svg>
+                {t('login.signInWithMicrosoft', 'Sign in with Microsoft')}
+              </button>
 
-          <div className='login-page__form-item'>
-            <label className='login-page__label' htmlFor='password'>
-              {t('login.password')}
-            </label>
-            <div className='login-page__input-wrapper'>
-              <svg className='login-page__input-icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' aria-hidden='true'>
-                <rect x='3' y='11' width='18' height='11' rx='2' ry='2' />
-                <path d='M7 11V7a5 5 0 0 1 10 0v4' />
-              </svg>
-              <input ref={passwordRef} id='password' name='password' type={passwordVisible ? 'text' : 'password'} className='login-page__input' placeholder={t('login.passwordPlaceholder')} autoComplete='current-password' value={password} onChange={(event) => setPassword(event.target.value)} aria-required='true' />
-              <button type='button' className='login-page__toggle-password' onClick={() => setPasswordVisible((prev) => !prev)} aria-label={passwordVisible ? t('login.hidePassword') : t('login.showPassword')}>
-                <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2'>
-                  {passwordVisible ? (
-                    <>
-                      <path d='M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24' />
-                      <line x1='1' y1='1' x2='23' y2='23' />
-                    </>
-                  ) : (
-                    <>
-                      <path d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z' />
-                      <circle cx='12' cy='12' r='3' />
-                    </>
-                  )}
+              {/* Toggle for local admin login */}
+              <button
+                type='button'
+                className='login-page__local-toggle'
+                onClick={() => {
+                  setShowLocalLogin((prev) => !prev);
+                  if (!showLocalLogin) {
+                    // Focus username field after reveal animation
+                    window.setTimeout(() => usernameRef.current?.focus(), 200);
+                  }
+                }}
+              >
+                <span>{showLocalLogin ? t('login.hideLocalLogin', 'Hide other options') : t('login.showLocalLogin', 'Other sign-in options')}</span>
+                <svg className={`login-page__local-toggle-chevron ${showLocalLogin ? 'login-page__local-toggle-chevron--open' : ''}`} viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' aria-hidden='true'>
+                  <polyline points='6 9 12 15 18 9' />
                 </svg>
               </button>
             </div>
-          </div>
+          )}
 
-          <div className='login-page__checkbox'>
-            <input type='checkbox' id='remember-me' checked={rememberMe} onChange={(event) => setRememberMe(event.target.checked)} />
-            <label htmlFor='remember-me'>{t('login.rememberMe')}</label>
-          </div>
-
-          <button type='submit' className='login-page__submit' disabled={loading}>
-            {loading && (
-              <svg className='login-page__spinner' viewBox='0 0 24 24' width='18' height='18'>
-                <circle cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='3' fill='none' strokeDasharray='50' strokeDashoffset='25' strokeLinecap='round' />
-              </svg>
+          {/* ── Local login form ─────────────────────────────────────── */}
+          <form className={`login-page__form ${oidcEnabled && !showLocalLogin ? 'login-page__form--hidden' : ''}`} onSubmit={handleSubmit} aria-hidden={oidcEnabled && !showLocalLogin}>
+            {oidcEnabled && showLocalLogin && (
+              <div className='login-page__divider'>
+                <span>{t('login.adminLogin', 'Local Account')}</span>
+              </div>
             )}
-            <span>{loading ? t('login.submitting') : t('login.submit')}</span>
-          </button>
 
-          <div role='alert' aria-live='polite' className={`login-page__message ${message ? 'login-page__message--visible' : ''} ${message ? (message.type === 'success' ? 'login-page__message--success' : 'login-page__message--error') : ''}`} hidden={!message}>
-            {message?.text}
-          </div>
-        </form>
+            <div className='login-page__form-item'>
+              <label className='login-page__label' htmlFor='username'>
+                {t('login.username')}
+              </label>
+              <div className='login-page__input-wrapper'>
+                <svg className='login-page__input-icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' aria-hidden='true'>
+                  <path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2' />
+                  <circle cx='12' cy='7' r='4' />
+                </svg>
+                <input ref={usernameRef} id='username' name='username' className='login-page__input' placeholder={t('login.usernamePlaceholder')} autoComplete='username' value={username} onChange={(event) => setUsername(event.target.value)} aria-required='true' tabIndex={oidcEnabled && !showLocalLogin ? -1 : 0} />
+              </div>
+            </div>
+
+            <div className='login-page__form-item'>
+              <label className='login-page__label' htmlFor='password'>
+                {t('login.password')}
+              </label>
+              <div className='login-page__input-wrapper'>
+                <svg className='login-page__input-icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' aria-hidden='true'>
+                  <rect x='3' y='11' width='18' height='11' rx='2' ry='2' />
+                  <path d='M7 11V7a5 5 0 0 1 10 0v4' />
+                </svg>
+                <input ref={passwordRef} id='password' name='password' type={passwordVisible ? 'text' : 'password'} className='login-page__input' placeholder={t('login.passwordPlaceholder')} autoComplete='current-password' value={password} onChange={(event) => setPassword(event.target.value)} aria-required='true' tabIndex={oidcEnabled && !showLocalLogin ? -1 : 0} />
+                <button type='button' className='login-page__toggle-password' onClick={() => setPasswordVisible((prev) => !prev)} aria-label={passwordVisible ? t('login.hidePassword') : t('login.showPassword')} tabIndex={oidcEnabled && !showLocalLogin ? -1 : 0}>
+                  <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2'>
+                    {passwordVisible ? (
+                      <>
+                        <path d='M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24' />
+                        <line x1='1' y1='1' x2='23' y2='23' />
+                      </>
+                    ) : (
+                      <>
+                        <path d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z' />
+                        <circle cx='12' cy='12' r='3' />
+                      </>
+                    )}
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div className='login-page__checkbox'>
+              <input type='checkbox' id='remember-me' checked={rememberMe} onChange={(event) => setRememberMe(event.target.checked)} tabIndex={oidcEnabled && !showLocalLogin ? -1 : 0} />
+              <label htmlFor='remember-me'>{t('login.rememberMe')}</label>
+            </div>
+
+            <button type='submit' className='login-page__submit' disabled={loading} tabIndex={oidcEnabled && !showLocalLogin ? -1 : 0}>
+              {loading && (
+                <svg className='login-page__spinner' viewBox='0 0 24 24' width='18' height='18'>
+                  <circle cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='3' fill='none' strokeDasharray='50' strokeDashoffset='25' strokeLinecap='round' />
+                </svg>
+              )}
+              <span>{loading ? t('login.submitting') : t('login.submit')}</span>
+            </button>
+
+            <div role='alert' aria-live='polite' className={`login-page__message ${message ? 'login-page__message--visible' : ''} ${message ? (message.type === 'success' ? 'login-page__message--success' : 'login-page__message--error') : ''}`} hidden={!message}>
+              {message?.text}
+            </div>
+          </form>
+        </div>
 
         <div className='login-page__footer'>
           <div className='login-page__footer-content'>

@@ -6,6 +6,11 @@ type AuthStatus = 'checking' | 'authenticated' | 'unauthenticated';
 export interface AuthUser {
   id: string;
   username: string;
+  role?: 'admin' | 'user' | 'viewer';
+  authMethod?: 'local' | 'oidc';
+  displayName?: string;
+  email?: string;
+  avatarUrl?: string;
 }
 
 interface LoginParams {

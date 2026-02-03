@@ -5,8 +5,10 @@
  */
 
 import { generateQRLoginUrlDirect } from '@/process/bridge/webuiBridge';
+import { OIDC_CONFIG } from '@/webserver/auth/config/oidcConfig';
 import { UserRepository } from '@/webserver/auth/repository/UserRepository';
 import { AuthService } from '@/webserver/auth/service/AuthService';
+import { OidcService } from '@/webserver/auth/service/OidcService';
 import { execSync } from 'child_process';
 import express from 'express';
 import { createServer } from 'http';
@@ -14,6 +16,7 @@ import { networkInterfaces } from 'os';
 import { WebSocketServer } from 'ws';
 import { initWebAdapter } from './adapter';
 import { AUTH_CONFIG, SERVER_CONFIG } from './config/constants';
+import { registerAdminRoutes } from './routes/adminRoutes';
 import { registerApiRoutes } from './routes/apiRoutes';
 import { registerAuthRoutes } from './routes/authRoutes';
 import { registerStaticRoutes } from './routes/staticRoutes';
@@ -230,12 +233,23 @@ export async function startWebServerWithInstance(port: number, allowRemote = fal
   // Initialize default admin account
   const initialCredentials = await initializeDefaultAdmin();
 
+  // Initialize OIDC if enabled (graceful degradation on failure)
+  if (OIDC_CONFIG.enabled) {
+    try {
+      await OidcService.initialize();
+      console.log('[WebUI] OIDC authentication enabled');
+    } catch (error) {
+      console.error('[WebUI] Failed to initialize OIDC — only local admin login available:', error);
+    }
+  }
+
   // Configure middleware
   setupBasicMiddleware(app);
   setupCors(app, port, allowRemote);
 
   // Register routes
   registerAuthRoutes(app);
+  registerAdminRoutes(app);
   registerApiRoutes(app);
   registerStaticRoutes(app);
 

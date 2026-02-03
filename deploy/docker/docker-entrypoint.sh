@@ -44,17 +44,21 @@ echo "✅ Xvfb started successfully (PID: $XVFB_PID)"
 
 # -----------------------------------------------------------------------------
 # Start D-Bus (required by Electron)
+# Session bus for IPC; redirect system bus to session bus to prevent
+# "Failed to connect to /run/dbus/system_bus_socket" errors
 # -----------------------------------------------------------------------------
 if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
     echo "🔌 Starting D-Bus session..."
     eval "$(dbus-launch --sh-syntax)"
     export DBUS_SESSION_BUS_ADDRESS
 fi
+# Electron also checks the system bus — point it to our session bus
+export DBUS_SYSTEM_BUS_ADDRESS="$DBUS_SESSION_BUS_ADDRESS"
 
 # -----------------------------------------------------------------------------
 # Build startup arguments
 # -----------------------------------------------------------------------------
-AIONUI_ARGS="--webui --no-sandbox"
+AIONUI_ARGS="--webui --no-sandbox --disable-gpu --disable-software-rasterizer"
 
 # Enable remote access if configured
 if [ "${AIONUI_ALLOW_REMOTE}" = "true" ] || [ "${AIONUI_ALLOW_REMOTE}" = "1" ]; then
@@ -101,4 +105,5 @@ echo "=============================================="
 echo ""
 
 # Execute AionUI with any additional arguments passed to the container
-exec /app/AionUi ${AIONUI_ARGS} "$@"
+# --no-deprecation suppresses dependency warnings (DEP0040 punycode, DEP0180 fs.Stats)
+exec /app/AionUi --no-deprecation ${AIONUI_ARGS} "$@"

@@ -36,6 +36,10 @@
 - **OpenAI SDK** - OpenAI API
 - **MCP SDK** - Model Context Protocol
 
+### Authentication
+
+- **openid-client 5.7.1** - OIDC/OAuth2 client for SSO integration
+
 ### Data & Storage
 
 - **Better SQLite3** - Local database
@@ -157,6 +161,41 @@ chore: remove debug console.log statements
 ### No Claude Signature
 
 Do not add `🤖 Generated with Claude` or similar signatures to commits.
+
+## Authentication & Authorization
+
+### Multi-User Support
+
+- **OIDC/SSO Integration**: EntraID (Azure AD) and other OIDC providers for enterprise single sign-on
+- **Local Admin Account**: Fallback authentication with bcrypt password hashing
+- **RBAC**: Role-based access control with three tiers (admin, user, viewer)
+- **Data Isolation**: Conversation and session data scoped by user
+- **Token Management**: JWT access tokens with refresh token rotation and blacklist support
+
+### Admin Features
+
+- **User Management**: Admin page for user CRUD and role assignment (`src/renderer/pages/settings/UserManagement.tsx`)
+- **Group Mappings**: Map OIDC groups to application roles (`src/renderer/pages/settings/GroupMappings.tsx`)
+- **Profile Page**: User profile with password change capability (`src/renderer/pages/settings/ProfilePage.tsx`)
+
+### Middleware Stack
+
+- **RoleMiddleware**: Enforce role-based access to admin routes
+- **DataScopeMiddleware**: Filter database queries by user ownership
+- **TokenMiddleware**: Validate and refresh JWT tokens
+
+### Services
+
+- **OidcService** (`src/webserver/auth/service/OidcService.ts`): Handle OIDC discovery, authorization, and token exchange
+- **AuthService** (enhanced): Refresh token rotation, token blacklist, password management
+
+### Configuration
+
+- **oidcConfig.ts**: OIDC provider settings (issuer, client credentials, scopes)
+- **groupMappings.ts**: Map OIDC groups to roles (JSON or file-based)
+- Environment variables: `OIDC_ENABLED`, `OIDC_ISSUER`, `OIDC_CLIENT_ID`, etc.
+
+---
 
 ## Architecture Notes
 

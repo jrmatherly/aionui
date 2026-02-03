@@ -19,7 +19,6 @@ files:
   - assistant/**/*
   - package.json
   - node_modules/better-sqlite3/**/*
-  - node_modules/bcrypt/**/*
   - node_modules/node-pty/**/*
   - node_modules/@mapbox/**/*
   - node_modules/detect-libc/**/*
@@ -63,7 +62,6 @@ files:
   - '!**/node_modules/@*/*/vendor/**'
   # Re-include vendor dirs for native modules that need them (if any)
   - 'node_modules/better-sqlite3/vendor/**'
-  - 'node_modules/bcrypt/vendor/**'
   - 'node_modules/node-pty/vendor/**'
   # Exclude webpack source maps
   - '!**/*.map'
@@ -153,7 +151,6 @@ nodeGypRebuild: false
 
 asarUnpack:
   - '**/node_modules/better-sqlite3/**/*'
-  - '**/node_modules/bcrypt/**/*'
   - '**/node_modules/node-pty/**/*'
   - '**/node_modules/@mapbox/**/*'
   - '**/node_modules/detect-libc/**/*'
@@ -176,6 +173,6 @@ electronDownload:
 
 publish:
   provider: github
-  owner: ${env.GITHUB_REPOSITORY_OWNER:-aionui}
-  repo: ${env.GITHUB_REPOSITORY_NAME:-AionUi}
+  owner: ${env.GITHUB_REPOSITORY_OWNER:-jrmatherly}
+  repo: ${env.GITHUB_REPOSITORY_NAME:-aionui}
   publishAutoUpdate: false
