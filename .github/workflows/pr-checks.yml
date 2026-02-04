@@ -136,8 +136,8 @@ jobs:
       - name: Setup mise + tools
         uses: jdx/mise-action@v3
         with:
-          cache: true  # Cache mise tool installations keyed on mise.lock
-          experimental: true  # Enable experimental features (prepare, hooks)
+          cache: true # Cache mise tool installations keyed on mise.lock
+          experimental: true # Enable experimental features (prepare, hooks)
 
       - name: Install dependencies
         run: npm ci
