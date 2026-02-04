@@ -6,6 +6,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any -- IPC messages carry arbitrary serialized data */
 
+import type { BrandingConfig } from '@/common/branding';
 import type { IConfirmation } from '@/common/chatLib';
 import { bridge } from '@office-ai/platform';
 import type { OpenDialogOptions } from 'electron';
@@ -74,6 +75,11 @@ export const application = {
   updateSystemInfo: bridge.buildProvider<IBridgeResponse, { cacheDir: string; workDir: string }>('system.update-info'), // Update system information
   getZoomFactor: bridge.buildProvider<number, void>('app.get-zoom-factor'),
   setZoomFactor: bridge.buildProvider<number, { factor: number }>('app.set-zoom-factor'),
+};
+
+// Branding configuration (env var overrides from main process)
+export const branding = {
+  getConfig: bridge.buildProvider<BrandingConfig, void>('get-branding-config'),
 };
 
 // Manual (opt-in) updates via GitHub Releases

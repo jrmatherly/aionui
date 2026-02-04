@@ -5,6 +5,7 @@
  */
 
 import { app } from 'electron';
+import { getBrandingConfig } from '@/common/branding';
 import { ipcBridge } from '../../common';
 import { getSystemDir, ProcessEnv } from '../initStorage';
 import { copyDirectoryRecursively } from '../utils';
@@ -47,5 +48,10 @@ export function initApplicationBridge(): void {
 
   ipcBridge.application.setZoomFactor.provider(({ factor }) => {
     return Promise.resolve(setZoomFactor(factor));
+  });
+
+  // Branding configuration (env var overrides)
+  ipcBridge.branding.getConfig.provider(() => {
+    return Promise.resolve(getBrandingConfig());
   });
 }

@@ -62,6 +62,12 @@ services:
       - OIDC_GROUPS_CLAIM=${OIDC_GROUPS_CLAIM:-groups}
       # GROUP_MAPPINGS_JSON and GROUP_MAPPINGS_FILE are passed through via env_file
       # Do NOT override here — JSON values break docker-compose variable interpolation
+      # Branding (optional, for custom forks)
+      - AIONUI_BRAND_NAME=${AIONUI_BRAND_NAME:-}
+      - AIONUI_GITHUB_REPO=${AIONUI_GITHUB_REPO:-}
+      - AIONUI_WEBSITE_URL=${AIONUI_WEBSITE_URL:-}
+      - AIONUI_CONTACT_URL=${AIONUI_CONTACT_URL:-}
+      - AIONUI_FEEDBACK_URL=${AIONUI_FEEDBACK_URL:-}
 
     # Persistent storage
     volumes:

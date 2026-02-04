@@ -6,6 +6,7 @@
 
 import { ipcBridge } from '@/common';
 import type { IProvider } from '@/common/storage';
+import { useBranding } from '@/renderer/hooks/useBranding';
 import AionScrollArea from '@/renderer/components/base/AionScrollArea';
 import AddModelModal from '@/renderer/pages/settings/components/AddModelModal';
 import AddPlatformModal from '@/renderer/pages/settings/components/AddPlatformModal';
@@ -25,6 +26,7 @@ const getApiKeyCount = (apiKey: string): number => {
 
 const ModelModalContent: React.FC = () => {
   const { t } = useTranslation();
+  const branding = useBranding();
   const viewMode = useSettingsViewMode();
   const isPageMode = viewMode === 'page';
   const [cacheKey, setCacheKey] = useState('model.config');
@@ -113,7 +115,7 @@ const ModelModalContent: React.FC = () => {
             <h3 className='text-16px font-500 text-t-primary mb-8px'>{t('settings.noConfiguredModels')}</h3>
             <p className='text-14px text-t-secondary text-center max-w-400px'>
               {t('settings.needHelpConfigGuide')}
-              <a href='https://github.com/iOfficeAI/AionUi/wiki/LLM-Configuration' target='_blank' rel='noopener noreferrer' className='text-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-5))] underline ml-4px'>
+              <a href={branding.docs.llmConfig} target='_blank' rel='noopener noreferrer' className='text-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-5))] underline ml-4px'>
                 {t('settings.configGuide')}
               </a>
               {t('settings.configGuideSuffix')}

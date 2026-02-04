@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { getGitHubUrls } from '@/common/branding';
 import { AIONUI_TIMESTAMP_SEPARATOR } from '@/common/constants';
 import { app } from 'electron';
 import fs from 'fs/promises';
@@ -227,7 +228,7 @@ export function initFsBridge(): void {
           {
             headers: {
               'User-Agent': 'AionUI-Preview',
-              Referer: 'https://github.com/iOfficeAI/AionUi',
+              Referer: getGitHubUrls().repo,
             },
           },
           (response) => {

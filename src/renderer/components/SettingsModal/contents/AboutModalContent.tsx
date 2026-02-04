@@ -5,6 +5,7 @@
  */
 
 import { ipcBridge } from '@/common';
+import { useBranding } from '@/renderer/hooks/useBranding';
 import { Button, Divider, Switch, Typography } from '@arco-design/web-react';
 import { Github, Right } from '@icon-park/react';
 import classNames from 'classnames';
@@ -18,6 +19,7 @@ const AboutModalContent: React.FC = () => {
   const viewMode = useSettingsViewMode();
   const isPageMode = viewMode === 'page';
   const isElectron = typeof (window as any).electronAPI !== 'undefined';
+  const branding = useBranding();
 
   const [includePrerelease, setIncludePrerelease] = useState(false);
 
@@ -47,27 +49,27 @@ const AboutModalContent: React.FC = () => {
   const linkItems = [
     {
       title: t('settings.helpDocumentation'),
-      url: 'https://github.com/iOfficeAI/AionUi/wiki',
+      url: branding.github.wiki,
       icon: <Right theme='outline' size='16' />,
     },
     {
       title: t('settings.updateLog'),
-      url: 'https://github.com/iOfficeAI/AionUi/releases',
+      url: branding.github.releases,
       icon: <Right theme='outline' size='16' />,
     },
     {
       title: t('settings.feedback'),
-      url: 'https://github.com/iOfficeAI/AionUi/issues',
+      url: branding.github.issues,
       icon: <Right theme='outline' size='16' />,
     },
     {
       title: t('settings.contactMe'),
-      url: 'https://x.com/WailiVery',
+      url: branding.contactUrl,
       icon: <Right theme='outline' size='16' />,
     },
     {
       title: t('settings.officialWebsite'),
-      url: 'https://www.aionui.com',
+      url: branding.websiteUrl,
       icon: <Right theme='outline' size='16' />,
     },
   ];
@@ -85,7 +87,7 @@ const AboutModalContent: React.FC = () => {
             <Typography.Text className='text-14px text-t-secondary mb-12px text-center'>{t('settings.appDescription')}</Typography.Text>
             <div className='flex items-center justify-center gap-8px mb-16px'>
               <span className='px-10px py-4px rd-6px text-13px bg-fill-2 text-t-primary font-500'>v{packageJson.version}</span>
-              <div className='text-t-primary cursor-pointer hover:text-t-secondary transition-colors p-4px' onClick={() => openLink('https://github.com/iOfficeAI/AionUi').catch((error) => console.error('Failed to open link:', error))}>
+              <div className='text-t-primary cursor-pointer hover:text-t-secondary transition-colors p-4px' onClick={() => openLink(branding.github.repo).catch((error) => console.error('Failed to open link:', error))}>
                 <Github theme='outline' size='20' />
               </div>
             </div>

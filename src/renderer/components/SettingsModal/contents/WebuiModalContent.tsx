@@ -6,6 +6,7 @@
 
 import { shell, webui, type IWebUIStatus } from '@/common/ipcBridge';
 import AionModal from '@/renderer/components/base/AionModal';
+import { useBranding } from '@/renderer/hooks/useBranding';
 import AionScrollArea from '@/renderer/components/base/AionScrollArea';
 import { isElectronDesktop } from '@/renderer/utils/platform';
 import { Form, Input, Message, Switch, Tooltip } from '@arco-design/web-react';
@@ -56,6 +57,7 @@ const InfoRow: React.FC<{ label: string; value: string; onCopy?: () => void; sho
  */
 const WebuiModalContent: React.FC = () => {
   const { t } = useTranslation();
+  const branding = useBranding();
   const viewMode = useSettingsViewMode();
   const isPageMode = viewMode === 'page';
 
@@ -573,7 +575,7 @@ const WebuiModalContent: React.FC = () => {
                 <>
                   {t('settings.webui.allowRemoteDesc')}
                   {'  '}
-                  <button className='text-primary hover:underline cursor-pointer bg-transparent border-none p-0 text-12px' onClick={() => shell.openExternal.invoke('https://github.com/iOfficeAI/AionUi/wiki/Remote-Internet-Access-Guide').catch(console.error)}>
+                  <button className='text-primary hover:underline cursor-pointer bg-transparent border-none p-0 text-12px' onClick={() => shell.openExternal.invoke(branding.docs.remoteAccess).catch(console.error)}>
                     {t('settings.webui.viewGuide')}
                   </button>
                 </>

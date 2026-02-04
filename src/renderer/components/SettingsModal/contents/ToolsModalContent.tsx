@@ -6,6 +6,7 @@
 
 import { acpConversation } from '@/common/ipcBridge';
 import { ConfigStorage, type IConfigStorageRefer, type IMcpServer } from '@/common/storage';
+import { useBranding } from '@/renderer/hooks/useBranding';
 import AionScrollArea from '@/renderer/components/base/AionScrollArea';
 import AionSelect from '@/renderer/components/base/AionSelect';
 import { useMcpAgentStatus, useMcpConnection, useMcpModal, useMcpOAuth, useMcpOperations, useMcpServerCRUD, useMcpServers } from '@/renderer/hooks/mcp';
@@ -219,6 +220,7 @@ const ModalMcpManagementSection: React.FC<{ message: MessageInstance; isPageMode
 
 const ToolsModalContent: React.FC = () => {
   const { t } = useTranslation();
+  const branding = useBranding();
   const [mcpMessage, mcpMessageContext] = Message.useMessage({ maxCount: 10 });
   const [imageGenerationModel, setImageGenerationModel] = useState<IConfigStorageRefer['tools.imageGenerationModel'] | undefined>();
   const [claudeYoloMode, setClaudeYoloMode] = useState(false);
@@ -372,13 +374,13 @@ const ToolsModalContent: React.FC = () => {
                       content={
                         <div>
                           {t('settings.needHelpTooltip')}
-                          <a href='https://github.com/iOfficeAI/AionUi/wiki/AionUi-Image-Generation-Tool-Model-Configuration-Guide' target='_blank' rel='noopener noreferrer' className='text-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-5))] underline ml-4px' onClick={(e) => e.stopPropagation()}>
+                          <a href={branding.docs.imageGeneration} target='_blank' rel='noopener noreferrer' className='text-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-5))] underline ml-4px' onClick={(e) => e.stopPropagation()}>
                             {t('settings.configGuide')}
                           </a>
                         </div>
                       }
                     >
-                      <a href='https://github.com/iOfficeAI/AionUi/wiki/AionUi-Image-Generation-Tool-Model-Configuration-Guide' target='_blank' rel='noopener noreferrer' className='ml-8px text-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-5))] cursor-pointer' onClick={(e) => e.stopPropagation()}>
+                      <a href={branding.docs.imageGeneration} target='_blank' rel='noopener noreferrer' className='ml-8px text-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-5))] cursor-pointer' onClick={(e) => e.stopPropagation()}>
                         <Help theme='outline' size='14' />
                       </a>
                     </Tooltip>
