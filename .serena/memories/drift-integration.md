@@ -65,25 +65,80 @@ Auth-related data access is governed by rules in `.drift/boundaries/rules.json`:
 - **Error handling:** No gaps detected (Express middleware patterns not recognized as boundaries)
 - **Constraints:** Extract found 0 (not enough pattern repetition); custom constraints format not working in v0.9.48
 
-## DNA Playbook
+## DNA Profile & Playbook
 
-Generate a style playbook with `drift dna playbook`. Key patterns detected:
+Generate a style playbook with `drift dna playbook` (or `--stdout` for terminal output).
+The playbook is gitignored and regenerable on demand.
 
-- **API Response Format**: Success/Data Envelope (`{ success: true, data: ... }`) — 88% confidence
-- **Config Pattern**: Settings/Config Class — 79% confidence
-- **Theming**: CSS Variables — 60% confidence
-- **1 high-impact mutation**: `directoryApi.ts:271` uses direct-return vs envelope
+### Gene Details (Validated)
 
-## Version Limitations (v0.9.48)
+| Gene                | Pattern               | Confidence | Key Files                                                   |
+| ------------------- | --------------------- | ---------- | ----------------------------------------------------------- |
+| Responsive Approach | CSS Media Queries     | 100%       | `CssThemeSettings/presets.ts`                               |
+| State Styling       | CSS Pseudo Classes    | 100%       | `CssThemeSettings/presets.ts`                               |
+| Spacing             | Hardcoded values      | 100%       | (scattered, no design token system)                         |
+| API Response        | Success/Data Envelope | 88%        | `DataScopeMiddleware.ts`, `adminRoutes.ts`, `authRoutes.ts` |
+| Config              | Settings/Config Class | 79%        | `AcpConnection.ts`, `AcpDetector.ts` (65 files)             |
+| Error Response      | Generic Try-Catch     | 72%        | (various)                                                   |
+| Logging             | Logger with Levels    | 67%        | (various)                                                   |
+| Theming             | CSS Variables         | 60%        | `presets.ts`, `useInputFocusRing.ts`, `colors.ts`           |
+| Animation           | CSS Animations        | 50%        | (keyframe-based)                                            |
+| Variant Handling    | None                  | 0%         | (no dominant pattern)                                       |
 
-- Custom constraint JSON files cause `TypeError: data.constraints is not iterable`
-- Constraints extract needs substantial code pattern repetition to discover anything
+### Key Mutations
+
+- **1 high-impact**: `directoryApi.ts:271` uses `res.json(shortcuts)` (direct-return)
+  instead of success/data envelope. Only endpoint that skips the pattern.
+- **12 medium config mutations**: Agent backends naturally use `env-variables-direct`
+  instead of `settings-class` — expected, not actionable.
+
+### Useful Commands
+
+```bash
+drift dna gene api-response-format --examples  # Deep dive on specific gene
+drift dna gene config-pattern --examples        # See config pattern with examples
+drift dna mutations --impact high               # Focus on actionable mutations
+drift dna export --format ai-context --compact  # AI-friendly DNA summary
+```
+
+Gene IDs: `variant-handling`, `responsive-approach`, `state-styling`, `theming`,
+`spacing-philosophy`, `animation-approach`, `api-response-format`,
+`error-response-format`, `logging-format`, `config-pattern`.
+
+## Version Limitations (v0.9.48) — Validated Feb 3, 2026
+
+### Confirmed Non-Functional Features
+
+- **Constants Analysis**: All subcommands (`drift constants`, `list`, `secrets`,
+  `dead`, `inconsistent`) return "No constant data discovered yet" even after
+  `drift scan`. No `.drift/constants/` directory is ever created. MCP tool
+  `drift_constants` also non-functional.
+- **Contract Detection**: Config `"contracts": true` is set, `.drift/contracts/`
+  subdirectories exist but are all empty. AionUI has 8 renderer files with
+  fetch() and 5 webserver route files — real pairs that should match but don't.
+- **Wrappers Detection**: `drift wrappers` reports 539 files scanned but 0
+  functions found, even with `--min-confidence 0.3 --min-cluster-size 1`.
+  Native analyzer doesn't detect React hooks or Express middleware.
+- **Custom Constraints**: JSON in `.drift/constraints/custom/` causes TypeError.
+  `drift constraints extract` finds 0 (needs more code pattern repetition).
+
+### Other Known Limitations
+
 - Error handling boundaries detection doesn't recognize Express-style error middleware
-- Audit duplicate detection reports but can't auto-merge
-- Constants analysis doesn't populate data (no `.drift/constants/` directory created)
-- Contract detection finds 0 contracts (Express/fetch patterns not recognized)
-- Wrappers detection finds 0 wrappers (native analyzer doesn't detect React/Express wrappers)
-- Node 25 works but isn't officially supported
+- Audit duplicate detection reports 36 groups but can't auto-merge in this version
+- Node 25 works but isn't officially supported (tested on 18-24)
+- `drift decisions mine` command doesn't exist
+- `drift scan` discovers 17 files vs `drift env scan` discovering 539 — different
+  discovery mechanisms for different purposes
+
+### Working Alternatives for Non-Functional Features
+
+| Missing Feature           | Use Instead                                               |
+| ------------------------- | --------------------------------------------------------- |
+| `drift constants secrets` | `drift env secrets` (7 secrets tracked)                   |
+| `drift constants dead`    | `drift coupling unused-exports` (~20 unused)              |
+| Contracts                 | Serena `find_referencing_symbols` + TypeScript interfaces |
+| Wrappers                  | `drift callgraph callers <fn>` + Serena references        |
 
 ## Configuration
 

@@ -369,6 +369,48 @@ drift env file src/webserver/auth/config/oidcConfig.ts  # What env vars a file a
 - **Security review** — `drift env secrets` shows all sensitive access points
 - **Maintaining `.env.example`** — `drift env required` identifies what must be set
 
+## Constants Analysis
+
+Drift includes a constants analysis feature for detecting hardcoded secrets, magic
+numbers, dead constants, and inconsistent values across the codebase.
+
+### Current Status (v0.9.48)
+
+**Not functional.** All subcommands return "No constant data discovered yet" even
+after running `drift scan`. The `.drift/constants/` directory is never created.
+This has been confirmed across all subcommands:
+
+```bash
+drift constants              # Overview — not populating
+drift constants list         # List all — not populating
+drift constants secrets      # Hardcoded secrets — not populating
+drift constants dead         # Unused constants — not populating
+drift constants inconsistent # Value mismatches — not populating
+```
+
+### Working Alternatives
+
+| Constants Feature | Working Alternative |
+|------------------|-------------------|
+| Hardcoded secrets | `drift env secrets` — tracks 7 sensitive env vars |
+| Unused constants | `drift coupling unused-exports` — finds ~20 unused exports |
+| Inconsistent values | Manual review; ESLint no-magic-numbers rule |
+
+### Commands (For Future Use)
+
+When constants analysis becomes functional in a newer Drift version:
+
+```bash
+drift constants              # Overview with categorized counts
+drift constants secrets      # Find hardcoded API keys, passwords
+drift constants dead         # Find unused exported constants
+drift constants inconsistent # Find same-name constants with different values
+drift constants list --category api  # Filter by category
+drift constants get <name>   # Detailed info with usages
+```
+
+The MCP tool `drift_constants` provides the same functionality for AI agents.
+
 ## Data Boundaries
 
 Data boundary rules enforce which code paths can access sensitive database fields.
@@ -408,46 +450,139 @@ sensitive fields are introduced. Follow the existing pattern:
 }
 ```
 
+## API Contracts
+
+Drift can detect API contracts — the implicit agreement between frontend code that
+calls an API and backend code that serves it. It matches fetch/axios calls to Express
+routes and verifies response shape compatibility.
+
+### Current Status (v0.9.48)
+
+**Not functional.** Config has `"contracts": true` and `.drift/contracts/` directory
+structure exists (`discovered/`, `verified/`, `mismatch/` subdirectories) but all
+are empty despite AionUI having matching frontend↔backend pairs:
+
+**Frontend (renderer) — 8 files with fetch() calls:**
+- `AuthContext.tsx`, `UserManagement.tsx`, `GroupMappings.tsx`, `ProfilePage.tsx`,
+  `login/index.tsx`, `DirectorySelectionModal.tsx`, `PreviewPanel.tsx`,
+  `MessageToolGroup.tsx`
+
+**Backend (webserver) — 5 route files:**
+- `apiRoutes.ts`, `authRoutes.ts`, `adminRoutes.ts`, `staticRoutes.ts`, `setup.ts`
+
+The native analyzer doesn't recognize standard Express route registration or
+`fetch()` patterns in AionUI's codebase.
+
+### What It Would Detect (When Working)
+
+Contracts would catch mismatches like:
+- Frontend expects `{ user: { name } }` but backend returns `{ data: user }`
+- Renamed endpoints that frontend hasn't been updated to match
+- Response shape changes that break frontend parsing
+
+### Configuration (Ready for When Contracts Work)
+
+Custom patterns can be added to `.drift/config.json` for non-standard API clients:
+
+```json
+{
+  "contracts": {
+    "frontendPatterns": [
+      {
+        "name": "customClient",
+        "pattern": "myApi\\.(get|post|put|delete)\\(['\"]([^'\"]+)['\"]",
+        "methodGroup": 1,
+        "pathGroup": 2
+      }
+    ],
+    "ignorePaths": ["/api/health", "/api/metrics"],
+    "responseEnvelope": {
+      "dataKey": "data",
+      "errorKey": "error"
+    }
+  }
+}
+```
+
+### Workaround
+
+Until contract detection works:
+- Use TypeScript interfaces shared between renderer and webserver
+- Serena `find_referencing_symbols` to trace from route handler to consumer
+- Manual code review of API response shapes
+
 ## DNA Mutations
 
-Drift DNA tracks styling and structural consistency. Mutations are deviations from
-the dominant patterns in the codebase.
+Drift DNA tracks styling and structural consistency across 10 "genes" — 6 frontend
+and 4 backend. Mutations are deviations from the dominant patterns in the codebase.
 
 ### Current State
 
 - **Health Score:** 73/100
+- **Genetic Diversity:** 0.38
 - **39 mutations** (1 high, 31 medium, 7 low)
-- **High:** `directoryApi.ts:271` — uses `direct-return` instead of `success-data-envelope`
-- **Medium:** Mostly config pattern variations across agent backends (`env-variables-direct`
-  vs `settings-class`)
+- **Framework detected:** css-modules
+- **Files analyzed:** 315
 
 ### DNA Gene Profile
 
-| Gene | Detected Pattern | Confidence |
-|------|-----------------|------------|
-| Responsive Approach | CSS Media Queries | 100% |
-| State Styling | CSS Pseudo Classes | 100% |
-| Spacing Philosophy | Hardcoded values | 100% |
-| API Response Format | Success/Data Envelope | 88% |
-| Configuration Pattern | Settings/Config Class | 79% |
-| Error Response Format | Generic Try-Catch | 72% |
-| Logging Format | Logger with Levels | 67% |
-| Theming | CSS Variables | 60% |
-| Animation Approach | CSS Animations | 50% |
-| Variant Handling | Not established | 0% |
+| Gene | Detected Pattern | Confidence | Exemplar Files |
+|------|-----------------|------------|----------------|
+| Responsive Approach | CSS Media Queries | 100% | `CssThemeSettings/presets.ts` |
+| State Styling | CSS Pseudo Classes | 100% | `CssThemeSettings/presets.ts` |
+| Spacing Philosophy | Hardcoded values | 100% | (scattered — no token/scale system) |
+| API Response Format | Success/Data Envelope | 88% | `DataScopeMiddleware.ts`, `RoleMiddleware.ts`, `adminRoutes.ts`, `authRoutes.ts` |
+| Configuration Pattern | Settings/Config Class | 79% | `AcpConnection.ts`, `AcpDetector.ts` (65 files) |
+| Error Response Format | Generic Try-Catch | 72% | (various) |
+| Logging Format | Logger with Levels | 67% | (various) |
+| Theming | CSS Variables | 60% | `presets.ts`, `useInputFocusRing.ts`, `colors.ts` |
+| Animation Approach | CSS Animations | 50% | (keyframes-based) |
+| Variant Handling | Not established | 0% | (no dominant pattern) |
+
+### Key Mutations
+
+**High impact (actionable):**
+- `src/webserver/directoryApi.ts:271` — `res.json(shortcuts)` uses `direct-return`
+  instead of `{ success: true, data: shortcuts }` envelope pattern. This is the only
+  endpoint that skips the envelope.
+
+**Medium impact (contextual — mostly not actionable):**
+- 12 config-pattern mutations in agent backends (`src/agent/`) — these naturally use
+  `env-variables-direct` and `config-file-yaml-json` instead of `settings-class`
+  because each agent (Claude, Gemini, Codex) has its own config format. These are
+  inherent to the multi-agent architecture, not code quality issues.
+- 6 API response mutations in `directoryApi.ts` — error responses use
+  `error-message-envelope` vs the dominant `success-data-envelope` format.
 
 ### Commands
 
 ```bash
-drift dna status     # Overall DNA profile
-drift dna mutations  # List all style inconsistencies
-drift dna playbook   # Generate style playbook for the codebase
-drift dna gene <id>  # Detailed analysis for a specific gene
-drift dna export     # Export DNA profile for AI context
+drift dna status                    # Overall DNA profile with all 10 genes
+drift dna mutations                 # List all style inconsistencies
+drift dna mutations --gene <gene>   # Filter mutations by gene
+drift dna mutations --impact high   # Filter by impact level
+drift dna mutations --suggest       # Include resolution suggestions
+drift dna gene <gene-id> --examples # Detailed gene analysis with code examples
+drift dna playbook                  # Generate STYLING-PLAYBOOK.md (gitignored)
+drift dna playbook --stdout         # Output playbook to stdout
+drift dna export --format ai-context --compact  # AI-optimized DNA summary
 ```
 
-Mutations don't necessarily need fixing — agent-specific config code naturally varies
-from the main app patterns. Focus on high-impact mutations in core application code.
+### Gene IDs for `drift dna gene`
+
+Use these exact IDs: `variant-handling`, `responsive-approach`, `state-styling`,
+`theming`, `spacing-philosophy`, `animation-approach`, `api-response-format`,
+`error-response-format`, `logging-format`, `config-pattern`.
+
+### Interpretation Guide
+
+Mutations don't necessarily need fixing. Consider context:
+
+- **Core app code** (webserver, renderer) — mutations indicate real inconsistency, fix them
+- **Agent backends** (`src/agent/`) — config pattern mutations are expected (each agent
+  wraps a different CLI tool with its own conventions)
+- **Skill scripts** — Python/shell scripts naturally don't follow TypeScript patterns
+- **Generated files** — Ignore mutations in auto-generated code
 
 ## Coupling Analysis
 
@@ -476,6 +611,48 @@ drift coupling refactor-impact <file>  # Blast radius for refactoring
 - **Before refactoring** — Run `drift coupling refactor-impact <file>` to see what breaks
 - **After adding imports** — Check `drift coupling cycles` to catch new circular deps
 - **Code cleanup** — `drift coupling unused-exports` finds dead code to remove
+
+## Wrappers Detection
+
+Drift can detect framework wrapper patterns — custom abstractions built on top of
+framework primitives (React hooks, Express middleware, database clients). Wrappers
+are clustered by similarity and categorized.
+
+### Current Status (v0.9.48)
+
+**Not functional** for AionUI. `drift wrappers` reports:
+- 539 files scanned, 0 functions found, 0 wrappers detected, 0 clusters
+
+This was tested with lowered thresholds (`--min-confidence 0.3 --min-cluster-size 1`)
+and still returned 0 results. The native analyzer doesn't currently detect
+React/Express patterns in AionUI's codebase structure.
+
+### What It Would Detect (When Working)
+
+| Category | AionUI Examples |
+|----------|----------------|
+| `state-management` | Custom React hooks in `src/renderer/hooks/` |
+| `middleware` | Auth middleware in `src/webserver/auth/middleware/` |
+| `data-access` | SQLite database helpers in `src/process/database/` |
+| `authentication` | Auth context and session hooks |
+
+### Commands (For Future Use)
+
+```bash
+drift wrappers                          # Scan for framework wrappers
+drift wrappers --category middleware    # Filter by category
+drift wrappers --min-confidence 0.5    # Minimum cluster confidence
+drift wrappers --verbose               # Detailed output with usage counts
+drift wrappers --json                  # Machine-readable output
+```
+
+### Workaround
+
+Until wrapper detection works, use these alternatives:
+- `drift callgraph callers <function>` — trace usage chains manually
+- Serena `find_referencing_symbols` — find all callers of a hook/middleware
+- `drift export --format ai-context --categories structural` — structural patterns
+  capture some wrapper-like conventions
 
 ## Audit System
 
@@ -513,6 +690,11 @@ drift approve --auto       # Auto-approve high-confidence patterns
 | "Who accesses sensitive data?" | ✅ `drift boundaries sensitive` | |
 | "Get context before a task" | ✅ `drift memory why` | |
 | "Find style inconsistencies" | ✅ `drift dna mutations` | |
+| "Show me how we build APIs" | ✅ `drift dna gene api-response-format --examples` | |
+| "Get code snippets for a pattern" | ✅ `drift_code_examples` (MCP) | |
+| "Find where a pattern is used" | ✅ `drift where <pattern>` | |
+| "Trace a hook's usage chain" | ✅ `drift callgraph callers` | ✅ `find_referencing_symbols` |
+| "Get AI-optimized codebase context" | ✅ `drift dna export --format ai-context` | |
 
 ## Maintenance
 
@@ -535,9 +717,11 @@ drift memory validate --scope stale        # Find stale memories
 drift env scan                             # Refresh env var index
 drift boundaries check                     # Verify data boundaries
 drift dna mutations                        # Check for new style drift
+drift dna mutations --impact high          # Focus on actionable high-impact mutations
 drift audit                                # Pattern health, duplicates, FPs
 drift coupling cycles                      # Check for circular dependencies
 drift error-handling gaps                  # Find missing error handling
+drift dna playbook --force                 # Regenerate style playbook if needed
 ```
 
 ### Learning from Experience
@@ -627,10 +811,17 @@ drift test-topology status
 ## CI Integration
 
 Drift can be added to GitHub Actions PR checks for automated pattern drift detection.
+A complete example workflow is available in `.scratchpad/ci-examples/drift-pattern-check.yml`.
 
-### Adding Drift to PR Checks
+### Integration Options
 
-Add a job to `.github/workflows/pr-checks.yml`:
+**Option A: Standalone workflow** — Copy `.scratchpad/ci-examples/drift-pattern-check.yml`
+to `.github/workflows/` as a separate workflow file.
+
+**Option B: Add to existing PR checks** — Add a `drift-check` job to the existing
+`.github/workflows/pr-checks.yml` alongside `code-quality` and other jobs.
+
+### Job Template (for `pr-checks.yml`)
 
 ```yaml
 drift-check:
@@ -639,6 +830,8 @@ drift-check:
   timeout-minutes: 5
   steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -657,54 +850,135 @@ drift-check:
 
     - name: Scan and Gate
       run: |
+        drift init --yes
+        git checkout .drift/config.json
         drift scan --incremental
         drift gate --ci --format github --fail-on error
+        drift boundaries check
 ```
+
+### Important: Config Restore After Init
+
+The `drift init --yes` step is required in CI to rebuild local analysis structures.
+However, it resets `.drift/config.json` to defaults, overwriting our custom settings
+(autoApproveThreshold: 0.85, project ID, feature flags, boundaries config, MCP
+settings). The `git checkout .drift/config.json` step restores the tracked config.
 
 ### Output Formats
 
-- `--format github` — Creates inline PR annotations
-- `--format sarif` — Standard SARIF format (can upload to Code Scanning)
-- `--format json` — Raw JSON for custom processing
-- `--format gitlab` — GitLab Code Quality report
+| Format | Flag | Use Case |
+|--------|------|----------|
+| GitHub Annotations | `--format github` | Inline PR annotations on changed lines |
+| SARIF | `--format sarif` | Upload to GitHub Code Scanning via `codeql-action/upload-sarif` |
+| JSON | `--format json` | Raw data for custom processing or dashboards |
+| GitLab Code Quality | `--format gitlab` | GitLab merge request code quality reports |
 
-### Notes
+### Scan Strategy
 
-- Use `--incremental` for PR checks (faster, only changed files)
-- Use `drift scan --force` on main branch pushes (full scan)
-- Cache `.drift/` across runs for 10-50x speedup
-- `--fail-on error` fails only on errors; use `--fail-on warning` for stricter gating
+| Trigger | Scan Type | Rationale |
+|---------|-----------|-----------|
+| Pull request | `drift scan --incremental` | Fast — only changed files since last scan |
+| Push to main | `drift scan --force` | Full rescan to update baseline patterns |
 
-## Code Examples (MCP Tool)
+### Performance
 
-AI agents can use `drift_code_examples` to get real code snippets from the codebase
-that demonstrate pattern implementation:
+- **Cache `.drift/`** across CI runs for 10-50x speedup on incremental scans
+- **Cache key** uses source file hashes to invalidate when code changes
+- **Timeout**: 5 minutes is sufficient for AionUI's 539 scanned files
+- **`fetch-depth: 0`** gives Drift full git history for better change detection
+
+### What CI Checks Catch
+
+- Pattern violations (code that doesn't follow established conventions)
+- Quality gate failures (configurable via `--fail-on error` or `--fail-on warning`)
+- Data boundary violations (`drift boundaries check` — e.g., accessing `password_hash`
+  outside auth modules)
+
+### What CI Won't Catch (v0.9.48)
+
+- Constants issues (feature not populating data)
+- Contract mismatches (Express/fetch not recognized)
+- Wrapper inconsistencies (native analyzer gaps)
+- Custom constraint violations (JSON format TypeError)
+
+## Code Examples
+
+Drift provides real code snippets from the codebase that demonstrate how patterns
+are implemented. This is particularly useful before writing new code — it shows
+how the team actually implements patterns rather than relying on generic examples.
+
+### MCP Tool: `drift_code_examples`
+
+AI agents use this to get pattern-specific code snippets:
 
 ```typescript
 drift_code_examples({
-  categories: ["api", "auth"],   // Filter by pattern categories
-  pattern: "api-rest-controller", // Or a specific pattern ID
-  maxExamples: 3,                 // Examples per pattern
-  contextLines: 10                // Lines of surrounding context
+  categories: ["api", "auth"],     // Filter by pattern categories
+  pattern: "api-rest-controller",  // Or a specific pattern ID
+  maxExamples: 3,                  // Examples per pattern (2-3 is usually enough)
+  contextLines: 10                 // Lines of surrounding context
 })
 ```
 
-This is particularly useful before writing new code — it shows how the team actually
-implements patterns rather than relying on generic examples.
+**Best practice for AI agents:**
+1. Start with `drift_context` to get relevant pattern IDs for your task
+2. Then use `drift_code_examples` with those pattern IDs for detailed snippets
+3. Use category filtering — don't request all categories (wastes tokens)
 
-## Features Not Available (v0.9.48)
+### CLI Equivalents
 
-These Drift features are documented but not functional in the current version:
+```bash
+# Find locations of a specific pattern
+drift where "Try/Catch" --category errors --limit 5
 
-| Feature | Status | Details |
-|---------|--------|---------|
-| **Constants Analysis** | Not populating | `drift constants` shows no data despite scanning |
-| **Contract Detection** | 0 contracts found | Express routes and fetch calls not detected |
-| **Wrappers Detection** | 0 wrappers found | Native analyzer not recognizing React/Express patterns |
-| **Custom Constraints** | TypeError on load | Custom JSON in `.drift/constraints/custom/` crashes |
-| **Package Context** | N/A | Monorepo feature; AionUI is a single package |
+# Export all patterns with snippets (large output — use filters)
+drift export --format ai-context --categories api,auth --snippets
 
-These should be re-evaluated when upgrading to a newer Drift version.
+# Export compact version for AI context
+drift dna export --format ai-context --compact
+```
+
+### Validated CLI Behavior
+
+- `drift where <pattern>` requires exact or partial name match — it searches by
+  pattern name, not free-text description
+- `drift export --format ai-context --snippets` generates ~30K tokens for the full
+  codebase — always filter by `--categories` to stay within token budgets
+- `drift export --format ai-context --categories api` with a single category filter
+  may return 0 patterns if the category has no snippet-eligible matches; use broader
+  categories or omit the flag
+
+## Features Not Available or Not Applicable (v0.9.48)
+
+These Drift features have been tested and validated against the AionUI codebase.
+Each was confirmed non-functional or not applicable as described below.
+
+| Feature | Status | Validation Details |
+|---------|--------|-------------------|
+| **Constants Analysis** | Not populating | All subcommands (`drift constants`, `list`, `secrets`, `dead`, `inconsistent`) return "No constant data discovered yet" even after `drift scan`. No `.drift/constants/` directory is created. The MCP tool `drift_constants` is also non-functional. Note: `drift env secrets` provides partial overlap (detects sensitive env var access). |
+| **Contract Detection** | 0 contracts found | Config has `"contracts": true` and `.drift/contracts/` subdirectories exist (`discovered/`, `verified/`, `mismatch/`) but are all empty. AionUI has real fetch() → Express route pairs (8 renderer files with fetch, 5 webserver route files) that should match but don't. The native analyzer doesn't recognize these patterns. |
+| **Wrappers Detection** | 0 wrappers found | `drift wrappers` reports "539 files scanned, 0 functions found" even with `--min-confidence 0.3 --min-cluster-size 1`. The native analyzer doesn't detect React hooks or Express middleware as framework wrappers despite AionUI using custom hooks and middleware extensively. |
+| **Custom Constraints** | TypeError on load | Custom JSON files in `.drift/constraints/custom/` cause `TypeError: data.constraints is not iterable`. Only built-in constraints work. `drift constraints extract` also finds 0 constraints (needs more code pattern repetition). |
+| **Package Context** | N/A (by design) | AionUI is a single-package project. `drift context --list` correctly detects 1 package (root). This feature is designed for monorepos with multiple packages. |
+
+### What Still Works for These Areas
+
+Despite the above limitations, partial coverage exists through other working features:
+
+| Missing Feature | Working Alternative |
+|----------------|-------------------|
+| Constants secrets detection | `drift env secrets` (7 secrets tracked across 52 env vars) |
+| Constants dead/unused | `drift coupling unused-exports` (~20 unused exports found) |
+| Contract mismatches | Manual review; Serena `find_referencing_symbols` for tracing |
+| Wrapper detection | `drift callgraph callers <function>` traces usage chains |
+| Custom constraints | Data boundary rules (`.drift/boundaries/rules.json`) |
+
+These should be re-evaluated when upgrading to a newer Drift version. Check release
+notes for improvements to the native TypeScript/Express analyzer.
+
+For detailed context, commands, and workarounds, see the dedicated sections:
+[Constants Analysis](#constants-analysis), [API Contracts](#api-contracts),
+[Wrappers Detection](#wrappers-detection).
 
 ## Troubleshooting
 
