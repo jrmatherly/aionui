@@ -77,6 +77,22 @@ class MyService {
 
 Examples: CronService, McpService, WebSocketManager
 
+## Provider List Curation Pattern
+
+**Pattern:** Two separate provider lists, same curation approach
+
+**Location:** `src/common/constants/providers.ts` (API Keys UI), `src/renderer/config/modelPlatforms.ts` (Add Model dialog)
+
+- Active providers listed alphabetically
+- Hidden providers commented out with notes for easy re-enablement
+- `Custom` always last in MODEL_PLATFORMS (requires user-provided base URL)
+- `COMMON_PROVIDERS` array controls "Common" section in API Keys UI
+- Changes to one list don't automatically affect the other — curate independently
+
+**Current active MODEL_PLATFORMS:** Anthropic, Gemini, Gemini (Vertex AI), OpenAI, OpenRouter, xAI, Custom
+
+**Current active PROVIDER_INFO:** Common = Anthropic, Azure, Gemini, OpenAI; Other = Cohere, Groq, OpenRouter, Perplexity
+
 ## WebUI Auth Pattern
 
 **Pattern:** JWT + refresh token with cookie transport

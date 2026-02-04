@@ -37,13 +37,13 @@ Currently unpacked resources: `rules/**/*`, `skills/**/*`, `assistant/**/*`, and
 
 ### Native modules in use
 
-| Module           | Type           | Notes                                  |
-| ---------------- | -------------- | -------------------------------------- |
-| `better-sqlite3` | Native (.node) | Database engine, must be in asarUnpack |
-| `node-pty`       | Native (.node) | Terminal emulation for agent processes |
-| `bcryptjs`       | Pure JS        | Password hashing — NOT native `bcrypt` |
+| Module           | Type           | Notes                                                |
+| ---------------- | -------------- | ---------------------------------------------------- |
+| `better-sqlite3` | Native (.node) | Database engine, must be in asarUnpack               |
+| `node-pty`       | Native (.node) | Terminal emulation for agent processes               |
+| `bcrypt-ts`      | Pure JS        | Password hashing — migrated from bcryptjs (Feb 2026) |
 
-Note: `electron-builder.yml` includes `bcrypt/**/*` in `files` and `asarUnpack`, but the project actually uses `bcryptjs` (pure JS). These entries are dead weight but harmless.
+Note: `electron-builder.yml` includes `bcrypt/**/*` in `files` and `asarUnpack`. The project uses `bcrypt-ts` (pure JS). These entries are dead weight but harmless.
 
 ## Circular Dependency Warning
 

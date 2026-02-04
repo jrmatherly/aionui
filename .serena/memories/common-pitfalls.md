@@ -92,6 +92,24 @@ Use spread operators or immutable patterns. React detects changes by reference e
 
 Heavy computation goes in worker processes. Main process must stay responsive for UI events.
 
+## Dependency Upgrade Gotchas
+
+### css-loader v7 requires `auto: true` with `namedExport: false`
+
+When setting `modules: { namedExport: false }` in css-loader v7, you MUST also include `auto: true`. Without it, css-loader treats ALL `.css` files as CSS Modules, hashing every class name and breaking global CSS (Arco Design, UnoCSS). The `auto: true` flag restricts CSS Modules to only `*.module.css` files.
+
+### croner v10 requires `sloppyRanges: true`
+
+croner v10 removed legacy cron expression support. Add `sloppyRanges: true` to all `new Cron()` calls for backward compatibility with existing cron expressions in the database.
+
+### `@vercel/webpack-asset-relocator-loader` must stay at 1.7.3
+
+Upgrading breaks the Docker build pipeline. Renovate config disables updates for this package. See commit `9c21d784`.
+
+### officeparser was unused
+
+Listed as dependency but never imported. Removed Feb 2026. Renovate config disables updates for it.
+
 ## Database
 
 ### Use CURRENT_DB_VERSION for migrations
