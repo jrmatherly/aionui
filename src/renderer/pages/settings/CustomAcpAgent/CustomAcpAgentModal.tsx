@@ -4,22 +4,22 @@
  *
  * Redesigned modal with CLI card selection, logo display, and collapsible advanced JSON config.
  */
-import type { AcpBackendConfig, AcpBackend } from '@/types/acpTypes';
-import { ACP_BACKENDS_ALL } from '@/types/acpTypes';
-import { Alert, Input, Spin, Collapse } from '@arco-design/web-react';
-import React, { useState, useCallback, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import CodeMirror from '@uiw/react-codemirror';
-import { json } from '@codemirror/lang-json';
-import { useThemeContext } from '@/renderer/context/ThemeContext';
-import AionModal from '@/renderer/components/base/AionModal';
-import { uuid } from '@/common/utils';
 import { acpConversation } from '@/common/ipcBridge';
+import { uuid } from '@/common/utils';
+import AionModal from '@/renderer/components/base/AionModal';
+import { useThemeContext } from '@/renderer/context/ThemeContext';
+import type { AcpBackend, AcpBackendConfig } from '@/types/acpTypes';
+import { ACP_BACKENDS_ALL } from '@/types/acpTypes';
+import { Alert, Collapse, Input, Spin } from '@arco-design/web-react';
+import { json } from '@codemirror/lang-json';
 import { CheckSmall } from '@icon-park/react';
+import CodeMirror from '@uiw/react-codemirror';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 // CLI Logo 导入 / CLI Logo imports
-import GooseLogo from '@/renderer/assets/logos/goose.svg';
 import AuggieLogo from '@/renderer/assets/logos/auggie.svg';
+import GooseLogo from '@/renderer/assets/logos/goose.svg';
 import KimiLogo from '@/renderer/assets/logos/kimi.svg';
 import OpencodeLogo from '@/renderer/assets/logos/opencode.svg';
 import QoderLogo from '@/renderer/assets/logos/qoder.png';

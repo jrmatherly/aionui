@@ -46,7 +46,7 @@ const Titlebar: React.FC<TitlebarProps> = ({ workspaceAvailable }) => {
   const workspaceTooltip = workspaceCollapsed ? t('conversation.workspace.expand', { defaultValue: 'Expand workspace' }) : t('conversation.workspace.collapse', { defaultValue: 'Collapse workspace' });
   // Always expose sidebar toggle on titlebar left side
   const showSiderToggle = Boolean(layout?.setSiderCollapsed);
-  const siderTooltip = layout?.siderCollapsed ? t('sidebar.expand', { defaultValue: '展开侧栏' }) : t('sidebar.collapse', { defaultValue: '收起侧栏' });
+  const siderTooltip = layout?.siderCollapsed ? t('sidebar.expand', { defaultValue: 'Expand sidebar' }) : t('sidebar.collapse', { defaultValue: 'Collapse sidebar' });
 
   const handleSiderToggle = () => {
     if (!showSiderToggle || !layout?.setSiderCollapsed) return;

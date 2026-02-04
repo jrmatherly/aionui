@@ -43,14 +43,14 @@ const ComponentsShowcase: React.FC = () => {
             }}
             size='large'
           >
-            显示所有类型
+            Show All Types
           </Button>
         </div>
       </section>
 
       {/* Button */}
       <section className='space-y-4'>
-        <h2 className='text-xl font-semibold'>Button - 按钮</h2>
+        <h2 className='text-xl font-semibold'>Button - Buttons</h2>
         <div className='flex gap-3'>
           <Button type='outline'>Outline Button</Button>
           <Button type='primary'>Primary Button</Button>
@@ -63,20 +63,20 @@ const ComponentsShowcase: React.FC = () => {
 
       {/* Collapse */}
       <section className='space-y-4'>
-        <h2 className='text-xl font-semibold'>Collapse - 折叠面板</h2>
+        <h2 className='text-xl font-semibold'>Collapse - Collapsible Panel</h2>
         <Collapse defaultActiveKey={['1']}>
-          <Collapse.Item header='折叠面板标题 1' name='1'>
-            <div>这是折叠面板的内容区域，可以放置任意内容。</div>
+          <Collapse.Item header='Collapsible Panel Title 1' name='1'>
+            <div>This is the content area of the collapsible panel, where any content can be placed.</div>
           </Collapse.Item>
-          <Collapse.Item header='折叠面板标题 2' name='2'>
-            <div>自定义样式：无边框，圆角 8px。</div>
+          <Collapse.Item header='Collapsible Panel Title 2' name='2'>
+            <div>Custom styles: no border, 8px rounded corners.</div>
           </Collapse.Item>
         </Collapse>
       </section>
 
       {/* Tag */}
       <section className='space-y-4'>
-        <h2 className='text-xl font-semibold'>Tag - 标签（深色模式优化）</h2>
+        <h2 className='text-xl font-semibold'>Tag - Tags (Dark Mode Optimized)</h2>
         <div className='flex gap-2 flex-wrap'>
           <Tag checkable color='blue'>
             Blue Tag
@@ -94,42 +94,42 @@ const ComponentsShowcase: React.FC = () => {
             Gray Tag
           </Tag>
         </div>
-        <p className='text-sm text-t-secondary'>提示：切换到深色模式查看优化效果</p>
+        <p className='text-sm text-t-secondary'>Tip: Switch to dark mode to see the optimized effect</p>
       </section>
 
       {/* Steps */}
       <section className='space-y-4'>
-        <h2 className='text-xl font-semibold'>Steps - 步骤条</h2>
+        <h2 className='text-xl font-semibold'>Steps - Step Bar</h2>
         <StepsWrapper current={currentStep} size='small'>
-          <StepsWrapper.Step title='步骤一' icon={currentStep > 1 ? <Check theme='filled' size={16} fill='#165dff' /> : undefined} />
-          <StepsWrapper.Step title='步骤二' icon={currentStep > 2 ? <Check theme='filled' size={16} fill='#165dff' /> : undefined} />
-          <StepsWrapper.Step title='步骤三' />
+          <StepsWrapper.Step title='Step One' icon={currentStep > 1 ? <Check theme='filled' size={16} fill='#165dff' /> : undefined} />
+          <StepsWrapper.Step title='Step Two' icon={currentStep > 2 ? <Check theme='filled' size={16} fill='#165dff' /> : undefined} />
+          <StepsWrapper.Step title='Step Three' />
         </StepsWrapper>
         <div className='flex gap-2 mt-4'>
           <Button onClick={() => setCurrentStep(Math.max(1, currentStep - 1))} disabled={currentStep === 1}>
-            上一步
+            Previous Step
           </Button>
           <Button onClick={() => setCurrentStep(Math.min(3, currentStep + 1))} disabled={currentStep === 3} type='primary'>
-            下一步
+            Next Step
           </Button>
         </div>
       </section>
 
       {/* Modal */}
       <section className='space-y-4'>
-        <h2 className='text-xl font-semibold'>Modal - 模态框</h2>
+        <h2 className='text-xl font-semibold'>Modal - Modal Dialog</h2>
         <Button type='primary' onClick={() => setModalVisible(true)}>
-          打开自定义 Modal
+          Open Custom Modal
         </Button>
         <ModalWrapper
-          title='自定义模态框标题'
+          title='Custom Modal Title'
           visible={modalVisible}
           onCancel={() => setModalVisible(false)}
           footer={
             <div className='flex justify-end gap-3'>
-              <Button onClick={() => setModalVisible(false)}>取消</Button>
+              <Button onClick={() => setModalVisible(false)}>Cancel</Button>
               <Button type='primary' onClick={() => setModalVisible(false)}>
-                确定
+                Confirm
               </Button>
             </div>
           }

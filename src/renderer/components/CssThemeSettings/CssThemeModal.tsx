@@ -143,7 +143,7 @@ const CssThemeModal: React.FC<CssThemeModalProps> = ({ visible, theme, onClose, 
         {/* CSS code editor */}
         <div>
           <div className='text-13px text-t-secondary mb-8px'>{t('settings.cssTheme.cssCode')}</div>
-          <CodeMirror value={css} theme={colorTheme} extensions={[cssLang()]} onChange={setCss} placeholder={`/* ${t('settings.customCssDesc') || '在这里输入自定义 CSS 样式'} */`} basicSetup={CODE_MIRROR_BASIC_SETUP} style={{ ...CODE_MIRROR_STYLE, minHeight: '200px' }} className='[&_.cm-editor]:rounded-[6px]' height='200px' />
+          <CodeMirror value={css} theme={colorTheme} extensions={[cssLang()]} onChange={setCss} placeholder={`/* ${t('settings.customCssDesc') || 'Enter custom CSS styles here'} */`} basicSetup={CODE_MIRROR_BASIC_SETUP} style={{ ...CODE_MIRROR_STYLE, minHeight: '200px' }} className='[&_.cm-editor]:rounded-[6px]' height='200px' />
         </div>
 
         {/* Footer action buttons */}
