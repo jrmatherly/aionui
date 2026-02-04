@@ -5,7 +5,6 @@
  */
 
 import { ipcBridge } from '@/common';
-import LanguageSwitcher from '@/renderer/components/LanguageSwitcher';
 import AionScrollArea from '@/renderer/components/base/AionScrollArea';
 import { iconColors } from '@/renderer/theme/colors';
 import { Alert, Button, Form, Modal, Tooltip } from '@arco-design/web-react';
@@ -120,8 +119,8 @@ const SystemModalContent: React.FC<SystemModalContentProps> = ({ onRequestClose 
     }
   }, [systemInfo, form]);
 
-  // Preference items configuration
-  const preferenceItems = [{ key: 'language', label: t('settings.language'), component: <LanguageSwitcher /> }];
+  // Preference items configuration (language switcher hidden — English-only for now)
+  const preferenceItems: { key: string; label: string; component: React.ReactNode }[] = [];
 
   // Directory configuration save confirmation
   const saveDirConfigValidate = (_values: { cacheDir: string; workDir: string }): Promise<unknown> => {

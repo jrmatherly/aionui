@@ -54,7 +54,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ collapsed = false }) => {
   };
 
   const dropdownMenu = (
-    <Menu onClickMenuItem={handleMenuClick} style={{ minWidth: 200 }}>
+    <Menu onClickMenuItem={handleMenuClick} style={{ minWidth: 200, maxHeight: 'calc(100vh - 120px)', overflowY: 'auto' }}>
       {/* User info header */}
       <div className='flex items-center gap-10px px-12px py-8px border-b border-gray-2 mb-4px'>
         {user.avatarUrl ? (

@@ -85,8 +85,8 @@
     "showPassword": "Show password",
     "hidePassword": "Hide password",
     "languageToggle": "Change language",
-    "footerPrimary": "Transform your command-line AI",
-    "footerSecondary": "Modern & Efficient",
+    "footerPrimary": "Enterprise AI, beautifully managed",
+    "footerSecondary": "© 2026 AionUi",
     "errors": {
       "empty": "Please enter username and password",
       "invalidCredentials": "Invalid username or password",
