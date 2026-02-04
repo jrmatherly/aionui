@@ -17,6 +17,11 @@ code navigation and editing.
 | Trace data flow and security           | Drift (`drift callgraph reach`, `drift boundaries check`) |
 | Get institutional knowledge            | Drift (`drift memory why`, `drift memory search`)         |
 | Navigate file structure                | Serena (`list_dir`, `get_symbols_overview`)               |
+| Explain code comprehensively           | Drift MCP (`drift_explain`)                               |
+| Mine architectural decisions           | Drift MCP (`drift_decisions`)                             |
+| Get fix suggestions for violations     | Drift MCP (`drift_suggest_changes`)                       |
+| Validate code before writing           | Drift MCP (`drift_prevalidate`, `drift_validate_change`)  |
+| Real-time pattern detection            | Drift CLI (`drift watch`)                                 |
 
 ## Key Drift Commands
 
@@ -35,6 +40,21 @@ drift gate --policy strict      # Quality gates on changed files
 drift dna mutations             # Style consistency deviations
 drift audit                     # Pattern health audit with duplicates
 drift constraints extract       # Discover architectural constraints
+drift check                     # Validate all tracked files for violations
+drift check --staged            # Validate staged files only (pre-commit)
+drift watch                     # Real-time pattern detection on file changes
+drift watch --verbose --categories api,auth  # Filtered watch mode
+```
+
+### MCP-Only Tools (No CLI Equivalent)
+
+```
+drift_explain       — Comprehensive code explanation (patterns + callgraph + security)
+drift_decisions     — Mine architectural decisions from git history
+drift_suggest_changes — Get before/after fix suggestions for violations
+drift_validate_change — Validate file content against patterns (with scoring)
+drift_prevalidate   — Quick validation of code snippets before writing
+drift_simulate      — Speculative execution (ENTERPRISE ONLY)
 ```
 
 ## Data Boundaries

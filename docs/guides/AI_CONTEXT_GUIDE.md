@@ -187,22 +187,46 @@ In your AI tool, try these prompts:
    drift memory why "feature area" --intent add_feature
    ```
 
-2. **Find similar existing code:**
+2. **Understand existing code (MCP):**
+   Use `drift_explain` to get a comprehensive explanation of code you'll modify:
+   ```typescript
+   drift_explain({ target: "src/path/to/file.ts", depth: "detailed", focus: "architecture" })
+   ```
+   This synthesizes pattern analysis, call graph, security implications, and
+   dependencies into a coherent narrative. See [Explain Tool](#explain-tool-mcp) below.
+
+3. **Find similar existing code:**
    Use `drift similar` (via MCP) with intent and description to find template code.
    AI agents: call `drift_context` with `intent: "add_feature"` and `focus: "area"`.
 
-3. **Find relevant code with Serena:**
+4. **Find relevant code with Serena:**
    Ask to find symbols, references, and file structure related to the feature.
 
-4. **Generate code with combined context:**
+5. **Generate code with combined context:**
    The AI uses Drift patterns for conventions and Serena for exact code locations.
 
-5. **Validate before committing:**
+6. **Pre-validate generated code (MCP):**
+   Before writing, use `drift_prevalidate` for quick feedback:
+   ```typescript
+   drift_prevalidate({ code: generatedCode, targetFile: "src/path/to/file.ts", kind: "function" })
+   ```
+   Or use `drift_validate_change` for full file validation:
+   ```typescript
+   drift_validate_change({ file: "src/path/to/file.ts", content: fullFileContent })
+   ```
+
+7. **Validate before committing:**
 
    ```bash
-   drift check                             # Pattern compliance
+   drift check                             # Pattern compliance (all tracked files)
+   drift check --staged                    # Only check staged files
    drift gate --policy strict <files...>   # Quality gates on changed files
    drift boundaries check                  # Data access boundaries
+   ```
+
+8. **If violations found, get suggestions (MCP):**
+   ```typescript
+   drift_suggest_changes({ target: "src/path/to/file.ts", issue: "outlier", patternId: "pattern-id" })
    ```
 
 ### Fixing a Bug
@@ -250,13 +274,23 @@ When using Drift via MCP tools, follow this decision tree:
 
 | Task | Start With | Then |
 |------|-----------|------|
-| Code generation | `drift_context` | `drift_code_examples` → `drift_validate_change` |
+| Code generation | `drift_context` | `drift_code_examples` → `drift_prevalidate` → `drift_validate_change` |
 | Quick lookup | `drift_signature`, `drift_callers`, `drift_type` | — |
 | Understanding code | `drift_explain` | `drift_callers` → `drift_impact_analysis` |
 | Security review | `drift_security_summary` | `drift_reachability` → `drift_env` |
 | Refactoring | `drift_impact_analysis` | `drift_coupling` → `drift_test_topology` |
 | Find similar code | `drift_similar` | `drift_code_examples` |
 | Test work | `drift_test_topology` | `drift_test_template` |
+| Fix violations | `drift_suggest_changes` | `drift_validate_change` → `drift_code_examples` |
+| Mine decisions | `drift_decisions` (mine) | `drift_decisions` (list/get/search) |
+
+**AI agent code generation flow:**
+1. `drift_context` → get patterns, conventions, examples for the task
+2. Write code
+3. `drift_prevalidate` → quick check before committing to file (lightweight)
+4. `drift_validate_change` → full validation with compliance scoring
+5. If violations: `drift_suggest_changes` → get before/after fix suggestions
+6. Re-validate after applying fixes
 
 Always start with `drift_context` for code generation tasks — it synthesizes
 patterns, examples, and conventions in one call.
@@ -674,6 +708,394 @@ drift audit --review       # Detailed review report
 drift approve --auto       # Auto-approve high-confidence patterns
 ```
 
+## Explain Tool (MCP)
+
+The `drift_explain` MCP tool provides comprehensive explanations of code in the
+context of your codebase. It combines pattern analysis, call graph, security
+implications, and dependencies into a coherent narrative.
+
+### Availability
+
+- **MCP tool:** `drift_explain` ✅
+- **CLI command:** ❌ Not available (MCP-only)
+- **CLI alternatives:** Use `drift files <path>`, `drift callgraph function <name>`,
+  `drift boundaries file <path>` separately
+
+### Usage
+
+```typescript
+drift_explain({
+  target: "src/webserver/auth/middleware/AuthMiddleware.ts",
+  depth: "detailed",      // summary | detailed | comprehensive
+  focus: "security"       // security | performance | architecture | testing
+})
+```
+
+### Depth Levels
+
+| Depth | What It Returns | Token Cost |
+|-------|----------------|------------|
+| `summary` | Quick overview, purpose, module role | ~500 |
+| `detailed` | + patterns, dependencies, data access | ~1500 |
+| `comprehensive` | + full security analysis, testing, semantic analysis | ~3000 |
+
+### Focus Options
+
+| Focus | Emphasizes |
+|-------|------------|
+| `security` | Data access paths, sensitive fields, reachable credentials |
+| `performance` | Caching, N+1 queries, optimization opportunities |
+| `architecture` | Patterns, coupling, module boundaries |
+| `testing` | Coverage, test quality, gaps |
+
+### When to Use
+
+- **Before modifying code** — understand what you're about to change
+- **Onboarding** — understand unfamiliar code sections
+- **Code review** — understand PR changes in context
+- **Security audit** — deep dive into auth or data-handling code
+
+### CLI Alternatives (Partial Coverage)
+
+```bash
+drift boundaries file src/webserver/routes/authRoutes.ts  # Data access analysis
+drift callgraph callers <function>                         # Who calls this?
+drift callgraph reach src/path/to/file.ts                  # Reachability analysis
+drift where <pattern> --category <cat>                     # Pattern locations
+```
+
+Note: These CLI commands each provide one dimension of what `drift_explain`
+synthesizes into a single comprehensive response.
+
+## Decision Mining (MCP)
+
+Drift can mine architectural decisions from your git history and generate
+Architecture Decision Records (ADRs) automatically by analyzing commit messages,
+file changes, and dependency patterns.
+
+### Availability
+
+- **MCP tool:** `drift_decisions` ✅
+- **CLI command:** ❌ Not available (`drift decisions` planned for future release)
+
+### Usage
+
+```typescript
+// Mine decisions from git history
+drift_decisions({ action: "mine" })
+
+// Mine with date range
+drift_decisions({ action: "mine", since: "2026-01-01", until: "2026-02-03" })
+
+// List all mined decisions
+drift_decisions({ action: "list" })
+
+// Get decision details
+drift_decisions({ action: "get", id: "ADR-001" })
+
+// Search decisions
+drift_decisions({ action: "search", query: "authentication OIDC" })
+
+// Find decisions affecting a file
+drift_decisions({ action: "for-file", file: "src/webserver/auth/config/oidcConfig.ts" })
+
+// View timeline
+drift_decisions({ action: "timeline" })
+```
+
+### Decision Categories
+
+| Category | Icon | Example in AionUI |
+|----------|------|-------------------|
+| `technology-adoption` | 📦 | Adopted better-sqlite3 for auth DB |
+| `pattern-introduction` | 🎨 | Introduced RBAC middleware pattern |
+| `architecture-change` | 🏗️ | Multi-user auth system (5 phases) |
+| `security-enhancement` | 🔒 | OIDC SSO with EntraID |
+| `api-change` | 🔌 | WebUI API endpoints with CSRF |
+
+### Decision Lifecycle
+
+```
+Draft → Confirmed → (Superseded)
+  │
+  └──→ Rejected
+```
+
+Mined decisions start as `draft` and should be reviewed and confirmed.
+
+### When to Use
+
+- **After major milestones** — mine decisions from recent commits
+- **Generating ADRs** — auto-generate architecture decision records
+- **Understanding history** — "why did we choose this approach?"
+- **Onboarding** — help new team members understand architectural choices
+
+### Exporting ADRs
+
+When using the CLI (future), decisions can be exported as markdown:
+```bash
+drift decisions export   # Creates docs/adr/*.md files
+```
+
+## Speculative Execution (Enterprise Only)
+
+Drift's Speculative Execution simulates multiple implementation approaches before
+you write code, scoring them by friction, impact, pattern alignment, and security.
+
+### Availability
+
+- **CLI command:** `drift simulate` — **requires enterprise tier** (not available
+  in community edition)
+- **MCP tool:** `drift_simulate` — same enterprise requirement
+
+### What It Would Do
+
+```bash
+drift simulate "add rate limiting to WebUI API endpoints" \
+  --constraint "must work with existing auth middleware" \
+  --target src/webserver/
+```
+
+Returns ranked approaches with:
+- **Friction score** (0-100) — how much existing code needs to change
+- **Impact score** (0-100) — blast radius
+- **Pattern alignment** — how well it fits conventions
+- **Security notes** — potential implications
+
+### Current Status
+
+Confirmed as enterprise-gated in v0.9.48:
+```
+⚠️ Enterprise Feature Required
+✗ gate:impact-simulation requires enterprise tier
+Current tier: community
+```
+
+### Workarounds
+
+Without speculative execution, use these alternatives:
+- `drift memory why "area" --intent add_feature` — get institutional knowledge
+- `drift_context` (MCP) — get relevant patterns and examples
+- `drift callgraph impact <file>` — manual impact analysis
+- `drift dna gene <gene> --examples` — see how the team implements patterns
+- `drift coupling refactor-impact <file>` — blast radius for changes
+
+## Suggest Changes (MCP)
+
+Get AI-guided suggestions for fixing pattern violations, security issues, or code
+quality problems. Returns specific before/after code changes with rationale.
+
+### Availability
+
+- **MCP tool:** `drift_suggest_changes` ✅
+- **CLI command:** ❌ (`drift check --suggest` not available in v0.9.48)
+- **CLI alternative:** `drift check` detects violations; use MCP for suggestions
+
+### Usage
+
+```typescript
+// Fix pattern outlier
+drift_suggest_changes({
+  target: "src/webserver/directoryApi.ts",
+  issue: "outlier",
+  patternId: "api-response-format"
+})
+
+// Security suggestions
+drift_suggest_changes({
+  target: "src/webserver/routes/authRoutes.ts",
+  issue: "security"
+})
+
+// Error handling improvements
+drift_suggest_changes({
+  target: "src/webserver/routes/apiRoutes.ts",
+  issue: "error-handling"
+})
+
+// Coupling/dependency issues
+drift_suggest_changes({
+  target: "src/process/database/index.ts",
+  issue: "coupling"
+})
+```
+
+### Issue Types
+
+| Issue | Description | When to Use |
+|-------|-------------|-------------|
+| `outlier` | Pattern violation (code doesn't match established pattern) | After `drift check` finds violations |
+| `security` | Security vulnerability or concern | During security review |
+| `coupling` | High coupling or dependency issues | Before refactoring |
+| `error-handling` | Missing or improper error handling | Improving resilience |
+| `test-coverage` | Missing test coverage | Expanding test suite |
+| `pattern-violation` | General pattern non-compliance | Code review |
+
+### Workflow: Fix a Violation
+
+```typescript
+// 1. Identify the violation
+// (e.g., directoryApi.ts uses direct-return instead of envelope)
+
+// 2. Get suggestions
+const suggestions = await drift_suggest_changes({
+  target: "src/webserver/directoryApi.ts",
+  issue: "outlier"
+});
+
+// 3. Apply the suggestion
+// (manually or via AI using the before/after in the response)
+
+// 4. Validate the fix
+const validation = await drift_validate_change({
+  file: "src/webserver/directoryApi.ts",
+  content: updatedCode
+});
+```
+
+## Validate Change (MCP + CLI)
+
+Validate proposed code changes against codebase patterns before committing. Catches
+pattern violations, constraint breaches, and inconsistencies early.
+
+### Availability
+
+- **MCP tools:** `drift_validate_change`, `drift_prevalidate` ✅
+- **CLI command:** `drift check` ✅ (validates all tracked files or staged files)
+
+### CLI Usage
+
+```bash
+drift check                    # Check all tracked files for violations
+drift check --staged           # Check only staged files (pre-commit)
+drift check --verbose          # Detailed output
+drift check --ci --format github --fail-on error  # CI mode with annotations
+```
+
+### MCP: Full Validation
+
+```typescript
+// Validate complete file content
+drift_validate_change({
+  file: "src/webserver/routes/authRoutes.ts",
+  content: fileContent,
+  strictMode: false    // true = warnings also fail
+})
+
+// Validate a diff
+drift_validate_change({
+  file: "src/webserver/routes/authRoutes.ts",
+  diff: unifiedDiffContent,
+  strictMode: true     // strict for main branch
+})
+```
+
+### MCP: Quick Pre-Validation
+
+```typescript
+// Lightweight check before writing to file
+drift_prevalidate({
+  code: generatedCode,
+  targetFile: "src/webserver/routes/newRoute.ts",
+  kind: "function"    // function | class | component | test | full-file
+})
+```
+
+### Compliance Scoring
+
+| Score | Status | Action |
+|-------|--------|--------|
+| 90-100 | `pass` | Good to merge |
+| 70-89 | `warn` | Review warnings |
+| 50-69 | `warn` | Address issues before merge |
+| <50 | `fail` | Significant rework needed |
+
+### Validation Modes
+
+| Mode | Use Case | Behavior |
+|------|----------|----------|
+| Standard (`strictMode: false`) | Feature branches | Errors block, warnings advisory |
+| Strict (`strictMode: true`) | Main/release branches | Errors AND warnings block |
+
+### What Gets Validated
+
+- **Pattern compliance** — does the code follow established patterns?
+- **Semantic validation** — data access patterns, raw SQL detection, async handling
+- **Security checks** — sensitive field access, potential injection points
+- **Import analysis** — external dependencies and their usage
+
+### Validated CLI Behavior (v0.9.48)
+
+- `drift check` scans all 17 pattern-tracked files (not arbitrary files)
+- `drift check --staged` only checks git staged files
+- `drift check` does NOT accept file path arguments
+- `drift check --suggest` is NOT available (use MCP `drift_suggest_changes`)
+- Current state: 0 violations across all tracked files
+
+## Watch Mode
+
+Real-time pattern detection as you edit files, with automatic persistence to the
+pattern store.
+
+### Availability
+
+- **CLI command:** `drift watch` ✅ (working)
+
+### Usage
+
+```bash
+# Start watching (patterns persist to .drift/)
+drift watch
+
+# Verbose output — see each file's patterns as they're detected
+drift watch --verbose
+
+# Filter by categories (reduce CPU, focus on what matters)
+drift watch --categories api,auth,errors,security
+
+# Custom debounce (default 300ms — increase for slower saves)
+drift watch --debounce 500
+
+# Report-only mode (don't persist patterns)
+drift watch --no-persist
+
+# Auto-update AI context file on changes
+drift watch --context .drift/CONTEXT.md
+```
+
+### Validated Behavior (v0.9.48)
+
+- Loads **170 detectors** on startup
+- Monitors the full project directory (respects `.driftignore` and `.gitignore`)
+- Debounce prevents excessive scanning during rapid edits
+- Uses file locking (`.drift/index/.lock`) for safe concurrent access
+- `--context <file>` flag is accepted but the file is only created/updated when
+  a file change triggers a rescan (not on startup)
+- Works alongside MCP server without conflicts
+
+### Recommended Configurations
+
+| Scenario | Command |
+|----------|---------|
+| Active development | `drift watch --verbose --debounce 300` |
+| Background monitoring | `drift watch --debounce 1000` |
+| Auth-focused work | `drift watch --categories auth,security` |
+| Quick feedback only | `drift watch --no-persist --verbose` |
+| AI context updates | `drift watch --context .drift/CONTEXT.md` |
+
+### When to Use
+
+- **During active development** — get instant feedback on pattern compliance
+- **Code reviews** — run in background while reviewing changes
+- **Learning the codebase** — see patterns detected as you browse files
+- **Pair programming** — shared visibility into pattern compliance
+
+### Integration with Other Tools
+
+Watch mode and MCP server can run simultaneously — MCP reads patterns that watch
+persists. Watch mode also works alongside `drift check` and `drift gate` without
+conflicts thanks to file locking.
+
 ## When to Use Which Tool
 
 | Task | Drift | Serena |
@@ -695,6 +1117,12 @@ drift approve --auto       # Auto-approve high-confidence patterns
 | "Find where a pattern is used" | ✅ `drift where <pattern>` | |
 | "Trace a hook's usage chain" | ✅ `drift callgraph callers` | ✅ `find_referencing_symbols` |
 | "Get AI-optimized codebase context" | ✅ `drift dna export --format ai-context` | |
+| "Explain this file comprehensively" | ✅ `drift_explain` (MCP) | |
+| "Mine architectural decisions" | ✅ `drift_decisions` (MCP) | |
+| "Fix this pattern violation" | ✅ `drift_suggest_changes` (MCP) | |
+| "Validate code before committing" | ✅ `drift check` / `drift_validate_change` (MCP) | |
+| "Quick-check generated code" | ✅ `drift_prevalidate` (MCP) | |
+| "Real-time pattern feedback" | ✅ `drift watch` | |
 
 ## Maintenance
 
@@ -960,6 +1388,10 @@ Each was confirmed non-functional or not applicable as described below.
 | **Wrappers Detection** | 0 wrappers found | `drift wrappers` reports "539 files scanned, 0 functions found" even with `--min-confidence 0.3 --min-cluster-size 1`. The native analyzer doesn't detect React hooks or Express middleware as framework wrappers despite AionUI using custom hooks and middleware extensively. |
 | **Custom Constraints** | TypeError on load | Custom JSON files in `.drift/constraints/custom/` cause `TypeError: data.constraints is not iterable`. Only built-in constraints work. `drift constraints extract` also finds 0 constraints (needs more code pattern repetition). |
 | **Package Context** | N/A (by design) | AionUI is a single-package project. `drift context --list` correctly detects 1 package (root). This feature is designed for monorepos with multiple packages. |
+| **Speculative Execution** | Enterprise only | `drift simulate` exists as CLI but requires enterprise tier. Returns `"gate:impact-simulation requires enterprise tier"`. MCP tool `drift_simulate` has the same restriction. |
+| **Explain Tool (CLI)** | MCP-only | No `drift explain` CLI command. Use MCP tool `drift_explain` or CLI alternatives (`drift files`, `drift callgraph function`, `drift boundaries file`). |
+| **Decision Mining (CLI)** | MCP-only | No `drift decisions` CLI command (planned for future). Use MCP tool `drift_decisions`. |
+| **Suggest Changes (CLI)** | MCP-only | `drift check --suggest` not available. Use MCP tool `drift_suggest_changes`. `drift check` works for violation detection. |
 
 ### What Still Works for These Areas
 
