@@ -33,7 +33,7 @@ echo "graph TD; Start-->End" | npx tsx scripts/render.ts --stdin --ascii
 
 Output example:
 
-```text
+```
 ┌───────┐     ┌─────┐
 │ Start │────▶│ End │
 └───────┘     └─────┘

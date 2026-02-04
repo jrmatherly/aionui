@@ -7,9 +7,9 @@
  *   echo "graph TD; A-->B" | npx tsx render.ts --stdin [--ascii]
  */
 
-import { execSync } from 'child_process';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { resolve } from 'path';
+import { execSync } from 'child_process';
 
 // Auto-install beautiful-mermaid if not present
 async function ensureDependency(): Promise<void> {
