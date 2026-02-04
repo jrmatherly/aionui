@@ -34,7 +34,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Upgrade npm to match project requirements (Node 22 bundles npm 10.x, project requires 11+).
 # Version pinned to match mise.lock. Update when mise.lock changes.
-ARG NPM_VERSION=11.8.0
+ARG NPM_VERSION=11.9.0
 RUN npm install -g npm@${NPM_VERSION}
 
 # Copy package files first for better layer caching

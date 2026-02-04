@@ -23,14 +23,13 @@ function runPostInstall() {
       console.log('CI environment detected, skipping rebuild to use prebuilt binaries');
       console.log('Native modules will be handled by electron-forge during packaging');
     } else {
-      // In local environment, use electron-builder to install dependencies
+      // In local environment, use electron-builder to install dependencies.
+      // Note: electron-builder internally sets npm_config_build_from_source in its
+      // getGypEnv() when buildFromSource is configured — no need to pass it here.
+      // Passing it explicitly caused "Unknown env config" warnings in npm 11.9+.
       console.log('Local environment, installing app deps');
       execSync('npx electron-builder install-app-deps', {
         stdio: 'inherit',
-        env: {
-          ...process.env,
-          npm_config_build_from_source: 'true'
-        }
       });
     }
   } catch (e) {

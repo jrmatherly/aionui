@@ -29,7 +29,7 @@ services:
         # Override with: NODE_VERSION=22.22.0 docker-compose ... build
         # Or use: mise run docker:build (auto-reads from mise.lock)
         NODE_VERSION: ${NODE_VERSION:-22.22.0}
-        NPM_VERSION: ${NPM_VERSION:-11.8.0}
+        NPM_VERSION: ${NPM_VERSION:-11.9.0}
         TARGETARCH: ${TARGETARCH:-arm64}
         # Note: All CLI tools are now baked into the image by default.
         # Use DISABLE_CLI_* env vars at runtime to hide specific tools.
