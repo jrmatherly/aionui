@@ -755,7 +755,7 @@
     "agentModelNote": "Not: Model değişiklikleri yeni sohbetlerde geçerli olacaktır.",
     "agentModelCustomNote": "Ayrıca ajanın desteklediği herhangi bir özel model ID'si de girebilirsiniz.",
     "customModel": "Özel model ID...",
-    "customModelPlaceholder": "Model ID girin (örn. claude-opus-4-20250514)",
+    "customModelPlaceholder": "Model ID girin (örn. claude-opus-4-5-20251101)",
     "switchToPreset": "Hazır modellere geç",
     "preset": "Hazır",
     "noAgentsDetected": "Ajan bulunamadı",

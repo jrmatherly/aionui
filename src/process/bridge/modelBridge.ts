@@ -45,7 +45,7 @@ export function initModelBridge(): void {
 
     // For Anthropic/Claude platform, return the supported model list directly
     if (platform?.includes('anthropic') || platform?.includes('claude')) {
-      const anthropicModels = ['claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229', 'claude-3-sonnet-20240229', 'claude-3-haiku-20240307'];
+      const anthropicModels = ['claude-opus-4-5-20251101', 'claude-sonnet-4-5-20250929', 'claude-haiku-4-5-20251001'];
       return { success: true, data: { mode: anthropicModels } };
     }
 
@@ -575,7 +575,7 @@ async function testAnthropicProtocol(baseUrl: string, apiKey: string, signal: Ab
           'anthropic-version': '2023-06-01',
         },
         body: JSON.stringify({
-          model: 'claude-3-haiku-20240307',
+          model: 'claude-haiku-4-5-20251001',
           max_tokens: 1,
           messages: [{ role: 'user', content: 'hi' }],
         }),
@@ -592,7 +592,7 @@ async function testAnthropicProtocol(baseUrl: string, apiKey: string, signal: Ab
 
       // 200 indicates success
       if (response.ok && isAnthropicResponse(responseData)) {
-        const models = ['claude-3-opus-20240229', 'claude-3-sonnet-20240229', 'claude-3-haiku-20240307', 'claude-3-5-sonnet-20241022'];
+        const models = ['claude-opus-4-5-20251101', 'claude-sonnet-4-5-20250929', 'claude-haiku-4-5-20251001'];
         return {
           success: true,
           confidence: 95,
@@ -607,7 +607,7 @@ async function testAnthropicProtocol(baseUrl: string, apiKey: string, signal: Ab
           return { success: false, confidence: 70, error: 'Invalid API key for Anthropic protocol' };
         }
         // 400 parameter error but authentication succeeded (Anthropic format verified)
-        const models = ['claude-3-opus-20240229', 'claude-3-sonnet-20240229', 'claude-3-haiku-20240307', 'claude-3-5-sonnet-20241022'];
+        const models = ['claude-opus-4-5-20251101', 'claude-sonnet-4-5-20250929', 'claude-haiku-4-5-20251001'];
         return {
           success: true,
           confidence: 90,

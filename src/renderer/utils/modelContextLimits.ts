@@ -54,7 +54,7 @@ const MODEL_CONTEXT_LIMITS: Record<string, number> = {
 /**
  * Default context limit (used when model cannot be determined)
  */
-export const DEFAULT_CONTEXT_LIMIT = 1_048_576;
+export const DEFAULT_CONTEXT_LIMIT = 200_000;
 
 /**
  * Get context limit by model name

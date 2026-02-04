@@ -6,9 +6,10 @@
 
 import type { BrandingConfig } from '@/common/branding';
 import { ipcBridge } from '@/common';
+import { isWebMode } from '@/renderer/utils/platform';
 import { useEffect, useState } from 'react';
 
-// Defaults for initial render (before IPC resolves)
+// Defaults for initial render (before IPC/API resolves)
 const DEFAULTS: BrandingConfig = {
   brandName: 'AionUi',
   githubRepo: 'jrmatherly/aionui',
@@ -33,16 +34,37 @@ const DEFAULTS: BrandingConfig = {
   },
 };
 
+/**
+ * Fetch branding config from REST API (web mode) or IPC (Electron mode).
+ *
+ * In web mode, we use the /api/branding endpoint which reads env vars directly
+ * from the server process. This is more reliable than WebSocket IPC since it
+ * doesn't require an authenticated WebSocket connection.
+ */
 export function useBranding(): BrandingConfig {
   const [config, setConfig] = useState<BrandingConfig>(DEFAULTS);
 
   useEffect(() => {
-    ipcBridge.branding.getConfig
-      .invoke()
-      .then((cfg) => {
+    const fetchBranding = async () => {
+      try {
+        if (isWebMode()) {
+          // Web mode: use REST API (works without auth, before WebSocket is established)
+          const response = await fetch('/api/branding');
+          if (response.ok) {
+            const data = await response.json();
+            setConfig(data);
+            return;
+          }
+        }
+        // Electron mode or REST API failed: use IPC bridge
+        const cfg = await ipcBridge.branding.getConfig.invoke();
         if (cfg) setConfig(cfg);
-      })
-      .catch(() => {}); // Use defaults on error
+      } catch {
+        // Use defaults on error
+      }
+    };
+
+    void fetchBranding();
   }, []);
 
   return config;

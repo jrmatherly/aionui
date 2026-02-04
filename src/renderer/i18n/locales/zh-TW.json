@@ -740,7 +740,7 @@
     "agentModelNote": "注意：模型變更將在新對話中生效。",
     "agentModelCustomNote": "你也可以輸入 Agent 支援的任意模型 ID。",
     "customModel": "自訂模型 ID...",
-    "customModelPlaceholder": "輸入模型 ID（如 claude-opus-4-20250514）",
+    "customModelPlaceholder": "輸入模型 ID（如 claude-opus-4-5-20251101）",
     "switchToPreset": "切換到預設模型",
     "preset": "預設",
     "noAgentsDetected": "未偵測到 Agent",

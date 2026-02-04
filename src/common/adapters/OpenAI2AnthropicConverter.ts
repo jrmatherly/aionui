@@ -72,7 +72,7 @@ export class OpenAI2AnthropicConverter implements ProtocolConverter<OpenAIChatCo
 
   constructor(config: ConverterConfig = {}) {
     this.config = {
-      defaultModel: 'claude-sonnet-4-20250514',
+      defaultModel: 'claude-sonnet-4-5-20250929',
       ...config,
     };
   }

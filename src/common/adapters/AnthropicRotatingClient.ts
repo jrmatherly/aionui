@@ -42,7 +42,7 @@ export class AnthropicRotatingClient extends RotatingApiClient<Anthropic> {
     super(apiKeys, AuthType.USE_ANTHROPIC, createClient, options);
     this.config = config;
     this.converter = new OpenAI2AnthropicConverter({
-      defaultModel: config.model || 'claude-sonnet-4-20250514',
+      defaultModel: config.model || 'claude-sonnet-4-5-20250929',
     });
   }
 

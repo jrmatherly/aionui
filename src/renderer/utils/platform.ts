@@ -16,6 +16,13 @@ export const isElectronDesktop = (): boolean => {
 };
 
 /**
+ * Check if running in web browser (not Electron)
+ */
+export const isWebMode = (): boolean => {
+  return typeof window !== 'undefined' && !window.electronAPI;
+};
+
+/**
  * Check if running on macOS
  */
 export const isMacOS = (): boolean => {

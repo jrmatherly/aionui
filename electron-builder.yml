@@ -73,6 +73,9 @@ files:
 extraResources:
   - from: public
     to: .
+  # Favicon for web server
+  - from: resources/app.ico
+    to: app.ico
 
 win:
   target:

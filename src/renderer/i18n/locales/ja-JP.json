@@ -769,7 +769,7 @@
     "agentModelNote": "注意：モデルの変更は新しい会話で有効になります。",
     "agentModelCustomNote": "Agent がサポートする任意のモデル ID を入力することもできます。",
     "customModel": "カスタムモデル ID...",
-    "customModelPlaceholder": "モデル ID を入力（例：claude-opus-4-20250514）",
+    "customModelPlaceholder": "モデル ID を入力（例：claude-opus-4-5-20251101）",
     "switchToPreset": "プリセットモデルに切り替え",
     "preset": "プリセット",
     "noAgentsDetected": "Agent が検出されませんでした",
