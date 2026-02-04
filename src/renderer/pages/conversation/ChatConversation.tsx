@@ -113,9 +113,18 @@ const GeminiConversationPanel: React.FC<{ conversation: GeminiConversation; slid
     agentLogoIsEmoji: presetAssistantInfo?.isEmoji,
   };
 
+  // Avatar props for message rendering
+  const avatarProps = presetAssistantInfo
+    ? {
+        agentAvatar: presetAssistantInfo.logo,
+        agentAvatarIsEmoji: presetAssistantInfo.isEmoji,
+        agentName: presetAssistantInfo.name,
+      }
+    : undefined;
+
   return (
     <ChatLayout {...chatLayoutProps}>
-      <GeminiChat conversation_id={conversation.id} workspace={conversation.extra.workspace} modelSelection={modelSelection} />
+      <GeminiChat conversation_id={conversation.id} workspace={conversation.extra.workspace} modelSelection={modelSelection} avatarProps={avatarProps} />
     </ChatLayout>
   );
 };
@@ -128,20 +137,29 @@ const ChatConversation: React.FC<{
 
   const isGeminiConversation = conversation?.type === 'gemini';
 
+  // Use unified hook for preset assistant info (ACP/Codex conversations)
+  const presetAssistantInfo = usePresetAssistantInfo(isGeminiConversation ? undefined : conversation);
+
+  // Avatar props for ACP/Codex message rendering
+  const acpCodexAvatarProps = presetAssistantInfo
+    ? {
+        agentAvatar: presetAssistantInfo.logo,
+        agentAvatarIsEmoji: presetAssistantInfo.isEmoji,
+        agentName: presetAssistantInfo.name,
+      }
+    : undefined;
+
   const conversationNode = useMemo(() => {
     if (!conversation || isGeminiConversation) return null;
     switch (conversation.type) {
       case 'acp':
-        return <AcpChat key={conversation.id} conversation_id={conversation.id} workspace={conversation.extra?.workspace} backend={conversation.extra?.backend || 'claude'}></AcpChat>;
+        return <AcpChat key={conversation.id} conversation_id={conversation.id} workspace={conversation.extra?.workspace} backend={conversation.extra?.backend || 'claude'} avatarProps={acpCodexAvatarProps}></AcpChat>;
       case 'codex':
-        return <CodexChat key={conversation.id} conversation_id={conversation.id} workspace={conversation.extra?.workspace} />;
+        return <CodexChat key={conversation.id} conversation_id={conversation.id} workspace={conversation.extra?.workspace} avatarProps={acpCodexAvatarProps} />;
       default:
         return null;
     }
-  }, [conversation, isGeminiConversation]);
-
-  // Use unified hook for preset assistant info (ACP/Codex conversations)
-  const presetAssistantInfo = usePresetAssistantInfo(isGeminiConversation ? undefined : conversation);
+  }, [conversation, isGeminiConversation, acpCodexAvatarProps]);
 
   const sliderTitle = useMemo(() => {
     return (

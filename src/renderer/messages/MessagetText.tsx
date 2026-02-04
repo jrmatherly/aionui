@@ -16,6 +16,8 @@ import CollapsibleContent from '../components/CollapsibleContent';
 import FilePreview from '../components/FilePreview';
 import HorizontalFileList from '../components/HorizontalFileList';
 import MarkdownView from '../components/Markdown';
+import MessageAvatar from './MessageAvatar';
+import { useMessageAvatars } from './MessageAvatarContext';
 
 const parseFileMarker = (content: string) => {
   const markerIndex = content.indexOf(AIONUI_FILES_MARKER);
@@ -54,6 +56,10 @@ const MessageText: React.FC<{ message: IMessageText }> = ({ message }) => {
   const { t } = useTranslation();
   const [showCopyAlert, setShowCopyAlert] = useState(false);
   const isUserMessage = message.position === 'right';
+  const avatars = useMessageAvatars();
+
+  // Check if avatars are available (context provided)
+  const showAvatars = Boolean(avatars.userDisplayName || avatars.agentAvatar || avatars.userAvatarUrl);
 
   // Filter empty content to avoid rendering empty DOM
   if (!message.content.content || (typeof message.content.content === 'string' && !message.content.content.trim())) {
@@ -83,46 +89,62 @@ const MessageText: React.FC<{ message: IMessageText }> = ({ message }) => {
     </Tooltip>
   );
 
-  return (
-    <>
-      <div className={classNames('flex flex-col group', isUserMessage ? 'items-end' : 'items-start')}>
-        {files.length > 0 && (
-          <div className={classNames('mt-6px', { 'self-end': isUserMessage })}>
-            {files.length === 1 ? (
-              <div className='flex items-center'>
-                <FilePreview path={files[0]} onRemove={() => undefined} readonly />
-              </div>
-            ) : (
-              <HorizontalFileList>
-                {files.map((path) => (
-                  <FilePreview key={path} path={path} onRemove={() => undefined} readonly />
-                ))}
-              </HorizontalFileList>
-            )}
-          </div>
-        )}
-        <div
-          className={classNames('rd-8px rd-tr-2px [&>p:first-child]:mt-0px [&>p:last-child]:mb-0px md:max-w-780px', {
-            'bg-aou-2 p-8px': isUserMessage,
-          })}
-        >
-          {/* Use CollapsibleContent for JSON content */}
-          {json ? (
-            <CollapsibleContent maxHeight={200} defaultCollapsed={true}>
-              <MarkdownView codeStyle={{ marginTop: 4, marginBlock: 4 }}>{`\`\`\`json\n${JSON.stringify(data, null, 2)}\n\`\`\``}</MarkdownView>
-            </CollapsibleContent>
+  // Message content (shared between avatar and non-avatar layouts)
+  const messageContent = (
+    <div className={classNames('flex flex-col', isUserMessage ? 'items-end' : 'items-start')}>
+      {files.length > 0 && (
+        <div className={classNames('mt-6px mb-4px', { 'self-end': isUserMessage })}>
+          {files.length === 1 ? (
+            <div className='flex items-center'>
+              <FilePreview path={files[0]} onRemove={() => undefined} readonly />
+            </div>
           ) : (
-            <MarkdownView codeStyle={{ marginTop: 4, marginBlock: 4 }}>{data}</MarkdownView>
+            <HorizontalFileList>
+              {files.map((path) => (
+                <FilePreview key={path} path={path} onRemove={() => undefined} readonly />
+              ))}
+            </HorizontalFileList>
           )}
         </div>
-        <div
-          className={classNames('h-32px flex items-center mt-4px', {
-            'justify-end': isUserMessage,
-            'justify-start': !isUserMessage,
-          })}
-        >
-          {copyButton}
-        </div>
+      )}
+      <div
+        className={classNames('rd-12px [&>p:first-child]:mt-0px [&>p:last-child]:mb-0px md:max-w-680px', {
+          'bg-aou-2 p-12px rd-tr-4px': isUserMessage,
+          'rd-tl-4px': !isUserMessage,
+        })}
+      >
+        {/* Use CollapsibleContent for JSON content */}
+        {json ? (
+          <CollapsibleContent maxHeight={200} defaultCollapsed={true}>
+            <MarkdownView codeStyle={{ marginTop: 4, marginBlock: 4 }}>{`\`\`\`json\n${JSON.stringify(data, null, 2)}\n\`\`\``}</MarkdownView>
+          </CollapsibleContent>
+        ) : (
+          <MarkdownView codeStyle={{ marginTop: 4, marginBlock: 4 }}>{data}</MarkdownView>
+        )}
+      </div>
+      <div
+        className={classNames('h-28px flex items-center mt-2px', {
+          'justify-end': isUserMessage,
+          'justify-start': !isUserMessage,
+        })}
+      >
+        {copyButton}
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      <div className={classNames('flex group gap-12px', isUserMessage ? 'flex-row-reverse' : 'flex-row')}>
+        {/* Avatar */}
+        {showAvatars && (
+          <div className='flex-shrink-0 mt-2px'>
+            <MessageAvatar type={isUserMessage ? 'user' : 'agent'} size={32} />
+          </div>
+        )}
+
+        {/* Message content */}
+        {messageContent}
       </div>
       {showCopyAlert && <Alert type='success' content={t('messages.copySuccess')} showIcon className='fixed top-20px left-50% transform -translate-x-50% z-9999 w-max max-w-[80%]' style={{ boxShadow: '0px 2px 12px rgba(0,0,0,0.12)' }} closable={false} />}
     </>
