@@ -186,6 +186,12 @@ my-video
 .drift/reports/
 .drift/views/
 
+# mise-en-place — personal overrides (committed: mise.toml, mise.lock)
+# See: https://mise.jdx.dev/configuration/environments.html
+mise.local.toml
+mise.*.local.toml
+mise.local.lock
+
 # Docker — real group mappings contain tenant-specific EntraID group IDs
 deploy/docker/group-mappings.json
 # Note: .dockerignore is intentionally trackedSTYLING-PLAYBOOK.md

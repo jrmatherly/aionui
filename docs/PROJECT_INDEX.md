@@ -633,7 +633,9 @@ class WebSocketManager {
 
 | File | Purpose |
 |------|---------|
-| `package.json` | Dependencies, scripts |
+| `mise.toml` | Tool versions, env vars, tasks, prepare providers (mise-en-place) |
+| `mise.lock` | Pinned tool versions with checksums and download URLs |
+| `package.json` | Dependencies, npm scripts |
 | `tsconfig.json` | TypeScript compiler options |
 | `forge.config.ts` | Electron Forge build config |
 | `uno.config.ts` | UnoCSS styling config |
@@ -687,13 +689,34 @@ Configured in `tsconfig.json`:
 ### Quick Start
 
 ```bash
-# Install dependencies
+# With mise (recommended — auto-installs correct Node.js)
+mise install          # Install tools (Node.js 22)
+mise run dev          # Install deps + start dev server
+
+# Without mise
 npm install
-
-# Start development
 npm start
+```
 
-# Start WebUI mode
+### mise Tasks (Preferred)
+
+```bash
+mise run dev          # Start Electron dev server
+mise run lint         # Run ESLint
+mise run test         # Run tests
+mise run ci           # Full CI checks (lint + format + test)
+mise run build        # Build for current platform
+mise run info         # Print environment details
+mise run drift:check  # Run Drift pattern validation
+mise run docker:build # Build Docker image (versions from mise.lock)
+mise run docker:up    # Start Docker container
+mise task ls          # List all available tasks
+```
+
+### npm Scripts (Still Supported)
+
+```bash
+npm start             # Start WebUI mode
 npm run webui
 
 # Run tests
@@ -703,12 +726,12 @@ npm test
 ### Code Quality
 
 ```bash
-# Lint
-npm run lint
-npm run lint:fix
+# Lint (via mise or npm)
+mise run lint         # or: npm run lint
+mise run lint:fix     # or: npm run lint:fix
 
 # Format
-npm run format
+mise run format       # or: npm run format
 
 # Type check
 npx tsc --noEmit
@@ -784,22 +807,26 @@ const { t } = useTranslation();
 ### Authentication & Authorization
 
 **Multi-User Authentication**:
+
 - **OIDC/SSO**: Production-grade integration with EntraID (Azure AD) and other OIDC providers
 - **Local Admin**: Fallback bcrypt-hashed password authentication for local deployments
 - **JWT Tokens**: Access tokens with configurable expiry and refresh token rotation
 - **Token Blacklist**: Revoked tokens stored in database to prevent reuse
 
 **Role-Based Access Control (RBAC)**:
+
 - **Three Roles**: `admin` (full access), `user` (standard access), `viewer` (read-only)
 - **RoleMiddleware**: Enforces role requirements on admin routes
 - **DataScopeMiddleware**: Filters database queries to user-owned resources only
 
 **Data Isolation**:
+
 - **User Ownership**: Conversations, messages, and sessions scoped by `user_id`
 - **Query Filtering**: Automatic filtering in DataScopeMiddleware prevents cross-user data leaks
 - **Session Management**: User sessions isolated with per-user refresh tokens
 
 **Security Best Practices**:
+
 - **Password Hashing**: bcrypt with salt rounds for local accounts
 - **HTTPS Required**: Production deployments should use HTTPS for WebUI
 - **CSRF Protection**: Token-based authentication prevents CSRF attacks
@@ -808,6 +835,7 @@ const { t } = useTranslation();
 - **Rate Limiting**: Consider adding rate limiting for production deployments
 
 **Group Mapping**:
+
 - **OIDC Groups**: Map enterprise groups to application roles
 - **Configuration**: File-based (`GROUP_MAPPINGS_FILE`) or inline JSON (`GROUP_MAPPINGS_JSON`)
 - **Default Role**: Fallback to `viewer` if no group mapping matches
@@ -833,4 +861,4 @@ See [AI Context Guide](guides/AI_CONTEXT_GUIDE.md) for setup and usage.
 
 ---
 
-*Generated: February 2026 | AionUI v1.8.1*
+_Generated: February 2026 | AionUI v1.8.1_

@@ -17,7 +17,11 @@
 # Stage 1: Build
 # Compiles webpack bundles via Forge, then packages with electron-builder
 # -----------------------------------------------------------------------------
-FROM node:22-bookworm AS builder
+# Node version pinned to match mise.lock for reproducible builds.
+# Update this when mise.lock changes: check with `grep version mise.lock`
+# Or build with: docker build --build-arg NODE_VERSION=22.22.0 ...
+ARG NODE_VERSION=22.22.0
+FROM node:${NODE_VERSION}-bookworm AS builder
 
 WORKDIR /app
 
@@ -27,6 +31,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     g++ \
     make \
     && rm -rf /var/lib/apt/lists/*
+
+# Upgrade npm to match project requirements (Node 22 bundles npm 10.x, project requires 11+).
+# Version pinned to match mise.lock. Update when mise.lock changes.
+ARG NPM_VERSION=11.8.0
+RUN npm install -g npm@${NPM_VERSION}
 
 # Copy package files first for better layer caching
 COPY package*.json ./

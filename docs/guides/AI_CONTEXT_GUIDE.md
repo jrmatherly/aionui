@@ -34,6 +34,88 @@ pip install serena
 
 ## Project Configuration
 
+### mise-en-place (Tool & Environment Manager)
+
+AionUI uses [mise](https://mise.jdx.dev) to manage tool versions, environment variables, and development tasks.
+
+- **Config:** `mise.toml` (tracked — tool versions, env vars, tasks, prepare providers)
+- **Lockfile:** `mise.lock` (tracked — pinned exact versions with checksums and download URLs)
+- **Personal overrides:** `mise.local.toml` (gitignored — per-developer customization)
+- **Tasks:** Defined in `mise.toml` under `[tasks.*]` — wraps npm scripts with auto-tool-install
+- **Prepare:** `[prepare.npm]` auto-installs deps when `package-lock.json` is newer than `node_modules/`
+
+**Key benefits for AI assistants:**
+
+- Use `mise run <task>` instead of `npm run <script>` — ensures correct Node.js and npm versions are active
+- `mise run info` prints current environment details (mise version, Node, npm, Electron, NODE_ENV, prepare status)
+- `mise task ls` lists all available tasks with descriptions (`--hidden` to include internal tasks)
+- `mise prepare --list` shows available prepare providers and their source/output tracking
+- `mise.toml` is the single source of truth for tool versions, environment, and task definitions
+
+**Task source tracking:**
+
+- `lint`, `format:check`, `test`, and `build` tasks have `sources` defined — they skip re-runs when no files changed
+- The `ci` task depends on lint + format:check + test, all running in parallel; with source tracking, repeat runs complete in ~20ms vs ~22s
+- Use `mise run <task> --force` to bypass source checking and always re-run
+- Use `mise run --changed` to only run tasks whose sources have changed
+- Tasks also track themselves as sources — editing `mise.toml` triggers re-runs
+
+**Task arguments (usage spec):**
+
+- Some tasks accept arguments via the `usage` field (e.g., `clean --all --dry-run`)
+- Arguments are available as `$usage_<name>` env vars in task scripts
+- Run `mise run <task> -- --help` to see available flags/arguments
+- Autocomplete works if the `usage` CLI is installed
+
+**Configuration hierarchy (lowest → highest priority):**
+
+1. `~/.config/mise/config.toml` — Global tools (Jason's global config)
+2. `mise.toml` — Project tools (Node 22, npm 11, env vars, tasks)
+3. `mise.local.toml` — Personal overrides (gitignored)
+
+**Dependency management (prepare):**
+
+- `[prepare.npm]` with `auto = true` — automatically runs `npm install` before `mise run`/`mise x` when stale
+- Staleness is determined by mtime comparison: if `package-lock.json` or `package.json` is newer than `node_modules/`, deps are stale
+- Skip with `mise run --no-prepare <task>` when you know deps are fresh
+- Force refresh with `mise prepare --force`
+
+**Lockfile:**
+
+- `mise.lock` pins exact versions (Node 22.22.0, npm 11.8.0) with SHA256 checksums
+- Platform entries for `linux-x64`, `macos-arm64`, `macos-x64` with download URLs
+- CI can use `--locked` flag to fail if lockfile URLs are missing (prevents API calls)
+- Update lockfile: `mise lock` (all platforms) or `mise lock --platform linux-x64` (specific)
+
+**Hooks:**
+
+- `[hooks] enter` auto-installs tools when entering the project directory
+- `[hooks] postinstall` receives `MISE_INSTALLED_TOOLS` JSON array — useful for post-install verification
+- `[hooks] leave` can run cleanup when leaving the project (not currently configured)
+- Tool-level `postinstall` scripts can be added per-tool: `node = { version = "22", postinstall = "..." }`
+
+**Version requirements:**
+
+- `min_version` uses hard/soft format: hard errors if unmet (ensures features work), soft warns (recommends latest)
+- Current: hard `2025.1.0` (hooks, lockfile, experimental), soft `2026.1.0` (prepare, latest features)
+
+**Docker integration:**
+
+- `mise run docker:build` reads Node/npm versions from `mise.lock` and passes them as Docker build args
+- Dockerfile uses `ARG NODE_VERSION` / `ARG NPM_VERSION` defaulting to mise.lock values
+- This ensures Docker builds use the exact same tool versions as local development
+- `docker-compose.yml` also accepts these as environment variables: `NODE_VERSION=22.22.0 docker-compose build`
+- Docker tasks: `docker:build` (with `--arch`, `--no-cache`, `--tag` flags), `docker:up`, `docker:down`, `docker:logs`
+
+**Troubleshooting:**
+
+- `mise config` — shows loaded config files in order of precedence
+- `mise settings ls --all` — shows all settings and their sources
+- `mise prepare --dry-run` — check if deps need updating
+- `mise run <task> -v` — verbose output for debugging tasks
+- `mise tasks deps <task>` — visualize task dependency graph
+- Cache: `mise cache clear` — clears all cached data (remote versions, etc.)
+
 ### Drift
 
 - **Config:** `.drift/config.json` (tracked — project settings and feature flags)
@@ -50,6 +132,25 @@ pip install serena
 - **Global config:** `~/.serena/serena_config.yml`
 
 ## Quick Start for New Developers
+
+### 0. Install mise (Recommended)
+
+[mise-en-place](https://mise.jdx.dev) automatically manages the correct Node.js version for this project:
+
+```bash
+# Install mise
+curl https://mise.run | sh
+
+# Activate mise in your shell (pick your shell)
+echo 'eval "$(~/.local/bin/mise activate zsh)"' >> ~/.zshrc   # zsh
+echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.bashrc  # bash
+
+# Restart your shell, then:
+cd /path/to/aionui
+# mise auto-installs Node.js 22 on entry (via hooks)
+```
+
+> **Without mise:** Ensure Node.js >= 22.0.0 is installed, then upgrade npm: `npm install -g npm@11` (Node 22 bundles npm 10.x but this project requires 11+).
 
 ### 1. Install Tools
 
@@ -189,9 +290,11 @@ In your AI tool, try these prompts:
 
 2. **Understand existing code (MCP):**
    Use `drift_explain` to get a comprehensive explanation of code you'll modify:
+
    ```typescript
    drift_explain({ target: "src/path/to/file.ts", depth: "detailed", focus: "architecture" })
    ```
+
    This synthesizes pattern analysis, call graph, security implications, and
    dependencies into a coherent narrative. See [Explain Tool](#explain-tool-mcp) below.
 
@@ -207,10 +310,13 @@ In your AI tool, try these prompts:
 
 6. **Pre-validate generated code (MCP):**
    Before writing, use `drift_prevalidate` for quick feedback:
+
    ```typescript
    drift_prevalidate({ code: generatedCode, targetFile: "src/path/to/file.ts", kind: "function" })
    ```
+
    Or use `drift_validate_change` for full file validation:
+
    ```typescript
    drift_validate_change({ file: "src/path/to/file.ts", content: fullFileContent })
    ```
@@ -225,6 +331,7 @@ In your AI tool, try these prompts:
    ```
 
 8. **If violations found, get suggestions (MCP):**
+
    ```typescript
    drift_suggest_changes({ target: "src/path/to/file.ts", issue: "outlier", patternId: "pattern-id" })
    ```
@@ -285,6 +392,7 @@ When using Drift via MCP tools, follow this decision tree:
 | Mine decisions | `drift_decisions` (mine) | `drift_decisions` (list/get/search) |
 
 **AI agent code generation flow:**
+
 1. `drift_context` → get patterns, conventions, examples for the task
 2. Write code
 3. `drift_prevalidate` → quick check before committing to file (lightweight)
@@ -320,9 +428,11 @@ Cortex supports 9 memory types, though only 6 can be manually added via CLI:
 ### Confidence Decay
 
 Memory confidence decays exponentially based on age:
+
 ```
 effective_confidence = base_confidence × 2^(-age_days / half_life)
 ```
+
 Usage boosts confidence — frequently accessed memories decay slower. Confirmation
 via `drift memory feedback <id> confirm` also boosts confidence.
 
@@ -413,9 +523,10 @@ drift memory delete <id>              # Soft delete a memory
 
 Cortex V2 connects memories with causal relationships (`derived_from`, `supersedes`,
 `supports`, `contradicts`, `related_to`). These enable narrative generation —
-`drift memory why` traces causal chains to explain *why* things exist.
+`drift memory why` traces causal chains to explain _why_ things exist.
 
 **Causal relationship types:**
+
 - `caused` / `triggered_by` — Direct causation
 - `enabled` / `prevented` — Made possible or blocked
 - `supersedes` — Replaces an older memory
@@ -439,6 +550,7 @@ The system auto-selects compression level based on available token budget.
 ### Predictive Retrieval
 
 Cortex can predict what memories you'll need based on:
+
 - **File context** — current file, imports, directory
 - **Behavioral patterns** — recent intents and topics
 - **Git signals** — current branch, staged files
@@ -618,11 +730,13 @@ structure exists (`discovered/`, `verified/`, `mismatch/` subdirectories) but al
 are empty despite AionUI having matching frontend↔backend pairs:
 
 **Frontend (renderer) — 8 files with fetch() calls:**
+
 - `AuthContext.tsx`, `UserManagement.tsx`, `GroupMappings.tsx`, `ProfilePage.tsx`,
   `login/index.tsx`, `DirectorySelectionModal.tsx`, `PreviewPanel.tsx`,
   `MessageToolGroup.tsx`
 
 **Backend (webserver) — 5 route files:**
+
 - `apiRoutes.ts`, `authRoutes.ts`, `adminRoutes.ts`, `staticRoutes.ts`, `setup.ts`
 
 The native analyzer doesn't recognize standard Express route registration or
@@ -631,6 +745,7 @@ The native analyzer doesn't recognize standard Express route registration or
 ### What It Would Detect (When Working)
 
 Contracts would catch mismatches like:
+
 - Frontend expects `{ user: { name } }` but backend returns `{ data: user }`
 - Renamed endpoints that frontend hasn't been updated to match
 - Response shape changes that break frontend parsing
@@ -662,6 +777,7 @@ Custom patterns can be added to `.drift/config.json` for non-standard API client
 ### Workaround
 
 Until contract detection works:
+
 - Use TypeScript interfaces shared between renderer and webserver
 - Serena `find_referencing_symbols` to trace from route handler to consumer
 - Manual code review of API response shapes
@@ -697,11 +813,13 @@ and 4 backend. Mutations are deviations from the dominant patterns in the codeba
 ### Key Mutations
 
 **High impact (actionable):**
+
 - `src/webserver/directoryApi.ts:271` — `res.json(shortcuts)` uses `direct-return`
   instead of `{ success: true, data: shortcuts }` envelope pattern. This is the only
   endpoint that skips the envelope.
 
 **Medium impact (contextual — mostly not actionable):**
+
 - 12 config-pattern mutations in agent backends (`src/agent/`) — these naturally use
   `env-variables-direct` and `config-file-yaml-json` instead of `settings-class`
   because each agent (Claude, Gemini, Codex) has its own config format. These are
@@ -776,6 +894,7 @@ are clustered by similarity and categorized.
 ### Current Status (v0.9.48)
 
 **Not functional** for AionUI. `drift wrappers` reports:
+
 - 539 files scanned, 0 functions found, 0 wrappers detected, 0 clusters
 
 This was tested with lowered thresholds (`--min-confidence 0.3 --min-cluster-size 1`)
@@ -804,6 +923,7 @@ drift wrappers --json                  # Machine-readable output
 ### Workaround
 
 Until wrapper detection works, use these alternatives:
+
 - `drift callgraph callers <function>` — trace usage chains manually
 - Serena `find_referencing_symbols` — find all callers of a hook/middleware
 - `drift export --format ai-context --categories structural` — structural patterns
@@ -954,6 +1074,7 @@ Mined decisions start as `draft` and should be reviewed and confirmed.
 ### Exporting ADRs
 
 When using the CLI (future), decisions can be exported as markdown:
+
 ```bash
 drift decisions export   # Creates docs/adr/*.md files
 ```
@@ -978,6 +1099,7 @@ drift simulate "add rate limiting to WebUI API endpoints" \
 ```
 
 Returns ranked approaches with:
+
 - **Friction score** (0-100) — how much existing code needs to change
 - **Impact score** (0-100) — blast radius
 - **Pattern alignment** — how well it fits conventions
@@ -986,6 +1108,7 @@ Returns ranked approaches with:
 ### Current Status
 
 Confirmed as enterprise-gated in v0.9.48:
+
 ```
 ⚠️ Enterprise Feature Required
 ✗ gate:impact-simulation requires enterprise tier
@@ -995,6 +1118,7 @@ Current tier: community
 ### Workarounds
 
 Without speculative execution, use these alternatives:
+
 - `drift memory why "area" --intent add_feature` — get institutional knowledge
 - `drift_context` (MCP) — get relevant patterns and examples
 - `drift callgraph impact <file>` — manual impact analysis
@@ -1309,6 +1433,7 @@ Only **8 community/generic skills** are available, not the 71 pattern implementa
 skills listed in Drift's documentation.
 
 **Available skills:**
+
 ```bash
 drift skills list
 # pdf, docx, xlsx, pptx, skill-creator, moltbook, x-recruiter, xiaohongshu-recruiter
@@ -1487,6 +1612,7 @@ drift_validate_change (generation) → full validation with scoring
 ### MCP Server Configuration
 
 AionUI's MCP config (`.mcp.json`):
+
 ```json
 {
   "mcpServers": {
@@ -1774,6 +1900,7 @@ drift_code_examples({
 ```
 
 **Best practice for AI agents:**
+
 1. Start with `drift_context` to get relevant pattern IDs for your task
 2. Then use `drift_code_examples` with those pattern IDs for detailed snippets
 3. Use category filtering — don't request all categories (wastes tokens)

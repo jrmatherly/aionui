@@ -1,0 +1,285 @@
+# mise.toml — AionUI Development Environment
+# https://mise.jdx.dev
+#
+# This file defines the project's tool versions, environment variables, and tasks.
+# Commit this file to version control. Use `mise.local.toml` for personal overrides.
+#
+# Quick start:
+#   mise install        # Install all tools
+#   mise run dev        # Start development server
+#   mise run lint       # Run linting
+#   mise run test       # Run tests
+
+# Hard minimum: errors if unmet. Soft minimum: warns but continues.
+# Hard ensures hooks/prepare/lockfile features work. Soft recommends latest for bug fixes.
+min_version = { hard = "2025.1.0", soft = "2026.1.0" }
+
+[tools]
+# Node.js — Electron 37 requires Node >= 22
+# We pin to the major version; mise.lock stores the exact resolved version.
+# Contributors can override locally via mise.local.toml if needed.
+node = "22"
+
+# npm — pinned to match package.json "packageManager" field.
+# Node 22 bundles npm 10.x, but the project requires npm 11+ (see engines in package.json).
+npm = "11"
+
+[env]
+# Add node_modules/.bin to PATH so locally-installed CLIs work without npx
+_.path = ["{{config_root}}/node_modules/.bin"]
+
+# Default NODE_ENV for development (override in mise.local.toml or shell)
+NODE_ENV = "{{ env.NODE_ENV | default(value='development') }}"
+
+[settings]
+# Enable experimental features for hooks, prepare, and lockfile support
+experimental = true
+
+# Lockfile — ensures reproducible tool versions across machines and CI.
+# mise.lock is committed to version control (see dev-tools/mise-lock docs).
+lockfile = true
+
+# Show which tools are active when entering the project directory.
+# Helps developers confirm they have the right Node/npm versions.
+status.show_tools = true
+
+# Warn when dependencies are stale (e.g., package-lock.json newer than node_modules/).
+# Works with [prepare.npm] below.
+status.show_prepare_stale = true
+
+[hooks]
+# Auto-install tools when entering the project directory
+enter = "mise install -q"
+
+# ─── Prepare ────────────────────────────────────────────────────────────────
+# Auto-detect stale dependencies and install them before task execution.
+# See: https://mise.jdx.dev/dev-tools/prepare.html
+
+[prepare.npm]
+# When auto=true, `npm install` runs automatically before `mise run`/`mise x`
+# if package-lock.json is newer than node_modules/. Skip with --no-prepare.
+auto = true
+
+# ─── Tasks ───────────────────────────────────────────────────────────────────
+# These wrap npm scripts for a unified `mise run <task>` experience.
+# Key benefit: `mise run` auto-installs the correct Node.js version first.
+
+[tasks.install]
+alias = "i"
+description = "Install npm dependencies"
+hide = true  # Internal utility — [prepare.npm] handles auto-install. Use `mise run install` if needed.
+run = "npm install"
+
+[tasks.dev]
+alias = "d"
+description = "Start Electron development server with hot reload"
+# Dependencies auto-installed by [prepare.npm] when stale (no manual depends needed)
+run = "npm start"
+
+[tasks.webui]
+description = "Start WebUI server (local access)"
+run = "npm run webui"
+
+[tasks."webui:remote"]
+description = "Start WebUI server (remote access)"
+run = "npm run webui:remote"
+
+[tasks.lint]
+alias = "l"
+description = "Run ESLint"
+# Source tracking: skips re-runs when no source files have changed.
+# outputs defaults to { auto = true } — mise uses an internal marker file.
+# Use `mise run lint --force` to bypass source checking.
+sources = ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", ".eslintrc.json"]
+run = "npm run lint"
+
+[tasks."lint:fix"]
+description = "Run ESLint with auto-fix"
+run = "npm run lint:fix"
+
+[tasks.format]
+description = "Format code with Prettier"
+run = "npm run format"
+
+[tasks."format:check"]
+description = "Check code formatting (no changes)"
+sources = ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.css", "src/**/*.json", ".prettierrc.json"]
+run = "npm run format:check"
+
+[tasks.test]
+alias = "t"
+description = "Run all tests"
+sources = ["src/**/*.ts", "src/**/*.tsx", "src/**/*.test.*", "jest.config.js", "package.json"]
+run = "npm test"
+
+[tasks."test:watch"]
+description = "Run tests in watch mode"
+run = "npm run test:watch"
+
+[tasks."test:coverage"]
+description = "Run tests with coverage report"
+run = "npm run test:coverage"
+
+[tasks."test:contract"]
+description = "Run contract tests"
+run = "npm run test:contract"
+
+[tasks."test:integration"]
+description = "Run integration tests"
+run = "npm run test:integration"
+
+[tasks.build]
+alias = "b"
+description = "Build for current platform (macOS arm64 + x64)"
+# Source tracking: skip rebuild when no source files have changed.
+# Use `mise run build --force` to always rebuild.
+sources = ["src/**/*.ts", "src/**/*.tsx", "src/**/*.css", "package.json", "forge.config.ts", "tsconfig.json", "webpack.*.ts"]
+outputs = ["out/**/*"]
+run = "npm run build"
+
+[tasks."build:mac"]
+description = "Build macOS distribution"
+run = "npm run dist:mac"
+
+[tasks."build:win"]
+description = "Build Windows distribution"
+run = "npm run dist:win"
+
+[tasks."build:linux"]
+description = "Build Linux distribution"
+run = "npm run dist:linux"
+
+[tasks.clean]
+description = "Clean build artifacts (use --all to also remove node_modules)"
+confirm = "This will delete build artifacts.{% if usage.all %} Including node_modules/ (~500MB).{% endif %} Continue?"
+usage = '''
+flag "--all" help="Also remove node_modules/ (requires fresh npm install)"
+flag "--dry-run" help="Show what would be removed without deleting"
+'''
+run = """
+#!/usr/bin/env bash
+set -e
+
+targets=("out/" "dist/" ".webpack/")
+if [ "${usage_all:-false}" = "true" ]; then
+  targets+=("node_modules/")
+fi
+
+if [ "${usage_dry_run:-false}" = "true" ]; then
+  echo "Would remove:"
+  for t in "${targets[@]}"; do
+    [ -e "$t" ] && echo "  $t ($(du -sh "$t" 2>/dev/null | cut -f1))" || echo "  $t (not present)"
+  done
+  exit 0
+fi
+
+echo "Cleaning build artifacts..."
+for t in "${targets[@]}"; do
+  [ -e "$t" ] && rm -rf "$t" && echo "  ✓ Removed $t" || echo "  ○ $t (not present)"
+done
+echo "✓ Clean complete"
+"""
+
+[tasks.ci]
+description = "Run full CI checks (lint + format + test — runs in parallel, skips unchanged)"
+# lint, format:check, and test have source tracking — they'll skip if no files changed.
+# Use `mise run ci --force` to run all checks regardless.
+depends = ["lint", "format:check", "test"]
+
+[tasks.info]
+description = "Print project and environment information"
+run = """
+echo "╔══════════════════════════════════════════╗"
+echo "║          AionUI Dev Environment          ║"
+echo "╠══════════════════════════════════════════╣"
+echo "║ mise:     $(mise -v)"
+echo "║ Node.js:  $(node -v)"
+echo "║ npm:      $(npm -v)"
+echo "║ Electron: $(node -e \"console.log(require('./package.json').devDependencies.electron)\")"
+echo "║ NODE_ENV: $NODE_ENV"
+echo "║ Platform: $(uname -ms)"
+echo "╠──────────────────────────────────────────╣"
+PREP=$(mise prepare --dry-run 2>&1 | head -1); echo "║ Prepare:  ${PREP:-fresh}"
+echo "╚══════════════════════════════════════════╝"
+"""
+
+# ─── Docker Tasks ───────────────────────────────────────────────────────────
+# Build and run AionUI Docker images with versions from mise.lock.
+# See: deploy/docker/Dockerfile, deploy/docker/docker-compose.yml
+
+[tasks."docker:build"]
+description = "Build Docker image with pinned tool versions from mise.lock"
+usage = '''
+flag "--arch <arch>" help="Target architecture" default="arm64" {
+  choices "arm64" "amd64"
+}
+flag "--no-cache" help="Build without Docker layer cache"
+flag "--tag <tag>" help="Image tag" default="aionui:latest"
+'''
+run = """
+#!/usr/bin/env bash
+set -e
+
+# Extract pinned versions from mise.lock to pass as Docker build args.
+# This ensures Docker uses the exact same Node/npm versions as local dev.
+NODE_VERSION=$(grep -A1 'tools.node' mise.lock | grep version | head -1 | sed 's/.*= "//' | sed 's/"//')
+NPM_VERSION=$(grep -A1 'tools.npm' mise.lock | grep version | head -1 | sed 's/.*= "//' | sed 's/"//')
+
+echo "Building Docker image with:"
+echo "  Node.js: ${NODE_VERSION}"
+echo "  npm:     ${NPM_VERSION}"
+echo "  Arch:    ${usage_arch?}"
+echo "  Tag:     ${usage_tag?}"
+echo ""
+
+CACHE_FLAG=""
+if [ "${usage_no_cache:-false}" = "true" ]; then
+  CACHE_FLAG="--no-cache"
+fi
+
+docker build \
+  -f deploy/docker/Dockerfile \
+  --build-arg NODE_VERSION="${NODE_VERSION}" \
+  --build-arg NPM_VERSION="${NPM_VERSION}" \
+  --build-arg TARGETARCH="${usage_arch?}" \
+  ${CACHE_FLAG} \
+  -t "${usage_tag?}" \
+  .
+"""
+
+[tasks."docker:up"]
+description = "Start AionUI Docker container (docker-compose)"
+run = "docker-compose -f deploy/docker/docker-compose.yml up -d"
+
+[tasks."docker:down"]
+description = "Stop AionUI Docker container"
+run = "docker-compose -f deploy/docker/docker-compose.yml down"
+
+[tasks."docker:logs"]
+description = "Follow AionUI Docker container logs"
+run = "docker-compose -f deploy/docker/docker-compose.yml logs -f"
+
+# ─── Drift Detect Tasks ─────────────────────────────────────────────────────
+# Integration with Drift Detect for pattern analysis and code health
+
+[tasks."drift:check"]
+description = "Run Drift Detect pattern validation"
+run = "drift check"
+
+[tasks."drift:scan"]
+description = "Run full Drift Detect scan"
+run = "drift scan"
+
+[tasks."drift:export"]
+description = "Export Drift AI context (for AI assistants)"
+run = "drift export --format ai-context --compact"
+
+[tasks."drift:health"]
+description = "Show Drift Detect health summary"
+run = """
+echo "=== Drift Detect Health ==="
+drift health 2>/dev/null || echo "(drift not installed — run: npm i -g driftdetect)"
+echo ""
+echo "=== Pattern Summary ==="
+drift export --format summary 2>/dev/null || true
+"""

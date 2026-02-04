@@ -54,3 +54,12 @@ Note: `electron-builder.yml` includes `bcrypt/**/*` in `files` and `asarUnpack`,
 - Xvfb is included but not strictly required — `src/process/configureChromium.ts` auto-detects missing `DISPLAY` and switches Electron to headless mode
 - dbus and GPU errors in container logs are expected and harmless for WebUI mode
 - The `rules/` directory does not exist in the repo; the "Could not find builtin rules directory" warning is expected
+
+## mise Integration for Docker Builds
+
+- **Dockerfile uses `ARG NODE_VERSION` / `ARG NPM_VERSION`** defaulting to `mise.lock` values (22.22.0 / 11.8.0)
+- **`mise run docker:build`** auto-reads versions from `mise.lock` and passes them as build args — ensures Docker uses exact same tool versions as local dev
+- **`docker-compose.yml`** accepts `NODE_VERSION` / `NPM_VERSION` env vars, defaulting to current mise.lock values
+- **npm is upgraded** in the builder stage (`npm install -g npm@${NPM_VERSION}`) because Node 22 bundles npm 10.x but the project requires 11+
+- **`.dockerignore`** explicitly excludes `mise.local.toml`, `mise.*.local.toml`, `mise.local.lock` but includes `mise.toml` and `mise.lock`
+- When updating tool versions: update `mise.toml`, run `mise install`, then `mise lock` to refresh `mise.lock`, then `mise run docker:build` to rebuild with new versions

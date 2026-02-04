@@ -6,57 +6,124 @@ This guide covers development setup, architecture patterns, and contribution gui
 
 ### Prerequisites
 
-```bash
-# Required
-node --version  # 18.x or later
-npm --version   # 9.x or later
+- **Node.js** >= 22.0.0 (managed automatically by mise)
+- **npm** >= 11.0.0
+- **Git** for source control
+- **[mise-en-place](https://mise.jdx.dev)** (recommended) — manages tool versions automatically
 
-# Recommended
-git --version   # For source control
-```
+### Quick Start (Recommended — with mise)
 
-### Initial Setup
+[mise](https://mise.jdx.dev) automatically installs the correct Node.js version and sets up the development environment. This is the recommended approach for all contributors.
 
 ```bash
-# Clone repository
-git clone https://github.com/your-org/aionui.git
+# 1. Install mise (if you don't have it)
+curl https://mise.run | sh
+# Then activate mise in your shell — see https://mise.jdx.dev/getting-started.html#activate-mise
+
+# 2. Clone and enter the project
+git clone https://github.com/iOfficeAI/AionUi.git
 cd aionui
 
-# Install dependencies
-npm install
+# 3. Install tools + dependencies and start developing
+mise install          # Installs correct Node.js version automatically
+mise run dev          # Installs npm deps + starts Electron dev server
+```
 
-# Start development server
+That's it. mise reads `mise.toml` and `mise.lock` to ensure you get the exact same Node.js and npm versions as every other contributor.
+
+> **Note:** If you have mise activated in your shell, tools auto-install when you `cd` into the project directory thanks to the `[hooks] enter` configuration. Dependencies (`node_modules/`) are also auto-installed before task execution when stale, via the `[prepare.npm]` provider.
+
+### Alternative Setup (without mise)
+
+```bash
+# Ensure you have the correct Node.js version (see engines in package.json)
+node --version  # Must be >= 22.0.0
+
+# Node 22 bundles npm 10.x — this project requires npm 11+
+npm install -g npm@11
+npm --version   # Must be >= 11.0.0
+
+# Clone and install
+git clone https://github.com/iOfficeAI/AionUi.git
+cd aionui
+npm install
 npm start
 ```
 
 ### Development Commands
 
+AionUI uses **mise tasks** as the primary interface. Dependencies are auto-installed when stale (via `[prepare.npm]`), and tools are auto-installed before running.
+
 ```bash
-# Development
+# ─── Development ─────────────────────────────────────────────
+mise run dev               # Start Electron dev server (alias: mise dev)
+mise run webui             # Start WebUI server (local access)
+mise run webui:remote      # Start WebUI server (remote access)
+mise run info              # Print environment information
+
+# ─── Code Quality ────────────────────────────────────────────
+mise run lint              # Run ESLint (alias: mise lint)
+mise run lint:fix          # Run ESLint with auto-fix
+mise run format            # Format code with Prettier
+mise run format:check      # Check formatting (CI)
+mise run ci                # Run full CI checks (lint + format + test)
+
+# ─── Testing ─────────────────────────────────────────────────
+mise run test              # Run all tests (alias: mise test)
+mise run test:watch        # Watch mode
+mise run test:coverage     # Coverage report
+mise run test:contract     # Contract tests only
+mise run test:integration  # Integration tests only
+
+# ─── Building ────────────────────────────────────────────────
+mise run build             # Build for current platform (alias: mise build)
+mise run build:mac         # macOS distribution
+mise run build:win         # Windows distribution
+mise run build:linux       # Linux distribution
+mise run clean             # Clean build artifacts
+
+# ─── Docker ───────────────────────────────────────────────────
+mise run docker:build      # Build image (versions from mise.lock)
+mise run docker:build -- --arch amd64  # Build for amd64
+mise run docker:up         # Start container (docker-compose)
+mise run docker:down       # Stop container
+mise run docker:logs       # Follow container logs
+
+# ─── Drift Detect (Code Health) ──────────────────────────────
+mise run drift:check       # Validate patterns
+mise run drift:scan        # Full scan
+mise run drift:health      # Health summary
+mise run drift:export      # Export AI context
+```
+
+> **npm scripts still work.** The mise tasks wrap npm scripts, so `npm start`, `npm test`, etc. continue to work as before. mise tasks are preferred because they ensure the correct Node.js version is active.
+
+#### Legacy npm Commands (still supported)
+
+```bash
 npm start              # Start with hot reload
 npm run webui          # Start WebUI server
-npm run webui:remote   # WebUI with remote access
-
-# Code Quality
 npm run lint           # Run ESLint
-npm run lint:fix       # Fix lint issues
-npm run format         # Format with Prettier
-
-# Testing
 npm test               # Run all tests
-npm run test:watch     # Watch mode
-npm run test:coverage  # Coverage report
-
-# Building
 npm run build          # Build for macOS
-npm run dist:mac       # macOS distribution
-npm run dist:win       # Windows distribution
-npm run dist:linux     # Linux distribution
+```
 
-# Docker
-docker-compose -f deploy/docker/docker-compose.yml up -d --build
-docker-compose -f deploy/docker/docker-compose.yml logs -f
-docker-compose -f deploy/docker/docker-compose.yml down
+### Configuration Files
+
+| File | Purpose | Git |
+|------|---------|-----|
+| `mise.toml` | Tool versions, env vars, tasks, prepare providers | ✅ Committed |
+| `mise.lock` | Exact pinned versions + checksums + download URLs | ✅ Committed |
+| `mise.local.toml` | Personal overrides (e.g., different Node version) | ❌ Gitignored |
+| `mise.local.lock` | Lockfile for local overrides | ❌ Gitignored |
+| `mise.*.local.toml` | Environment-specific local overrides | ❌ Gitignored |
+
+To override a tool version locally without affecting the team:
+
+```toml
+# mise.local.toml (create this file, it's gitignored)
+[tools]
+node = "24"  # Use Node 24 instead of 22
 ```
 
 ## Project Structure
@@ -300,6 +367,7 @@ export const PLUGIN_TYPES = {
 ### Overview
 
 AionUI implements a multi-user authentication system with support for:
+
 - **OIDC (OpenID Connect)**: Primary authentication via SSO providers
 - **Local Authentication**: Fallback username/password system
 - **RBAC**: Role-based access control (admin/user)

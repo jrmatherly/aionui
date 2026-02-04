@@ -4,8 +4,8 @@ This guide will help you set up and start using AionUI to interact with AI agent
 
 ## Prerequisites
 
-- **Node.js**: 18.x or later
-- **npm**: 9.x or later
+- **Node.js**: 22.x or later (automatically managed if using [mise](https://mise.jdx.dev))
+- **npm**: 11.x or later
 - **Operating System**: macOS, Windows, or Linux
 - **AI API Keys** (optional, depending on agent):
   - Google AI API key (for Gemini)
@@ -14,17 +14,30 @@ This guide will help you set up and start using AionUI to interact with AI agent
 
 ## Installation
 
-### From Source
+### From Source (Recommended — with mise)
+
+[mise-en-place](https://mise.jdx.dev) automatically installs the correct Node.js version:
 
 ```bash
-# Clone the repository
-git clone https://github.com/your-org/aionui.git
+# Install mise (one-time setup)
+curl https://mise.run | sh
+
+# Clone and start
+git clone https://github.com/iOfficeAI/AionUi.git
 cd aionui
+mise install        # Installs correct Node.js automatically
+mise run dev        # Installs npm deps + starts dev server
+```
 
-# Install dependencies
+### From Source (without mise)
+
+```bash
+# Ensure Node.js >= 22 is installed, then upgrade npm to 11+
+# (Node 22 bundles npm 10.x; this project requires npm 11+)
+npm install -g npm@11
+git clone https://github.com/iOfficeAI/AionUi.git
+cd aionui
 npm install
-
-# Start development server
 npm start
 ```
 
@@ -284,6 +297,7 @@ Configure MCP servers for extended capabilities:
    - Ensure required scopes are granted (at minimum: `openid profile email`)
 
 3. **Review logs**:
+
    ```bash
    docker-compose logs -f  # For Docker deployments
    # Or check application logs for OIDC errors

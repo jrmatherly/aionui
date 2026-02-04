@@ -179,7 +179,7 @@ Gene IDs: `variant-handling`, `responsive-approach`, `state-styling`, `theming`,
 
 ## Reports & Export
 
-- `drift report` — **broken in v0.9.48** (hangs indefinitely, no output)
+- `drift report` — **interactive in v0.9.48** (launches TTY selection menus; use explicit flags for non-interactive use: `drift report --format text --output report.txt`)
 - `drift export` — **working** in all formats:
   - `--format json` — machine-readable full data
   - `--format ai-context` — AI-optimized (~30K tokens full; use `--compact` for less)
@@ -213,6 +213,12 @@ Detail → Analysis → Generation. Start with `drift_context` (Layer 1) for cod
 tasks. Use surgical tools (`drift_signature`, ~200 tokens) over file reads (~2000
 tokens) for efficiency.
 
+## Node.js Version Requirement
+
+Drift Detect is installed globally under Node 25.x (mise global config). AionUI's `mise.toml` activates Node 22.x inside the project directory. Since Drift's `better-sqlite3` native module is compiled for Node 25, **running `drift` directly inside the project directory fails** with a `NODE_MODULE_VERSION` mismatch.
+
+**Workaround:** Use `mise x node@25 -- drift <command>` to run Drift with the correct Node version inside the AionUI project directory. Outside the project (e.g., `/tmp`), Drift works normally under the global Node 25.
+
 ## Configuration
 
 - **Drift config:** `.drift/config.json` (MCP tool filtering: TypeScript-only)
@@ -220,3 +226,25 @@ tokens) for efficiency.
 - **Boundary rules:** `.drift/boundaries/rules.json`
 - **Approved patterns:** `.drift/patterns/approved/*.json`
 - **Constraints index:** `.drift/constraints/index.json`
+
+## mise-en-place (Tool & Environment Manager)
+
+AionUI uses mise to manage tool versions, environment variables, and tasks.
+This provides a unified developer experience and deterministic environments.
+
+- **Tool versions:** `mise.toml` pins Node.js 22 LTS + npm 11 (exact versions in `mise.lock`)
+- **Lockfile:** `mise.lock` includes SHA256 checksums and download URLs for linux-x64, macos-arm64, macos-x64
+- **Tasks:** `mise run dev`, `mise run lint`, `mise run test`, `mise run drift:check`, etc.
+- **Source tracking:** lint, format:check, test, and build tasks have `sources` — skip re-runs when unchanged
+- **Task arguments:** `clean` task accepts `--all` (nuke node_modules) and `--dry-run` flags via `usage` spec
+- **Environment:** NODE_ENV defaults to "development", `node_modules/.bin` added to PATH
+- **Auto-install:** `[hooks] enter` auto-installs tools when entering the project directory
+- **Prepare:** `[prepare.npm] auto = true` — auto-installs deps when `package-lock.json` is newer than `node_modules/`
+- **Personal overrides:** `mise.local.toml` (gitignored) for per-developer customization
+- **Interop:** mise tasks wrap npm scripts; npm scripts still work independently
+- **Drift tasks:** `mise run drift:check`, `mise run drift:scan`, `mise run drift:health`, `mise run drift:export`
+- **Settings:** `lockfile = true`, `status.show_tools = true`, `status.show_prepare_stale = true`
+- **Min version:** hard `2025.1.0` (errors), soft `2026.1.0` (warns) — ensures hooks/prepare/lockfile work
+- **Hooks:** `enter` auto-installs tools; `postinstall`/`leave` available but not configured
+- **CI:** `jdx/mise-action@v3` with `cache: true` and `experimental: true`
+- **Docker:** `mise run docker:build` auto-reads versions from `mise.lock`; Dockerfile uses `ARG NODE_VERSION`/`ARG NPM_VERSION`
