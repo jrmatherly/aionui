@@ -230,11 +230,26 @@ set -e
 NODE_VERSION=$(grep -A1 'tools.node' mise.lock | grep version | head -1 | sed 's/.*= "//' | sed 's/"//')
 NPM_VERSION=$(grep -A1 'tools.npm' mise.lock | grep version | head -1 | sed 's/.*= "//' | sed 's/"//')
 
+# Read CLI install flags from deploy/docker/.env (same source as docker-compose).
+# Only uncommented KEY=value lines with INSTALL_ prefix are read.
+ENV_FILE="deploy/docker/.env"
+CLI_ARGS=""
+if [ -f "$ENV_FILE" ]; then
+  while IFS='=' read -r key value; do
+    # Skip comments, blank lines, and non-INSTALL_ vars
+    [[ "$key" =~ ^#.*$ || -z "$key" || ! "$key" =~ ^INSTALL_ ]] && continue
+    # Strip surrounding whitespace/quotes from value
+    value=$(echo "$value" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//;s/^"//;s/"$//')
+    CLI_ARGS="${CLI_ARGS} --build-arg ${key}=${value}"
+  done < "$ENV_FILE"
+fi
+
 echo "Building Docker image with:"
 echo "  Node.js: ${NODE_VERSION}"
 echo "  npm:     ${NPM_VERSION}"
 echo "  Arch:    ${usage_arch?}"
 echo "  Tag:     ${usage_tag?}"
+[ -n "$CLI_ARGS" ] && echo "  CLI args:${CLI_ARGS}"
 echo ""
 
 CACHE_FLAG=""
@@ -247,6 +262,7 @@ docker build \
   --build-arg NODE_VERSION="${NODE_VERSION}" \
   --build-arg NPM_VERSION="${NPM_VERSION}" \
   --build-arg TARGETARCH="${usage_arch?}" \
+  ${CLI_ARGS} \
   ${CACHE_FLAG} \
   -t "${usage_tag?}" \
   .

@@ -234,7 +234,8 @@ RUN if [ "$INSTALL_CLI_NODE" = "true" ] || \
         mv /usr/local/bin/node.cli /usr/local/bin/node && \
         mv /usr/local/lib/node_modules.cli /usr/local/lib/node_modules && \
         ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && \
-        echo "✅ Node.js and CLI tools installed in runtime"; \
+        ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx && \
+        echo "✅ Node.js, npm, npx, and CLI tools installed in runtime"; \
     else \
         rm -f /usr/local/bin/node.cli && \
         rm -rf /usr/local/lib/node_modules.cli && \
