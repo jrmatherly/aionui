@@ -297,18 +297,34 @@ patterns, examples, and conventions in one call.
 
 ## Cortex Memory System
 
-Drift's Cortex stores institutional knowledge that AI assistants retrieve contextually.
+Drift's Cortex V2 is an intelligent memory system — a living knowledge base that
+learns from the codebase and corrections. It replaces static documentation with
+dynamic, intent-aware, confidence-decaying memories.
 
 ### Memory Types
 
-| Type | Half-Life | Use For |
-|------|-----------|---------|
-| `tribal` | 365 days | Team conventions, gotchas, "everyone knows this" |
-| `procedural` | 180 days | How-to guides, step-by-step processes |
-| `pattern_rationale` | 180 days | Why a pattern exists |
-| `decision_context` | 180 days | Why an architectural choice was made |
-| `code_smell` | 90 days | Anti-patterns to avoid |
-| `constraint_override` | 90 days | Approved exceptions to rules |
+Cortex supports 9 memory types, though only 6 can be manually added via CLI:
+
+| Type | Icon | Half-Life | Use For | Can Add? |
+|------|------|-----------|---------|----------|
+| `core` | 🏠 | ∞ (never) | Project identity, tech stack | Auto-only |
+| `tribal` | ⚠️ | 365 days | Team conventions, gotchas | ✅ |
+| `procedural` | 📋 | 180 days | How-to guides, step-by-step processes | ✅ |
+| `semantic` | 💡 | 90 days | Consolidated knowledge | Auto (from consolidation) |
+| `episodic` | 💭 | 7 days | Interaction records | Auto (from learning) |
+| `pattern_rationale` | 🎯 | 180 days | Why a pattern exists | ✅ |
+| `decision_context` | 📝 | 180 days | Why an architectural choice was made | ✅ |
+| `code_smell` | 🚫 | 90 days | Anti-patterns to avoid | ✅ |
+| `constraint_override` | ✅ | 90 days | Approved exceptions to rules | ✅ |
+
+### Confidence Decay
+
+Memory confidence decays exponentially based on age:
+```
+effective_confidence = base_confidence × 2^(-age_days / half_life)
+```
+Usage boosts confidence — frequently accessed memories decay slower. Confirmation
+via `drift memory feedback <id> confirm` also boosts confidence.
 
 ### Adding Knowledge
 
@@ -335,11 +351,116 @@ drift memory add decision_context "Chose Arco Design for enterprise aesthetic" -
 ### Querying Knowledge
 
 ```bash
-drift memory search "authentication"
-drift memory list --type tribal
-drift memory status
-drift memory health
+drift memory search "authentication"           # Semantic search across all memories
+drift memory list --type tribal                 # List by type
+drift memory why "OIDC login" --intent fix_bug  # Intent-aware context retrieval
+drift memory warnings                           # Show active warnings (tribal + code smells)
+drift memory show <id>                          # Full memory details with decay info
+drift memory status                             # Overview counts by type
+drift memory health                             # Comprehensive health report with recommendations
 ```
+
+### Intent-Aware Retrieval (`drift memory why`)
+
+The `why` command retrieves memories based on intent, using semantic search with
+relevance scoring:
+
+```bash
+drift memory why "OIDC" --intent add_feature   # Returns auth-related memories
+drift memory why "database" --intent fix_bug    # Returns data access memories
+```
+
+**Validated behavior:** Returns memories ranked by relevance percentage. Results
+include token usage tracking (e.g., "Tokens: 215/2000"). Empty results mean no
+memories exceeded the relevance threshold — try broader or different search terms.
+
+**Supported intents:** `add_feature`, `fix_bug`, `refactor`, `security_audit`,
+`understand_code`, `add_test`
+
+### Learning from Corrections
+
+Cortex can learn from corrections, creating new memories automatically:
+
+```bash
+# Learn from a correction (creates tribal memory at 80% confidence)
+drift memory learn "Always wrap database operations in try-catch with proper error context"
+
+# Provide feedback on existing memories
+drift memory feedback <id> confirm    # Boosts confidence (80% → 90%)
+drift memory feedback <id> reject --details "Outdated"
+drift memory feedback <id> modify     # Update content
+```
+
+### Maintenance
+
+```bash
+drift memory validate --scope stale   # Find stale or conflicting memories
+drift memory consolidate              # Merge episodic → semantic knowledge
+drift memory export backup.json       # Export all memories for backup
+drift memory import backup.json       # Import from backup
+drift memory delete <id>              # Soft delete a memory
+```
+
+### Current State
+
+- **51 memories** (23 tribal, 9 procedural, 5 pattern_rationale, 6 decision_context,
+  4 code_smell, 4 constraint_override)
+- **Health score:** 95/100
+- **6 active warnings** (security, React, error handling, TypeScript conventions)
+- **Decay:** All memories at 100% effective confidence (created recently)
+
+### Causal Graphs
+
+Cortex V2 connects memories with causal relationships (`derived_from`, `supersedes`,
+`supports`, `contradicts`, `related_to`). These enable narrative generation —
+`drift memory why` traces causal chains to explain *why* things exist.
+
+**Causal relationship types:**
+- `caused` / `triggered_by` — Direct causation
+- `enabled` / `prevented` — Made possible or blocked
+- `supersedes` — Replaces an older memory
+- `supports` / `contradicts` — Reinforces or conflicts
+- `derived_from` — Based on another memory
+
+### Token Efficiency
+
+Cortex uses hierarchical compression (4 levels) and session deduplication:
+
+| Level | Detail | Tokens |
+|-------|--------|--------|
+| 0 | IDs only | ~10 |
+| 1 | One-line summaries | ~50 |
+| 2 | With examples | ~200 |
+| 3 | Full detail | ~500+ |
+
+Session deduplication prevents sending the same memory twice within a session.
+The system auto-selects compression level based on available token budget.
+
+### Predictive Retrieval
+
+Cortex can predict what memories you'll need based on:
+- **File context** — current file, imports, directory
+- **Behavioral patterns** — recent intents and topics
+- **Git signals** — current branch, staged files
+
+This is primarily used by MCP tools (`drift_memory_predict`) to preload relevant
+memories into cache for faster retrieval.
+
+### MCP Memory Tools
+
+| MCP Tool | Purpose |
+|----------|---------|
+| `drift_why` | Causal narrative explaining WHY something exists |
+| `drift_memory_status` | Health overview with recommendations |
+| `drift_memory_for_context` | Get memories for context with compression |
+| `drift_memory_search` | Semantic search with session deduplication |
+| `drift_memory_add` | Add memory with automatic causal inference |
+| `drift_memory_learn` | Learn from corrections (full pipeline) |
+| `drift_memory_feedback` | Confirm, reject, or modify memories |
+| `drift_memory_predict` | Get predicted memories for current context |
+| `drift_memory_conflicts` | Detect conflicting memories |
+| `drift_memory_graph` | Visualize memory relationships |
+| `drift_memory_validate` | Validate memories and get healing suggestions |
 
 ## Serena Memories
 
@@ -1102,9 +1223,22 @@ Drift provides report generation and data export for documentation, CI, and AI c
 
 ### Reports (`drift report`)
 
-**Current Status (v0.9.48):** `drift report` hangs indefinitely without producing
-output. The `.drift/reports/` directory exists but is empty. This appears to be a
-bug in the current version.
+`drift report` works but **requires explicit flags** in non-interactive mode.
+Without `--format` and `--output`, it shows interactive selection menus (format
+picker, category picker) that require a TTY. In scripts or non-TTY contexts,
+always pass flags:
+
+```bash
+# Working — explicit flags
+drift report --format text --output report.txt
+drift report --format json --output report.json
+drift report --format github    # GitHub Actions annotations to stdout
+
+# Broken in non-TTY — launches interactive menus
+drift report                    # Hangs waiting for menu input
+```
+
+Reports are saved to `.drift/reports/` when using `--output`.
 
 ### Export (`drift export`) — Working ✅
 
@@ -1413,9 +1547,11 @@ drift boundaries check     # Verify data access boundaries
 ### Weekly Review
 
 ```bash
-drift memory health                        # Check memory system
-drift patterns list --status discovered    # Review new patterns
+drift memory health                        # Check memory system (health score, recommendations)
+drift memory warnings                      # Active warnings from tribal + code smells
 drift memory validate --scope stale        # Find stale memories
+drift memory consolidate                   # Merge episodic → semantic knowledge
+drift patterns list --status discovered    # Review new patterns
 drift env scan                             # Refresh env var index
 drift boundaries check                     # Verify data boundaries
 drift dna mutations                        # Check for new style drift
@@ -1424,6 +1560,7 @@ drift audit                                # Pattern health, duplicates, FPs
 drift coupling cycles                      # Check for circular dependencies
 drift error-handling gaps                  # Find missing error handling
 drift dna playbook --force                 # Regenerate style playbook if needed
+drift memory export backup-$(date +%Y%m%d).json  # Backup memories
 ```
 
 ### Learning from Experience
@@ -1431,13 +1568,27 @@ drift dna playbook --force                 # Regenerate style playbook if needed
 When you fix a bug or discover a gotcha:
 
 ```bash
+# Add knowledge directly
 drift memory add tribal "What I learned" --topic "Area"
+
+# Or learn from a correction (creates at 80% confidence, lower than manual 100%)
+drift memory learn "Description of the correction and correct approach"
+
+# Confirm important memories to boost their confidence
+drift memory feedback <id> confirm
 ```
 
 When an architectural decision is made, update both:
 
 1. Drift: `drift memory add decision_context "..." --topic "..."`
 2. Serena: Edit or create `.serena/memories/relevant-topic.md`
+
+When AI makes a mistake and you correct it, use the learning system:
+
+```bash
+drift memory learn "Correct approach: always use X instead of Y because Z"
+# Creates tribal memory + code smell automatically
+```
 
 ## Test Topology
 
@@ -1668,7 +1819,7 @@ Each was confirmed non-functional or not applicable as described below.
 | **Suggest Changes (CLI)** | MCP-only | `drift check --suggest` not available. Use MCP tool `drift_suggest_changes`. `drift check` works for violation detection. |
 | **Skills (71 guides)** | Only 8 available | Docs list 71 implementation skills across 12 categories (resilience, auth, caching, etc.) but `drift skills list` shows only 8 community/generic skills (pdf, docx, xlsx, pptx, etc.). The 71 pattern implementation skills (circuit-breaker, jwt-auth, rate-limiting, etc.) are not available in v0.9.48. |
 | **Dashboard** | Package not installed | `drift dashboard` requires `driftdetect-dashboard` npm package which is not installed. Returns "Dashboard package not found." Dashboard provides web visualization of patterns, call graphs, and health. |
-| **Reports** | Hangs/non-functional | `drift report` (text and JSON formats) hangs indefinitely without output. `.drift/reports/` directory exists but is empty. Use `drift export` instead (all formats work: json, ai-context, summary, markdown). |
+| **Reports** | Requires explicit flags | `drift report` without flags launches interactive selection menus that hang in non-TTY mode. Always pass `--format` and `--output` flags explicitly (e.g., `drift report --format text --output report.txt`). Works correctly with flags. |
 | **Monorepo Support** | N/A (by design) | AionUI is a single-package project (`drift context --list` shows 1 root package). Monorepo features (package-scoped analysis, cross-package impact, per-package patterns) are for multi-package workspaces. |
 
 ### What Still Works for These Areas

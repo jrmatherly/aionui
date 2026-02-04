@@ -66,15 +66,32 @@ Auth-related data access is governed by rules in `.drift/boundaries/rules.json`:
 - `jwks-access` — JWKS private keys restricted
 - `user-pii-access` — email, display_name, avatar restricted
 
-## Cortex Memory
+## Cortex V2 Memory System
 
-30+ institutional memories in Drift's Cortex cover:
+51 institutional memories in Drift's Cortex across 6 manually-addable types:
 
-- Tribal knowledge (conventions, gotchas)
-- Pattern rationale (why patterns exist)
-- Decision context (architectural choices)
-- Code smells (anti-patterns to avoid)
-- Constraint overrides (approved exceptions)
+| Type                | Count | Half-Life | Purpose                                |
+| ------------------- | ----- | --------- | -------------------------------------- |
+| tribal              | 23    | 365d      | Conventions, gotchas, tool limitations |
+| procedural          | 9     | 180d      | How-to guides, workflows               |
+| pattern_rationale   | 5     | 180d      | Why patterns exist                     |
+| decision_context    | 6     | 180d      | Architectural choices                  |
+| code_smell          | 4     | 90d       | Anti-patterns                          |
+| constraint_override | 4     | 90d       | Approved exceptions                    |
+
+### Key Features (Validated)
+
+- **`drift memory why <focus> --intent <intent>`** — Intent-aware retrieval with
+  relevance scoring. Supported intents: add_feature, fix_bug, refactor,
+  security_audit, understand_code, add_test. Returns token-budgeted results.
+- **`drift memory learn <correction>`** — Creates tribal memories from corrections
+  at 80% confidence (vs 100% for manual `add`)
+- **`drift memory feedback <id> confirm`** — Boosts confidence (80% → 90%)
+- **`drift memory warnings`** — Shows 6 active warnings (security, React, etc.)
+- **Causal graphs** — Memories linked by causal relationships for narrative generation
+- **Token efficiency** — 4-level compression, session deduplication
+- **Predictive retrieval** — MCP `drift_memory_predict` preloads relevant memories
+- **Health:** 95/100, all memories at 100% effective confidence
 
 ## Audit & Maintenance
 
