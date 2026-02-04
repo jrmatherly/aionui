@@ -11,17 +11,18 @@ const modelCapabilitiesCache = new Map<string, boolean | undefined>();
 
 /**
  * Capability matching regex - Reference: Cherry Studio
+ * Updated Feb 2026 for GPT-5.x series
  */
 const CAPABILITY_PATTERNS: Record<ModelType, RegExp> = {
   text: /gpt|claude|gemini|qwen|llama|mistral|deepseek/i,
-  vision: /4o|claude-3|claude-.*-4|claude-opus|claude-sonnet|claude-haiku|gemini-.*-pro|gemini-.*-flash|gemini-2\.|gemini-3|qwen-vl|llava|vision/i,
-  function_calling: /gpt-4|claude-3|claude-.*-4|gemini|qwen|deepseek/i,
-  image_generation: /flux|diffusion|stabilityai|sd-|dall|cogview|janus|midjourney|mj-|imagen/i,
+  vision: /gpt-5|gpt-4\.1|gpt-4o|claude-3|claude-.*-4|claude-opus|claude-sonnet|claude-haiku|gemini-.*-pro|gemini-.*-flash|gemini-2\.|gemini-3|qwen-vl|llava|vision/i,
+  function_calling: /gpt-5|gpt-4\.1|gpt-4o|gpt-4-turbo|claude-3|claude-.*-4|gemini|qwen|deepseek/i,
+  image_generation: /flux|diffusion|stabilityai|sd-|dall|cogview|janus|midjourney|mj-|imagen|gpt-image/i,
   web_search: /search|perplexity/i,
-  reasoning: /o1-|o3|reasoning|think/i,
+  reasoning: /gpt-5|o1-|o3|o4-|reasoning|think/i,
   embedding: /(?:^text-|embed|bge-|e5-|LLM2Vec|retrieval|uae-|gte-|jina-clip|jina-embeddings|voyage-)/i,
   rerank: /(?:rerank|re-rank|re-ranker|re-ranking|retrieval|retriever)/i,
-  excludeFromPrimary: /dall-e|flux|stable-diffusion|midjourney|flash-image|image|embed|rerank/i, // Primary models to exclude
+  excludeFromPrimary: /dall-e|flux|stable-diffusion|midjourney|flash-image|image|embed|rerank|codex/i, // Primary models to exclude
 };
 
 /**
@@ -29,8 +30,8 @@ const CAPABILITY_PATTERNS: Record<ModelType, RegExp> = {
  */
 const CAPABILITY_EXCLUSIONS: Record<ModelType, RegExp[]> = {
   text: [],
-  vision: [/embed|rerank|dall-e|flux|stable-diffusion/i],
-  function_calling: [/aqa(?:-[\\w-]+)?/i, /imagen(?:-[\\w-]+)?/i, /o1-mini/i, /o1-preview/i, /o3-mini/i, /gemini-1(?:\\.[\\w-]+)?/i, /dall-e/i, /embed/i, /rerank/i],
+  vision: [/embed|rerank|dall-e|flux|stable-diffusion|codex|nano/i],
+  function_calling: [/aqa(?:-[\\w-]+)?/i, /imagen(?:-[\\w-]+)?/i, /o1-mini/i, /o1-preview/i, /o3-mini/i, /o4-mini/i, /gemini-1(?:\\.[\\w-]+)?/i, /dall-e/i, /embed/i, /rerank/i],
   image_generation: [],
   web_search: [],
   reasoning: [],
