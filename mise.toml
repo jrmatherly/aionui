@@ -20,9 +20,10 @@ min_version = { hard = "2025.1.0", soft = "2026.1.0" }
 # Contributors can override locally via mise.local.toml if needed.
 node = "22"
 
-# npm — pinned to match package.json "packageManager" field.
-# Node 22 bundles npm 10.x, but the project requires npm 11+ (see engines in package.json).
-npm = "11"
+# npm — Node 22 bundles npm 10.x, but the project requires npm 11+ (see engines
+# in package.json). We upgrade npm inside Node's prefix via [hooks.postinstall]
+# because mise's npm tool (npm:npm backend) installs to a separate directory that
+# gets shadowed by Node's bundled npm in PATH. See: jdx/mise#7083
 
 [env]
 # Add node_modules/.bin to PATH so locally-installed CLIs work without npx
@@ -50,6 +51,10 @@ status.show_prepare_stale = true
 [hooks]
 # Auto-install tools when entering the project directory
 enter = "mise install -q"
+
+# Upgrade npm inside Node's prefix after tool install.
+# Only runs the install when the current npm major version doesn't match.
+postinstall = 'npm -v 2>/dev/null | grep -q "^11\\." || npm install -g npm@11 >/dev/null 2>&1'
 
 # ─── Prepare ────────────────────────────────────────────────────────────────
 # Auto-detect stale dependencies and install them before task execution.
