@@ -56,7 +56,12 @@ export function initWebAdapter(wss: WebSocketServer): void {
         // (JSON.stringify omits undefined values), so we check for `id` only.
         if ('id' in data) {
           const innerData = data.data;
-          if (typeof innerData === 'object' && innerData !== null) {
+          if (Array.isArray(innerData)) {
+            // Array payloads (e.g., saveModelConfig, getAgentMcpConfigs): preserve
+            // the array intact. Spreading arrays into objects destroys them.
+            // Providers receiving arrays don't need userId — attach at wrapper level.
+            enriched = { ...data, __webUiUserId: userId };
+          } else if (typeof innerData === 'object' && innerData !== null) {
             // Object payloads: inject userId into inner data so providers see it
             enriched = {
               ...data,
