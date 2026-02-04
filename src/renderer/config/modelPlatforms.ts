@@ -13,25 +13,27 @@
  */
 
 // Provider Logo imports
+import AnthropicLogo from '@/renderer/assets/logos/anthropic.svg';
 import GeminiLogo from '@/renderer/assets/logos/gemini.svg';
 import OpenAILogo from '@/renderer/assets/logos/openai.svg';
-import AnthropicLogo from '@/renderer/assets/logos/anthropic.svg';
-import DeepSeekLogo from '@/renderer/assets/logos/deepseek.svg';
 import OpenRouterLogo from '@/renderer/assets/logos/openrouter.svg';
-import SiliconFlowLogo from '@/renderer/assets/logos/siliconflow.svg';
-import QwenLogo from '@/renderer/assets/logos/qwen.svg';
-import KimiLogo from '@/renderer/assets/logos/kimi.svg';
-import ZhipuLogo from '@/renderer/assets/logos/zhipu.svg';
 import XaiLogo from '@/renderer/assets/logos/xai.svg';
-import VolcengineLogo from '@/renderer/assets/logos/volcengine.svg';
-import BaiduLogo from '@/renderer/assets/logos/baidu.svg';
-import TencentLogo from '@/renderer/assets/logos/tencent.svg';
-import LingyiLogo from '@/renderer/assets/logos/lingyiwanwu.svg';
-import PoeLogo from '@/renderer/assets/logos/poe.svg';
-import ModelScopeLogo from '@/renderer/assets/logos/modelscope.svg';
-import InfiniAILogo from '@/renderer/assets/logos/infiniai.svg';
-import CtyunLogo from '@/renderer/assets/logos/ctyun.svg';
-import StepFunLogo from '@/renderer/assets/logos/stepfun.svg';
+
+// Hidden provider logos (kept for reference, uncomment to re-enable)
+// import BaiduLogo from '@/renderer/assets/logos/baidu.svg';
+// import CtyunLogo from '@/renderer/assets/logos/ctyun.svg';
+// import DeepSeekLogo from '@/renderer/assets/logos/deepseek.svg';
+// import InfiniAILogo from '@/renderer/assets/logos/infiniai.svg';
+// import KimiLogo from '@/renderer/assets/logos/kimi.svg';
+// import LingyiLogo from '@/renderer/assets/logos/lingyiwanwu.svg';
+// import ModelScopeLogo from '@/renderer/assets/logos/modelscope.svg';
+// import PoeLogo from '@/renderer/assets/logos/poe.svg';
+// import QwenLogo from '@/renderer/assets/logos/qwen.svg';
+// import SiliconFlowLogo from '@/renderer/assets/logos/siliconflow.svg';
+// import StepFunLogo from '@/renderer/assets/logos/stepfun.svg';
+// import TencentLogo from '@/renderer/assets/logos/tencent.svg';
+// import VolcengineLogo from '@/renderer/assets/logos/volcengine.svg';
+// import ZhipuLogo from '@/renderer/assets/logos/zhipu.svg';
 
 /**
  * 平台类型
@@ -62,40 +64,37 @@ export interface PlatformConfig {
  * 模型平台选项列表
  * Model Platform options list
  *
- * 顺序：
- * 1. Gemini (官方)
- * 2. Gemini Vertex AI
- * 3. 自定义（需要用户输入 base url）
- * 4+ 预设供应商
+ * Order: Providers alphabetically, then Custom last.
+ * Hidden providers are commented out for easy re-enablement.
  */
 export const MODEL_PLATFORMS: PlatformConfig[] = [
-  // 自定义选项（需要用户输入 base url）/ Custom option (requires user to input base url)
-  { name: 'Custom', value: 'custom', logo: null, platform: 'custom', i18nKey: 'settings.platformCustom' },
-
-  // 官方 Gemini 平台
+  // ===== Providers (alphabetical) =====
+  { name: 'Anthropic', value: 'Anthropic', logo: AnthropicLogo, platform: 'anthropic', baseUrl: 'https://api.anthropic.com' },
   { name: 'Gemini', value: 'gemini', logo: GeminiLogo, platform: 'gemini', baseUrl: 'https://generativelanguage.googleapis.com/v1beta' },
   { name: 'Gemini (Vertex AI)', value: 'gemini-vertex-ai', logo: GeminiLogo, platform: 'gemini-vertex-ai' },
-
-  // 预设供应商（按字母顺序排列）
   { name: 'OpenAI', value: 'OpenAI', logo: OpenAILogo, platform: 'custom', baseUrl: 'https://api.openai.com/v1' },
-  { name: 'Anthropic', value: 'Anthropic', logo: AnthropicLogo, platform: 'anthropic', baseUrl: 'https://api.anthropic.com' },
-  { name: 'DeepSeek', value: 'DeepSeek', logo: DeepSeekLogo, platform: 'custom', baseUrl: 'https://api.deepseek.com/v1' },
   { name: 'OpenRouter', value: 'OpenRouter', logo: OpenRouterLogo, platform: 'custom', baseUrl: 'https://openrouter.ai/api/v1' },
-  { name: 'Dashscope', value: 'Dashscope', logo: QwenLogo, platform: 'custom', baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1' },
-  { name: 'SiliconFlow', value: 'SiliconFlow', logo: SiliconFlowLogo, platform: 'custom', baseUrl: 'https://api.siliconflow.cn/v1' },
-  { name: 'Zhipu', value: 'Zhipu', logo: ZhipuLogo, platform: 'custom', baseUrl: 'https://open.bigmodel.cn/api/paas/v4' },
-  { name: 'Moonshot (China)', value: 'Moonshot', logo: KimiLogo, platform: 'custom', baseUrl: 'https://api.moonshot.cn/v1' },
-  { name: 'Moonshot (Global)', value: 'Moonshot-Global', logo: KimiLogo, platform: 'custom', baseUrl: 'https://api.moonshot.ai/v1' },
   { name: 'xAI', value: 'xAI', logo: XaiLogo, platform: 'custom', baseUrl: 'https://api.x.ai/v1' },
-  { name: 'Ark', value: 'Ark', logo: VolcengineLogo, platform: 'custom', baseUrl: 'https://ark.cn-beijing.volces.com/api/v3' },
-  { name: 'Qianfan', value: 'Qianfan', logo: BaiduLogo, platform: 'custom', baseUrl: 'https://qianfan.baidubce.com/v2' },
-  { name: 'Hunyuan', value: 'Hunyuan', logo: TencentLogo, platform: 'custom', baseUrl: 'https://api.hunyuan.cloud.tencent.com/v1' },
-  { name: 'Lingyi', value: 'Lingyi', logo: LingyiLogo, platform: 'custom', baseUrl: 'https://api.lingyiwanwu.com/v1' },
-  { name: 'Poe', value: 'Poe', logo: PoeLogo, platform: 'custom', baseUrl: 'https://api.poe.com/v1' },
-  { name: 'ModelScope', value: 'ModelScope', logo: ModelScopeLogo, platform: 'custom', baseUrl: 'https://api-inference.modelscope.cn/v1' },
-  { name: 'InfiniAI', value: 'InfiniAI', logo: InfiniAILogo, platform: 'custom', baseUrl: 'https://cloud.infini-ai.com/maas/v1' },
-  { name: 'Ctyun', value: 'Ctyun', logo: CtyunLogo, platform: 'custom', baseUrl: 'https://wishub-x1.ctyun.cn/v1' },
-  { name: 'StepFun', value: 'StepFun', logo: StepFunLogo, platform: 'custom', baseUrl: 'https://api.stepfun.com/v1' },
+
+  // ===== Custom (always last — requires user-provided base URL) =====
+  { name: 'Custom', value: 'custom', logo: null, platform: 'custom', i18nKey: 'settings.platformCustom' },
+
+  // ===== Hidden Providers (kept for reference, uncomment to re-enable) =====
+  // { name: 'Ark', value: 'Ark', logo: VolcengineLogo, platform: 'custom', baseUrl: 'https://ark.cn-beijing.volces.com/api/v3' },
+  // { name: 'Ctyun', value: 'Ctyun', logo: CtyunLogo, platform: 'custom', baseUrl: 'https://wishub-x1.ctyun.cn/v1' },
+  // { name: 'Dashscope', value: 'Dashscope', logo: QwenLogo, platform: 'custom', baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1' },
+  // { name: 'DeepSeek', value: 'DeepSeek', logo: DeepSeekLogo, platform: 'custom', baseUrl: 'https://api.deepseek.com/v1' },
+  // { name: 'Hunyuan', value: 'Hunyuan', logo: TencentLogo, platform: 'custom', baseUrl: 'https://api.hunyuan.cloud.tencent.com/v1' },
+  // { name: 'InfiniAI', value: 'InfiniAI', logo: InfiniAILogo, platform: 'custom', baseUrl: 'https://cloud.infini-ai.com/maas/v1' },
+  // { name: 'Lingyi', value: 'Lingyi', logo: LingyiLogo, platform: 'custom', baseUrl: 'https://api.lingyiwanwu.com/v1' },
+  // { name: 'ModelScope', value: 'ModelScope', logo: ModelScopeLogo, platform: 'custom', baseUrl: 'https://api-inference.modelscope.cn/v1' },
+  // { name: 'Moonshot (China)', value: 'Moonshot', logo: KimiLogo, platform: 'custom', baseUrl: 'https://api.moonshot.cn/v1' },
+  // { name: 'Moonshot (Global)', value: 'Moonshot-Global', logo: KimiLogo, platform: 'custom', baseUrl: 'https://api.moonshot.ai/v1' },
+  // { name: 'Poe', value: 'Poe', logo: PoeLogo, platform: 'custom', baseUrl: 'https://api.poe.com/v1' },
+  // { name: 'Qianfan', value: 'Qianfan', logo: BaiduLogo, platform: 'custom', baseUrl: 'https://qianfan.baidubce.com/v2' },
+  // { name: 'SiliconFlow', value: 'SiliconFlow', logo: SiliconFlowLogo, platform: 'custom', baseUrl: 'https://api.siliconflow.cn/v1' },
+  // { name: 'StepFun', value: 'StepFun', logo: StepFunLogo, platform: 'custom', baseUrl: 'https://api.stepfun.com/v1' },
+  // { name: 'Zhipu', value: 'Zhipu', logo: ZhipuLogo, platform: 'custom', baseUrl: 'https://open.bigmodel.cn/api/paas/v4' },
 ];
 
 // ============ 工具函数 / Utility Functions ============

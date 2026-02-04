@@ -8,50 +8,22 @@ import { useTranslation } from 'react-i18next';
 
 // Provider Logo imports
 import AnthropicLogo from '@/renderer/assets/logos/anthropic.svg';
-import BaiduLogo from '@/renderer/assets/logos/baidu.svg';
-import CtyunLogo from '@/renderer/assets/logos/ctyun.svg';
-import DeepSeekLogo from '@/renderer/assets/logos/deepseek.svg';
 import GeminiLogo from '@/renderer/assets/logos/gemini.svg';
-import InfiniAILogo from '@/renderer/assets/logos/infiniai.svg';
-import KimiLogo from '@/renderer/assets/logos/kimi.svg';
-import LingyiLogo from '@/renderer/assets/logos/lingyiwanwu.svg';
-import ModelScopeLogo from '@/renderer/assets/logos/modelscope.svg';
 import OpenAILogo from '@/renderer/assets/logos/openai.svg';
 import OpenRouterLogo from '@/renderer/assets/logos/openrouter.svg';
-import PoeLogo from '@/renderer/assets/logos/poe.svg';
-import QwenLogo from '@/renderer/assets/logos/qwen.svg';
-import SiliconFlowLogo from '@/renderer/assets/logos/siliconflow.svg';
-import StepFunLogo from '@/renderer/assets/logos/stepfun.svg';
-import TencentLogo from '@/renderer/assets/logos/tencent.svg';
-import VolcengineLogo from '@/renderer/assets/logos/volcengine.svg';
 import XaiLogo from '@/renderer/assets/logos/xai.svg';
-import ZhipuLogo from '@/renderer/assets/logos/zhipu.svg';
 
 /**
- * Provider config (includes name, URL, logo)
+ * Provider config for logo resolution (includes name, URL, logo).
+ * Alphabetical order; hidden providers commented out for easy re-enablement.
  */
 const PROVIDER_CONFIGS = [
+  { name: 'Anthropic', url: 'https://api.anthropic.com/v1', logo: AnthropicLogo },
   { name: 'Gemini', url: '', logo: GeminiLogo, platform: 'gemini' },
   { name: 'Gemini (Vertex AI)', url: '', logo: GeminiLogo, platform: 'gemini-vertex-ai' },
   { name: 'OpenAI', url: 'https://api.openai.com/v1', logo: OpenAILogo },
-  { name: 'Anthropic', url: 'https://api.anthropic.com/v1', logo: AnthropicLogo },
-  { name: 'DeepSeek', url: 'https://api.deepseek.com', logo: DeepSeekLogo },
   { name: 'OpenRouter', url: 'https://openrouter.ai/api/v1', logo: OpenRouterLogo },
-  { name: 'SiliconFlow', url: 'https://api.siliconflow.cn/v1', logo: SiliconFlowLogo },
-  { name: 'Dashscope', url: 'https://dashscope.aliyuncs.com/compatible-mode/v1', logo: QwenLogo },
-  { name: 'Moonshot (China)', url: 'https://api.moonshot.cn/v1', logo: KimiLogo },
-  { name: 'Moonshot (Global)', url: 'https://api.moonshot.ai/v1', logo: KimiLogo },
-  { name: 'Zhipu', url: 'https://open.bigmodel.cn/api/paas/v4', logo: ZhipuLogo },
   { name: 'xAI', url: 'https://api.x.ai/v1', logo: XaiLogo },
-  { name: 'Ark', url: 'https://ark.cn-beijing.volces.com/api/v3', logo: VolcengineLogo },
-  { name: 'Qianfan', url: 'https://qianfan.baidubce.com/v2', logo: BaiduLogo },
-  { name: 'Hunyuan', url: 'https://api.hunyuan.cloud.tencent.com/v1', logo: TencentLogo },
-  { name: 'Lingyi', url: 'https://api.lingyiwanwu.com/v1', logo: LingyiLogo },
-  { name: 'Poe', url: 'https://api.poe.com/v1', logo: PoeLogo },
-  { name: 'ModelScope', url: 'https://api-inference.modelscope.cn/v1', logo: ModelScopeLogo },
-  { name: 'InfiniAI', url: 'https://cloud.infini-ai.com/maas/v1', logo: InfiniAILogo },
-  { name: 'Ctyun', url: 'https://wishub-x1.ctyun.cn/v1', logo: CtyunLogo },
-  { name: 'StepFun', url: 'https://api.stepfun.com/v1', logo: StepFunLogo },
 ];
 
 /**
