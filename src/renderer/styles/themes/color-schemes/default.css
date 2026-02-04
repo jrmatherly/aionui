@@ -84,37 +84,39 @@
   --aou-9: #e5e7f0;
   --aou-10: #eff0f6;
 
-  /* Background Colors - Dark Mode */
-  --bg-base: #0e0e0e; /* Main Background */
-  --bg-1: #1a1a1a; /* Secondary Background */
-  --bg-2: #262626; /* Tertiary Background */
-  --bg-3: #333333; /* Border/Divider */
-  --bg-4: #404040;
-  --bg-5: #4d4d4d;
-  --bg-6: #5a5a5a; /* Disabled/Secondary Text */
-  --bg-8: #737373;
-  --bg-9: #a6a6a6;
-  --bg-10: #d9d9d9;
+  /* Background Colors - Dark Mode (Enhanced depth hierarchy) */
+  --bg-base: #09090b; /* Main Background - deeper */
+  --bg-1: #111113; /* Secondary Background - cards base */
+  --bg-2: #18181b; /* Tertiary Background - elevated cards */
+  --bg-3: #27272a; /* Border/Divider - more visible */
+  --bg-4: #3f3f46;
+  --bg-5: #52525b;
+  --bg-6: #71717a; /* Disabled/Secondary Text */
+  --bg-8: #a1a1aa;
+  --bg-9: #d4d4d8;
+  --bg-10: #e4e4e7;
 
-  /* Interactive State Colors - Dark Mode */
-  --bg-hover: #1f1f1f; /* Hover Background */
-  --bg-active: #2d2d2d; /* Active/Pressed Background */
+  /* Interactive State Colors - Dark Mode (More prominent) */
+  --bg-hover: #1c1c1f; /* Hover Background - more visible */
+  --bg-active: #252528; /* Active/Pressed Background */
 
-  /* Text Colors - Dark Mode */
-  --text-primary: #e5e5e5; /* Primary Text */
-  --text-secondary: #a6a6a6; /* Secondary Text */
-  --text-disabled: #737373; /* Disabled Text */
+  /* Text Colors - Dark Mode (Improved contrast) */
+  --text-primary: #fafafa; /* Primary Text - brighter */
+  --text-secondary: #a1a1aa; /* Secondary Text */
+  --text-disabled: #71717a; /* Disabled Text */
 
   /* Semantic Colors - Dark Mode */
-  --primary: #4d9fff;
-  --success: #23c343;
-  --warning: #ff9a2e;
-  --danger: #f76560;
-  --info: #4d9fff;
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
 
-  /* Border Colors - Dark Mode */
-  --border-base: #333333; /* Base Border */
-  --border-light: #262626; /* Light Border */
+  /* Border Colors - Dark Mode (More visible) */
+  --border-base: rgba(255, 255, 255, 0.08); /* Base Border - subtle but visible */
+  --border-light: rgba(255, 255, 255, 0.04); /* Light Border */
+  --border-visible: rgba(255, 255, 255, 0.12); /* More prominent border */
 
   /* Brand Colors - Dark Mode */
   --brand: #a1aacb; /* Brand Color */
@@ -124,17 +126,36 @@
   /* Message & UI Component Colors - Dark Mode */
   --message-user-bg: #1e2a3a; /* User Message Background (Dark Blue-Grey) */
   --message-tips-bg: #1a2333; /* Tips Message Background (Dark Blue-Grey) */
-  --workspace-btn-bg: #1f1f1f; /* Workspace Button Background */
+  --workspace-btn-bg: #18181b; /* Workspace Button Background */
 
   /* Special Colors - Dark Mode */
-  --fill: #1a1a1a; /* Fill Color */
+  --fill: #111113; /* Fill Color */
   --inverse: #ffffff; /* Inverse Color (Same in dark mode) */
 
   /* Custom Colors - Dark Mode */
-  --dialog-fill-0: #333333; /* Dialog Fill Color */
+  --dialog-fill-0: #18181b; /* Dialog Fill Color */
   --text-0: #ffffff; /* Pure White Text (White in Dark Mode) */
   --text-white: #ffffff; /* Pure White Text */
-  --fill-0: rgba(255, 255, 255, 0.08); /* Fill Color 0 - Translucent White in Dark Mode */
-  --fill-white-to-black: #000000; /* White to Black Fill (Black in Dark Mode) */
-  --border-special: #60677e; /* Special Border Color */
+  --fill-0: rgba(255, 255, 255, 0.06); /* Fill Color 0 - Translucent White in Dark Mode */
+  --fill-white-to-black: #09090b; /* White to Black Fill (Black in Dark Mode) */
+  --border-special: #6366f1; /* Special Border Color - accent */
+
+  /* Card & Panel Elevation System */
+  --card-bg: #111113;
+  --card-border: rgba(255, 255, 255, 0.06);
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2);
+  --card-shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.3), 0 10px 24px rgba(0, 0, 0, 0.25);
+  --card-hover-bg: #18181b;
+  --card-hover-border: rgba(255, 255, 255, 0.1);
+
+  /* Input Field Enhancement */
+  --input-bg: rgba(255, 255, 255, 0.04);
+  --input-border: rgba(255, 255, 255, 0.08);
+  --input-border-hover: rgba(99, 102, 241, 0.4);
+  --input-border-focus: rgba(99, 102, 241, 0.6);
+  --input-focus-ring: rgba(99, 102, 241, 0.15);
+
+  /* Sidebar Active State */
+  --sidebar-active-bg: rgba(99, 102, 241, 0.12);
+  --sidebar-active-border: #6366f1;
 }
