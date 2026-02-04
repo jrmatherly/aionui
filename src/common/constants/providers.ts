@@ -12,16 +12,16 @@
  * Only providers listed here will appear in the API Keys settings.
  */
 export const PROVIDER_INFO: Record<string, { name: string; description: string; link?: string }> = {
-  // ===== Common Providers =====
+  // ===== Common Providers (alphabetical) =====
   anthropic: { name: 'Anthropic', description: 'Claude models', link: 'https://console.anthropic.com/' },
+  azure: { name: 'Azure OpenAI', description: 'Azure-hosted OpenAI', link: 'https://azure.microsoft.com/products/ai-services/openai-service' },
   openai: { name: 'OpenAI', description: 'GPT models, Codex', link: 'https://platform.openai.com/' },
+
+  // ===== Other Providers (alphabetical) =====
+  cohere: { name: 'Cohere', description: 'Enterprise LLMs', link: 'https://cohere.com/' },
   gemini: { name: 'Gemini', description: 'Google AI Studio', link: 'https://ai.google.dev/' },
   groq: { name: 'Groq', description: 'Fast inference', link: 'https://console.groq.com/' },
   openrouter: { name: 'OpenRouter', description: 'Multi-model proxy', link: 'https://openrouter.ai/' },
-
-  // ===== Other Providers =====
-  azure: { name: 'Azure OpenAI', description: 'Azure-hosted OpenAI', link: 'https://azure.microsoft.com/products/ai-services/openai-service' },
-  cohere: { name: 'Cohere', description: 'Enterprise LLMs', link: 'https://cohere.com/' },
   perplexity: { name: 'Perplexity', description: 'Search-augmented', link: 'https://www.perplexity.ai/' },
 
   // ===== Hidden Providers (kept for reference, not shown in UI) =====
@@ -41,9 +41,9 @@ export const PROVIDER_INFO: Record<string, { name: string; description: string; 
 
 /**
  * Providers shown in the "Common Providers" section (expanded by default).
- * Order determines display order.
+ * Order determines display order (alphabetical).
  */
-export const COMMON_PROVIDERS = ['anthropic', 'openai', 'gemini', 'groq', 'openrouter'];
+export const COMMON_PROVIDERS = ['anthropic', 'azure', 'openai'];
 
 /**
  * Get all provider IDs that should be shown in the UI.
