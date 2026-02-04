@@ -160,6 +160,42 @@ Gene IDs: `variant-handling`, `responsive-approach`, `state-styling`, `theming`,
 | Contracts                 | Serena `find_referencing_symbols` + TypeScript interfaces |
 | Wrappers                  | `drift callgraph callers <fn>` + Serena references        |
 
+## Reports & Export
+
+- `drift report` — **broken in v0.9.48** (hangs indefinitely, no output)
+- `drift export` — **working** in all formats:
+  - `--format json` — machine-readable full data
+  - `--format ai-context` — AI-optimized (~30K tokens full; use `--compact` for less)
+  - `--format summary` — human-readable overview
+  - `--format markdown` — documentation-ready
+- **Filtering works:** `--categories X`, `--status approved`, `--min-confidence 0.8`
+- **Token control:** `--max-tokens 8000` for context window limits
+
+## Skills
+
+Only 8 community/generic skills available in v0.9.48 (pdf, docx, xlsx, pptx, etc.).
+The 71 pattern implementation skills from docs (circuit-breaker, jwt-auth, etc.)
+are not available. AionUI uses Serena memories + Drift Cortex for equivalent coverage.
+
+## Dashboard
+
+Requires `driftdetect-dashboard` package (not installed). All dashboard features
+are accessible via CLI: `drift status`, `drift where`, `drift callgraph`,
+`drift boundaries check`, `drift export`.
+
+## Git Hooks
+
+AionUI uses Husky with pre-commit (lint-staged) and commit-msg (conventional commits).
+`drift check --staged` can be added to pre-commit hook but isn't currently active
+(0 violations found, low urgency).
+
+## MCP Architecture (7-Layer)
+
+Tools organized in layers: Orchestration → Discovery → Surgical → Exploration →
+Detail → Analysis → Generation. Start with `drift_context` (Layer 1) for code gen
+tasks. Use surgical tools (`drift_signature`, ~200 tokens) over file reads (~2000
+tokens) for efficiency.
+
 ## Configuration
 
 - **Drift config:** `.drift/config.json` (MCP tool filtering: TypeScript-only)

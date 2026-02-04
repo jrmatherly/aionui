@@ -1096,6 +1096,277 @@ Watch mode and MCP server can run simultaneously — MCP reads patterns that wat
 persists. Watch mode also works alongside `drift check` and `drift gate` without
 conflicts thanks to file locking.
 
+## Reports & Export
+
+Drift provides report generation and data export for documentation, CI, and AI context.
+
+### Reports (`drift report`)
+
+**Current Status (v0.9.48):** `drift report` hangs indefinitely without producing
+output. The `.drift/reports/` directory exists but is empty. This appears to be a
+bug in the current version.
+
+### Export (`drift export`) — Working ✅
+
+Export is the primary way to get pattern data out of Drift:
+
+```bash
+# AI-optimized context (~30K tokens for full codebase)
+drift export --format ai-context --snippets
+
+# Compact AI context (minimal tokens)
+drift export --format ai-context --compact
+
+# Human-readable summary
+drift export --format summary
+
+# Documentation-ready markdown
+drift export --format markdown
+
+# Machine-readable JSON
+drift export --format json
+
+# Save to file
+drift export --format markdown --output docs/PATTERNS.md
+```
+
+### Filtering
+
+Export supports powerful filtering that is confirmed working:
+
+```bash
+# By status
+drift export --status approved
+
+# By category
+drift export --categories security,auth
+
+# By confidence threshold
+drift export --min-confidence 0.8
+
+# Combined (confirmed: returns 16 security patterns ≥80%)
+drift export --format json --categories security --status approved --min-confidence 0.8
+```
+
+### Token-Aware AI Context
+
+For AI context windows, use `--max-tokens` to stay within limits:
+
+```bash
+drift export --format ai-context --max-tokens 8000    # Fits in 8K context
+drift export --format ai-context --max-tokens 50000   # For large context windows
+```
+
+### When to Use
+
+- **AI assistant context** — `drift export --format ai-context --compact`
+- **Documentation** — `drift export --format markdown --output docs/PATTERNS.md`
+- **CI reports** — `drift export --format json` (since `drift report` is broken)
+- **Compliance** — `drift export --status approved --format json`
+
+## Skills
+
+Drift includes a skills system — reusable implementation guides that AI agents
+can use as context when implementing common software patterns.
+
+### Current Status (v0.9.48)
+
+Only **8 community/generic skills** are available, not the 71 pattern implementation
+skills listed in Drift's documentation.
+
+**Available skills:**
+```bash
+drift skills list
+# pdf, docx, xlsx, pptx, skill-creator, moltbook, x-recruiter, xiaohongshu-recruiter
+```
+
+The 71 pattern implementation skills from the docs (circuit-breaker, jwt-auth,
+rate-limiting, retry-fallback, etc.) are **not available** in v0.9.48 and cannot
+be installed:
+
+```bash
+drift skills install jwt-auth     # ✖ Skill not found: jwt-auth
+drift skills search "auth"        # No skills found matching "auth"
+```
+
+### Skill Commands (For Future Use)
+
+```bash
+drift skills list                    # List available skills
+drift skills list --category auth    # Filter by category
+drift skills search "circuit"        # Search skills
+drift skills info <name>             # View skill details
+drift skills install <name>          # Install to project (.github/skills/)
+drift skills install --all           # Install all available skills
+drift skills uninstall <name>        # Remove a skill
+```
+
+### Custom Skills
+
+You can create your own skills that AI agents will pick up:
+
+```bash
+mkdir -p .github/skills/our-api-pattern
+# Create .github/skills/our-api-pattern/SKILL.md
+```
+
+AionUI already has comprehensive context via Serena memories and Drift Cortex,
+which serve a similar purpose to skills for project-specific patterns.
+
+## Git Hooks Integration
+
+AionUI already uses **Husky** for git hooks with lint-staged. Drift can be
+integrated into the existing hook pipeline.
+
+### Current Hook Setup
+
+| Hook | Current Behavior |
+|------|-----------------|
+| `pre-commit` | `npx lint-staged` → ESLint fix + Prettier |
+| `commit-msg` | Conventional commit format validation |
+
+### Adding Drift to Hooks
+
+To add pattern checking to the pre-commit hook, modify `.husky/pre-commit`:
+
+```bash
+# Current
+npx lint-staged
+
+# Enhanced with Drift
+npx lint-staged
+drift check --staged --fail-on error
+```
+
+Or integrate via lint-staged in `package.json`:
+
+```json
+{
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write",
+      "drift check --staged --fail-on error"
+    ]
+  }
+}
+```
+
+### Hook Performance
+
+- `drift check --staged` only analyzes staged files (fast)
+- Skip in CI: add `if [ -n "$CI" ]; then exit 0; fi` at top of hook
+- Bypass when needed: `git commit --no-verify`
+
+### Not Implemented Yet
+
+Adding Drift to hooks is optional. The current lint-staged + ESLint + Prettier
+pipeline is already effective. Drift hook integration is documented here for when
+you decide to enable it. Since `drift check` currently shows 0 violations across
+all tracked files, there's no immediate urgency.
+
+## Dashboard
+
+Drift includes a web dashboard for visualizing patterns, call graphs, and codebase
+health.
+
+### Current Status (v0.9.48)
+
+**Not available.** Requires `driftdetect-dashboard` npm package:
+
+```bash
+drift dashboard
+# ✖ Dashboard package not found.
+# Make sure driftdetect-dashboard is installed.
+```
+
+### To Install (Optional)
+
+```bash
+npm install -g driftdetect-dashboard
+drift dashboard                    # Opens http://localhost:3847
+drift dashboard --port 3000        # Custom port
+drift dashboard --no-browser       # Don't auto-open browser
+```
+
+### What It Provides
+
+- Pattern overview with confidence scores and approval status
+- Interactive call graph visualization
+- Health score dashboard with trends
+- Pattern detail view with code examples and outliers
+- REST API access (e.g., `curl http://localhost:3847/api/patterns`)
+
+### Dashboard vs CLI
+
+For now, all dashboard functionality is available via CLI commands:
+
+| Dashboard Feature | CLI Equivalent |
+|------------------|---------------|
+| Pattern overview | `drift status` |
+| Pattern details | `drift where <pattern>` |
+| Health score | `drift status` (shows health score) |
+| Call graph | `drift callgraph callers <fn>` |
+| Security view | `drift boundaries check` |
+| Export data | `drift export --format json` |
+
+## MCP Architecture
+
+Drift's MCP server uses a 7-layer architecture designed for efficient AI interaction.
+Understanding this helps AI agents use the right tools at the right time.
+
+### The 7 Layers
+
+| Layer | Purpose | Example Tools | Token Budget |
+|-------|---------|---------------|-------------|
+| **1. Orchestration** | Understand intent, return curated context | `drift_context` | 2000-4000 |
+| **2. Discovery** | Instant status, no heavy computation | `drift_status` | 200-500 |
+| **3. Surgical** | Ultra-focused lookups | `drift_signature`, `drift_callers`, `drift_type` | 200-500 |
+| **4. Exploration** | Paginated listing with filters | `drift_patterns_list`, `drift_file_patterns` | 500-2000 |
+| **5. Detail** | Complete info on specific items | `drift_pattern_get`, `drift_explain` | 1500-3000 |
+| **6. Analysis** | Complex computation | `drift_coupling`, `drift_impact_analysis` | 1000-3000 |
+| **7. Generation** | Code generation + validation | `drift_validate_change`, `drift_suggest_changes` | 500-2000 |
+
+### Key Design Principles
+
+1. **Start at Layer 1** — `drift_context` does the synthesis, not the AI
+2. **Use surgical tools** for code generation — `drift_signature` returns 200 tokens
+   vs reading a 500-line file at 2000+ tokens
+3. **Every response includes hints** — `nextActions` and `relatedTools` guide the AI
+4. **Token budgets enforced** — responses auto-truncate to fit budgets
+5. **Consistent response structure** — summary, data, pagination, hints, metadata
+
+### Practical Usage Order
+
+```
+drift_context (orchestration) → understand the task
+  ↓
+drift_signature / drift_callers (surgical) → precise lookups
+  ↓
+drift_code_examples (exploration) → see how patterns are implemented
+  ↓
+drift_prevalidate (generation) → quick-check generated code
+  ↓
+drift_validate_change (generation) → full validation with scoring
+```
+
+### MCP Server Configuration
+
+AionUI's MCP config (`.mcp.json`):
+```json
+{
+  "mcpServers": {
+    "drift": {
+      "command": "driftdetect-mcp",
+      "args": []
+    }
+  }
+}
+```
+
+The MCP server auto-detects the project root from CWD. Language filtering is
+configured in `.drift/config.json` → `mcp.tools.languages: ["typescript"]`.
+
 ## When to Use Which Tool
 
 | Task | Drift | Serena |
@@ -1123,6 +1394,9 @@ conflicts thanks to file locking.
 | "Validate code before committing" | ✅ `drift check` / `drift_validate_change` (MCP) | |
 | "Quick-check generated code" | ✅ `drift_prevalidate` (MCP) | |
 | "Real-time pattern feedback" | ✅ `drift watch` | |
+| "Export patterns for docs" | ✅ `drift export --format markdown` | |
+| "Get filtered pattern data" | ✅ `drift export --categories X --min-confidence Y` | |
+| "Get function signature fast" | ✅ `drift_signature` (MCP, ~200 tokens) | ✅ `find_symbol` |
 
 ## Maintenance
 
@@ -1392,6 +1666,10 @@ Each was confirmed non-functional or not applicable as described below.
 | **Explain Tool (CLI)** | MCP-only | No `drift explain` CLI command. Use MCP tool `drift_explain` or CLI alternatives (`drift files`, `drift callgraph function`, `drift boundaries file`). |
 | **Decision Mining (CLI)** | MCP-only | No `drift decisions` CLI command (planned for future). Use MCP tool `drift_decisions`. |
 | **Suggest Changes (CLI)** | MCP-only | `drift check --suggest` not available. Use MCP tool `drift_suggest_changes`. `drift check` works for violation detection. |
+| **Skills (71 guides)** | Only 8 available | Docs list 71 implementation skills across 12 categories (resilience, auth, caching, etc.) but `drift skills list` shows only 8 community/generic skills (pdf, docx, xlsx, pptx, etc.). The 71 pattern implementation skills (circuit-breaker, jwt-auth, rate-limiting, etc.) are not available in v0.9.48. |
+| **Dashboard** | Package not installed | `drift dashboard` requires `driftdetect-dashboard` npm package which is not installed. Returns "Dashboard package not found." Dashboard provides web visualization of patterns, call graphs, and health. |
+| **Reports** | Hangs/non-functional | `drift report` (text and JSON formats) hangs indefinitely without output. `.drift/reports/` directory exists but is empty. Use `drift export` instead (all formats work: json, ai-context, summary, markdown). |
+| **Monorepo Support** | N/A (by design) | AionUI is a single-package project (`drift context --list` shows 1 root package). Monorepo features (package-scoped analysis, cross-package impact, per-package patterns) are for multi-package workspaces. |
 
 ### What Still Works for These Areas
 
