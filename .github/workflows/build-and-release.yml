@@ -122,14 +122,6 @@ jobs:
           build-args: |
             NODE_VERSION=${{ steps.versions.outputs.node }}
             NPM_VERSION=${{ steps.versions.outputs.npm }}
-            INSTALL_CLAUDE_CODE=true
-            INSTALL_QWEN_CODE=true
-            INSTALL_CODEX=true
-            INSTALL_IFLOW=true
-            INSTALL_AUGGIE=true
-            INSTALL_COPILOT=true
-            INSTALL_QODER=true
-            INSTALL_OPENCODE=true
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64
@@ -145,7 +137,7 @@ jobs:
           echo "| **npm** | \`${{ steps.versions.outputs.npm }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Commit** | \`${{ steps.app.outputs.sha_short }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Platforms** | \`linux/amd64\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| **CLI Tools** | Claude, Qwen, Codex, iFlow, Auggie, Copilot, Qoder, OpenCode |" >> $GITHUB_STEP_SUMMARY
+          echo "| **CLI Tools** | All included (Claude, Qwen, Codex, iFlow, Auggie, Copilot, Qoder, OpenCode) |" >> $GITHUB_STEP_SUMMARY
           if [[ "${{ github.event_name }}" == "push" ]]; then
             echo "| **Pushed to** | \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\` |" >> $GITHUB_STEP_SUMMARY
           else

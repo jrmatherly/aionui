@@ -31,21 +31,14 @@ services:
         NODE_VERSION: ${NODE_VERSION:-22.22.0}
         NPM_VERSION: ${NPM_VERSION:-11.8.0}
         TARGETARCH: ${TARGETARCH:-arm64}
-        # Multi-Agent CLI tools (set to 'true' to include, requires rebuild)
-        INSTALL_CLAUDE_CODE: ${INSTALL_CLAUDE_CODE:-false}
-        INSTALL_QWEN_CODE: ${INSTALL_QWEN_CODE:-false}
-        INSTALL_CODEX: ${INSTALL_CODEX:-false}
-        INSTALL_IFLOW: ${INSTALL_IFLOW:-false}
-        INSTALL_AUGGIE: ${INSTALL_AUGGIE:-false}
-        INSTALL_COPILOT: ${INSTALL_COPILOT:-false}
-        INSTALL_QODER: ${INSTALL_QODER:-false}
-        INSTALL_OPENCODE: ${INSTALL_OPENCODE:-false}
+        # Note: All CLI tools are now baked into the image by default.
+        # Use DISABLE_CLI_* env vars at runtime to hide specific tools.
     container_name: aionui
     restart: unless-stopped
 
     # Port mapping
     ports:
-      - "${AIONUI_PORT:-25808}:25808"
+      - '${AIONUI_PORT:-25808}:25808'
 
     # Environment configuration
     # Copy .env.example to .env and customize, or set variables here
@@ -104,7 +97,7 @@ services:
 
     # Health check
     healthcheck:
-      test: ["CMD", "curl", "-sf", "http://localhost:25808/"]
+      test: ['CMD', 'curl', '-sf', 'http://localhost:25808/']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -122,10 +115,10 @@ services:
 
     # Logging configuration
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
     # Security options
     security_opt:

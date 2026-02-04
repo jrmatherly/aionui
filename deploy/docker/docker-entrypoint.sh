@@ -96,18 +96,40 @@ trap cleanup SIGTERM SIGINT SIGQUIT
 
 # -----------------------------------------------------------------------------
 # Detect Available CLI Tools (Multi-Agent Mode)
+# All CLI tools are baked into the image; DISABLE_CLI_* env vars hide specific ones.
 # -----------------------------------------------------------------------------
 echo "🔍 Detecting Multi-Agent CLI tools..."
 CLI_FOUND=0
+CLI_DISABLED=0
+
+# Map of CLI command -> env var name for disable check
+declare -A CLI_DISABLE_MAP=(
+    ["claude"]="DISABLE_CLI_CLAUDE"
+    ["qwen"]="DISABLE_CLI_QWEN"
+    ["codex"]="DISABLE_CLI_CODEX"
+    ["iflow"]="DISABLE_CLI_IFLOW"
+    ["auggie"]="DISABLE_CLI_AUGGIE"
+    ["copilot"]="DISABLE_CLI_COPILOT"
+    ["qodercli"]="DISABLE_CLI_QODER"
+    ["opencode"]="DISABLE_CLI_OPENCODE"
+)
+
 for cli in claude qwen codex iflow auggie copilot qodercli opencode kimi goose droid; do
     if command -v "$cli" &> /dev/null; then
-        echo "   ✅ $cli found: $(command -v "$cli")"
-        CLI_FOUND=$((CLI_FOUND + 1))
+        # Check if this CLI is disabled via env var
+        disable_var="${CLI_DISABLE_MAP[$cli]:-}"
+        if [ -n "$disable_var" ] && [ "${!disable_var:-false}" = "true" ]; then
+            echo "   ⏸️  $cli disabled (${disable_var}=true)"
+            CLI_DISABLED=$((CLI_DISABLED + 1))
+        else
+            echo "   ✅ $cli found: $(command -v "$cli")"
+            CLI_FOUND=$((CLI_FOUND + 1))
+        fi
     fi
 done
-if [ "$CLI_FOUND" -eq 0 ]; then
+
+if [ "$CLI_FOUND" -eq 0 ] && [ "$CLI_DISABLED" -eq 0 ]; then
     echo "   ℹ️  No CLI tools detected. Multi-Agent mode will use built-in Gemini only."
-    echo "   💡 Rebuild with --build-arg INSTALL_CLAUDE_CODE=true to add CLI tools."
 fi
 echo ""
 

@@ -90,55 +90,23 @@ RUN echo "=== Build verification ===" && \
 
 # -----------------------------------------------------------------------------
 # Stage 2: CLI Installer (Multi-Agent Mode)
-# Installs optional CLI tools for multi-agent orchestration.
-# Each CLI is gated by a build ARG (default: false).
+# Installs ALL CLI tools for multi-agent orchestration.
+# All tools are baked into the image; runtime env vars control which are enabled.
 # Uses the builder stage's Node.js + npm to install npm-based CLIs.
 # -----------------------------------------------------------------------------
 FROM builder AS cli-installer
 
-# Build ARGs for each CLI tool (set to 'true' to install)
-ARG INSTALL_CLAUDE_CODE=false
-ARG INSTALL_QWEN_CODE=false
-ARG INSTALL_CODEX=false
-ARG INSTALL_IFLOW=false
-ARG INSTALL_AUGGIE=false
-ARG INSTALL_COPILOT=false
-ARG INSTALL_QODER=false
-ARG INSTALL_OPENCODE=false
-
-# Install each CLI tool globally if its ARG is set to 'true'
-RUN if [ "$INSTALL_CLAUDE_CODE" = "true" ]; then \
-        echo "📦 Installing Claude Code CLI..." && \
-        npm install -g @anthropic-ai/claude-code; \
-    fi
-RUN if [ "$INSTALL_QWEN_CODE" = "true" ]; then \
-        echo "📦 Installing Qwen Code CLI..." && \
-        npm install -g @qwen-code/qwen-code; \
-    fi
-RUN if [ "$INSTALL_CODEX" = "true" ]; then \
-        echo "📦 Installing OpenAI Codex CLI..." && \
-        npm install -g @openai/codex; \
-    fi
-RUN if [ "$INSTALL_IFLOW" = "true" ]; then \
-        echo "📦 Installing iFlow CLI..." && \
-        npm install -g @iflow-ai/iflow-cli; \
-    fi
-RUN if [ "$INSTALL_AUGGIE" = "true" ]; then \
-        echo "📦 Installing Auggie CLI..." && \
-        npm install -g @augmentcode/auggie; \
-    fi
-RUN if [ "$INSTALL_COPILOT" = "true" ]; then \
-        echo "📦 Installing GitHub Copilot CLI..." && \
-        npm install -g @github/copilot; \
-    fi
-RUN if [ "$INSTALL_QODER" = "true" ]; then \
-        echo "📦 Installing Qoder CLI..." && \
-        npm install -g @qoder-ai/qodercli; \
-    fi
-RUN if [ "$INSTALL_OPENCODE" = "true" ]; then \
-        echo "📦 Installing OpenCode CLI..." && \
-        npm install -g opencode-ai; \
-    fi
+# Install ALL CLI tools globally (no conditionals - always baked in)
+RUN echo "📦 Installing Multi-Agent CLI tools..." && \
+    npm install -g @anthropic-ai/claude-code && \
+    npm install -g @qwen-code/qwen-code && \
+    npm install -g @openai/codex && \
+    npm install -g @iflow-ai/iflow-cli && \
+    npm install -g @augmentcode/auggie && \
+    npm install -g @github/copilot && \
+    npm install -g @qoder-ai/qodercli && \
+    npm install -g opencode-ai && \
+    echo "✅ All CLI tools installed"
 
 # -----------------------------------------------------------------------------
 # Stage 3: Runtime
@@ -188,77 +156,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # -----------------------------------------------------------------------------
 # Multi-Agent CLI: Copy Node.js runtime + installed CLIs from cli-installer
-# The debian:bookworm-slim base has no Node.js, so we copy the binary and
-# global npm packages from the cli-installer stage when any CLI is enabled.
-# Set INSTALL_CLI_NODE=true (auto or manual) to gate this copy.
+# All CLI tools are always included; runtime env vars control which are enabled.
 # -----------------------------------------------------------------------------
-ARG INSTALL_CLAUDE_CODE=false
-ARG INSTALL_QWEN_CODE=false
-ARG INSTALL_CODEX=false
-ARG INSTALL_IFLOW=false
-ARG INSTALL_AUGGIE=false
-ARG INSTALL_COPILOT=false
-ARG INSTALL_QODER=false
-ARG INSTALL_OPENCODE=false
 
-# Meta-arg: set to 'true' if ANY CLI is enabled (gates Node.js copy)
-ARG INSTALL_CLI_NODE=false
+# Copy Node.js binary and global npm packages from cli-installer
+COPY --from=cli-installer /usr/local/bin/node /usr/local/bin/node
+COPY --from=cli-installer /usr/local/lib/node_modules /usr/local/lib/node_modules
 
-# Copy Node.js binary from builder (needed to run npm-based CLIs)
-RUN if [ "$INSTALL_CLI_NODE" = "true" ] || \
-       [ "$INSTALL_CLAUDE_CODE" = "true" ] || \
-       [ "$INSTALL_QWEN_CODE" = "true" ] || \
-       [ "$INSTALL_CODEX" = "true" ] || \
-       [ "$INSTALL_IFLOW" = "true" ] || \
-       [ "$INSTALL_AUGGIE" = "true" ] || \
-       [ "$INSTALL_COPILOT" = "true" ] || \
-       [ "$INSTALL_QODER" = "true" ] || \
-       [ "$INSTALL_OPENCODE" = "true" ]; then \
-        echo "🔧 CLI tools enabled — Node.js runtime will be copied"; \
-    fi
-
-# Conditionally copy node binary and global npm packages
-COPY --from=cli-installer /usr/local/bin/node /usr/local/bin/node.cli
-COPY --from=cli-installer /usr/local/lib/node_modules /usr/local/lib/node_modules.cli
-
-# Move CLI assets into place only if any CLI is enabled; otherwise remove them
-RUN if [ "$INSTALL_CLI_NODE" = "true" ] || \
-       [ "$INSTALL_CLAUDE_CODE" = "true" ] || \
-       [ "$INSTALL_QWEN_CODE" = "true" ] || \
-       [ "$INSTALL_CODEX" = "true" ] || \
-       [ "$INSTALL_IFLOW" = "true" ] || \
-       [ "$INSTALL_AUGGIE" = "true" ] || \
-       [ "$INSTALL_COPILOT" = "true" ] || \
-       [ "$INSTALL_QODER" = "true" ] || \
-       [ "$INSTALL_OPENCODE" = "true" ]; then \
-        mv /usr/local/bin/node.cli /usr/local/bin/node && \
-        mv /usr/local/lib/node_modules.cli /usr/local/lib/node_modules && \
-        ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && \
-        ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx && \
-        # Create CLI tool symlinks (only if package exists)
-        # Paths verified via: npm view <package> bin --json
-        [ -f /usr/local/lib/node_modules/@anthropic-ai/claude-code/cli.js ] && \
-            ln -sf /usr/local/lib/node_modules/@anthropic-ai/claude-code/cli.js /usr/local/bin/claude || true && \
-        [ -f /usr/local/lib/node_modules/@qwen-code/qwen-code/cli.js ] && \
-            ln -sf /usr/local/lib/node_modules/@qwen-code/qwen-code/cli.js /usr/local/bin/qwen || true && \
-        [ -f /usr/local/lib/node_modules/@openai/codex/bin/codex.js ] && \
-            ln -sf /usr/local/lib/node_modules/@openai/codex/bin/codex.js /usr/local/bin/codex || true && \
-        [ -f /usr/local/lib/node_modules/@iflow-ai/iflow-cli/bundle/entry.js ] && \
-            ln -sf /usr/local/lib/node_modules/@iflow-ai/iflow-cli/bundle/entry.js /usr/local/bin/iflow || true && \
-        [ -f /usr/local/lib/node_modules/@augmentcode/auggie/augment.mjs ] && \
-            ln -sf /usr/local/lib/node_modules/@augmentcode/auggie/augment.mjs /usr/local/bin/auggie || true && \
-        [ -f /usr/local/lib/node_modules/@github/copilot/npm-loader.js ] && \
-            ln -sf /usr/local/lib/node_modules/@github/copilot/npm-loader.js /usr/local/bin/copilot || true && \
-        [ -f /usr/local/lib/node_modules/@qoder-ai/qodercli/bin/qodercli ] && \
-            ln -sf /usr/local/lib/node_modules/@qoder-ai/qodercli/bin/qodercli /usr/local/bin/qodercli || true && \
-        [ -f /usr/local/lib/node_modules/opencode-ai/bin/opencode ] && \
-            ln -sf /usr/local/lib/node_modules/opencode-ai/bin/opencode /usr/local/bin/opencode || true && \
-        echo "✅ Node.js, npm, npx, and CLI tools installed in runtime"; \
-    else \
-        rm -f /usr/local/bin/node.cli && \
-        rm -rf /usr/local/lib/node_modules.cli && \
-        echo "ℹ️  No CLI tools requested — skipping Node.js copy"; \
-    fi
+# Create symlinks for npm, npx, and all CLI tools
+# Paths verified via: npm view <package> bin --json
+RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && \
+    ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx && \
+    ln -sf /usr/local/lib/node_modules/@anthropic-ai/claude-code/cli.js /usr/local/bin/claude && \
+    ln -sf /usr/local/lib/node_modules/@qwen-code/qwen-code/cli.js /usr/local/bin/qwen && \
+    ln -sf /usr/local/lib/node_modules/@openai/codex/bin/codex.js /usr/local/bin/codex && \
+    ln -sf /usr/local/lib/node_modules/@iflow-ai/iflow-cli/bundle/entry.js /usr/local/bin/iflow && \
+    ln -sf /usr/local/lib/node_modules/@augmentcode/auggie/augment.mjs /usr/local/bin/auggie && \
+    ln -sf /usr/local/lib/node_modules/@github/copilot/npm-loader.js /usr/local/bin/copilot && \
+    ln -sf /usr/local/lib/node_modules/@qoder-ai/qodercli/bin/qodercli /usr/local/bin/qodercli && \
+    ln -sf /usr/local/lib/node_modules/opencode-ai/bin/opencode /usr/local/bin/opencode && \
+    echo "✅ Node.js, npm, npx, and all CLI tools installed"
 
 # Add global npm bin directory to PATH (for CLI executables)
 ENV PATH="/usr/local/lib/node_modules/.bin:${PATH}"
