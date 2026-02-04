@@ -1,16 +1,16 @@
 /**
  * @author Jason Matherly
- * @modified 2026-02-03
+ * @modified 2026-02-04
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import { useAuth } from '@/renderer/context/AuthContext';
+import { useThemeContext } from '@/renderer/context/ThemeContext';
 import { getAvatarColor, getInitials } from '@/renderer/utils/avatar';
 import { Dropdown, Menu, Tag, Tooltip } from '@arco-design/web-react';
-import { Logout, People, SettingTwo, User } from '@icon-park/react';
+import { Logout, Moon, People, Sun, User } from '@icon-park/react';
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { iconColors } from '@/renderer/theme/colors';
 
 interface UserMenuProps {
   collapsed?: boolean;
@@ -24,6 +24,7 @@ const roleTagColor: Record<string, string> = {
 
 const UserMenu: React.FC<UserMenuProps> = ({ collapsed = false }) => {
   const { user, logout } = useAuth();
+  const { theme, setTheme } = useThemeContext();
   const navigate = useNavigate();
 
   const initials = useMemo(() => getInitials(user?.displayName, user?.username), [user]);
@@ -33,6 +34,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ collapsed = false }) => {
   if (!user) return null;
 
   const displayLabel = user.displayName || user.username;
+  const isDark = theme === 'dark';
 
   const handleMenuClick = (key: string) => {
     switch (key) {
@@ -41,6 +43,9 @@ const UserMenu: React.FC<UserMenuProps> = ({ collapsed = false }) => {
         break;
       case 'admin':
         void navigate('/admin/users');
+        break;
+      case 'theme':
+        void setTheme(isDark ? 'light' : 'dark');
         break;
       case 'logout':
         void logout();
@@ -83,6 +88,13 @@ const UserMenu: React.FC<UserMenuProps> = ({ collapsed = false }) => {
           </div>
         </Menu.Item>
       )}
+
+      <Menu.Item key='theme'>
+        <div className='flex items-center gap-8px'>
+          {isDark ? <Sun theme='outline' size='16' fill='currentColor' /> : <Moon theme='outline' size='16' fill='currentColor' />}
+          <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
+        </div>
+      </Menu.Item>
 
       <hr className='my-4px border-0 border-t border-gray-2' />
 

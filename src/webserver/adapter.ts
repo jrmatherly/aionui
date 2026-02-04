@@ -39,12 +39,31 @@ export function initWebAdapter(wss: WebSocketServer): void {
 
   // Setup WebSocket message handler to forward messages to bridge emitter
   // Also tags each incoming message with the userId of the WebSocket sender
+  //
+  // The @office-ai/platform bridge protocol wraps invoke payloads as:
+  //   { id: "<correlationId>", data: <actualPayload> }
+  // Provider functions receive only the inner `data` field (via `n.data`),
+  // so __webUiUserId must be injected into `data.data`, not the outer wrapper.
   wsManager.setupConnectionHandler((name, data, ws) => {
     const emitter = getBridgeEmitter();
     if (emitter) {
-      // Attach the sender's userId so IPC providers can identify the caller
       const userId = wsManager.getUserId(ws);
-      const enriched = typeof data === 'object' && data !== null ? { ...data, __webUiUserId: userId } : data;
+      let enriched = data;
+
+      if (userId && typeof data === 'object' && data !== null) {
+        // Bridge protocol: enrich the inner `data` field where providers read from
+        if ('id' in data && 'data' in data) {
+          const innerData = data.data;
+          enriched = {
+            ...data,
+            data: typeof innerData === 'object' && innerData !== null ? { ...innerData, __webUiUserId: userId } : { __webUiUserId: userId },
+          };
+        } else {
+          // Non-bridge-protocol messages (e.g., pong, subscribe): enrich top-level
+          enriched = { ...data, __webUiUserId: userId };
+        }
+      }
+
       emitter.emit(name, enriched);
     }
   });

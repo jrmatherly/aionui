@@ -35,9 +35,17 @@ const AboutModalContent: React.FC = () => {
 
   const openLink = async (url: string) => {
     try {
-      await ipcBridge.shell.openExternal.invoke(url);
+      if (isElectron) {
+        // Electron desktop: use shell.openExternal to open in system browser
+        await ipcBridge.shell.openExternal.invoke(url);
+      } else {
+        // Web/Docker mode: open in new tab (shell.openExternal opens on server, not client)
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
     } catch (error) {
       console.log('Failed to open link:', error);
+      // Fallback to window.open
+      window.open(url, '_blank', 'noopener,noreferrer');
     }
   };
 

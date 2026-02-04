@@ -27,6 +27,9 @@ const DEFAULTS: BrandingConfig = {
     imageGeneration: 'https://github.com/jrmatherly/aionui/wiki/AionUi-Image-Generation-Tool-Model-Configuration-Guide',
     remoteAccess: 'https://github.com/jrmatherly/aionui/wiki/Remote-Internet-Access-Guide',
   },
+  features: {
+    allowClaudeYolo: false,
+  },
 };
 
 export function useBranding(): BrandingConfig {

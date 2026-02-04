@@ -390,22 +390,24 @@ const ToolsModalContent: React.FC = () => {
             </Form>
           </div>
 
-          {/* Claude Code */}
-          <div className='px-[12px] md:px-[32px] py-[24px] bg-2 rd-12px md:rd-16px border border-border-2'>
-            <div className='flex items-center justify-between mb-16px'>
-              <span className='text-14px text-t-primary flex items-center gap-8px'>
-                {t('settings.claudeYoloMode')}
-                <Tooltip content={t('settings.claudeYoloModeDesc')} position='top'>
-                  <span className='inline-flex cursor-help text-[rgb(var(--primary-6))]'>
-                    <Help theme='outline' size='14' />
-                  </span>
-                </Tooltip>
-              </span>
-              <Switch checked={claudeYoloMode} onChange={handleClaudeYoloModeChange} />
-            </div>
+          {/* Claude Code YOLO mode — only visible when ALLOW_CLAUDE_YOLO=true */}
+          {branding.features?.allowClaudeYolo && (
+            <div className='px-[12px] md:px-[32px] py-[24px] bg-2 rd-12px md:rd-16px border border-border-2'>
+              <div className='flex items-center justify-between mb-16px'>
+                <span className='text-14px text-t-primary flex items-center gap-8px'>
+                  {t('settings.claudeYoloMode')}
+                  <Tooltip content={t('settings.claudeYoloModeDesc')} position='top'>
+                    <span className='inline-flex cursor-help text-[rgb(var(--primary-6))]'>
+                      <Help theme='outline' size='14' />
+                    </span>
+                  </Tooltip>
+                </span>
+                <Switch checked={claudeYoloMode} onChange={handleClaudeYoloModeChange} />
+              </div>
 
-            <Divider className='mt-0px mb-0px' />
-          </div>
+              <Divider className='mt-0px mb-0px' />
+            </div>
+          )}
         </div>
       </AionScrollArea>
     </div>

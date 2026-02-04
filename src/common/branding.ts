@@ -31,6 +31,11 @@ export interface BrandingDocsUrls {
   remoteAccess: string;
 }
 
+export interface BrandingFeatureFlags {
+  /** Allow users to toggle Claude YOLO (skip permissions) mode in Tools settings */
+  allowClaudeYolo: boolean;
+}
+
 export interface BrandingConfig {
   brandName: string;
   githubRepo: string;
@@ -39,6 +44,7 @@ export interface BrandingConfig {
   feedbackUrl: string;
   github: BrandingGitHubUrls;
   docs: BrandingDocsUrls;
+  features: BrandingFeatureFlags;
 }
 
 // ---------------------------------------------------------------------------
@@ -113,6 +119,11 @@ export function getBrandingConfig(): BrandingConfig {
       llmConfig: getDocsUrl('LLM-Configuration'),
       imageGeneration: getDocsUrl('AionUi-Image-Generation-Tool-Model-Configuration-Guide'),
       remoteAccess: getDocsUrl('Remote-Internet-Access-Guide'),
+    },
+    features: {
+      // ALLOW_CLAUDE_YOLO=true enables the "Claude YOLO (Skip Permissions)" toggle in Tools settings.
+      // Hidden by default for safety — only expose when explicitly enabled by the administrator.
+      allowClaudeYolo: env('ALLOW_CLAUDE_YOLO', 'false').toLowerCase() === 'true',
     },
   };
 }
