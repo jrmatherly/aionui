@@ -73,11 +73,15 @@ services:
       - AIONUI_CONTACT_URL=${AIONUI_CONTACT_URL:-}
       - AIONUI_FEEDBACK_URL=${AIONUI_FEEDBACK_URL:-}
       # Multi-Agent CLI API Keys (optional, for env-based auth)
+      # Per-user keys via UI take precedence; these are container-level fallbacks.
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
       - DASHSCOPE_API_KEY=${DASHSCOPE_API_KEY:-}
       - MOONSHOT_API_KEY=${MOONSHOT_API_KEY:-}
       - FACTORY_API_KEY=${FACTORY_API_KEY:-}
+      - AUGMENT_API_KEY=${AUGMENT_API_KEY:-}
 
     # Persistent storage
     volumes:
