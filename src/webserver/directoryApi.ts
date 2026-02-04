@@ -11,7 +11,7 @@
  */
 
 import type { Request } from 'express';
-import { Router } from 'express';
+import express, { Router } from 'express';
 import fs from 'fs';
 import path from 'path';
 import { getDirectoryService } from '../process/services/DirectoryService';
@@ -360,6 +360,78 @@ router.get('/shortcuts', fileOperationLimiter, (req: Request, res) => {
   } catch (error) {
     console.error('Shortcuts error:', error);
     res.status(500).json({ error: 'Failed to get shortcuts' });
+  }
+});
+
+/**
+ * Upload a file to the user's workspace.
+ * Accepts JSON body with base64-encoded file content.
+ * Files are saved to the current browsing directory (must be within user workspace).
+ *
+ * Body: { filename: string, content: string (base64), targetDir?: string }
+ * Max file size: ~50MB (base64 encoded)
+ */
+router.post('/upload', express.json({ limit: '75mb' }), fileOperationLimiter, (req: Request, res) => {
+  try {
+    const userId = req.scopedUserId;
+    if (!userId) {
+      return res.status(403).json({ error: 'Authentication required' });
+    }
+
+    const { filename, content, targetDir } = req.body;
+
+    if (!filename || typeof filename !== 'string') {
+      return res.status(400).json({ error: 'Filename is required' });
+    }
+
+    if (!content || typeof content !== 'string') {
+      return res.status(400).json({ error: 'File content is required' });
+    }
+
+    // Sanitize filename — strip path separators and control chars to prevent traversal
+    // eslint-disable-next-line no-control-regex
+    const safeName = path.basename(filename).replace(/[<>:"|?*\x00-\x1f]/g, '_');
+    if (!safeName || safeName === '.' || safeName === '..') {
+      return res.status(400).json({ error: 'Invalid filename' });
+    }
+
+    // Determine target directory (default: user workspace)
+    const allowedDirs = getAllowedDirectoriesForUser(userId);
+    if (allowedDirs.length === 0) {
+      return res.status(403).json({ error: 'No accessible directories available' });
+    }
+
+    let saveDir: string;
+    if (targetDir && typeof targetDir === 'string') {
+      try {
+        saveDir = validatePath(targetDir, allowedDirs);
+      } catch {
+        return res.status(403).json({ error: 'Target directory is not accessible' });
+      }
+    } else {
+      saveDir = getDefaultDirectoryForUser(userId);
+    }
+
+    // Ensure save directory exists
+    fs.mkdirSync(saveDir, { recursive: true });
+
+    // Decode base64 content and write file
+    const filePath = path.join(saveDir, safeName);
+    const validatedFilePath = validatePath(filePath, allowedDirs);
+
+    const buffer = Buffer.from(content, 'base64');
+    fs.writeFileSync(validatedFilePath, buffer);
+
+    res.json({
+      success: true,
+      path: validatedFilePath,
+      name: safeName,
+      size: buffer.length,
+    });
+  } catch (error) {
+    console.error('File upload error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Failed to upload file';
+    res.status(500).json({ error: errorMessage });
   }
 });
 
