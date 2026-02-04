@@ -200,25 +200,52 @@ CREATE INDEX idx_user_api_keys_user_id ON user_api_keys(user_id);
 
 ## Provider Mapping
 
-The `UserApiKeyService` maps providers to environment variable names:
+The `UserApiKeyService` maps providers to environment variable names.
+
+### Visible in UI (Settings → API Keys)
+
+**Common Providers:**
+| Provider | Environment Variable | Description |
+|----------|---------------------|-------------|
+| anthropic | ANTHROPIC_API_KEY | Claude models |
+| openai | OPENAI_API_KEY | GPT, Codex |
+| gemini | GEMINI_API_KEY | Google AI Studio |
+| groq | GROQ_API_KEY | Fast inference |
+| openrouter | OPENROUTER_API_KEY | Multi-model proxy |
+
+**Other Providers:**
+| Provider | Environment Variable | Description |
+|----------|---------------------|-------------|
+| azure | AZURE_OPENAI_API_KEY | Azure-hosted OpenAI |
+| cohere | COHERE_API_KEY | Enterprise LLMs |
+| perplexity | PERPLEXITY_API_KEY | Search-augmented |
+
+### Hidden from UI (Backend Only)
+
+These providers are supported but not shown in the UI. Users can still use them via container environment variables.
 
 | Provider | Environment Variable |
 |----------|---------------------|
-| anthropic | ANTHROPIC_API_KEY |
-| openai | OPENAI_API_KEY |
-| google | GOOGLE_API_KEY / GEMINI_API_KEY |
-| openrouter | OPENROUTER_API_KEY |
-| deepseek | DEEPSEEK_API_KEY |
-| groq | GROQ_API_KEY |
+| google | GOOGLE_API_KEY (Vertex AI) |
 | mistral | MISTRAL_API_KEY |
+| deepseek | DEEPSEEK_API_KEY |
 | together | TOGETHER_API_KEY |
 | fireworks | FIREWORKS_API_KEY |
-| aws | AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY |
+| dashscope | DASHSCOPE_API_KEY |
+| moonshot | MOONSHOT_API_KEY |
+| replicate | REPLICATE_API_TOKEN |
+| huggingface | HUGGINGFACE_API_KEY |
+| aws_access | AWS_ACCESS_KEY_ID |
+| aws_secret | AWS_SECRET_ACCESS_KEY |
+
+To re-enable hidden providers, edit `src/common/constants/providers.ts`.
 
 ## Files Involved
 
 | File | Purpose |
 |------|---------|
+| `src/common/constants/providers.ts` | Provider definitions (UI visibility, metadata) |
+| `src/common/UserApiKeyService.ts` | Encryption/decryption, env var mapping |
 | `src/process/database/index.ts` | `getConversationWithUserId()` method |
 | `src/process/WorkerManage.ts` | Threads userId through build chain |
 | `src/process/task/AcpAgentManager.ts` | Accepts userId, passes to AcpAgent |
@@ -227,7 +254,6 @@ The `UserApiKeyService` maps providers to environment variable names:
 | `src/agent/acp/AcpConnection.ts` | `connect()` and `createGenericSpawnConfig()` accept userId |
 | `src/agent/codex/core/CodexAgent.ts` | CodexAgent stores and passes userId |
 | `src/agent/codex/connection/CodexConnection.ts` | `start()` accepts userId |
-| `src/common/UserApiKeyService.ts` | Encryption/decryption and env generation |
 
 ## Testing
 
