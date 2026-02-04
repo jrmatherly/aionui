@@ -2,24 +2,24 @@ import { ipcBridge } from '@/common';
 import type { TMessage } from '@/common/chatLib';
 import { transformMessage } from '@/common/chatLib';
 import { uuid } from '@/common/utils';
-import FilePreview from '@/renderer/components/FilePreview';
-import HorizontalFileList from '@/renderer/components/HorizontalFileList';
-import ThoughtDisplay, { type ThoughtData } from '@/renderer/components/ThoughtDisplay';
 import SendBox from '@/renderer/components/sendbox';
-import { useAutoTitle } from '@/renderer/hooks/useAutoTitle';
-import { useLatestRef } from '@/renderer/hooks/useLatestRef';
 import { getSendBoxDraftHook, type FileOrFolderItem } from '@/renderer/hooks/useSendBoxDraft';
 import { useAddOrUpdateMessage } from '@/renderer/messages/hooks';
-import { usePreviewContext } from '@/renderer/pages/conversation/preview';
 import { allSupportedExts, type FileMetadata } from '@/renderer/services/FileService';
-import { iconColors } from '@/renderer/theme/colors';
 import { emitter, useAddEventListener } from '@/renderer/utils/emitter';
 import { mergeFileSelectionItems } from '@/renderer/utils/fileSelection';
-import { buildDisplayMessage } from '@/renderer/utils/messageFiles';
 import { Button, Tag } from '@arco-design/web-react';
 import { Plus } from '@icon-park/react';
+import { iconColors } from '@/renderer/theme/colors';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { buildDisplayMessage } from '@/renderer/utils/messageFiles';
+import ThoughtDisplay, { type ThoughtData } from '@/renderer/components/ThoughtDisplay';
+import FilePreview from '@/renderer/components/FilePreview';
+import HorizontalFileList from '@/renderer/components/HorizontalFileList';
+import { usePreviewContext } from '@/renderer/pages/conversation/preview';
+import { useLatestRef } from '@/renderer/hooks/useLatestRef';
+import { useAutoTitle } from '@/renderer/hooks/useAutoTitle';
 
 interface CodexDraftData {
   _type: 'codex';
@@ -50,6 +50,7 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
     subject: '',
   });
 
+  // Think 消息节流：限制更新频率，减少渲染次数
   // Throttle thought updates to reduce render frequency
   const thoughtThrottleRef = useRef<{
     lastUpdate: number;
@@ -89,7 +90,7 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
     };
   }, []);
 
-  // Clean up throttle timer
+  // 清理节流定时器
   useEffect(() => {
     return () => {
       if (thoughtThrottleRef.current.timer) {
@@ -114,22 +115,25 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
     };
   })();
 
+  // 使用 useLatestRef 保存最新的 setContent/atPath，避免重复注册 handler
   // Use useLatestRef to keep latest setters to avoid re-registering handler
   const setContentRef = useLatestRef(setContent);
   const atPathRef = useLatestRef(atPath);
 
-  // When conversation ID changes, clear all state to avoid state pollution
+  // 当会话ID变化时，清理所有状态避免状态污染
   useEffect(() => {
-    // Reset all running states to avoid state pollution when switching conversations
+    // 重置所有运行状态，避免切换会话时状态污染
     setRunning(false);
     setAiProcessing(false);
     setCodexStatus(null);
     setThought({ subject: '', description: '' });
   }, [conversation_id]);
 
+  // 注册预览面板添加到发送框的 handler
   // Register handler for adding text from preview panel to sendbox
   useEffect(() => {
     const handler = (text: string) => {
+      // 如果已有内容，添加换行和新文本；否则直接设置文本
       // If there's existing content, add newline and new text; otherwise just set the text
       const newContent = content ? `${content}\n${text}` : text;
       setContentRef.current(newContent);
@@ -198,16 +202,17 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
     });
   }, [conversation_id]);
 
-  // Handle pasted files - Codex-specific logic
+  // 处理粘贴的文件 - Codex专用逻辑
   const handleFilesAdded = useCallback(
     (pastedFiles: FileMetadata[]) => {
-      // Add pasted files to uploadFile
+      // 将粘贴的文件添加到uploadFile中
       const filePaths = pastedFiles.map((file) => file.path);
       setUploadFile([...uploadFile, ...filePaths]);
     },
     [uploadFile, setUploadFile]
   );
 
+  // 监听从工作空间选择的文件/文件夹（接收对象或路径数组）
   // Listen to files/folders selected from workspace (receives objects or path array)
   useAddEventListener('codex.selected.file', (items: Array<string | FileOrFolderItem>) => {
     // Add a small delay to ensure state persistence and prevent flashing
@@ -227,7 +232,7 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
 
   const onSendHandler = async (message: string) => {
     const msg_id = uuid();
-    // Immediately clear input and selected files to improve user experience
+    // 立即清空输入框和选择的文件，提升用户体验
     setContent('');
     emitter.emit('codex.selected.file.clear');
     const currentAtPath = [...atPath];
@@ -235,11 +240,11 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
     setAtPath([]);
     setUploadFile([]);
 
-    // No longer automatically add @ prefix to avoid message display line breaks and ambiguity
+    // 不再自动添加 @ 前缀，避免消息显示换行和歧义
     const filePaths = [...currentUploadFile, ...currentAtPath.map((item) => (typeof item === 'string' ? item : item.path))];
     const displayMessage = buildDisplayMessage(message, filePaths, workspacePath);
 
-    // Write user message on frontend first to avoid navigation/event race causing invisible messages
+    // 前端先写入用户消息，避免导航/事件竞争导致看不到消息
     const userMessage: TMessage = {
       id: msg_id,
       msg_id,
@@ -249,16 +254,16 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
       content: { content: displayMessage },
       createdAt: Date.now(),
     };
-    addOrUpdateMessage(userMessage, true); // Save immediately to storage to avoid loss on refresh
+    addOrUpdateMessage(userMessage, true); // 立即保存到存储，避免刷新丢失
     setAiProcessing(true);
     try {
-      // Extract actual file paths to send to backend
+      // 提取实际的文件路径发送给后端
       const atPathStrings = currentAtPath.map((item) => (typeof item === 'string' ? item : item.path));
       await ipcBridge.codexConversation.sendMessage.invoke({
         input: displayMessage,
         msg_id,
         conversation_id,
-        files: [...currentUploadFile, ...atPathStrings], // Include uploaded files and selected workspace files
+        files: [...currentUploadFile, ...atPathStrings], // 包含上传文件和选中的工作空间文件
       });
       void checkAndUpdateTitle(conversation_id, message);
       emitter.emit('chat.history.refresh');
@@ -268,11 +273,11 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
     }
   };
 
-  // Handle initial message from guide page, wait for connection state to establish before sending
+  // 处理从引导页带过来的 initial message，等待连接状态建立后再发送
   useEffect(() => {
     if (!conversation_id || !codexStatus) return;
 
-    // Only send initial message when connection status is session_active
+    // 只有在连接状态为 session_active 时才发送初始化消息
     if (codexStatus !== 'session_active') return;
 
     const storageKey = `codex_initial_message_${conversation_id}`;
@@ -282,12 +287,12 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
       const stored = sessionStorage.getItem(storageKey);
       if (!stored) return;
 
-      // Double-check locking pattern to prevent race conditions
+      // 双重检查锁定模式，防止竞态条件
       if (sessionStorage.getItem(processedKey)) {
         return;
       }
 
-      // Immediately mark as processed to prevent duplicate processing
+      // 立即标记为已处理，防止重复处理
       sessionStorage.setItem(processedKey, 'true');
 
       try {
@@ -295,13 +300,13 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
         setAiProcessing(true);
 
         const { input, files = [] } = JSON.parse(stored) as { input: string; files?: string[] };
-        // Use fixed msg_id based on conversation_id to ensure uniqueness
+        // 使用固定的msg_id，基于conversation_id确保唯一性
         const msg_id = `initial_${conversation_id}_${Date.now()}`;
         const loading_id = uuid();
 
         const initialDisplayMessage = buildDisplayMessage(input, files, workspacePath);
 
-        // Write user message on frontend first to avoid navigation/event race causing invisible messages
+        // 前端先写入用户消息，避免导航/事件竞争导致看不到消息
         const userMessage: TMessage = {
           id: msg_id,
           msg_id,
@@ -311,17 +316,17 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
           content: { content: initialDisplayMessage },
           createdAt: Date.now(),
         };
-        addOrUpdateMessage(userMessage, true); // Save immediately to storage to avoid loss on refresh
+        addOrUpdateMessage(userMessage, true); // 立即保存到存储，避免刷新丢失
 
-        // Send message to backend for processing
+        // 发送消息到后端处理
         await ipcBridge.codexConversation.sendMessage.invoke({ input: initialDisplayMessage, msg_id, conversation_id, files, loading_id });
         void checkAndUpdateTitle(conversation_id, input);
         emitter.emit('chat.history.refresh');
 
-        // Remove initial message storage after success
+        // 成功后移除初始消息存储
         sessionStorage.removeItem(storageKey);
       } catch (err) {
-        // Clean up processed marker on send failure to allow retry
+        // 发送失败时清理处理标记，允许重试
         sessionStorage.removeItem(processedKey);
       } finally {
         // Clear waiting state
@@ -329,7 +334,7 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
       }
     };
 
-    // Small delay to ensure status messages are fully processed
+    // 小延迟确保状态消息已经完全处理
     const timer = setTimeout(() => {
       processInitialMessage().catch((error) => {
         console.error('Failed to process initial message:', error);
@@ -341,7 +346,7 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
     };
   }, [conversation_id, codexStatus, addOrUpdateMessage]);
 
-  // Stop conversation handler
+  // 停止会话处理函数 Stop conversation handler
   const handleStop = async (): Promise<void> => {
     // Use finally to ensure UI state is reset even if backend stop fails
     try {

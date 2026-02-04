@@ -1,26 +1,26 @@
 import { ipcBridge } from '@/common';
+import type { AcpBackend } from '@/types/acpTypes';
 import { transformMessage, type TMessage } from '@/common/chatLib';
 import type { IResponseMessage } from '@/common/ipcBridge';
 import { uuid } from '@/common/utils';
-import FilePreview from '@/renderer/components/FilePreview';
-import HorizontalFileList from '@/renderer/components/HorizontalFileList';
-import ThoughtDisplay, { type ThoughtData } from '@/renderer/components/ThoughtDisplay';
 import SendBox from '@/renderer/components/sendbox';
-import { useAutoTitle } from '@/renderer/hooks/useAutoTitle';
-import { useLatestRef } from '@/renderer/hooks/useLatestRef';
+import ThoughtDisplay, { type ThoughtData } from '@/renderer/components/ThoughtDisplay';
 import { getSendBoxDraftHook, type FileOrFolderItem } from '@/renderer/hooks/useSendBoxDraft';
 import { createSetUploadFile, useSendBoxFiles } from '@/renderer/hooks/useSendBoxFiles';
 import { useAddOrUpdateMessage } from '@/renderer/messages/hooks';
-import { usePreviewContext } from '@/renderer/pages/conversation/preview';
 import { allSupportedExts } from '@/renderer/services/FileService';
-import { iconColors } from '@/renderer/theme/colors';
 import { emitter, useAddEventListener } from '@/renderer/utils/emitter';
 import { mergeFileSelectionItems } from '@/renderer/utils/fileSelection';
-import type { AcpBackend } from '@/types/acpTypes';
 import { Button, Tag } from '@arco-design/web-react';
 import { Plus } from '@icon-park/react';
+import { iconColors } from '@/renderer/theme/colors';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import FilePreview from '@/renderer/components/FilePreview';
+import HorizontalFileList from '@/renderer/components/HorizontalFileList';
+import { usePreviewContext } from '@/renderer/pages/conversation/preview';
+import { useLatestRef } from '@/renderer/hooks/useLatestRef';
+import { useAutoTitle } from '@/renderer/hooks/useAutoTitle';
 
 const useAcpSendBoxDraft = getSendBoxDraftHook('acp', {
   _type: 'acp',
@@ -39,6 +39,7 @@ const useAcpMessage = (conversation_id: string) => {
   const [acpStatus, setAcpStatus] = useState<'connecting' | 'connected' | 'authenticated' | 'session_active' | 'disconnected' | 'error' | null>(null);
   const [aiProcessing, setAiProcessing] = useState(false); // New loading state for AI response
 
+  // Think 消息节流：限制更新频率，减少渲染次数
   // Throttle thought updates to reduce render frequency
   const thoughtThrottleRef = useRef<{
     lastUpdate: number;
@@ -78,7 +79,7 @@ const useAcpMessage = (conversation_id: string) => {
     };
   }, []);
 
-  // Clean up throttle timer
+  // 清理节流定时器
   useEffect(() => {
     return () => {
       if (thoughtThrottleRef.current.timer) {
@@ -219,6 +220,7 @@ const AcpSendBox: React.FC<{
     });
   }, [conversation_id]);
 
+  // 使用 useLatestRef 保存最新的 setContent/atPath，避免重复注册 handler
   // Use useLatestRef to keep latest setters to avoid re-registering handler
   const setContentRef = useLatestRef(setContent);
   const atPathRef = useLatestRef(atPath);
@@ -227,7 +229,7 @@ const AcpSendBox: React.FC<{
   const addOrUpdateMessage = useAddOrUpdateMessage(); // Move this here so it's available in useEffect
   const addOrUpdateMessageRef = useLatestRef(addOrUpdateMessage);
 
-  // Use shared file handling logic
+  // 使用共享的文件处理逻辑
   const { handleFilesAdded, clearFiles } = useSendBoxFiles({
     atPath,
     uploadFile,
@@ -235,9 +237,11 @@ const AcpSendBox: React.FC<{
     setUploadFile,
   });
 
+  // 注册预览面板添加到发送框的 handler
   // Register handler for adding text from preview panel to sendbox
   useEffect(() => {
     const handler = (text: string) => {
+      // 如果已有内容，添加换行和新文本；否则直接设置文本
       // If there's existing content, add newline and new text; otherwise just set the text
       const newContent = content ? `${content}\n${text}` : text;
       setContentRef.current(newContent);
@@ -278,9 +282,9 @@ const AcpSendBox: React.FC<{
       try {
         const initialMessage = JSON.parse(storedMessage);
         const { input, files } = initialMessage;
-        // ACP: Don't use buildDisplayMessage, pass raw input directly
-        // File references are added by the backend ACP agent (using actual paths after copy)
-        // Avoid having two inconsistent sets of file references in the message
+        // ACP: 不使用 buildDisplayMessage，直接传原始 input
+        // 文件引用由后端 ACP agent 负责添加（使用复制后的实际路径）
+        // 避免消息中出现两套不一致的文件引用
         const msg_id = uuid();
 
         // Start AI processing loading state (user message will be added via backend response)
@@ -297,7 +301,7 @@ const AcpSendBox: React.FC<{
         if (result && result.success === true) {
           // Initial message sent successfully
           void checkAndUpdateTitle(conversation_id, input);
-          // Wait a short time to ensure backend database update completes
+          // 等待一小段时间确保后端数据库更新完成
           await new Promise((resolve) => setTimeout(resolve, 100));
           sessionStorage.removeItem(storageKey);
           emitter.emit('chat.history.refresh');
@@ -337,14 +341,16 @@ const AcpSendBox: React.FC<{
   const onSendHandler = async (message: string) => {
     const msg_id = uuid();
 
-    // ACP: Don't use buildDisplayMessage, pass raw message directly
-    // File references are added by the backend ACP agent (using actual paths after copy)
-    // Avoid having two inconsistent sets of file references causing Claude to read wrong files
+    // ACP: 不使用 buildDisplayMessage，直接传原始 message
+    // 文件引用由后端 ACP agent 负责添加（使用复制后的实际路径）
+    // 避免消息中出现两套不一致的文件引用导致 Claude 读取错误文件
 
+    // 合并 uploadFile 和 atPath（工作空间选择的文件）
     // Merge uploadFile and atPath (workspace selected files)
     const atPathFiles = atPath.map((item) => (typeof item === 'string' ? item : item.path));
     const allFiles = [...uploadFile, ...atPathFiles];
 
+    // 立即清空输入框，避免用户误以为消息没发送
     // Clear input immediately to avoid user thinking message wasn't sent
     setContent('');
     clearFiles();
@@ -408,7 +414,7 @@ const AcpSendBox: React.FC<{
     }
   });
 
-  // Stop conversation handler
+  // 停止会话处理函数 Stop conversation handler
   const handleStop = async (): Promise<void> => {
     // Use finally to ensure UI state is reset even if backend stop fails
     try {

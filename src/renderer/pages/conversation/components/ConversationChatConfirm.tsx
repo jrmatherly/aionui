@@ -15,7 +15,9 @@ const ConversationChatConfirm: React.FC<PropsWithChildren<{ conversation_id: str
   const agentType = conversationContext?.type || 'unknown';
 
   // Check if confirmation should be auto-confirmed via backend approval store
+  // 通过后端 approval store 检查是否应该自动确认
   // Keys are parsed in backend (single source of truth)
+  // Keys 在后端解析（单一数据源）
   const checkAndAutoConfirm = useCallback(
     async (confirmation: IConfirmation<string>): Promise<boolean> => {
       // Only check gemini agent type (others don't have approval store yet)
@@ -141,22 +143,23 @@ const ConversationChatConfirm: React.FC<PropsWithChildren<{ conversation_id: str
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [confirmations, conversation_id]);
+  // 修复 #475: 如果加载出错，显示错误信息和重试按钮
   // Fix #475: If loading fails, show error message and retry button
   if (loadError && !confirmations.length) {
     return (
       <div>
-        {/* Error notification card */}
+        {/* 错误提示卡片 / Error notification card */}
         <div
           className={`relative p-16px bg-white flex flex-col overflow-hidden m-b-20px rd-20px max-w-800px w-full mx-auto box-border`}
           style={{
             boxShadow: '0px 2px 20px 0px rgba(74, 88, 250, 0.1)',
           }}
         >
-          {/* Error title */}
+          {/* 错误标题 / Error title */}
           <div className='color-[rgba(217,45,32,1)] text-14px font-medium mb-8px'>{t('conversation.confirmationLoadError', 'Failed to load confirmation dialog')}</div>
-          {/* Error details */}
+          {/* 错误详情 / Error details */}
           <div className='text-12px color-[rgba(134,144,156,1)] mb-12px'>{loadError}</div>
-          {/* Manual retry button */}
+          {/* 手动重试按钮 / Manual retry button */}
           <button
             onClick={() => {
               setLoadError(null);
@@ -199,6 +202,7 @@ const ConversationChatConfirm: React.FC<PropsWithChildren<{ conversation_id: str
             <div
               onClick={() => {
                 // Note: "always allow" is stored by backend when proceed_always is confirmed
+                // 注意：后端会在确认 proceed_always 时自动存储权限
                 setConfirmations((prev) => prev.filter((p) => p.id !== confirmation.id));
                 void ipcBridge.conversation.confirmation.confirm.invoke({ conversation_id, callId: confirmation.callId, msg_id: confirmation.id, data: option.value });
               }}

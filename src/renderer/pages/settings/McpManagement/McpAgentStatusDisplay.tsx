@@ -8,10 +8,10 @@ import IflowLogo from '@/renderer/assets/logos/iflow.svg';
 import KimiLogo from '@/renderer/assets/logos/kimi.svg';
 import OpenCodeLogo from '@/renderer/assets/logos/opencode.svg';
 import QwenLogo from '@/renderer/assets/logos/qwen.svg';
-import { iconColors } from '@/renderer/theme/colors';
 import { Tag, Tooltip } from '@arco-design/web-react';
 import { LoadingOne } from '@icon-park/react';
 import React from 'react';
+import { iconColors } from '@/renderer/theme/colors';
 
 interface McpAgentStatusDisplayProps {
   serverName: string;
