@@ -64,6 +64,18 @@ Note: `electron-builder.yml` includes `bcrypt/**/*` in `files` and `asarUnpack`.
 - **`.dockerignore`** explicitly excludes `mise.local.toml`, `mise.*.local.toml`, `mise.local.lock` but includes `mise.toml` and `mise.lock`
 - When updating tool versions: update `mise.toml`, run `mise install`, then `mise lock` to refresh `mise.lock`, then `mise run docker:build` to rebuild with new versions
 
+## CLI Tools Runtime (npx / npm / node)
+
+When `INSTALL_*` build args are `true`, the Dockerfile copies Node.js from the cli-installer stage and creates symlinks:
+
+- `/usr/local/bin/node` — Node.js binary
+- `/usr/local/bin/npm` → `../lib/node_modules/npm/bin/npm-cli.js`
+- `/usr/local/bin/npx` → `../lib/node_modules/npm/bin/npx-cli.js`
+
+**All three symlinks are required.** Without `npx`, MCP stdio servers configured with `command: "npx"` fail with `spawn npx ENOENT`.
+
+**`mise run docker:build` reads `INSTALL_*` flags from `deploy/docker/.env`** and passes them as `--build-arg` flags. This matches `docker compose build` behavior. Without this, all `INSTALL_*` ARGs default to `false` in the Dockerfile, and Node.js is stripped from the runtime image.
+
 ## docker-compose vs docker build Image Naming
 
 - **docker-compose auto-names images** as `<project>-<service>` (e.g., `docker-aionui`) when using `build:` without `image:`

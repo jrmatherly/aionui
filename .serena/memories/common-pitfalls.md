@@ -102,6 +102,14 @@ When setting `modules: { namedExport: false }` in css-loader v7, you MUST also i
 
 croner v10 removed legacy cron expression support. Add `sloppyRanges: true` to all `new Cron()` calls for backward compatibility with existing cron expressions in the database.
 
+### `mise run docker:build` must pass INSTALL\_\* args
+
+The mise `docker:build` task reads `INSTALL_*` flags from `deploy/docker/.env` and passes them as `--build-arg`. Without this, all CLI install flags default to `false` in the Dockerfile and Node.js is stripped from the runtime container. This causes `spawn npx ENOENT` for any MCP stdio server using `npx`.
+
+### Dockerfile must symlink both `npm` AND `npx`
+
+When CLI tools are enabled, the Dockerfile symlinks `npm-cli.js` and `npx-cli.js` to `/usr/local/bin/`. Missing either breaks commands that depend on them (e.g., MCP servers using `npx -y package@latest`).
+
 ### `@vercel/webpack-asset-relocator-loader` must stay at 1.7.3
 
 Upgrading breaks the Docker build pipeline. Renovate config disables updates for this package. See commit `9c21d784`.
