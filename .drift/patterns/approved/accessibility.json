@@ -3,6 +3,84 @@
   "category": "accessibility",
   "patterns": [
     {
+      "id": "6a6392af1d069b62",
+      "subcategory": "alt-text",
+      "name": "Alt Text Detector",
+      "description": "Learns alt text patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "accessibility/alt-text",
+          "patternId": "accessibility/alt-text/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.06,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 4,
+        "score": 0.6824999999999999,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 320,
+          "column": 107,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 348,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 155,
+          "column": 53,
+          "isOutlier": false,
+          "confidence": 0.6824999999999999
+        },
+        {
+          "file": ".github/workflows/gemini-scheduled-triage.yml",
+          "line": 58,
+          "column": 27,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 136,
+          "column": 33,
+          "isOutlier": false,
+          "confidence": 0.56
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 140,
+          "column": 35,
+          "isOutlier": false,
+          "confidence": 0.56
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-04T05:34:32.009Z",
+        "lastSeen": "2026-02-04T05:41:55.039Z",
+        "source": "auto-detected",
+        "tags": [
+          "accessibility",
+          "alt-text"
+        ],
+        "approvedAt": "2026-02-04T05:41:55.039Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
       "id": "124e52aaa10e02eb",
       "subcategory": "semantic-html",
       "name": "Semantic HTML Detector",
@@ -159,8 +237,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.009Z",
+        "lastSeen": "2026-02-04T05:34:32.009Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -201,8 +279,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -271,8 +349,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -334,8 +412,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -390,8 +468,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -446,8 +524,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.009Z",
+        "lastSeen": "2026-02-04T05:34:32.009Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -495,8 +573,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -558,8 +636,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -607,8 +685,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -707,8 +785,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.009Z",
+        "lastSeen": "2026-02-04T05:34:32.009Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -966,8 +1044,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -1036,8 +1114,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -1078,8 +1156,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -1120,8 +1198,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -1162,8 +1240,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -1174,6 +1252,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-04T02:51:29.265Z",
-  "checksum": "dda18296737ca2b4"
+  "lastUpdated": "2026-02-04T05:41:56.106Z",
+  "checksum": "2778dd37c56c65ab"
 }

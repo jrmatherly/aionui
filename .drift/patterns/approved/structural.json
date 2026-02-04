@@ -3,6 +3,462 @@
   "category": "structural",
   "patterns": [
     {
+      "id": "cf435a409a674298",
+      "subcategory": "file-naming",
+      "name": "File Naming Detector",
+      "description": "Learns file naming convention patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "structural/file-naming",
+          "patternId": "structural/file-naming/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.6,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 8,
+        "score": 0.6892307692307693,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 63,
+          "column": 10,
+          "isOutlier": false,
+          "confidence": 0.6594736842105262
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 64,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.6594736842105262
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 73,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.6594736842105262
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 182,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.6594736842105262
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 188,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.6594736842105262
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 194,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.6594736842105262
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 200,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.6594736842105262
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 293,
+          "column": 13,
+          "isOutlier": false,
+          "confidence": 0.6594736842105262
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 11,
+          "column": 13,
+          "isOutlier": false,
+          "confidence": 0.6594736842105262
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 3,
+          "column": 154,
+          "isOutlier": false,
+          "confidence": 0.6594736842105262
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 59,
+          "column": 20,
+          "isOutlier": false,
+          "confidence": 0.6594736842105262
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 68,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.6594736842105262
+        },
+        {
+          "file": ".aionui/FEATURE_ASSISTANT.md",
+          "line": 61,
+          "column": 20,
+          "isOutlier": false,
+          "confidence": 0.6594736842105262
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 55,
+          "column": 10,
+          "isOutlier": false,
+          "confidence": 0.6892307692307693
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 56,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.6892307692307693
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 65,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.6892307692307693
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 170,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.6892307692307693
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 176,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.6892307692307693
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 182,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.6892307692307693
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 188,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.6892307692307693
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 279,
+          "column": 13,
+          "isOutlier": false,
+          "confidence": 0.6892307692307693
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 320,
+          "column": 51,
+          "isOutlier": false,
+          "confidence": 0.6892307692307693
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 326,
+          "column": 65,
+          "isOutlier": false,
+          "confidence": 0.6892307692307693
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 331,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.6892307692307693
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 337,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.6892307692307693
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 352,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.6892307692307693
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 11,
+          "column": 13,
+          "isOutlier": false,
+          "confidence": 0.6892307692307693
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 11,
+          "column": 30,
+          "isOutlier": false,
+          "confidence": 0.6892307692307693
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 314,
+          "column": 13,
+          "isOutlier": false,
+          "confidence": 0.6892307692307693
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 3,
+          "column": 154,
+          "isOutlier": false,
+          "confidence": 0.6892307692307693
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 51,
+          "column": 20,
+          "isOutlier": false,
+          "confidence": 0.6892307692307693
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 60,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.6892307692307693
+        },
+        {
+          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
+          "line": 53,
+          "column": 20,
+          "isOutlier": false,
+          "confidence": 0.6892307692307693
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 122,
+          "column": 39,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
+          "line": 41,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.5366666666666666
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 261,
+          "column": 36,
+          "isOutlier": false,
+          "confidence": 0.6766666666666667
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 261,
+          "column": 42,
+          "isOutlier": false,
+          "confidence": 0.6766666666666667
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 263,
+          "column": 36,
+          "isOutlier": false,
+          "confidence": 0.6766666666666667
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 263,
+          "column": 42,
+          "isOutlier": false,
+          "confidence": 0.6766666666666667
+        },
+        {
+          "file": ".github/workflows/gemini-invoke.yml",
+          "line": 181,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.5700000000000001
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 228,
+          "column": 32,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 264,
+          "column": 46,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 265,
+          "column": 53,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 268,
+          "column": 24,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 308,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 134,
+          "column": 46,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/gemini-review.yml",
+          "line": 170,
+          "column": 122,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 177,
+          "column": 27,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 183,
+          "column": 31,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 184,
+          "column": 31,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 189,
+          "column": 24,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 189,
+          "column": 32,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 190,
+          "column": 27,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 190,
+          "column": 32,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 192,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 192,
+          "column": 37,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 192,
+          "column": 42,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 197,
+          "column": 30,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 197,
+          "column": 58,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 233,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.595
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-04T05:34:32.007Z",
+        "lastSeen": "2026-02-04T05:41:54.492Z",
+        "source": "auto-detected",
+        "tags": [
+          "structural",
+          "file-naming"
+        ],
+        "approvedAt": "2026-02-04T05:41:54.492Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
       "id": "d900d699105b28a9",
       "subcategory": "barrel-exports",
       "name": "Barrel Exports Detector",
@@ -111,8 +567,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.007Z",
+        "lastSeen": "2026-02-04T05:34:32.007Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -747,7 +1203,7 @@
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 173,
+          "line": 174,
           "column": 59,
           "isOutlier": false,
           "confidence": 0.6824999999999999
@@ -755,8 +1211,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.007Z",
+        "lastSeen": "2026-02-04T05:34:32.007Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -797,8 +1253,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -839,8 +1295,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.013Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -1413,7 +1869,7 @@
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 145,
+          "line": 146,
           "column": 15,
           "isOutlier": true,
           "confidence": 0.595,
@@ -1422,8 +1878,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.007Z",
+        "lastSeen": "2026-02-04T05:34:32.007Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -1882,7 +2338,7 @@
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 145,
+          "line": 146,
           "column": 15,
           "isOutlier": true,
           "confidence": 0.5366666666666666,
@@ -1891,8 +2347,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.007Z",
+        "lastSeen": "2026-02-04T05:34:32.007Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2081,8 +2537,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.007Z",
+        "lastSeen": "2026-02-04T05:34:32.007Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2242,8 +2698,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.007Z",
+        "lastSeen": "2026-02-04T05:34:32.007Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2326,8 +2782,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.008Z",
+        "lastSeen": "2026-02-04T05:34:32.008Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2368,8 +2824,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.009Z",
+        "lastSeen": "2026-02-04T05:34:32.009Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2438,21 +2894,21 @@
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 197,
+          "line": 198,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.7949999999999999
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 197,
+          "line": 198,
           "column": 47,
           "isOutlier": false,
           "confidence": 0.7949999999999999
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 197,
+          "line": 198,
           "column": 64,
           "isOutlier": false,
           "confidence": 0.7949999999999999
@@ -2460,8 +2916,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.009Z",
+        "lastSeen": "2026-02-04T05:34:32.009Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2502,8 +2958,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.009Z",
+        "lastSeen": "2026-02-04T05:34:32.009Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2601,8 +3057,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2650,8 +3106,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2699,8 +3155,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2741,8 +3197,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2908,14 +3364,14 @@
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 190,
+          "line": 191,
           "column": 20,
           "isOutlier": false,
           "confidence": 0.7949999999999999
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 190,
+          "line": 191,
           "column": 38,
           "isOutlier": false,
           "confidence": 0.7949999999999999
@@ -2923,8 +3379,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.007Z",
+        "lastSeen": "2026-02-04T05:34:32.007Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3035,8 +3491,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.007Z",
+        "lastSeen": "2026-02-04T05:34:32.007Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3259,8 +3715,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.007Z",
+        "lastSeen": "2026-02-04T05:34:32.007Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3364,8 +3820,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.007Z",
+        "lastSeen": "2026-02-04T05:34:32.007Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3413,8 +3869,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.009Z",
+        "lastSeen": "2026-02-04T05:34:32.009Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3469,8 +3925,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3596,8 +4052,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3638,8 +4094,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4260,28 +4716,28 @@
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 184,
+          "line": 185,
           "column": 19,
           "isOutlier": false,
           "confidence": 0.7949999999999999
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 184,
+          "line": 185,
           "column": 31,
           "isOutlier": false,
           "confidence": 0.7949999999999999
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 187,
+          "line": 188,
           "column": 19,
           "isOutlier": false,
           "confidence": 0.7949999999999999
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 195,
+          "line": 196,
           "column": 17,
           "isOutlier": false,
           "confidence": 0.7949999999999999
@@ -4309,63 +4765,63 @@
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 129,
+          "line": 130,
           "column": 5,
           "isOutlier": false,
           "confidence": 0.7949999999999999
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 133,
+          "line": 134,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.7949999999999999
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 136,
+          "line": 137,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.7949999999999999
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 142,
+          "line": 143,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.7949999999999999
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 145,
+          "line": 146,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.7949999999999999
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 148,
+          "line": 149,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.7949999999999999
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 151,
+          "line": 152,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.7949999999999999
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 156,
+          "line": 157,
           "column": 5,
           "isOutlier": false,
           "confidence": 0.7949999999999999
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 163,
+          "line": 164,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.7949999999999999
@@ -4373,8 +4829,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.007Z",
+        "lastSeen": "2026-02-04T05:34:32.007Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4422,8 +4878,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.007Z",
+        "lastSeen": "2026-02-04T05:34:32.007Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4507,8 +4963,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.007Z",
+        "lastSeen": "2026-02-04T05:34:32.007Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4578,8 +5034,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.007Z",
+        "lastSeen": "2026-02-04T05:34:32.007Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4697,8 +5153,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.007Z",
+        "lastSeen": "2026-02-04T05:34:32.007Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4753,8 +5209,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.007Z",
+        "lastSeen": "2026-02-04T05:34:32.007Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4816,8 +5272,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.007Z",
+        "lastSeen": "2026-02-04T05:34:32.007Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4872,8 +5328,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.009Z",
+        "lastSeen": "2026-02-04T05:34:32.009Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -5333,35 +5789,35 @@
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 134,
+          "line": 135,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.8825
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 137,
+          "line": 138,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.8825
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 164,
+          "line": 165,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.8825
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 169,
+          "line": 170,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.8825
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 266,
+          "line": 267,
           "column": 5,
           "isOutlier": false,
           "confidence": 0.8825
@@ -5404,8 +5860,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.009Z",
+        "lastSeen": "2026-02-04T05:34:32.009Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -5594,8 +6050,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.009Z",
+        "lastSeen": "2026-02-04T05:34:32.009Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -5685,8 +6141,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -5777,8 +6233,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -5789,6 +6245,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-04T02:51:29.252Z",
-  "checksum": "3a0f090ed82970f4"
+  "lastUpdated": "2026-02-04T05:41:56.096Z",
+  "checksum": "cbdc6305c224578c"
 }

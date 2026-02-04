@@ -208,8 +208,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.008Z",
+        "lastSeen": "2026-02-04T05:34:32.008Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -418,8 +418,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.008Z",
+        "lastSeen": "2026-02-04T05:34:32.008Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -442,7 +442,7 @@
         }
       },
       "confidence": {
-        "frequency": 0.64,
+        "frequency": 0.63,
         "consistency": 0.9,
         "age": 0,
         "spread": 16,
@@ -879,17 +879,10 @@
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 136,
+          "line": 137,
           "column": 15,
           "isOutlier": false,
-          "confidence": 0.56
-        },
-        {
-          "file": ".github/workflows/pr-checks.yml",
-          "line": 137,
-          "column": 23,
-          "isOutlier": false,
-          "confidence": 0.56
+          "confidence": 0.595
         },
         {
           "file": ".github/workflows/project-automation.yml",
@@ -901,8 +894,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.008Z",
+        "lastSeen": "2026-02-04T05:34:32.008Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -1041,8 +1034,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.008Z",
+        "lastSeen": "2026-02-04T05:34:32.008Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -1349,8 +1342,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.008Z",
+        "lastSeen": "2026-02-04T05:34:32.008Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -1373,7 +1366,7 @@
         }
       },
       "confidence": {
-        "frequency": 0.32,
+        "frequency": 0.3,
         "consistency": 0.9,
         "age": 0,
         "spread": 5,
@@ -1481,23 +1474,16 @@
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 136,
-          "column": 15,
-          "isOutlier": false,
-          "confidence": 0.77
-        },
-        {
-          "file": ".github/workflows/pr-checks.yml",
           "line": 137,
-          "column": 23,
+          "column": 15,
           "isOutlier": false,
           "confidence": 0.77
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -1538,8 +1524,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -1587,8 +1573,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -1692,8 +1678,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -1734,8 +1720,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -1776,8 +1762,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -1804,7 +1790,7 @@
         "consistency": 0.9,
         "age": 0,
         "spread": 2,
-        "score": 0.76,
+        "score": 0.7949999999999999,
         "level": "medium"
       },
       "locations": [
@@ -1820,13 +1806,13 @@
           "line": 50,
           "column": 27,
           "isOutlier": false,
-          "confidence": 0.76
+          "confidence": 0.7949999999999999
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -1931,8 +1917,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2001,8 +1987,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2071,8 +2057,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2134,8 +2120,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2175,7 +2161,7 @@
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 176,
+          "line": 177,
           "column": 21,
           "isOutlier": false,
           "confidence": 0.8533333333333333
@@ -2183,8 +2169,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2231,7 +2217,7 @@
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 207,
+          "line": 208,
           "column": 45,
           "isOutlier": false,
           "confidence": 0.8533333333333333
@@ -2239,8 +2225,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2463,8 +2449,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.013Z",
+        "lastSeen": "2026-02-04T05:34:32.013Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2687,8 +2673,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.013Z",
+        "lastSeen": "2026-02-04T05:34:32.013Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2794,14 +2780,14 @@
           "line": 71,
           "column": 68,
           "isOutlier": false,
-          "confidence": 0.76
+          "confidence": 0.7949999999999999
         },
         {
           "file": ".github/workflows/pr-checks.yml",
           "line": 97,
           "column": 67,
           "isOutlier": false,
-          "confidence": 0.76
+          "confidence": 0.7949999999999999
         },
         {
           "file": ".github/workflows/project-automation.yml",
@@ -2834,8 +2820,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.009Z",
+        "lastSeen": "2026-02-04T05:34:32.009Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2974,8 +2960,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.009Z",
+        "lastSeen": "2026-02-04T05:34:32.009Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -3016,8 +3002,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -3093,8 +3079,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -3177,8 +3163,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -3261,8 +3247,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -3303,8 +3289,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.013Z",
+        "lastSeen": "2026-02-04T05:34:32.013Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -3345,8 +3331,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.013Z",
+        "lastSeen": "2026-02-04T05:34:32.013Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -3357,6 +3343,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-04T02:51:29.259Z",
-  "checksum": "ef863c9adbcdb24e"
+  "lastUpdated": "2026-02-04T05:41:56.102Z",
+  "checksum": "2c7bc66bdc1ba456"
 }

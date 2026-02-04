@@ -54,8 +54,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.009Z",
+        "lastSeen": "2026-02-04T05:34:32.009Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -103,8 +103,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.245Z",
-        "lastSeen": "2026-02-04T02:51:29.245Z",
+        "firstSeen": "2026-02-04T05:34:32.009Z",
+        "lastSeen": "2026-02-04T05:34:32.009Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -145,8 +145,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.009Z",
+        "lastSeen": "2026-02-04T05:34:32.009Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -201,8 +201,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -243,8 +243,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -285,8 +285,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -327,8 +327,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -390,8 +390,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -453,8 +453,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -495,8 +495,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.009Z",
+        "lastSeen": "2026-02-04T05:34:32.009Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -537,8 +537,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.009Z",
+        "lastSeen": "2026-02-04T05:34:32.009Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -561,7 +561,7 @@
         }
       },
       "confidence": {
-        "frequency": 0.06,
+        "frequency": 0.08,
         "consistency": 0.9,
         "age": 0,
         "spread": 2,
@@ -589,12 +589,19 @@
           "column": 11,
           "isOutlier": false,
           "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 140,
+          "column": 26,
+          "isOutlier": false,
+          "confidence": 0.97
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -617,7 +624,7 @@
         }
       },
       "confidence": {
-        "frequency": 0.06,
+        "frequency": 0.08,
         "consistency": 0.9,
         "age": 0,
         "spread": 2,
@@ -645,12 +652,19 @@
           "column": 11,
           "isOutlier": false,
           "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/pr-checks.yml",
+          "line": 140,
+          "column": 26,
+          "isOutlier": false,
+          "confidence": 0.97
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -691,8 +705,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.246Z",
-        "lastSeen": "2026-02-04T02:51:29.246Z",
+        "firstSeen": "2026-02-04T05:34:32.010Z",
+        "lastSeen": "2026-02-04T05:34:32.010Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -733,8 +747,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -788,7 +802,7 @@
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 189,
+          "line": 190,
           "column": 41,
           "isOutlier": false,
           "confidence": 0.97
@@ -796,8 +810,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-04T05:34:32.012Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -838,8 +852,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T02:51:29.247Z",
-        "lastSeen": "2026-02-04T02:51:29.247Z",
+        "firstSeen": "2026-02-04T05:34:32.013Z",
+        "lastSeen": "2026-02-04T05:34:32.013Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -850,6 +864,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-04T02:51:29.265Z",
-  "checksum": "dc13bbf066f9d7dc"
+  "lastUpdated": "2026-02-04T05:41:56.106Z",
+  "checksum": "b62e0e91dcc873de"
 }
