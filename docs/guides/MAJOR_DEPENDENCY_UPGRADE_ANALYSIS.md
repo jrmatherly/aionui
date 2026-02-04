@@ -122,7 +122,7 @@ const timer = new Cron(schedule.expr, { timezone: schedule.tz, paused: false, sl
 - The `export default` pattern breaks with `namedExport: true`
 
 #### Recommended Action
-**Upgrade** with config change — explicitly set `namedExport: false` to preserve current behavior:
+**Upgrade** with config change — explicitly set `namedExport: false` AND `auto: true` to preserve current behavior:
 
 ```typescript
 // config/webpack/webpack.rules.ts
@@ -131,13 +131,16 @@ const timer = new Cron(schedule.expr, { timezone: schedule.tz, paused: false, sl
   options: {
     importLoaders: 1,
     modules: {
-      namedExport: false,  // Preserve v6 behavior for CSS Modules
+      auto: true,          // CRITICAL: only apply CSS Modules to *.module.css files
+      namedExport: false,  // Preserve v6 import pattern (import styles from './x.module.css')
     },
   },
 }
 ```
 
-This avoids needing to change the TypeScript declaration or the one component using CSS Modules.
+⚠️ **WARNING:** Setting `modules: { namedExport: false }` without `auto: true` causes css-loader
+to treat ALL `.css` files as CSS Modules, hashing every class name and breaking all global CSS.
+The `auto: true` flag restricts CSS Modules processing to only `*.module.css` files.
 
 ---
 
