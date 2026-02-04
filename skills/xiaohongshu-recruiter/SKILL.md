@@ -1,77 +1,78 @@
 ---
 name: xiaohongshu-recruiter
-description: 用于在小红书上发布高质量的 AI 相关岗位招聘帖子。包含自动生成极客风格的招聘封面图和详情图，并提供自动化发布脚本。当用户需要发布招聘信息、寻找 Agent 设计师或其他 AI 领域人才时使用。
+description: Post high-quality AI-related job recruitment on Xiaohongshu (Little Red Book). Includes auto-generation of geek-style cover and detail images, plus automated publishing scripts. Use when posting recruitment info or searching for Agent designers and other AI talent.
 ---
 
-# Xiaohongshu Recruiter (小红书招聘助手)
+# Xiaohongshu Recruiter
 
-本技能旨在帮助用户快速、专业地在小红书发布 AI 岗位的招聘信息。通过 "Systemic Flux" 设计理念生成符合极客审美的视觉素材，并提供 Playwright 脚本实现半自动化发布。
+This skill helps users quickly and professionally post AI job recruitment on Xiaohongshu. It generates visual assets following the "Systemic Flux" design philosophy and provides Playwright scripts for semi-automated publishing.
 
-## 核心工作流
+## Core Workflow
 
-### 简化模式（默认）
+### Simplified Mode (Default)
 
-当用户仅给出一句话指令（如“发布一个前端开发工程师的招聘信息到小红书”）时：
+When the user provides a one-line instruction (e.g., "Post a frontend developer job on Xiaohongshu"):
 
-1. 不再向用户追问细节，由模型自行补全招聘信息与文案。
-2. 不要求用户提供邮箱或投递方式，模型自动补一个“私信联系/评论联系”的默认投递方式。
-3. 自动生成封面图与详情图，并直接进入发布流程。
-4. 自动打开浏览器，等待用户扫码登录后，自动填写图文信息并一键发布。
+1. Do not ask for details—the model auto-completes recruitment info and copy.
+2. Do not require email or application method—model defaults to "Contact via DM/comments".
+3. Auto-generate cover and detail images, then proceed directly to publishing.
+4. Auto-open browser, wait for user to scan QR code to login, then auto-fill content and publish.
 
-### 1. 信息收集
+### 1. Information Gathering
 
-向用户确认（仅在用户明确要求或关键信息冲突时才询问）：
+Confirm with user (only ask if explicitly requested or if critical info conflicts):
 
-- **岗位名称** (如：Agent Designer)
-- **核心职责 & 要求**
-- **投递邮箱**
+- **Position Title** (e.g., Agent Designer)
+- **Core Responsibilities & Requirements**
+- **Application Email**
 
-### 2. 生成视觉素材 (Visual Generation)
+### 2. Visual Asset Generation
 
-默认使用本地脚本 `scripts/generate_images.js` 生成图片（暂时隐藏/禁用大模型生图流程）。
+Use local script `scripts/generate_images.js` to generate images (LLM image generation temporarily disabled).
 
-- **操作**：
+- **Command**:
 
   ```bash
   node scripts/generate_images.js
   ```
 
-  *(注：可视情况修改脚本中的文本配置)*
-- **产出**：`cover.png`, `jd_details.png`
+  _(Note: Modify text configuration in script as needed)_
 
-### 3. 生成文案 (Content Generation)
+- **Output**: `cover.png`, `jd_details.png`
 
-生成符合小红书调性的文案，保存为 `post_content.txt`。
+### 3. Content Generation
 
-- **规则**：参考 `assets/rules.md`。
-- **标题**：<20 字。
-- **正文**：包含话题标签。
+Generate Xiaohongshu-style copy, saved as `post_content.txt`.
 
-### 4. 自动化发布 (Auto Publishing)
+- **Rules**: See `assets/rules.md`.
+- **Title**: <20 characters.
+- **Body**: Include hashtags.
 
-使用 `scripts/publish_xiaohongshu.py` 启动浏览器进行发布。
+### 4. Automated Publishing
 
-**前置要求**：
+Use `scripts/publish_xiaohongshu.py` to launch browser for publishing.
 
-- 安装 Playwright: `pip install playwright`
-- 安装浏览器驱动: `playwright install chromium`
+**Prerequisites**:
 
-**执行命令**：
+- Install Playwright: `pip install playwright`
+- Install browser driver: `playwright install chromium`
+
+**Command**:
 
 ```bash
-python3 scripts/publish_xiaohongshu.py "你的标题" "post_content.txt" "cover.png" "jd_details.png"
+python3 scripts/publish_xiaohongshu.py "Your Title" "post_content.txt" "cover.png" "jd_details.png"
 ```
 
-**交互流程（简化一键发布）**：
+**Interactive Flow (Simplified One-Click Publishing)**:
 
-1. 观察浏览器窗口：脚本已打开小红书创作者中心。
-2. 若出现登录页，请扫码登录。
-3. 登录完成后，脚本自动上传图片并填写标题与正文。
-4. 脚本自动点击“发布”完成发布；浏览器保持打开供用户确认。
+1. Watch the browser window: script opens Xiaohongshu Creator Center.
+2. If login page appears, scan QR code to login.
+3. After login, script auto-uploads images and fills title and body.
+4. Script auto-clicks "Publish" to complete; browser stays open for user confirmation.
 
-## 资源文件
+## Resource Files
 
-- **assets/design_philosophy.md**: 视觉设计哲学。
-- **assets/rules.md**: 详细的操作规范和平台限制。
-- **scripts/generate_images.js**: 图片生成脚本。
-- **scripts/publish_xiaohongshu.py**: 发布自动化脚本。
+- **assets/design_philosophy.md**: Visual design philosophy.
+- **assets/rules.md**: Detailed operational guidelines and platform limits.
+- **scripts/generate_images.js**: Image generation script.
+- **scripts/publish_xiaohongshu.py**: Publishing automation script.

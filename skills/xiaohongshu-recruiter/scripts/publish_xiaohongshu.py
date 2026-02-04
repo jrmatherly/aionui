@@ -74,16 +74,16 @@ def launch_standalone_chrome(profile_dir, debug_port):
             stderr=subprocess.DEVNULL,
             start_new_session=True,
         )
-        log(f"ℹ️ Chrome 进程已启动，PID: {process.pid}")
+        log(f"ℹ️ Chrome process started, PID: {process.pid}")
         # Wait for Chrome to start and listen on the debug port
         for i in range(30):
             if is_port_in_use(debug_port):
-                log(f"ℹ️ Chrome 已就绪，调试端口 {debug_port} 已开放")
+                log(f"ℹ️ Chrome ready, debug port {debug_port} is open")
                 return debug_port
             time.sleep(0.5)
-        log("⚠️ Chrome 启动超时，调试端口未开放")
+        log("⚠️ Chrome startup timed out, debug port not open")
     except Exception as e:
-        log(f"⚠️ 启动独立 Chrome 失败: {e}")
+        log(f"⚠️ Failed to launch standalone Chrome: {e}")
     return None
 
 
@@ -91,15 +91,15 @@ def publish(title, content, images):
     """
     Automates the Xiaohongshu publishing process.
     """
-    log("🚀 小红书发布脚本已启动")
-    log("操作指南：")
-    log("1) 观察浏览器窗口：已打开小红书创作者中心。")
-    log("2) 如果出现登录页，请扫码登录。")
-    log("3) 登录完成后脚本会自动上传图片并填写标题/正文。")
-    log('4) 请在浏览器中检查内容，确认无误后点击"发布"。')
-    log("5) 浏览器将保持打开，脚本退出后也不会关闭。")
-    log(f"标题: {title}")
-    log(f"图片: {images}")
+    log("🚀 Xiaohongshu publishing script started")
+    log("Instructions:")
+    log("1) Watch the browser window: Xiaohongshu Creator Center has opened.")
+    log("2) If a login page appears, scan the QR code to log in.")
+    log("3) After login, the script will auto-upload images and fill in title/body.")
+    log('4) Review the content in the browser, then click "Publish" when ready.')
+    log("5) The browser will remain open after the script exits.")
+    log(f"Title: {title}")
+    log(f"Images: {images}")
 
     # Determine profile directory - use a unique directory to avoid conflicts with user's Chrome
     env_profile = os.environ.get("XHS_PROFILE_DIR")
@@ -108,46 +108,46 @@ def publish(title, content, images):
     )
     profile_dir = env_profile or default_xhs_profile
     os.makedirs(profile_dir, exist_ok=True)
-    log(f"ℹ️ 使用浏览器 profile: {profile_dir}")
+    log(f"ℹ️ Using browser profile: {profile_dir}")
 
     # Find a port for Chrome debugging
     debug_port = 9222
     existing_chrome = is_port_in_use(debug_port)
 
     if existing_chrome:
-        log(f"ℹ️ 端口 {debug_port} 已被占用，尝试连接已有 Chrome 实例...")
+        log(f"ℹ️ Port {debug_port} is in use, attempting to connect to existing Chrome instance...")
     else:
-        log("ℹ️ 启动独立 Chrome 进程（脚本退出后浏览器将保持打开）...")
+        log("ℹ️ Launching standalone Chrome process (browser will remain open after script exits)...")
         launched_port = launch_standalone_chrome(profile_dir, debug_port)
         if not launched_port:
             # Fallback: find another port
             debug_port = find_free_port()
-            log(f"ℹ️ 尝试使用备用端口 {debug_port}...")
+            log(f"ℹ️ Trying fallback port {debug_port}...")
             launched_port = launch_standalone_chrome(profile_dir, debug_port)
         if launched_port:
             debug_port = launched_port
         else:
             log(
-                "⚠️ 无法启动独立 Chrome，将使用 Playwright 托管模式（脚本退出时浏览器可能关闭）"
+                "⚠️ Unable to launch standalone Chrome, falling back to Playwright managed mode (browser may close when script exits)"
             )
             debug_port = None
 
     with sync_playwright() as p:
         if debug_port and is_port_in_use(debug_port):
             # Connect to standalone Chrome via CDP
-            log(f"ℹ️ 通过 CDP 连接到 Chrome (端口 {debug_port})...")
+            log(f"ℹ️ Connecting to Chrome via CDP (port {debug_port})...")
             browser = p.chromium.connect_over_cdp(f"http://localhost:{debug_port}")
             context = browser.contexts[0] if browser.contexts else browser.new_context()
             page = context.new_page()
         else:
             # Fallback to Playwright-managed browser
-            log("ℹ️ 使用 Playwright 托管模式启动浏览器...")
+            log("ℹ️ Using Playwright managed mode to launch browser...")
             context = p.chromium.launch_persistent_context(profile_dir, headless=False)
             page = context.new_page()
 
         try:
             # 1. Navigate to Publish Page
-            log("🌐 正在打开小红书创作者中心...")
+            log("🌐 Opening Xiaohongshu Creator Center...")
             page.goto(
                 "https://creator.xiaohongshu.com/publish/publish",
                 wait_until="domcontentloaded",
@@ -155,31 +155,31 @@ def publish(title, content, images):
             try:
                 page.wait_for_load_state("networkidle", timeout=5000)
             except Exception:
-                log("⚠️ networkidle 等待超时，继续执行...")
+                log("⚠️ networkidle wait timed out, continuing...")
             try:
-                log(f"ℹ️ 当前页面标题: {page.title()}")
+                log(f"ℹ️ Current page title: {page.title()}")
             except Exception:
-                log("⚠️ 读取页面标题失败，继续执行...")
+                log("⚠️ Failed to read page title, continuing...")
 
             # 2. Check login status - wait if on login page
             start = time.time()
             while "/login" in page.url:
                 elapsed = int(time.time() - start)
                 if elapsed == 0 or elapsed % 5 == 0:
-                    log("⚠️ 当前为未登录态，请在打开的窗口完成登录，脚本会自动继续。")
+                    log("⚠️ Not logged in. Please complete login in the browser window, script will continue automatically.")
                 if elapsed > 120:
-                    log("❌ 登录等待超时（2分钟），请手动操作。")
+                    log("❌ Login wait timed out (2 minutes), please proceed manually.")
                     break
                 time.sleep(2)
 
             # Also check for login prompts on publish page
             try:
                 if page.locator("text=扫码登录").count() > 0:
-                    log("⚠️ 检测到登录弹窗，请扫码登录...")
+                    log("⚠️ Login popup detected, please scan QR code to log in...")
                     # Wait for login to complete (URL change or popup disappear)
                     for _ in range(60):
                         if page.locator("text=扫码登录").count() == 0:
-                            log("✅ 登录成功！")
+                            log("✅ Login successful!")
                             break
                         time.sleep(2)
             except Exception:
@@ -188,7 +188,7 @@ def publish(title, content, images):
             page.wait_for_timeout(1000)
 
             # 3. Switch to Image Tab - use direct URL navigation for reliability
-            log("🔄 [步骤 2] 正在切换到图文发布模式...")
+            log("🔄 [Step 2] Switching to image post mode...")
             current_url = page.url
             if "target=video" in current_url or "上传视频" in page.content():
                 # Navigate directly to image upload mode via URL
@@ -210,17 +210,16 @@ def publish(title, content, images):
                     tabs.first.click()
                     page.wait_for_timeout(1000)
             except Exception as e:
-                log(f"⚠️ 点击图文标签失败: {e}")
+                log(f"⚠️ Failed to click image tab: {e}")
 
             # Verify we're on image upload page
             if page.locator("text=上传图片，或写文字生成图片").count() > 0:
-                log("✅ 已切换到图文发布模式")
+                log("✅ Switched to image post mode")
             else:
-                log("⚠️ 可能未成功切换，继续尝试...")
+                log("⚠️ May not have switched successfully, continuing...")
 
             # 4. Upload Images BEFORE waiting for form (form appears after upload)
-            log("📤 [步骤 3] 正在上传图片...")
-            upload_success = False
+            log("📤 [Step 3] Uploading images...")
             try:
                 # Wait for file input to be present
                 page.wait_for_selector("input[type='file']", timeout=5000)
@@ -228,29 +227,28 @@ def publish(title, content, images):
                 # Set input files directly - this works even for hidden inputs
                 upload_input = page.locator("input[type='file']").first
                 upload_input.set_input_files(images)
-                log(f"✅ 已选择 {len(images)} 张图片")
-                upload_success = True
+                log(f"✅ Selected {len(images)} image(s)")
 
                 # Wait for upload to process - look for the image count indicator
-                log("⏳ 等待图片上传完成...")
+                log("⏳ Waiting for image upload to complete...")
                 for i in range(20):
                     # Check for "(N/18)" pattern which indicates upload progress
                     if page.locator("text=/\\(\\d+\\/18\\)/").count() > 0:
-                        log("✅ 图片上传成功")
+                        log("✅ Image upload successful")
                         break
                     # Also check for title input which appears after upload
                     if page.locator("input[placeholder*='标题']").count() > 0:
-                        log("✅ 检测到发布表单已加载")
+                        log("✅ Publish form has loaded")
                         break
                     time.sleep(0.5)
                 else:
-                    log("⚠️ 等待上传确认超时，继续执行...")
+                    log("⚠️ Upload confirmation timed out, continuing...")
             except Exception as e:
-                log(f"❌ 图片上传失败：{e}")
-                log("👉 请手动上传图片后继续")
+                log(f"❌ Image upload failed: {e}")
+                log("👉 Please upload images manually and continue")
 
             # 5. NOW wait for form to appear (after image upload)
-            log("⏳ [步骤 4] 正在等待发布表单加载...")
+            log("⏳ [Step 4] Waiting for publish form to load...")
 
             # Wait for title input to appear (max 30 seconds)
             title_input = None
@@ -265,33 +263,33 @@ def publish(title, content, images):
                         title_input = loc.first
                         break
                 if title_input:
-                    log("✅ 发布表单已加载")
+                    log("✅ Publish form loaded")
                     break
                 if i % 5 == 0:
-                    log(f"⏳ 等待表单加载... ({i * 2}s)")
+                    log(f"⏳ Waiting for form to load... ({i * 2}s)")
                 time.sleep(2)
 
             if not title_input:
-                log("⚠️ 未找到标题输入框，尝试查找可编辑区域...")
+                log("⚠️ Title input not found, trying to find editable area...")
                 # Try contenteditable as fallback
                 editables = page.locator("div[contenteditable='true']")
                 if editables.count() > 0:
                     title_input = editables.first
                 else:
-                    raise RuntimeError("无法找到任何可输入区域")
+                    raise RuntimeError("Cannot find any input area")
 
             # 6. Fill Content
-            log("✍️ [步骤 5] 正在填写标题与正文...")
+            log("✍️ [Step 5] Filling in title and body...")
 
             # Title (Limit 20 chars)
             if len(title) > 20:
-                log(f"⚠️ 标题过长（{len(title)} 字），已截断到 20 字。")
+                log(f"⚠️ Title too long ({len(title)} chars), truncating to 20 chars.")
                 title = title[:20]
 
             try:
                 title_input.click()
                 title_input.fill(title)
-                log(f"✅ 已填写标题: {title}")
+                log(f"✅ Title filled: {title}")
 
                 # Wait a moment for content area to be ready
                 page.wait_for_timeout(500)
@@ -316,47 +314,47 @@ def publish(title, content, images):
                 if content_input:
                     content_input.click()
                     content_input.fill(content)
-                    log("✅ 已填写正文内容")
+                    log("✅ Body content filled")
                 else:
-                    log("⚠️ 未找到正文输入框")
+                    log("⚠️ Body input not found")
 
             except Exception as e:
-                log(f"❌ 填写文本失败：{e}")
+                log(f"❌ Failed to fill text: {e}")
 
-            log("✨ [步骤 4] 草稿已生成，正在自动发布...")
+            log("✨ [Step 6] Draft created, auto-publishing...")
             try:
                 publish_btn = page.get_by_role("button", name="发布")
                 publish_btn.wait_for(timeout=10000)
                 publish_btn.click()
-                log("✅ 已自动点击发布按钮，请在页面确认发布成功。")
+                log("✅ Auto-clicked publish button, please confirm success in the browser.")
             except Exception as e:
-                log(f"⚠️ 自动点击发布失败：{e}")
-                log("👉 请手动点击“发布”完成发布。")
+                log(f"⚠️ Auto-click publish failed: {e}")
+                log('👉 Please manually click "Publish" to complete.')
         except Exception as e:
-            print(f"❌ 脚本执行中断：{e}")
-            print("👉 浏览器将保持打开，方便你手动完成发布。")
+            print(f"❌ Script execution interrupted: {e}")
+            print("👉 Browser will remain open for you to complete publishing manually.")
         finally:
             # In CDP mode, browser runs independently - script can exit safely
             if debug_port and is_port_in_use(debug_port):
-                log("✅ 脚本已结束。浏览器作为独立进程运行，不会随脚本关闭。")
-                log("ℹ️ 请在浏览器中完成操作后手动关闭浏览器窗口。")
+                log("✅ Script finished. Browser is running as an independent process and won't close with the script.")
+                log("ℹ️ Please complete your actions in the browser and close it manually.")
             else:
                 # Playwright-managed mode - keep script alive to prevent browser close
-                log("✅ 脚本已结束，浏览器将保持打开，请手动关闭浏览器窗口。")
-                log("ℹ️ 脚本将持续运行输出心跳，不会主动关闭浏览器。")
+                log("✅ Script finished, browser will remain open. Please close the browser manually.")
+                log("ℹ️ Script will continue running with heartbeat, it won't close the browser.")
                 try:
                     while True:
                         time.sleep(30)
-                        log("⏳ 仍在等待中...（按 Ctrl+C 结束脚本）")
+                        log("⏳ Still waiting... (Press Ctrl+C to exit script)")
                 except KeyboardInterrupt:
-                    log("收到退出指令，脚本结束。")
+                    log("Received exit signal, script ending.")
 
 
 if __name__ == "__main__":
     # Usage: python publish_xiaohongshu.py <title> <content_file_path> <img1> <img2> ...
     if len(sys.argv) < 4:
         print(
-            "用法: python publish_xiaohongshu.py <title> <content_file> <img1> [img2 ...]"
+            "Usage: python publish_xiaohongshu.py <title> <content_file> <img1> [img2 ...]"
         )
         sys.exit(1)
 

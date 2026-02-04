@@ -11,7 +11,7 @@ def read_text(path: str) -> str:
 
 def main() -> None:
     if len(sys.argv) < 2:
-        print("用法: python3 scripts/publish_x.py <post_content.txt> [cover.png] [jd_details.png]")
+        print("Usage: python3 scripts/publish_x.py <post_content.txt> [cover.png] [jd_details.png]")
         sys.exit(1)
 
     content_path = sys.argv[1]
@@ -20,12 +20,12 @@ def main() -> None:
 
     content = read_text(content_path)
 
-    print("🚀 X 发布脚本已启动")
-    print("操作指南：")
-    print("1) 观察浏览器窗口：脚本会打开 X 首页或发帖页。")
-    print("2) 若出现登录页，请完成登录。")
-    print("3) 登录完成后，脚本会自动填充文案与图片。")
-    print("4) 请在浏览器中检查内容，确认无误后点击“Post”。")
+    print("🚀 X publishing script started")
+    print("Instructions:")
+    print("1) Watch the browser window: the script will open X home or compose page.")
+    print("2) If a login page appears, please complete login.")
+    print("3) After login, the script will auto-fill content and images.")
+    print("4) Review the content in the browser, then click 'Post' when ready.")
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=False)
@@ -37,13 +37,13 @@ def main() -> None:
 
         # If not logged in, X will redirect to login or show a login wall.
         if "login" in page.url or "i/flow/login" in page.url:
-            print("⏳ [步骤 2] 等待登录：请在浏览器窗口完成登录。")
-            print("   脚本将自动检测登录完成后继续；如检测不到，请回到终端按 Enter 继续。")
+            print("⏳ [Step 2] Waiting for login: please complete login in the browser window.")
+            print("   The script will auto-detect login completion; if not detected, return to terminal and press Enter.")
             try:
                 page.wait_for_url("https://x.com/home", timeout=120000)
             except Exception:
-                input("登录完成后回到终端，按 Enter 继续...")
-                page.goto("https://x.com/home", wait_until=\"domcontentloaded\")
+                input("After login, return to terminal and press Enter to continue...")
+                page.goto("https://x.com/home", wait_until="domcontentloaded")
             page.wait_for_timeout(2000)
 
         # Focus composer
@@ -74,7 +74,7 @@ def main() -> None:
 
         # Wait a bit to ensure posting
         page.wait_for_timeout(3000)
-        print("✅ 已提交发布，请在 X 上确认。")
+        print("✅ Post submitted, please confirm on X.")
         time.sleep(5)
 
         context.close()

@@ -1,81 +1,81 @@
-# AI Agent 招聘与小红书发布规则 (Rules)
+# AI Agent Recruitment & Xiaohongshu Publishing Rules
 
-本规则涵盖了从视觉设计、文案生成到发布流程的全链路标准，旨在确保 AI 相关岗位招聘的高效与专业。
+These rules cover the complete workflow from visual design, copywriting, to publishing process—ensuring efficient and professional AI-related job recruitment.
 
-## 1. 视觉设计规则 (Systemic Flux)
+## 1. Visual Design Rules (Systemic Flux)
 
-所有招聘图片必须遵循 "Systemic Flux" (系统流变) 设计理念：
+All recruitment images must follow the "Systemic Flux" design philosophy:
 
-- **核心风格**：暗色模式 (Charcoal/Black)，模拟 IDE 界面。
-- **色彩方案**：以 #0D0E12 为背景，配合荧光绿 (#00FF94) 作为激活态，靛蓝 (#5E5CE6) 作为处理态。
-- **构图元素**：
-  - 必须包含严谨的 60px 网格系统。
-  - 装饰元素应包含技术感细节（如状态栏、系统版本号、坐标点）。
-  - 核心图形采用神经网络节点或动态连接线。
-- **字体规范**：
-  - 标题/代码：JetBrains Mono (Bold)。
-  - 正文：Instrument Sans。
+- **Core Style**: Dark mode (Charcoal/Black), simulating an IDE interface.
+- **Color Scheme**: Background #0D0E12, with fluorescent green (#00FF94) for active states, indigo (#5E5CE6) for processing states.
+- **Composition Elements**:
+  - Must include a precise 60px grid system.
+  - Decorative elements should include tech-inspired details (status bar, system version, coordinates).
+  - Core graphics use neural network nodes or dynamic connection lines.
+- **Typography**:
+  - Title/Code: JetBrains Mono (Bold).
+  - Body: Instrument Sans.
 
-## 2. 内容生成规则
+## 2. Content Generation Rules
 
-### 招聘文案标准
+### Recruitment Copy Standards
 
-- **标题**：必须控制在 **20 个字符**以内（含 Emoji），直接点出岗位核心。
-- **正文结构**：
-  1. **Slogan**：一句吸引人的开场白（如“寻找未来的定义者”）。
-  2. **🔥 职位名称**：清晰标注岗位全称。
-  3. **✨ 岗位职责**：使用列表，涵盖产品全链路设计、交互定义、用户洞察等。
-  4. **🎯 任职要求**：明确年限（如 3 年以上）和核心背景（如 C 端产品经验）。
-  5. **📩 投递方式**：显眼标注邮箱，并告知邮件主题格式。
-- **Emoji 使用**：适量使用（每段 1-2 个），增强小红书社区的阅读亲和力。
+- **Title**: Must be within **20 characters** (including emoji), directly highlighting the position's core value.
+- **Body Structure**:
+  1. **Slogan**: An engaging opening line (e.g., "Seeking those who define the future").
+  2. **🔥 Position Title**: Clearly state the full job title.
+  3. **✨ Responsibilities**: Use bullet points covering full product lifecycle design, interaction definition, user insights, etc.
+  4. **🎯 Requirements**: Specify years of experience (e.g., 3+ years) and core background (e.g., C-end product experience).
+  5. **📩 How to Apply**: Prominently display the email and specify the subject line format.
+- **Emoji Usage**: Use sparingly (1-2 per section) to enhance readability within the Xiaohongshu community.
 
-## 3. 标准执行流程 (SOP)
+## 3. Standard Operating Procedure (SOP)
 
-本流程记录了发布招聘信息的完整操作路径，供 Agent 调用参考。
+This workflow documents the complete process for publishing recruitment posts, for Agent reference.
 
-### 第一阶段：素材生成
+### Phase 1: Asset Generation
 
-1. **环境准备**：
-    - 确保 Node.js 环境可用。
-    - 安装依赖：`npm install canvas`。
-2. **脚本执行**：
-    - 创建或调用 `generate_images.js`。
-    - 脚本需包含 `Systemic Flux` 配色与布局逻辑。
-    - 运行命令：`node generate_images.js`。
-3. **产物校验**：
-    - 确认生成 `cover.png` (封面) 和 `jd_details.png` (详情)。
-    - **保留文件**：生成的文件不应自动删除，以便后续上传。
+1. **Environment Setup**:
+   - Ensure Node.js environment is available.
+   - Install dependencies: `npm install canvas`.
+2. **Script Execution**:
+   - Create or invoke `generate_images.js`.
+   - Script must include `Systemic Flux` color scheme and layout logic.
+   - Run command: `node generate_images.js`.
+3. **Output Verification**:
+   - Confirm generation of `cover.png` (cover) and `jd_details.png` (details).
+   - **Preserve files**: Generated files should not be auto-deleted for subsequent upload.
 
-### 第二阶段：Web 自动化发布
+### Phase 2: Web Automation Publishing
 
-1. **登录检查**：
-    - 访问 `https://creator.xiaohongshu.com/`。
-    - 检查登录状态（通过截图或 URL 判断）。
-    - 若未登录，暂停流程并提示用户扫码/短信登录。
-2. **进入发布页**：
-    - 导航至 `https://creator.xiaohongshu.com/publish/publish`。
-    - **关键动作**：点击“上传图文” Tab (Class: `tab`)，确保进入图文模式而非视频模式。
-3. **文件上传**：
-    - 定位上传按钮（`input[type="file"]` 或按钮文本“上传图片”）。
-    - 依次上传 `cover.png` 和 `jd_details.png`。
-    - 等待上传完成（可通过 DOM 变化或 Console 状态确认）。
-4. **内容填充**：
-    - **标题**：定位标题输入框 (`placeholder="填写标题..."`)，填入 <20 字的标题。
-      - *异常处理*：若提示字数超限，需自动截断或重写标题。
-    - **正文**：定位正文输入框 (多行文本框)，填入完整招聘文案。
-5. **发布执行**：
-    - 点击“发布”按钮。
-    - **状态监控**：点击后需监控按钮状态变化（是否变灰/禁用）或页面跳转/Toast 提示（“发布成功”）。
-    - 若无反馈，需进行二次检查（是否有点选“原创声明”等必选项漏选）。
+1. **Login Check**:
+   - Navigate to `https://creator.xiaohongshu.com/`.
+   - Check login status (via screenshot or URL).
+   - If not logged in, pause the workflow and prompt user to scan QR code or use SMS login.
+2. **Enter Publishing Page**:
+   - Navigate to `https://creator.xiaohongshu.com/publish/publish`.
+   - **Key Action**: Click the "Upload Image Post" tab (Class: `tab`) to ensure image post mode, not video mode.
+3. **File Upload**:
+   - Locate upload button (`input[type="file"]` or button text "Upload Image").
+   - Upload `cover.png` and `jd_details.png` in sequence.
+   - Wait for upload completion (confirm via DOM changes or console status).
+4. **Content Entry**:
+   - **Title**: Locate title input (`placeholder="Enter title..."`) and enter title (<20 characters).
+     - _Exception Handling_: If character limit warning appears, auto-truncate or rewrite title.
+   - **Body**: Locate body textarea (multiline text box) and enter full recruitment copy.
+5. **Publish Execution**:
+   - Click the "Publish" button.
+   - **Status Monitoring**: After clicking, monitor button state changes (disabled/grayed) or page redirect/toast notification ("Published successfully").
+   - If no feedback, perform secondary check (e.g., missing required checkboxes like "Original Content Declaration").
 
-## 4. 平台技术限制汇总
+## 4. Platform Technical Limits Summary
 
-- **标题上限**：20 字符（**严格限制**，超出无法发布）。
-- **正文上限**：1000 字符。
-- **图片数量**：最多 18 张。
-- **图片大小**：单张最大 32MB。
-- **话题限制**：正文底部建议包含 5-10 个核心话题。
+- **Title Limit**: 20 characters (**strict limit**, exceeding prevents publishing).
+- **Body Limit**: 1000 characters.
+- **Image Count**: Maximum 18 images.
+- **Image Size**: Maximum 32MB per image.
+- **Hashtag Recommendation**: Include 5-10 core hashtags at the bottom of the body.
 
 ---
 
-*Created by Recruitment Agent - 2026-01-20*
+_Created by Recruitment Agent - 2026-01-20_
