@@ -208,8 +208,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.500Z",
-        "lastSeen": "2026-02-04T08:05:41.500Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -257,8 +257,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.500Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -306,8 +306,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -432,8 +432,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -481,8 +481,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -530,8 +530,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -696,15 +696,15 @@
           "confidence": 0.77
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
-          "line": 99,
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 96,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
-          "line": 101,
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 98,
           "column": 22,
           "isOutlier": false,
           "confidence": 0.77
@@ -726,8 +726,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -878,25 +878,25 @@
           "confidence": 0.77
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 40,
           "column": 11,
           "isOutlier": false,
-          "confidence": 0.77
+          "confidence": 0.6824999999999999
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 44,
           "column": 24,
           "isOutlier": false,
-          "confidence": 0.77
+          "confidence": 0.6824999999999999
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 73,
           "column": 24,
           "isOutlier": false,
-          "confidence": 0.77
+          "confidence": 0.6824999999999999
         },
         {
           "file": ".github/workflows/codeql.yml",
@@ -950,8 +950,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.922Z",
+        "lastSeen": "2026-02-04T23:08:56.922Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -999,8 +999,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.922Z",
+        "lastSeen": "2026-02-04T23:08:56.922Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -1023,12 +1023,12 @@
         }
       },
       "confidence": {
-        "frequency": 0.01,
+        "frequency": 0.02,
         "consistency": 0.9,
         "age": 0,
-        "spread": 1,
-        "score": 0.83,
-        "level": "medium"
+        "spread": 2,
+        "score": 0.8825,
+        "level": "high"
       },
       "locations": [
         {
@@ -1037,12 +1037,19 @@
           "column": 37,
           "isOutlier": false,
           "confidence": 0.83
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 140,
+          "column": 63,
+          "isOutlier": false,
+          "confidence": 0.8825
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.923Z",
+        "lastSeen": "2026-02-04T23:08:56.923Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -1083,8 +1090,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.923Z",
+        "lastSeen": "2026-02-04T23:08:56.923Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -1300,8 +1307,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.922Z",
+        "lastSeen": "2026-02-04T23:08:56.922Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -1333,18 +1340,18 @@
       },
       "locations": [
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 42,
           "column": 5,
           "isOutlier": false,
-          "confidence": 0.77
+          "confidence": 0.6533333333333333
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 70,
           "column": 5,
           "isOutlier": false,
-          "confidence": 0.77
+          "confidence": 0.6533333333333333
         },
         {
           "file": ".github/workflows/codeql.yml",
@@ -1370,8 +1377,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.923Z",
+        "lastSeen": "2026-02-04T23:08:56.923Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -1552,8 +1559,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -1601,8 +1608,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -1643,8 +1650,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.923Z",
+        "lastSeen": "2026-02-04T23:08:56.923Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -1762,8 +1769,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.922Z",
+        "lastSeen": "2026-02-04T23:08:56.922Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -1909,8 +1916,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.923Z",
+        "lastSeen": "2026-02-04T23:08:56.923Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -2140,8 +2147,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -2189,8 +2196,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -2238,8 +2245,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -2262,14 +2269,21 @@
         }
       },
       "confidence": {
-        "frequency": 0.02,
+        "frequency": 0.03,
         "consistency": 0.9,
         "age": 0,
-        "spread": 1,
-        "score": 0.7949999999999999,
-        "level": "medium"
+        "spread": 2,
+        "score": 0.8533333333333333,
+        "level": "high"
       },
       "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 140,
+          "column": 101,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
         {
           "file": ".github/workflows/pr-checks.yml",
           "line": 36,
@@ -2287,8 +2301,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.923Z",
+        "lastSeen": "2026-02-04T23:08:56.923Z",
         "source": "auto-detected",
         "tags": [
           "errors",
@@ -2425,6 +2439,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-04T08:05:41.510Z",
-  "checksum": "0d91cdfc7665bd04"
+  "lastUpdated": "2026-02-04T23:09:26.984Z",
+  "checksum": "de31fd3ade544866"
 }

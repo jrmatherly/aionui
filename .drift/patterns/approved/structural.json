@@ -3,6 +3,49 @@
   "category": "structural",
   "patterns": [
     {
+      "id": "7c030ac2cfd02ea2",
+      "subcategory": "package-boundaries",
+      "name": "Package Boundaries Detector",
+      "description": "Learns package boundary patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "structural/package-boundaries",
+          "patternId": "structural/package-boundaries/assignment"
+        }
+      },
+      "confidence": {
+        "frequency": 0.01,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 31,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.97
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-04T23:08:56.923Z",
+        "lastSeen": "2026-02-04T23:09:26.903Z",
+        "source": "auto-detected",
+        "tags": [
+          "structural",
+          "package-boundaries"
+        ],
+        "approvedAt": "2026-02-04T23:09:26.903Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
       "id": "cf435a409a674298",
       "subcategory": "file-naming",
       "name": "File Naming Detector",
@@ -369,8 +412,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -502,8 +545,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -880,11 +923,11 @@
           "confidence": 0.7
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 76,
           "column": 37,
           "isOutlier": false,
-          "confidence": 0.7116666666666667
+          "confidence": 0.7063636363636363
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -903,8 +946,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -987,8 +1030,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.923Z",
+        "lastSeen": "2026-02-04T23:08:56.923Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -1552,7 +1595,7 @@
           "confidence": 0.77
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 56,
           "column": 15,
           "isOutlier": false,
@@ -1569,8 +1612,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -1994,7 +2037,7 @@
           "confidence": 0.77
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 56,
           "column": 15,
           "isOutlier": false,
@@ -2011,8 +2054,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2169,8 +2212,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2302,8 +2345,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2372,8 +2415,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2414,8 +2457,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.923Z",
+        "lastSeen": "2026-02-04T23:08:56.923Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2491,8 +2534,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.923Z",
+        "lastSeen": "2026-02-04T23:08:56.923Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2533,8 +2576,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.923Z",
+        "lastSeen": "2026-02-04T23:08:56.923Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2561,22 +2604,22 @@
         "consistency": 0.9,
         "age": 0,
         "spread": 1,
-        "score": 0.9116666666666666,
+        "score": 0.9063636363636364,
         "level": "high"
       },
       "locations": [
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 88,
           "column": 30,
           "isOutlier": false,
-          "confidence": 0.9116666666666666
+          "confidence": 0.9063636363636364
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.923Z",
+        "lastSeen": "2026-02-04T23:08:56.923Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2657,7 +2700,7 @@
       },
       "locations": [
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 88,
           "column": 30,
           "isOutlier": false,
@@ -2666,8 +2709,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.923Z",
+        "lastSeen": "2026-02-04T23:08:56.923Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2799,8 +2842,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2855,8 +2898,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2974,8 +3017,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3023,8 +3066,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3065,8 +3108,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.923Z",
+        "lastSeen": "2026-02-04T23:08:56.923Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3314,7 +3357,7 @@
         }
       },
       "confidence": {
-        "frequency": 0.51,
+        "frequency": 0.5,
         "consistency": 0.9,
         "age": 0,
         "spread": 9,
@@ -3393,134 +3436,127 @@
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
-          "line": 121,
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 118,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 1,
           "column": 1,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 40,
           "column": 5,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 44,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 47,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 53,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 56,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 59,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 62,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 67,
           "column": 5,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 73,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 76,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 85,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 93,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 96,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
-          "line": 99,
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 104,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
-          "line": 107,
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 114,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
-          "line": 117,
-          "column": 9,
-          "isOutlier": false,
-          "confidence": 0.97
-        },
-        {
-          "file": ".github/workflows/build-and-deploy.yml",
-          "line": 132,
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 129,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.97
@@ -3682,8 +3718,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3731,8 +3767,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3808,8 +3844,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3871,8 +3907,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3990,8 +4026,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4046,8 +4082,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4095,8 +4131,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.921Z",
+        "lastSeen": "2026-02-04T23:08:56.921Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4137,8 +4173,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.923Z",
+        "lastSeen": "2026-02-04T23:08:56.923Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4161,7 +4197,7 @@
         }
       },
       "confidence": {
-        "frequency": 0.32,
+        "frequency": 0.31,
         "consistency": 0.9,
         "age": 0,
         "spread": 7,
@@ -4268,74 +4304,67 @@
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
-          "line": 128,
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 125,
           "column": 17,
           "isOutlier": false,
-          "confidence": 0.9116666666666666
+          "confidence": 0.9063636363636364
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 45,
           "column": 9,
           "isOutlier": false,
-          "confidence": 0.9116666666666666
+          "confidence": 0.9063636363636364
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 48,
           "column": 9,
           "isOutlier": false,
-          "confidence": 0.9116666666666666
+          "confidence": 0.9063636363636364
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 74,
           "column": 9,
           "isOutlier": false,
-          "confidence": 0.9116666666666666
+          "confidence": 0.9063636363636364
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 94,
           "column": 9,
           "isOutlier": false,
-          "confidence": 0.9116666666666666
+          "confidence": 0.9063636363636364
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
-          "line": 97,
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 98,
           "column": 9,
           "isOutlier": false,
-          "confidence": 0.9116666666666666
+          "confidence": 0.9063636363636364
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 101,
-          "column": 9,
-          "isOutlier": false,
-          "confidence": 0.9116666666666666
-        },
-        {
-          "file": ".github/workflows/build-and-deploy.yml",
-          "line": 104,
           "column": 11,
           "isOutlier": false,
-          "confidence": 0.9116666666666666
+          "confidence": 0.9063636363636364
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
-          "line": 109,
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 106,
           "column": 9,
           "isOutlier": false,
-          "confidence": 0.9116666666666666
+          "confidence": 0.9063636363636364
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
-          "line": 118,
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 115,
           "column": 9,
           "isOutlier": false,
-          "confidence": 0.9116666666666666
+          "confidence": 0.9063636363636364
         },
         {
           "file": ".github/workflows/codeql.yml",
@@ -4396,8 +4425,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.922Z",
+        "lastSeen": "2026-02-04T23:08:56.922Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4515,8 +4544,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.923Z",
+        "lastSeen": "2026-02-04T23:08:56.923Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4557,8 +4586,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.923Z",
+        "lastSeen": "2026-02-04T23:08:56.923Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4599,8 +4628,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.923Z",
+        "lastSeen": "2026-02-04T23:08:56.923Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4611,6 +4640,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-04T08:05:41.507Z",
-  "checksum": "55a93cc57091569c"
+  "lastUpdated": "2026-02-04T23:09:26.980Z",
+  "checksum": "57687b8dbdced208"
 }

@@ -3,6 +3,49 @@
   "category": "accessibility",
   "patterns": [
     {
+      "id": "2bc6ff50a850346a",
+      "subcategory": "keyboard-nav",
+      "name": "Keyboard Navigation Detector",
+      "description": "Learns keyboard navigation patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "accessibility/keyboard-nav",
+          "patternId": "accessibility/keyboard-nav/function_call"
+        }
+      },
+      "confidence": {
+        "frequency": 0.01,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.931111111111111,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 447,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.931111111111111
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-04T23:08:56.922Z",
+        "lastSeen": "2026-02-04T23:09:26.977Z",
+        "source": "auto-detected",
+        "tags": [
+          "accessibility",
+          "keyboard-nav"
+        ],
+        "approvedAt": "2026-02-04T23:09:26.977Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
       "id": "6a6392af1d069b62",
       "subcategory": "alt-text",
       "name": "Alt Text Detector",
@@ -47,8 +90,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.922Z",
+        "lastSeen": "2026-02-04T23:08:56.922Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -179,14 +222,14 @@
           "outlierReason": "Low confidence outlier"
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 5,
           "column": 16,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 12,
           "column": 16,
           "isOutlier": false,
@@ -216,8 +259,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.922Z",
+        "lastSeen": "2026-02-04T23:08:56.922Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -489,8 +532,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.923Z",
+        "lastSeen": "2026-02-04T23:08:56.923Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -699,8 +742,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.501Z",
-        "lastSeen": "2026-02-04T08:05:41.501Z",
+        "firstSeen": "2026-02-04T23:08:56.922Z",
+        "lastSeen": "2026-02-04T23:08:56.922Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -865,15 +908,15 @@
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
-          "line": 124,
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 121,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
-          "line": 124,
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 121,
           "column": 42,
           "isOutlier": false,
           "confidence": 0.97
@@ -881,8 +924,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.923Z",
+        "lastSeen": "2026-02-04T23:08:56.923Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -935,22 +978,22 @@
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
+          "file": ".github/workflows/build-and-release.yml",
           "line": 35,
           "column": 3,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
-          "line": 111,
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 108,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
-          "file": ".github/workflows/build-and-deploy.yml",
-          "line": 111,
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 108,
           "column": 47,
           "isOutlier": false,
           "confidence": 0.97
@@ -958,8 +1001,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T08:05:41.502Z",
-        "lastSeen": "2026-02-04T08:05:41.502Z",
+        "firstSeen": "2026-02-04T23:08:56.923Z",
+        "lastSeen": "2026-02-04T23:08:56.923Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -1096,6 +1139,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-04T08:05:41.516Z",
-  "checksum": "7220772c27b3a421"
+  "lastUpdated": "2026-02-04T23:09:26.992Z",
+  "checksum": "db264bec3a68591c"
 }
