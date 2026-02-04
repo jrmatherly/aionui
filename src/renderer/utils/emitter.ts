@@ -28,6 +28,8 @@ interface EventTypes {
   'conversation.deleted': [string]; // conversationId
   // Preview panel events
   'preview.open': [{ content: string; contentType: PreviewContentType; metadata?: { title?: string; fileName?: string } }];
+  // Fill sendbox input event
+  'sendbox.fill': [string]; // prompt text to fill
 }
 
 export const emitter = new EventEmitter<EventTypes>();

@@ -55,7 +55,7 @@ export interface IConfigStorageRefer {
   customCss: string; // Custom CSS styles
   'css.themes': ICssTheme[]; // Custom CSS themes list
   'css.activeThemeId': string; // Currently active theme ID
-  'gemini.defaultModel': string;
+  'gemini.defaultModel': string | { id: string; useModel: string };
   'tools.imageGenerationModel': TProviderWithModel & {
     switch: boolean;
   };
@@ -72,6 +72,11 @@ export interface IConfigStorageRefer {
   'migration.builtinDefaultSkillsAdded_v2'?: boolean;
   // Telegram assistant default model
   'assistant.telegram.defaultModel'?: {
+    id: string;
+    useModel: string;
+  };
+  // Lark assistant default model
+  'assistant.lark.defaultModel'?: {
     id: string;
     useModel: string;
   };

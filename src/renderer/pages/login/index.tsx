@@ -130,12 +130,13 @@ const LoginPage: React.FC = () => {
     [clearMessageLater]
   );
 
-  const supportedLanguages = useMemo(
+  const supportedLanguages = useMemo<{ code: string; label: string }[]>(
     () => [
       { code: 'zh-CN', label: '简体中文' },
       { code: 'zh-TW', label: '繁體中文' },
       { code: 'ja-JP', label: '日本語' },
       { code: 'ko-KR', label: '한국어' },
+      { code: 'tr-TR', label: 'Türkçe' },
       { code: 'en-US', label: 'English' },
     ],
     []
@@ -144,10 +145,10 @@ const LoginPage: React.FC = () => {
   const handleLanguageChange = useCallback(
     (event: React.ChangeEvent<HTMLSelectElement>) => {
       const nextLanguage = event.target.value;
-      i18n.changeLanguage(nextLanguage).catch((error) => {
+      i18n.changeLanguage(nextLanguage).catch((error: Error) => {
         console.error('Failed to change language:', error);
       });
-      ConfigStorage.set('language', nextLanguage).catch((error) => {
+      ConfigStorage.set('language', nextLanguage).catch((error: Error) => {
         console.error('Failed to persist language preference:', error);
       });
     },
@@ -224,7 +225,7 @@ const LoginPage: React.FC = () => {
       </div> */}
 
       <div className='login-page__card'>
-        {/* <label className='login-page__lang-select-wrapper' htmlFor='lang-select'>
+        <label className='login-page__lang-select-wrapper' htmlFor='lang-select'>
           <select id='lang-select' className='login-page__lang-select' value={i18n.language} onChange={handleLanguageChange}>
             {supportedLanguages.map((lang) => (
               <option key={lang.code} value={lang.code}>
@@ -232,7 +233,7 @@ const LoginPage: React.FC = () => {
               </option>
             ))}
           </select>
-        </label> */}
+        </label>
 
         <div className='login-page__header'>
           <div className='login-page__logo'>

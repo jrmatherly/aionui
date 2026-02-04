@@ -15,10 +15,64 @@ import { getChannelMessageService } from '../agent/ChannelMessageService';
 import type { SessionManager } from '../core/SessionManager';
 import type { PairingService } from '../pairing/PairingService';
 import type { PluginMessageHandler } from '../plugins/BasePlugin';
-import { escapeHtml } from '../plugins/telegram/TelegramAdapter';
+import { createMainMenuCard, createErrorRecoveryCard, createResponseActionsCard, createToolConfirmationCard } from '../plugins/lark/LarkCards';
+import { convertHtmlToLarkMarkdown } from '../plugins/lark/LarkAdapter';
 import { createMainMenuKeyboard, createResponseActionsKeyboard, createToolConfirmationKeyboard } from '../plugins/telegram/TelegramKeyboards';
-import type { IUnifiedIncomingMessage, IUnifiedOutgoingMessage } from '../types';
+import { escapeHtml } from '../plugins/telegram/TelegramAdapter';
+import type { IUnifiedIncomingMessage, IUnifiedOutgoingMessage, PluginType } from '../types';
 import type { PluginManager } from './PluginManager';
+
+// ==================== Platform-specific Helpers ====================
+
+/**
+ * Get main menu reply markup based on platform
+ */
+function getMainMenuMarkup(platform: PluginType) {
+  if (platform === 'lark') {
+    return createMainMenuCard();
+  }
+  return createMainMenuKeyboard();
+}
+
+/**
+ * Get response actions markup based on platform
+ */
+function getResponseActionsMarkup(platform: PluginType, text?: string) {
+  if (platform === 'lark') {
+    return createResponseActionsCard(text || '');
+  }
+  return createResponseActionsKeyboard();
+}
+
+/**
+ * Get tool confirmation markup based on platform
+ */
+function getToolConfirmationMarkup(platform: PluginType, callId: string, options: Array<{ label: string; value: string }>, title?: string, description?: string) {
+  if (platform === 'lark') {
+    return createToolConfirmationCard(callId, title || 'Confirmation', description || 'Please confirm', options);
+  }
+  return createToolConfirmationKeyboard(callId, options);
+}
+
+/**
+ * Get error recovery markup based on platform
+ */
+function getErrorRecoveryMarkup(platform: PluginType, errorMessage?: string) {
+  if (platform === 'lark') {
+    return createErrorRecoveryCard(errorMessage);
+  }
+  return createMainMenuKeyboard(); // Telegram uses main menu for recovery
+}
+
+/**
+ * Escape/format text for platform
+ */
+function formatTextForPlatform(text: string, platform: PluginType): string {
+  if (platform === 'lark') {
+    return convertHtmlToLarkMarkdown(text);
+  }
+  return escapeHtml(text);
+}
 
 /**
  * Get confirmation options based on type
@@ -74,25 +128,24 @@ function getConfirmationPrompt(details: { type: string; title?: string; [key: st
 }
 
 /**
- * Convert TMessage to IUnifiedOutgoingMessage for Telegram
+ * Convert TMessage to IUnifiedOutgoingMessage for platform
  */
-function convertTMessageToOutgoing(message: TMessage, isComplete = false): IUnifiedOutgoingMessage {
+function convertTMessageToOutgoing(message: TMessage, platform: PluginType, isComplete = false): IUnifiedOutgoingMessage {
   switch (message.type) {
     case 'text': {
-      // Escape HTML special characters
-      const text = escapeHtml(message.content.content || '') || '...';
+      // Format text based on platform
+      const text = formatTextForPlatform(message.content.content || '', platform) || '...';
       return {
         type: 'text',
         text,
         parseMode: 'HTML',
-        replyMarkup: isComplete ? createResponseActionsKeyboard() : undefined,
+        replyMarkup: isComplete ? getResponseActionsMarkup(platform, text) : undefined,
       };
     }
 
     case 'tips': {
       const icon = message.content.type === 'error' ? '❌' : message.content.type === 'success' ? '✅' : '⚠️';
-      // Escape HTML special characters
-      const content = escapeHtml(message.content.content || '');
+      const content = formatTextForPlatform(message.content.content || '', platform);
       return {
         type: 'text',
         text: `${icon} ${content}`,
@@ -104,8 +157,7 @@ function convertTMessageToOutgoing(message: TMessage, isComplete = false): IUnif
       // Show tool call status
       const toolLines = message.content.map((tool) => {
         const statusIcon = tool.status === 'Success' ? '✅' : tool.status === 'Error' ? '❌' : tool.status === 'Executing' ? '⏳' : tool.status === 'Confirming' ? '❓' : '📋';
-        // Escape HTML special characters
-        const desc = escapeHtml(tool.description || tool.name || '');
+        const desc = formatTextForPlatform(tool.description || tool.name || '', platform);
         return `${statusIcon} ${desc}`;
       });
 
@@ -120,7 +172,7 @@ function convertTMessageToOutgoing(message: TMessage, isComplete = false): IUnif
           type: 'text',
           text: confirmText,
           parseMode: 'HTML',
-          replyMarkup: createToolConfirmationKeyboard(confirmingTool.callId, options),
+          replyMarkup: getToolConfirmationMarkup(platform, confirmingTool.callId, options, 'Tool Confirmation', confirmText),
         };
       }
 
@@ -133,8 +185,7 @@ function convertTMessageToOutgoing(message: TMessage, isComplete = false): IUnif
 
     case 'tool_call': {
       const statusIcon = message.content.status === 'success' ? '✅' : message.content.status === 'error' ? '❌' : '⏳';
-      // Escape HTML special characters
-      const name = escapeHtml(message.content.name || '');
+      const name = formatTextForPlatform(message.content.name || '', platform);
       return {
         type: 'text',
         text: `${statusIcon} ${name}`,
@@ -254,16 +305,18 @@ export class ActionExecutor {
       // Set the assistant user in context
       context.channelUser = channelUser;
 
-      // Get or create session, preferring to reuse the last telegram-sourced session
+      // Get or create session
+      // Get or create session, preferring to reuse sessions from this platform
       let session = this.sessionManager.getSession(channelUser.id);
       if (!session || !session.conversationId) {
         // Get user selected model
         const model = await getTelegramDefaultModel();
 
-        // Use ConversationService to get or create telegram conversation
+        // Use ConversationService to get or create conversation (based on platform)
+        const conversationName = platform === 'lark' ? 'Lark Assistant' : 'Telegram Assistant';
         const result = await ConversationService.getOrCreateTelegramConversation({
           model,
-          name: 'Telegram Assistant',
+          name: conversationName,
         });
 
         if (result.success && result.conversation) {
@@ -300,7 +353,7 @@ export class ActionExecutor {
           type: 'text',
           text: 'This message type is not supported. Please send a text message.',
           parseMode: 'HTML',
-          replyMarkup: createMainMenuKeyboard(),
+          replyMarkup: getMainMenuMarkup(platform as PluginType),
         });
       }
     } catch (error: any) {
@@ -309,7 +362,7 @@ export class ActionExecutor {
         type: 'text',
         text: `❌ Error processing message: ${error.message}`,
         parseMode: 'HTML',
-        replyMarkup: createMainMenuKeyboard(),
+        replyMarkup: getErrorRecoveryMarkup(platform as PluginType, error.message),
       });
     }
   }
@@ -402,22 +455,56 @@ export class ActionExecutor {
       await messageService.sendMessage(sessionId, conversationId, text, async (message: TMessage, isInsert: boolean) => {
         const now = Date.now();
 
-        // Convert message format
-        const outgoingMessage = convertTMessageToOutgoing(message, false);
+        // Convert message format (based on platform)
+        const outgoingMessage = convertTMessageToOutgoing(message, context.platform as PluginType, false);
 
         // Save last message content
         lastMessageContent = outgoingMessage;
 
-        if (isInsert) {
+        console.log(`[ActionExecutor] Stream callback - isInsert: ${isInsert}, msg_id: ${message.msg_id}, type: ${message.type}, sentMessageIds count: ${sentMessageIds.length}`);
+
+        // IMPORTANT: Always treat first streaming message as update to thinking message
+        // This prevents async race condition where first insert's sendMessage takes time
+        // while subsequent messages arrive and get processed as updates
+        if (isInsert && sentMessageIds.length === 1) {
+          // First streaming message: update thinking message instead of inserting
+          console.log(`[ActionExecutor] First streaming message, updating thinking message instead of inserting`);
+          const targetMsgId = sentMessageIds[0] || thinkingMsgId;
+          console.log(`[ActionExecutor] Updating message, targetMsgId: ${targetMsgId}, content preview: ${outgoingMessage.text?.slice(0, 50)}`);
+          pendingMessage = outgoingMessage;
+
+          if (now - lastUpdateTime >= UPDATE_THROTTLE_MS) {
+            if (pendingUpdateTimer) {
+              clearTimeout(pendingUpdateTimer);
+              pendingUpdateTimer = null;
+            }
+            await doEditMessage(outgoingMessage);
+          } else {
+            if (pendingUpdateTimer) {
+              clearTimeout(pendingUpdateTimer);
+            }
+            const delay = UPDATE_THROTTLE_MS - (now - lastUpdateTime);
+            pendingUpdateTimer = setTimeout(() => {
+              if (pendingMessage) {
+                void doEditMessage(pendingMessage);
+                pendingMessage = null;
+              }
+              pendingUpdateTimer = null;
+            }, delay);
+          }
+        } else if (isInsert) {
           // New message: send new message
           try {
             const newMsgId = await context.sendMessage(outgoingMessage);
             sentMessageIds.push(newMsgId);
+            console.log(`[ActionExecutor] Inserted new message, newMsgId: ${newMsgId}, total messages: ${sentMessageIds.length}`);
           } catch (sendError) {
             console.debug('[ActionExecutor] Send error (ignored):', sendError);
           }
         } else {
           // Update message: throttle with timer to ensure last message is sent
+          const targetMsgId = sentMessageIds[sentMessageIds.length - 1] || thinkingMsgId;
+          console.log(`[ActionExecutor] Updating message, targetMsgId: ${targetMsgId}, content preview: ${outgoingMessage.text?.slice(0, 50)}`);
           pendingMessage = outgoingMessage;
 
           if (now - lastUpdateTime >= UPDATE_THROTTLE_MS) {
@@ -449,12 +536,22 @@ export class ActionExecutor {
         clearTimeout(pendingUpdateTimer);
         pendingUpdateTimer = null;
       }
+      // If there's a pending message, send it immediately
+      if (pendingMessage) {
+        try {
+          await doEditMessage(pendingMessage);
+        } catch (error) {
+          console.debug('[ActionExecutor] Final pending message edit error (ignored):', error);
+        }
+        pendingMessage = null;
+      }
 
       // After stream ends, update last message with action buttons (keep original content)
       const lastMsgId = sentMessageIds[sentMessageIds.length - 1] || thinkingMsgId;
       try {
-        // Use actual content of last message, add action buttons
-        const finalMessage: IUnifiedOutgoingMessage = lastMessageContent ? { ...lastMessageContent, replyMarkup: createResponseActionsKeyboard() } : { type: 'text', text: '✅ Done', parseMode: 'HTML', replyMarkup: createResponseActionsKeyboard() };
+        // Use actual content of last message, add action buttons (based on platform)
+        const responseMarkup = getResponseActionsMarkup(context.platform as PluginType, lastMessageContent?.text);
+        const finalMessage: IUnifiedOutgoingMessage = lastMessageContent ? { ...lastMessageContent, replyMarkup: responseMarkup } : { type: 'text', text: '✅ Done', parseMode: 'HTML', replyMarkup: responseMarkup };
         await context.editMessage(lastMsgId, finalMessage);
       } catch {
         // Ignore final edit error

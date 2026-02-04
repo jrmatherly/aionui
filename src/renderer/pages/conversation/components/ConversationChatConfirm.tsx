@@ -1,48 +1,101 @@
 import { ipcBridge } from '@/common';
 import type { IConfirmation } from '@/common/chatLib';
+import { useConversationContextSafe } from '@/renderer/context/ConversationContext';
 import { Divider, Typography } from '@arco-design/web-react';
 import type { PropsWithChildren } from 'react';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { removeStack } from '../../../utils/common';
+
 const ConversationChatConfirm: React.FC<PropsWithChildren<{ conversation_id: string }>> = ({ conversation_id, children }) => {
   const [confirmations, setConfirmations] = useState<IConfirmation<any>[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const { t } = useTranslation();
+  const conversationContext = useConversationContextSafe();
+  const agentType = conversationContext?.type || 'unknown';
+
+  // Check if confirmation should be auto-confirmed via backend approval store
+  // Keys are parsed in backend (single source of truth)
+  const checkAndAutoConfirm = useCallback(
+    async (confirmation: IConfirmation<string>): Promise<boolean> => {
+      // Only check gemini agent type (others don't have approval store yet)
+      if (agentType !== 'gemini') return false;
+
+      const { action, commandType } = confirmation;
+      // Skip if no action (backend will return false for empty keys)
+      if (!action) return false;
+
+      try {
+        const isApproved = await ipcBridge.conversation.approval.check.invoke({
+          conversation_id,
+          action,
+          commandType,
+        });
+
+        if (isApproved) {
+          // Find the "proceed_always" or "proceed_once" option to use for auto-confirm
+          const allowOption = confirmation.options.find((opt) => opt.value === 'proceed_always' || opt.value === 'proceed_once');
+          if (allowOption) {
+            void ipcBridge.conversation.confirmation.confirm.invoke({
+              conversation_id,
+              callId: confirmation.callId,
+              msg_id: confirmation.id,
+              data: allowOption.value,
+            });
+            return true;
+          }
+        }
+      } catch {
+        // Ignore errors, will show confirmation dialog
+      }
+
+      return false;
+    },
+    [conversation_id, agentType]
+  );
 
   useEffect(() => {
     // Fix #475: Add error handling and retry mechanism
     let retryCount = 0;
-    const maxRetries = 3; // Maximum retry attempts
+    const maxRetries = 3;
 
-    const loadConfirmations = () => {
-      void ipcBridge.conversation.confirmation.list
-        .invoke({ conversation_id })
-        .then((data) => {
-          setConfirmations(data);
-          setLoadError(null); // Load success, clear error state
-        })
-        .catch((error) => {
-          console.error('[ConversationChatConfirm] Failed to load confirmations:', error);
-          // Auto retry mechanism: retry after 1 second if max retries not reached
-          if (retryCount < maxRetries) {
-            retryCount++;
-            setTimeout(loadConfirmations, 1000);
-          } else {
-            // Retries exhausted, show error state
-            setLoadError(error?.message || 'Failed to load confirmations');
+    const loadConfirmations = async () => {
+      try {
+        const data = await ipcBridge.conversation.confirmation.list.invoke({ conversation_id });
+        // Filter out confirmations that should be auto-confirmed (async)
+        const manualConfirmations: IConfirmation<any>[] = [];
+        for (const c of data) {
+          const shouldAutoConfirm = await checkAndAutoConfirm(c);
+          if (!shouldAutoConfirm) {
+            manualConfirmations.push(c);
           }
-        });
+        }
+        setConfirmations(manualConfirmations);
+        setLoadError(null);
+      } catch (error) {
+        console.error('[ConversationChatConfirm] Failed to load confirmations:', error);
+        if (retryCount < maxRetries) {
+          retryCount++;
+          setTimeout(loadConfirmations, 1000);
+        } else {
+          const errorMsg = error instanceof Error ? error.message : 'Failed to load confirmations';
+          setLoadError(errorMsg);
+        }
+      }
     };
 
-    loadConfirmations();
+    void loadConfirmations();
 
     return removeStack(
       ipcBridge.conversation.confirmation.add.on((data) => {
         if (conversation_id !== data.conversation_id) return;
-        setConfirmations((prev) => prev.concat(data));
-        // Clear previous error state when new confirmation loads successfully
-        setLoadError(null);
+        // Check if should auto-confirm (async)
+        void checkAndAutoConfirm(data).then((autoConfirmed) => {
+          if (!autoConfirmed) {
+            setConfirmations((prev) => prev.concat(data));
+            setLoadError(null);
+          }
+        });
       }),
       ipcBridge.conversation.confirmation.remove.on((data) => {
         if (conversation_id !== data.conversation_id) return;
@@ -59,7 +112,7 @@ const ConversationChatConfirm: React.FC<PropsWithChildren<{ conversation_id: str
         });
       })
     );
-  }, [conversation_id]);
+  }, [conversation_id, checkAndAutoConfirm]);
 
   // Handle ESC key to cancel confirmation
   useEffect(() => {
@@ -110,7 +163,7 @@ const ConversationChatConfirm: React.FC<PropsWithChildren<{ conversation_id: str
               void ipcBridge.conversation.confirmation.list
                 .invoke({ conversation_id })
                 .then((data) => setConfirmations(data))
-                .catch((error) => setLoadError(error?.message || 'Failed to load'));
+                .catch((err) => setLoadError(err instanceof Error ? err.message : 'Failed to load'));
             }}
             className='px-12px py-6px bg-[rgba(22,93,255,1)] text-white rd-6px text-12px cursor-pointer hover:opacity-80 transition-opacity'
           >
@@ -145,6 +198,7 @@ const ConversationChatConfirm: React.FC<PropsWithChildren<{ conversation_id: str
           return (
             <div
               onClick={() => {
+                // Note: "always allow" is stored by backend when proceed_always is confirmed
                 setConfirmations((prev) => prev.filter((p) => p.id !== confirmation.id));
                 void ipcBridge.conversation.confirmation.confirm.invoke({ conversation_id, callId: confirmation.callId, msg_id: confirmation.id, data: option.value });
               }}

@@ -53,6 +53,11 @@ export const conversation = {
     list: bridge.buildProvider<IConfirmation<any>[], { conversation_id: string }>('confirmation.list'),
     remove: bridge.buildEmitter<{ conversation_id: string; id: string }>('confirmation.remove'),
   },
+  // Session-level approval memory for "always allow" decisions
+  approval: {
+    // Check if action is approved (keys are parsed from action+commandType in backend)
+    check: bridge.buildProvider<boolean, { conversation_id: string; action: string; commandType?: string }>('approval.check'),
+  },
 };
 
 // Gemini conversation interface - Reuses unified conversation interface
@@ -514,7 +519,7 @@ export const channel = {
   getPluginStatus: bridge.buildProvider<IBridgeResponse<IChannelPluginStatus[]>, void>('channel.get-plugin-status'),
   enablePlugin: bridge.buildProvider<IBridgeResponse, { pluginId: string; config: Record<string, unknown> }>('channel.enable-plugin'),
   disablePlugin: bridge.buildProvider<IBridgeResponse, { pluginId: string }>('channel.disable-plugin'),
-  testPlugin: bridge.buildProvider<IBridgeResponse<{ success: boolean; botUsername?: string; error?: string }>, { pluginId: string; token: string }>('channel.test-plugin'),
+  testPlugin: bridge.buildProvider<IBridgeResponse<{ success: boolean; botUsername?: string; error?: string }>, { pluginId: string; token: string; extraConfig?: { appId?: string; appSecret?: string } }>('channel.test-plugin'),
 
   // Pairing Management
   getPendingPairings: bridge.buildProvider<IBridgeResponse<IChannelPairingRequest[]>, void>('channel.get-pending-pairings'),

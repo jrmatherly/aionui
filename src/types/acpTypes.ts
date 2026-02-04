@@ -42,6 +42,8 @@ export type AcpBackendAll =
   | 'auggie' // Augment Code CLI
   | 'kimi' // Kimi CLI (Moonshot)
   | 'opencode' // OpenCode CLI
+  | 'copilot' // GitHub Copilot CLI
+  | 'qoder' // Qoder CLI
   | 'custom'; // User-configured custom ACP agent
 
 /**
@@ -173,9 +175,9 @@ export interface AcpBackendConfig {
   /**
    * Arguments to enable ACP mode when spawning the CLI.
    * Different CLIs use different conventions:
-   *   - ['--experimental-acp'] for claude, qwen (default if not specified)
+   *   - ['--experimental-acp'] for claude (default if not specified)
+   *   - ['--acp'] for qwen, auggie
    *   - ['acp'] for goose (subcommand)
-   *   - ['--acp'] for auggie
    * If not specified, defaults to ['--experimental-acp'].
    */
   acpArgs?: string[];
@@ -251,8 +253,9 @@ export const ACP_BACKENDS_ALL: Record<AcpBackendAll, AcpBackendConfig> = {
     cliCommand: 'qwen',
     defaultCliPath: 'npx @qwen-code/qwen-code',
     authRequired: true,
-    enabled: true, // Verified: Qwen CLI v0.0.10+ supports --experimental-acp
+    enabled: true, // Verified: Qwen CLI v0.0.10+ supports --acp
     supportsStreaming: true,
+    acpArgs: ['--acp'], // Use --acp instead of deprecated --experimental-acp
   },
   iflow: {
     id: 'iflow',
@@ -315,6 +318,24 @@ export const ACP_BACKENDS_ALL: Record<AcpBackendAll, AcpBackendConfig> = {
     enabled: true, // ✅ Factory docs: `droid exec --output-format acp` (JetBrains/Zed ACP integration)
     supportsStreaming: false,
     acpArgs: ['exec', '--output-format', 'acp'],
+  },
+  copilot: {
+    id: 'copilot',
+    name: 'GitHub Copilot',
+    cliCommand: 'copilot',
+    authRequired: false,
+    enabled: true, // GitHub Copilot CLI, launched with `copilot --acp --stdio`
+    supportsStreaming: true,
+    acpArgs: ['--acp', '--stdio'], // copilot uses --acp --stdio to launch ACP mode
+  },
+  qoder: {
+    id: 'qoder',
+    name: 'Qoder CLI',
+    cliCommand: 'qodercli',
+    authRequired: false,
+    enabled: true, // Qoder CLI, launched with `qodercli --acp`
+    supportsStreaming: false,
+    acpArgs: ['--acp'], // qoder uses --acp flag
   },
   custom: {
     id: 'custom',

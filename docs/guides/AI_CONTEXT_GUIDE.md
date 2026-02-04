@@ -429,7 +429,7 @@ Cortex supports 9 memory types, though only 6 can be manually added via CLI:
 
 Memory confidence decays exponentially based on age:
 
-```
+```text
 effective_confidence = base_confidence × 2^(-age_days / half_life)
 ```
 
@@ -1056,7 +1056,7 @@ drift_decisions({ action: "timeline" })
 
 ### Decision Lifecycle
 
-```
+```text
 Draft → Confirmed → (Superseded)
   │
   └──→ Rejected
@@ -1109,7 +1109,7 @@ Returns ranked approaches with:
 
 Confirmed as enterprise-gated in v0.9.48:
 
-```
+```text
 ⚠️ Enterprise Feature Required
 ✗ gate:impact-simulation requires enterprise tier
 Current tier: community
@@ -1597,7 +1597,7 @@ Understanding this helps AI agents use the right tools at the right time.
 
 ### Practical Usage Order
 
-```
+```text
 drift_context (orchestration) → understand the task
   ↓
 drift_signature / drift_callers (surgical) → precise lookups

@@ -14,6 +14,7 @@ import { uuid } from '@/common/utils';
 import { ProcessConfig, getSkillsDir } from '@/process/initStorage';
 import { getOauthInfoWithCache } from '@office-ai/aioncli-core';
 import { cronBusyGuard } from '@process/services/cron/CronBusyGuard';
+import { GeminiApprovalStore } from '../../agent/gemini/GeminiApprovalStore';
 import { ToolConfirmationOutcome } from '../../agent/gemini/cli/tools/tools';
 import { addMessage, addOrUpdateMessage, nextTickToLocalFinish } from '../message';
 import { handlePreviewOpenEvent } from '../utils/previewUtils';
@@ -58,6 +59,9 @@ export class GeminiAgentManager extends BaseAgentManager<
   contextContent?: string;
   enabledSkills?: string[];
   private bootstrap: Promise<void>;
+
+  /** Session-level approval store for "always allow" memory */
+  readonly approvalStore = new GeminiApprovalStore();
 
   private async injectHistoryFromDatabase(): Promise<void> {
     // ... (omitting injectHistoryFromDatabase for space)
@@ -335,6 +339,8 @@ export class GeminiAgentManager extends BaseAgentManager<
           return;
         }
         if (!question || !hasOptions) return;
+        // Extract commandType from exec confirmations for "always allow" memory
+        const commandType = content.confirmationDetails?.type === 'exec' ? (content.confirmationDetails as { rootCommand?: string }).rootCommand : undefined;
         this.addConfirmation({
           title: content.confirmationDetails?.title || '',
           id: content.callId,
@@ -342,6 +348,7 @@ export class GeminiAgentManager extends BaseAgentManager<
           description: description || content.description || '',
           callId: content.callId,
           options: options,
+          commandType,
         });
       });
     }
@@ -478,6 +485,15 @@ export class GeminiAgentManager extends BaseAgentManager<
   }
 
   confirm(id: string, callId: string, data: string) {
+    // Store "always allow" decision before removing confirmation from cache
+    if (data === ToolConfirmationOutcome.ProceedAlways) {
+      const confirmation = this.confirmations.find((c) => c.callId === callId);
+      if (confirmation?.action) {
+        const keys = GeminiApprovalStore.createKeysFromConfirmation(confirmation.action, confirmation.commandType);
+        this.approvalStore.approveAll(keys);
+      }
+    }
+
     super.confirm(id, callId, data);
     // Send confirmation to worker, using callId as message type
     return this.postMessagePromise(callId, data);

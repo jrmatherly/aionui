@@ -155,6 +155,10 @@ specs/**/work-*
 .tmp/
 my-video
 
+# Agent Kit
+.agent
+
+# Local Docs
 .scratchpad/
 .local_docs/
 

@@ -6,6 +6,7 @@ import { ConfigStorage } from '@/common/storage';
 import enUS from './locales/en-US.json';
 import jaJP from './locales/ja-JP.json';
 import koKR from './locales/ko-KR.json';
+import trTR from './locales/tr-TR.json';
 import zhCN from './locales/zh-CN.json';
 import zhTW from './locales/zh-TW.json';
 
@@ -25,6 +26,9 @@ const resources = {
   'ko-KR': {
     translation: koKR,
   },
+  'tr-TR': {
+    translation: trTR,
+  },
 };
 
 i18n
@@ -42,19 +46,19 @@ i18n
       caches: ['localStorage'],
     },
   })
-  .catch((error) => {
+  .catch((error: Error) => {
     console.error('Failed to initialize i18n:', error);
   });
 
 ConfigStorage.get('language')
-  .then((language) => {
+  .then((language: string) => {
     if (language) {
-      i18n.changeLanguage(language).catch((error) => {
+      i18n.changeLanguage(language).catch((error: Error) => {
         console.error('Failed to change language:', error);
       });
     }
   })
-  .catch((error) => {
+  .catch((error: Error) => {
     console.error('Failed to load language setting:', error);
   });
 

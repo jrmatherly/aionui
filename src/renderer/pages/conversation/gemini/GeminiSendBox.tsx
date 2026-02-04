@@ -462,6 +462,15 @@ const GeminiSendBox: React.FC<{
     setSendBoxHandler(handler);
   }, [setSendBoxHandler, content]);
 
+  // Listen for sendbox.fill event to populate input from external sources
+  useAddEventListener(
+    'sendbox.fill',
+    (text: string) => {
+      setContentRef.current(text);
+    },
+    []
+  );
+
   // Use shared file handling logic
   const { handleFilesAdded, clearFiles } = useSendBoxFiles({
     atPath,

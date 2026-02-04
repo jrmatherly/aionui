@@ -21,6 +21,7 @@ import AuggieLogo from '@/renderer/assets/logos/auggie.svg';
 import GooseLogo from '@/renderer/assets/logos/goose.svg';
 import KimiLogo from '@/renderer/assets/logos/kimi.svg';
 import OpencodeLogo from '@/renderer/assets/logos/opencode.svg';
+import QoderLogo from '@/renderer/assets/logos/qoder.png';
 
 /**
  * Backend logo mapping for displaying icons in CLI selection cards
@@ -30,6 +31,7 @@ const BACKEND_LOGO_MAP: Record<string, string> = {
   auggie: AuggieLogo,
   kimi: KimiLogo,
   opencode: OpencodeLogo,
+  qoder: QoderLogo,
 };
 
 interface CustomAcpAgentModalProps {

@@ -1,7 +1,7 @@
 {
   "name": "aionui",
   "productName": "AionUi",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "description": "Transform your command-line AI agent into a modern, efficient AI Chat interface.",
   "main": ".webpack/main",
   "scripts": {
@@ -116,6 +116,7 @@
     "@google/genai": "^1.39.0",
     "@grammyjs/transformer-throttler": "^1.2.1",
     "@icon-park/react": "^1.4.2",
+    "@larksuiteoapi/node-sdk": "^1.58.0",
     "@modelcontextprotocol/sdk": "^1.25.3",
     "@monaco-editor/react": "^4.7.0",
     "@office-ai/aioncli-core": "^0.24.2",

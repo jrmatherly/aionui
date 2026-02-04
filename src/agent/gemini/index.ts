@@ -4,6 +4,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// Re-export GeminiApprovalStore for use in other modules
+export { GeminiApprovalStore } from './GeminiApprovalStore';
+
 import type { CompletedToolCall, Config, GeminiClient, ServerGeminiStreamEvent, ToolCall, ToolCallRequestInfo, Turn } from '@office-ai/aioncli-core';
 import { AuthType, clearOauthClientCache, CoreToolScheduler, FileDiscoveryService, refreshServerHierarchicalMemory, sessionId } from '@office-ai/aioncli-core';
 import fs from 'fs';
