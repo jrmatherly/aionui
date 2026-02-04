@@ -53,6 +53,9 @@ export const rules: Required<ModuleOptions>['rules'] = [
         loader: 'css-loader',
         options: {
           importLoaders: 1,
+          modules: {
+            namedExport: false, // Preserve v6 behavior for CSS Modules (css-loader v7 defaults to true)
+          },
         },
       },
       'postcss-loader',

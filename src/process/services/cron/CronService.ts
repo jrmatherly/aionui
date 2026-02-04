@@ -198,6 +198,7 @@ class CronService {
           {
             timezone: schedule.tz,
             paused: false,
+            sloppyRanges: true,
           },
           () => {
             void this.executeJob(job);
@@ -411,7 +412,7 @@ class CronService {
     switch (schedule.kind) {
       case 'cron': {
         try {
-          const cron = new Cron(schedule.expr, { timezone: schedule.tz });
+          const cron = new Cron(schedule.expr, { timezone: schedule.tz, sloppyRanges: true });
           const next = cron.nextRun();
           job.state.nextRunAtMs = next ? next.getTime() : undefined;
         } catch {
