@@ -20,6 +20,7 @@
 
 services:
   aionui:
+    image: aionui:latest
     build:
       context: ../..
       dockerfile: deploy/docker/Dockerfile

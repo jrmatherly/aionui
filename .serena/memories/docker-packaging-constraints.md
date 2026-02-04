@@ -63,3 +63,10 @@ Note: `electron-builder.yml` includes `bcrypt/**/*` in `files` and `asarUnpack`,
 - **npm is upgraded** in the builder stage (`npm install -g npm@${NPM_VERSION}`) because Node 22 bundles npm 10.x but the project requires 11+
 - **`.dockerignore`** explicitly excludes `mise.local.toml`, `mise.*.local.toml`, `mise.local.lock` but includes `mise.toml` and `mise.lock`
 - When updating tool versions: update `mise.toml`, run `mise install`, then `mise lock` to refresh `mise.lock`, then `mise run docker:build` to rebuild with new versions
+
+## docker-compose vs docker build Image Naming
+
+- **docker-compose auto-names images** as `<project>-<service>` (e.g., `docker-aionui`) when using `build:` without `image:`
+- **`docker build -t aionui:latest`** creates a DIFFERENT image that compose won't use
+- **Always add `image: aionui:latest`** alongside `build:` in docker-compose.yml so both commands use the same tag
+- **Symptom of mismatch**: Compose runs old code even after fresh `docker build` — check `docker images` for two different image names
