@@ -49,29 +49,8 @@ export const PROVIDER_ENV_MAP: Record<string, string> = {
   voyage: 'VOYAGE_API_KEY', // Embeddings
 };
 
-/**
- * Provider metadata for display in the UI
- */
-export const PROVIDER_INFO: Record<string, { name: string; description: string; link?: string }> = {
-  anthropic: { name: 'Anthropic', description: 'Claude models', link: 'https://console.anthropic.com/' },
-  openai: { name: 'OpenAI', description: 'GPT models, Codex', link: 'https://platform.openai.com/' },
-  google: { name: 'Google AI', description: 'Gemini models', link: 'https://ai.google.dev/' },
-  gemini: { name: 'Gemini', description: 'Alternative Gemini key', link: 'https://ai.google.dev/' },
-  azure: { name: 'Azure OpenAI', description: 'Azure-hosted OpenAI', link: 'https://azure.microsoft.com/products/ai-services/openai-service' },
-  groq: { name: 'Groq', description: 'Fast inference', link: 'https://console.groq.com/' },
-  mistral: { name: 'Mistral', description: 'Mistral models', link: 'https://console.mistral.ai/' },
-  deepseek: { name: 'DeepSeek', description: 'DeepSeek models', link: 'https://platform.deepseek.com/' },
-  together: { name: 'Together AI', description: 'Open models hosting', link: 'https://api.together.xyz/' },
-  fireworks: { name: 'Fireworks', description: 'Fast open models', link: 'https://fireworks.ai/' },
-  openrouter: { name: 'OpenRouter', description: 'Multi-model proxy', link: 'https://openrouter.ai/' },
-  replicate: { name: 'Replicate', description: 'Model hosting', link: 'https://replicate.com/' },
-  huggingface: { name: 'Hugging Face', description: 'Model hub', link: 'https://huggingface.co/' },
-  cohere: { name: 'Cohere', description: 'Enterprise LLMs', link: 'https://cohere.com/' },
-  perplexity: { name: 'Perplexity', description: 'Search-augmented', link: 'https://www.perplexity.ai/' },
-  dashscope: { name: 'Dashscope', description: 'Alibaba/Qwen', link: 'https://dashscope.console.aliyun.com/' },
-  moonshot: { name: 'Moonshot', description: 'Kimi models', link: 'https://platform.moonshot.cn/' },
-  zhipu: { name: 'Zhipu AI', description: 'GLM models', link: 'https://open.bigmodel.cn/' },
-};
+// Note: PROVIDER_INFO for UI display is now in @/common/constants/providers.ts
+// This file only contains PROVIDER_ENV_MAP for backend API key injection.
 
 export class UserApiKeyService {
   private db: any; // better-sqlite3 Database

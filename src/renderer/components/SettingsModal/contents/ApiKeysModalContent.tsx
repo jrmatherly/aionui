@@ -7,6 +7,7 @@
  * Keys are stored encrypted in the database and never sent back to the renderer.
  */
 
+import { COMMON_PROVIDERS, getOtherProviders, PROVIDER_INFO } from '@/common/constants/providers';
 import { userApiKeys } from '@/common/ipcBridge';
 import AionScrollArea from '@/renderer/components/base/AionScrollArea';
 import { Alert, Button, Collapse, Empty, Form, Input, Message, Modal, Popconfirm, Spin, Tag, Tooltip } from '@arco-design/web-react';
@@ -14,29 +15,6 @@ import { Delete, Key, Link, Plus, Save } from '@icon-park/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSettingsViewMode } from '../settingsViewContext';
-
-// Provider info for display (matches PROVIDER_INFO in UserApiKeyService.ts)
-const PROVIDER_INFO: Record<string, { name: string; description: string; link?: string }> = {
-  anthropic: { name: 'Anthropic', description: 'Claude models', link: 'https://console.anthropic.com/' },
-  openai: { name: 'OpenAI', description: 'GPT models, Codex', link: 'https://platform.openai.com/' },
-  google: { name: 'Google AI', description: 'Gemini models', link: 'https://ai.google.dev/' },
-  groq: { name: 'Groq', description: 'Fast inference', link: 'https://console.groq.com/' },
-  mistral: { name: 'Mistral', description: 'Mistral models', link: 'https://console.mistral.ai/' },
-  deepseek: { name: 'DeepSeek', description: 'DeepSeek models', link: 'https://platform.deepseek.com/' },
-  together: { name: 'Together AI', description: 'Open models hosting', link: 'https://api.together.xyz/' },
-  fireworks: { name: 'Fireworks', description: 'Fast open models', link: 'https://fireworks.ai/' },
-  openrouter: { name: 'OpenRouter', description: 'Multi-model proxy', link: 'https://openrouter.ai/' },
-  dashscope: { name: 'Dashscope', description: 'Alibaba/Qwen', link: 'https://dashscope.console.aliyun.com/' },
-  moonshot: { name: 'Moonshot', description: 'Kimi models', link: 'https://platform.moonshot.cn/' },
-  azure: { name: 'Azure OpenAI', description: 'Azure-hosted OpenAI', link: 'https://azure.microsoft.com/products/ai-services/openai-service' },
-  replicate: { name: 'Replicate', description: 'Model hosting', link: 'https://replicate.com/' },
-  huggingface: { name: 'Hugging Face', description: 'Model hub', link: 'https://huggingface.co/' },
-  cohere: { name: 'Cohere', description: 'Enterprise LLMs', link: 'https://cohere.com/' },
-  perplexity: { name: 'Perplexity', description: 'Search-augmented', link: 'https://www.perplexity.ai/' },
-};
-
-// Commonly used providers shown first
-const COMMON_PROVIDERS = ['anthropic', 'openai', 'google', 'groq', 'mistral', 'deepseek', 'openrouter'];
 
 interface StoredKey {
   provider: string;
@@ -185,8 +163,8 @@ const ApiKeysModalContent: React.FC = () => {
     );
   };
 
-  // Get other providers (not in common list but have stored keys or are available)
-  const otherProviders = Object.keys(PROVIDER_INFO).filter((p) => !COMMON_PROVIDERS.includes(p) && (hasStoredKey(p) || true));
+  // Get other providers (not in common list)
+  const otherProviders = getOtherProviders();
 
   return (
     <div className='flex flex-col h-full w-full'>
