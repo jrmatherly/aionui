@@ -7,12 +7,70 @@
 import crypto from 'crypto';
 
 // Provider name to environment variable mapping
+/**
+ * Maps provider IDs to their corresponding environment variable names.
+ * When a user stores an API key for a provider, it will be injected
+ * into CLI processes as this environment variable.
+ */
 export const PROVIDER_ENV_MAP: Record<string, string> = {
+  // Major AI providers
   anthropic: 'ANTHROPIC_API_KEY',
   openai: 'OPENAI_API_KEY',
-  dashscope: 'DASHSCOPE_API_KEY',
-  moonshot: 'MOONSHOT_API_KEY',
+  google: 'GOOGLE_API_KEY',
+  gemini: 'GEMINI_API_KEY',
+
+  // Cloud AI services
+  azure: 'AZURE_OPENAI_API_KEY',
+  aws_access: 'AWS_ACCESS_KEY_ID',
+  aws_secret: 'AWS_SECRET_ACCESS_KEY',
+  bedrock: 'AWS_BEDROCK_API_KEY',
+
+  // Open-source/Alternative providers
+  groq: 'GROQ_API_KEY',
+  mistral: 'MISTRAL_API_KEY',
+  deepseek: 'DEEPSEEK_API_KEY',
+  together: 'TOGETHER_API_KEY',
+  fireworks: 'FIREWORKS_API_KEY',
+  openrouter: 'OPENROUTER_API_KEY',
+  replicate: 'REPLICATE_API_TOKEN',
+  huggingface: 'HUGGINGFACE_API_KEY',
+  cohere: 'COHERE_API_KEY',
+  perplexity: 'PERPLEXITY_API_KEY',
+
+  // Regional providers
+  dashscope: 'DASHSCOPE_API_KEY', // Alibaba/Qwen
+  moonshot: 'MOONSHOT_API_KEY', // Kimi
+  zhipu: 'ZHIPU_API_KEY', // GLM
+  baichuan: 'BAICHUAN_API_KEY',
+  minimax: 'MINIMAX_API_KEY',
+
+  // Specialized providers
   factory: 'FACTORY_API_KEY',
+  voyage: 'VOYAGE_API_KEY', // Embeddings
+};
+
+/**
+ * Provider metadata for display in the UI
+ */
+export const PROVIDER_INFO: Record<string, { name: string; description: string; link?: string }> = {
+  anthropic: { name: 'Anthropic', description: 'Claude models', link: 'https://console.anthropic.com/' },
+  openai: { name: 'OpenAI', description: 'GPT models, Codex', link: 'https://platform.openai.com/' },
+  google: { name: 'Google AI', description: 'Gemini models', link: 'https://ai.google.dev/' },
+  gemini: { name: 'Gemini', description: 'Alternative Gemini key', link: 'https://ai.google.dev/' },
+  azure: { name: 'Azure OpenAI', description: 'Azure-hosted OpenAI', link: 'https://azure.microsoft.com/products/ai-services/openai-service' },
+  groq: { name: 'Groq', description: 'Fast inference', link: 'https://console.groq.com/' },
+  mistral: { name: 'Mistral', description: 'Mistral models', link: 'https://console.mistral.ai/' },
+  deepseek: { name: 'DeepSeek', description: 'DeepSeek models', link: 'https://platform.deepseek.com/' },
+  together: { name: 'Together AI', description: 'Open models hosting', link: 'https://api.together.xyz/' },
+  fireworks: { name: 'Fireworks', description: 'Fast open models', link: 'https://fireworks.ai/' },
+  openrouter: { name: 'OpenRouter', description: 'Multi-model proxy', link: 'https://openrouter.ai/' },
+  replicate: { name: 'Replicate', description: 'Model hosting', link: 'https://replicate.com/' },
+  huggingface: { name: 'Hugging Face', description: 'Model hub', link: 'https://huggingface.co/' },
+  cohere: { name: 'Cohere', description: 'Enterprise LLMs', link: 'https://cohere.com/' },
+  perplexity: { name: 'Perplexity', description: 'Search-augmented', link: 'https://www.perplexity.ai/' },
+  dashscope: { name: 'Dashscope', description: 'Alibaba/Qwen', link: 'https://dashscope.console.aliyun.com/' },
+  moonshot: { name: 'Moonshot', description: 'Kimi models', link: 'https://platform.moonshot.cn/' },
+  zhipu: { name: 'Zhipu AI', description: 'GLM models', link: 'https://open.bigmodel.cn/' },
 };
 
 export class UserApiKeyService {

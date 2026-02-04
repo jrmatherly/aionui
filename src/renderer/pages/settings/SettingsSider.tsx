@@ -1,7 +1,7 @@
 import FlexFullContainer from '@/renderer/components/FlexFullContainer';
 import { isElectronDesktop } from '@/renderer/utils/platform';
 import { Tooltip } from '@arco-design/web-react';
-import { Computer, Earth, Gemini, Info, LinkCloud, Robot, System, Toolkit } from '@icon-park/react';
+import { Computer, Earth, Gemini, Info, Key, LinkCloud, Robot, System, Toolkit } from '@icon-park/react';
 import classNames from 'classnames';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -41,6 +41,11 @@ const SettingsSider: React.FC<{ collapsed?: boolean }> = ({ collapsed = false })
         label: t('settings.display'),
         icon: <Computer />,
         path: 'display',
+      },
+      {
+        label: t('settings.apiKeys', { defaultValue: 'API Keys' }),
+        icon: <Key />,
+        path: 'apikeys',
       },
     ];
 

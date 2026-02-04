@@ -141,26 +141,26 @@ User API keys are encrypted using AES-256-GCM:
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  Encryption Key Derivation                                                   │
+│  Encryption Key Derivation                                                  │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  Master Key: JWT_SECRET (from environment)                                   │
-│              │                                                               │
-│              ▼                                                               │
+│                                                                             │
+│  Master Key: JWT_SECRET (from environment)                                  │
+│              │                                                              │
+│              ▼                                                              │
 │  ┌─────────────────────────────────┐                                        │
 │  │  HMAC-SHA256(masterKey, userId) │                                        │
 │  └─────────────────────────────────┘                                        │
-│              │                                                               │
-│              ▼                                                               │
-│  Per-User Derived Key (unique per user)                                      │
-│              │                                                               │
-│              ▼                                                               │
+│              │                                                              │
+│              ▼                                                              │
+│  Per-User Derived Key (unique per user)                                     │
+│              │                                                              │
+│              ▼                                                              │
 │  ┌─────────────────────────────────┐                                        │
 │  │  AES-256-GCM Encrypt/Decrypt    │                                        │
 │  │  • 12-byte random IV per key    │                                        │
 │  │  • 16-byte auth tag             │                                        │
 │  └─────────────────────────────────┘                                        │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
