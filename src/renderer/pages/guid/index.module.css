@@ -53,12 +53,12 @@
   }
 }
 
-/* 移动端优化 */
+/* Mobile optimization */
 @media (max-width: 768px) {
   .guidLayout {
     width: clamp(var(--app-min-width, 360px), calc(100% - 32px), 100%);
     padding: 0 16px;
-    padding-bottom: 100px; /* 为底部快捷按钮留出空间 */
+    padding-bottom: 100px; /* Leave space for bottom shortcut buttons */
     box-sizing: border-box;
   }
 
@@ -83,7 +83,7 @@
   }
 }
 
-/* 移动端容器滚动支持 */
+/* Mobile container scrolling support */
 .guidContainer {
   height: 100%;
   display: flex;
@@ -104,13 +104,13 @@
   }
 }
 
-/* 浅色占位符 */
+/* Light placeholder */
 .lightPlaceholder :global(textarea::placeholder) {
   color: var(--text-disabled) !important;
   opacity: 1 !important;
 }
 
-/* 预设助手标签 */
+/* Preset agent tags */
 .presetAgentTag {
   display: flex;
   align-items: center;
@@ -154,7 +154,7 @@
   background: var(--color-fill-4);
 }
 
-/* 移动端助手标签优化 */
+/* Mobile preset agent tag optimization */
 @media (max-width: 768px) {
   .presetAgentTagName {
     max-width: 120px;
@@ -168,7 +168,7 @@
   }
 }
 
-/* iPhone专门优化 */
+/* iPhone specific optimization */
 @supports (-webkit-touch-callout: none) {
   .actionRow {
     flex-wrap: nowrap !important;

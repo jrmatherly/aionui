@@ -79,7 +79,7 @@ export function detectCronCommands(content: string): CronCommand[] {
   for (const match of deleteMatches) {
     const jobId = match[1].trim();
     // Skip placeholder values that are clearly not real job IDs
-    const placeholders = ['任务id', 'task-id', 'taskid', 'job-id', 'jobid', 'xxx', 'id'];
+    const placeholders = ['task-id', 'taskid', 'job-id', 'jobid', 'xxx', 'id'];
     if (jobId && !placeholders.includes(jobId.toLowerCase())) {
       commands.push({ kind: 'delete', jobId });
     }
