@@ -131,7 +131,7 @@ describe('Custom ACP Agent Configuration', () => {
 
       expect(config.defaultCliPath).toBe('node /path/to/agent.js');
       // Verify parsing splits correctly
-      const parts = config.defaultCliPath.trim().split(/\s+/);
+      const parts = config.defaultCliPath!.trim().split(/\s+/);
       expect(parts[0]).toBe('node');
       expect(parts[1]).toBe('/path/to/agent.js');
     });
