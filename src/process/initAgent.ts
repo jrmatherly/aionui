@@ -10,19 +10,33 @@ import { uuid } from '@/common/utils';
 import fs from 'fs/promises';
 import path from 'path';
 import { getSystemDir } from './initStorage';
+import { getDirectoryService } from './services/DirectoryService';
 
 /**
  * Create workspace directory (without copying files)
  *
  * Note: File copying is handled by copyFilesToDirectory in sendMessage
  * This avoids files being copied twice (once during session creation, once when sending message)
+ *
+ * @param defaultWorkspaceName - Default name for the workspace directory
+ * @param workspace - Optional explicit workspace path
+ * @param _defaultFiles - Reserved for future use
+ * @param providedCustomWorkspace - Whether user explicitly set a custom workspace
+ * @param userId - Optional user ID for per-user workspace isolation
  */
-const buildWorkspaceWidthFiles = async (defaultWorkspaceName: string, workspace?: string, _defaultFiles?: string[], providedCustomWorkspace?: boolean) => {
+const buildWorkspaceWidthFiles = async (defaultWorkspaceName: string, workspace?: string, _defaultFiles?: string[], providedCustomWorkspace?: boolean, userId?: string) => {
   // Use the customWorkspace flag provided by frontend, otherwise determine based on workspace parameter
   const customWorkspace = providedCustomWorkspace !== undefined ? providedCustomWorkspace : !!workspace;
 
   if (!workspace) {
-    const tempPath = getSystemDir().workDir;
+    // Use per-user workspace directory if userId is provided, otherwise use system default
+    let tempPath: string;
+    if (userId) {
+      const dirService = getDirectoryService();
+      tempPath = dirService.getUserWorkDir(userId);
+    } else {
+      tempPath = getSystemDir().workDir;
+    }
     workspace = path.join(tempPath, defaultWorkspaceName);
     await fs.mkdir(workspace, { recursive: true });
   } else {
@@ -33,8 +47,8 @@ const buildWorkspaceWidthFiles = async (defaultWorkspaceName: string, workspace?
   return { workspace, customWorkspace };
 };
 
-export const createGeminiAgent = async (model: TProviderWithModel, workspace?: string, defaultFiles?: string[], webSearchEngine?: 'google' | 'default', customWorkspace?: boolean, contextFileName?: string, presetRules?: string, enabledSkills?: string[], presetAssistantId?: string): Promise<TChatConversation> => {
-  const { workspace: newWorkspace, customWorkspace: finalCustomWorkspace } = await buildWorkspaceWidthFiles(`gemini-temp-${Date.now()}`, workspace, defaultFiles, customWorkspace);
+export const createGeminiAgent = async (model: TProviderWithModel, workspace?: string, defaultFiles?: string[], webSearchEngine?: 'google' | 'default', customWorkspace?: boolean, contextFileName?: string, presetRules?: string, enabledSkills?: string[], presetAssistantId?: string, userId?: string): Promise<TChatConversation> => {
+  const { workspace: newWorkspace, customWorkspace: finalCustomWorkspace } = await buildWorkspaceWidthFiles(`gemini-temp-${Date.now()}`, workspace, defaultFiles, customWorkspace, userId);
 
   return {
     type: 'gemini',
@@ -61,9 +75,9 @@ export const createGeminiAgent = async (model: TProviderWithModel, workspace?: s
   };
 };
 
-export const createAcpAgent = async (options: ICreateConversationParams): Promise<TChatConversation> => {
+export const createAcpAgent = async (options: ICreateConversationParams, userId?: string): Promise<TChatConversation> => {
   const { extra } = options;
-  const { workspace, customWorkspace } = await buildWorkspaceWidthFiles(`${extra.backend}-temp-${Date.now()}`, extra.workspace, extra.defaultFiles, extra.customWorkspace);
+  const { workspace, customWorkspace } = await buildWorkspaceWidthFiles(`${extra.backend}-temp-${Date.now()}`, extra.workspace, extra.defaultFiles, extra.customWorkspace, userId);
   return {
     type: 'acp',
     extra: {
@@ -84,9 +98,9 @@ export const createAcpAgent = async (options: ICreateConversationParams): Promis
   };
 };
 
-export const createCodexAgent = async (options: ICreateConversationParams): Promise<TChatConversation> => {
+export const createCodexAgent = async (options: ICreateConversationParams, userId?: string): Promise<TChatConversation> => {
   const { extra } = options;
-  const { workspace, customWorkspace } = await buildWorkspaceWidthFiles(`codex-temp-${Date.now()}`, extra.workspace, extra.defaultFiles, extra.customWorkspace);
+  const { workspace, customWorkspace } = await buildWorkspaceWidthFiles(`codex-temp-${Date.now()}`, extra.workspace, extra.defaultFiles, extra.customWorkspace, userId);
   return {
     type: 'codex',
     extra: {

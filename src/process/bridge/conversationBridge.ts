@@ -25,9 +25,11 @@ export function initConversationBridge(): void {
     const { __webUiUserId, ...createParams } = params;
 
     // Use ConversationService to create conversation
+    // Pass userId for per-user workspace isolation
     const result = await ConversationService.createConversation({
       ...createParams,
       source: 'aionui', // Mark conversations created by AionUI as aionui
+      userId: __webUiUserId, // Per-user workspace isolation
     });
 
     if (!result.success || !result.conversation) {

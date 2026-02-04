@@ -8,6 +8,7 @@ import { app } from 'electron';
 import { getBrandingConfig } from '@/common/branding';
 import { ipcBridge } from '../../common';
 import { getSystemDir, ProcessEnv } from '../initStorage';
+import { getDirectoryService } from '../services/DirectoryService';
 import { copyDirectoryRecursively } from '../utils';
 import WorkerManage from '../WorkerManage';
 import { getZoomFactor, setZoomFactor } from '../utils/zoom';
@@ -35,8 +36,35 @@ export function initApplicationBridge(): void {
     }
   });
 
-  ipcBridge.application.systemInfo.provider(() => {
-    return Promise.resolve(getSystemDir());
+  ipcBridge.application.systemInfo.provider((params?: any) => {
+    const systemDir = getSystemDir();
+
+    // If userId is provided (via __webUiUserId from WebSocket adapter), return per-user directories
+    const userId = params?.__webUiUserId;
+    if (userId) {
+      try {
+        const dirService = getDirectoryService();
+        const userDirs = dirService.getUserDirectories(userId);
+        return Promise.resolve({
+          cacheDir: userDirs.cache_dir,
+          workDir: userDirs.work_dir,
+          platform: systemDir.platform,
+          arch: systemDir.arch,
+          // Include additional user directory info
+          skillsDir: userDirs.skills_dir,
+          assistantsDir: userDirs.assistants_dir,
+          isUserScoped: true,
+        });
+      } catch (error) {
+        console.warn('[applicationBridge] Failed to get user directories, using system defaults:', error);
+      }
+    }
+
+    // Fall back to system directories
+    return Promise.resolve({
+      ...systemDir,
+      isUserScoped: false,
+    });
   });
 
   ipcBridge.application.openDevTools.provider(() => {

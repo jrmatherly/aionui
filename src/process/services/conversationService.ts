@@ -31,6 +31,8 @@ export interface ICreateGeminiConversationParams {
   id?: string;
   /** Custom conversation name */
   name?: string;
+  /** User ID for per-user workspace isolation */
+  userId?: string;
 }
 
 /**
@@ -39,6 +41,8 @@ export interface ICreateGeminiConversationParams {
 export interface ICreateConversationOptions extends ICreateConversationParams {
   /** Conversation source */
   source?: ConversationSource;
+  /** User ID for per-user workspace isolation */
+  userId?: string;
 }
 
 /**
@@ -67,8 +71,8 @@ export class ConversationService {
         contextFileName = path.resolve(process.cwd(), contextFileName);
       }
 
-      // Create conversation object
-      const conversation = await createGeminiAgent(params.model, params.workspace, params.defaultFiles, params.webSearchEngine, params.customWorkspace, contextFileName, params.presetRules, params.enabledSkills, params.presetAssistantId);
+      // Create conversation object (with per-user workspace if userId provided)
+      const conversation = await createGeminiAgent(params.model, params.workspace, params.defaultFiles, params.webSearchEngine, params.customWorkspace, contextFileName, params.presetRules, params.enabledSkills, params.presetAssistantId, params.userId);
 
       // Apply custom ID and name if provided
       if (params.id) {
@@ -107,7 +111,7 @@ export class ConversationService {
    * Create conversation (common method, supports all types)
    */
   static async createConversation(params: ICreateConversationOptions): Promise<ICreateConversationResult> {
-    const { type, extra, name, model, id, source } = params;
+    const { type, extra, name, model, id, source, userId } = params;
 
     try {
       let conversation: TChatConversation;
@@ -128,11 +132,14 @@ export class ConversationService {
         const enabledSkills = extraWithPresets.enabledSkills;
         const presetAssistantId = extraWithPresets.presetAssistantId;
 
-        conversation = await createGeminiAgent(model, extra.workspace, extra.defaultFiles, extra.webSearchEngine, extra.customWorkspace, contextFileName, presetRules, enabledSkills, presetAssistantId);
+        // Pass userId for per-user workspace isolation
+        conversation = await createGeminiAgent(model, extra.workspace, extra.defaultFiles, extra.webSearchEngine, extra.customWorkspace, contextFileName, presetRules, enabledSkills, presetAssistantId, userId);
       } else if (type === 'acp') {
-        conversation = await createAcpAgent(params);
+        // Pass userId for per-user workspace isolation
+        conversation = await createAcpAgent(params, userId);
       } else if (type === 'codex') {
-        conversation = await createCodexAgent(params);
+        // Pass userId for per-user workspace isolation
+        conversation = await createCodexAgent(params, userId);
       } else {
         return { success: false, error: 'Invalid conversation type' };
       }

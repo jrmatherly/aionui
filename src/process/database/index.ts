@@ -14,8 +14,9 @@ import fs from 'fs';
 import path from 'path';
 import { runMigrations as executeMigrations } from './migrations';
 import { CURRENT_DB_VERSION, getDatabaseVersion, initSchema, setDatabaseVersion } from './schema';
-import type { IConversationRow, IMessageRow, IPaginatedResult, IQueryResult, IUser, TChatConversation, TMessage } from './types';
+import type { IConversationRow, IMessageRow, IOrgDirectories, IOrgMember, IOrganization, IPaginatedResult, IQueryResult, ITeam, ITeamDirectories, ITeamMember, IUser, IUserDirectories, MemberRole, TChatConversation, TMessage } from './types';
 import { conversationToRow, messageToRow, rowToConversation, rowToMessage } from './types';
+import { uuid } from '@/common/utils';
 
 /**
  * Main database class for AionUi
@@ -1341,6 +1342,440 @@ export class AionUIDatabase {
       const now = Math.floor(Date.now() / 1000);
       const result = this.db.prepare('DELETE FROM token_blacklist WHERE expires_at < ?').run(now);
       return { success: true, data: result.changes };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  // ─── User Directories (Per-User Isolation) ──────────────────────────
+
+  /**
+   * Get user directories by user ID
+   */
+  getUserDirectories(userId: string): IQueryResult<IUserDirectories | null> {
+    try {
+      const row = this.db.prepare('SELECT * FROM user_directories WHERE user_id = ?').get(userId) as IUserDirectories | undefined;
+      return { success: true, data: row || null };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Create or update user directories
+   */
+  upsertUserDirectories(dirs: Omit<IUserDirectories, 'id' | 'created_at' | 'updated_at'>): IQueryResult<IUserDirectories> {
+    try {
+      const now = Math.floor(Date.now() / 1000);
+      const id = `udir_${dirs.user_id}`;
+
+      this.db
+        .prepare(
+          `INSERT INTO user_directories (id, user_id, base_dir, cache_dir, work_dir, skills_dir, assistants_dir, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+         ON CONFLICT(user_id) DO UPDATE SET
+           base_dir = excluded.base_dir,
+           cache_dir = excluded.cache_dir,
+           work_dir = excluded.work_dir,
+           skills_dir = excluded.skills_dir,
+           assistants_dir = excluded.assistants_dir,
+           updated_at = excluded.updated_at`
+        )
+        .run(id, dirs.user_id, dirs.base_dir, dirs.cache_dir, dirs.work_dir, dirs.skills_dir ?? null, dirs.assistants_dir ?? null, now, now);
+
+      return {
+        success: true,
+        data: {
+          id,
+          ...dirs,
+          created_at: now,
+          updated_at: now,
+        },
+      };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Delete user directories
+   */
+  deleteUserDirectories(userId: string): IQueryResult<boolean> {
+    try {
+      this.db.prepare('DELETE FROM user_directories WHERE user_id = ?').run(userId);
+      return { success: true, data: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  // ─── Organizations ────────────────────────────────────────────────
+
+  /**
+   * Create organization
+   */
+  createOrganization(org: Omit<IOrganization, 'id' | 'created_at' | 'updated_at'>): IQueryResult<IOrganization> {
+    try {
+      const now = Math.floor(Date.now() / 1000);
+      const id = `org_${uuid()}`;
+
+      this.db.prepare('INSERT INTO organizations (id, name, slug, description, settings, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)').run(id, org.name, org.slug, org.description ?? null, org.settings ?? null, now, now);
+
+      return {
+        success: true,
+        data: {
+          id,
+          ...org,
+          created_at: now,
+          updated_at: now,
+        },
+      };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Get organization by ID
+   */
+  getOrganization(orgId: string): IQueryResult<IOrganization | null> {
+    try {
+      const row = this.db.prepare('SELECT * FROM organizations WHERE id = ?').get(orgId) as IOrganization | undefined;
+      return { success: true, data: row || null };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Get organization by slug
+   */
+  getOrganizationBySlug(slug: string): IQueryResult<IOrganization | null> {
+    try {
+      const row = this.db.prepare('SELECT * FROM organizations WHERE slug = ?').get(slug) as IOrganization | undefined;
+      return { success: true, data: row || null };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Get all organizations for a user
+   */
+  getUserOrganizations(userId: string): IQueryResult<IOrganization[]> {
+    try {
+      const rows = this.db
+        .prepare(
+          `SELECT o.* FROM organizations o
+         INNER JOIN org_members om ON o.id = om.org_id
+         WHERE om.user_id = ?
+         ORDER BY o.name`
+        )
+        .all(userId) as IOrganization[];
+      return { success: true, data: rows };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  // ─── Teams ────────────────────────────────────────────────────────
+
+  /**
+   * Create team
+   */
+  createTeam(team: Omit<ITeam, 'id' | 'created_at' | 'updated_at'>): IQueryResult<ITeam> {
+    try {
+      const now = Math.floor(Date.now() / 1000);
+      const id = `team_${uuid()}`;
+
+      this.db.prepare('INSERT INTO teams (id, org_id, name, slug, description, settings, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)').run(id, team.org_id, team.name, team.slug, team.description ?? null, team.settings ?? null, now, now);
+
+      return {
+        success: true,
+        data: {
+          id,
+          ...team,
+          created_at: now,
+          updated_at: now,
+        },
+      };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Get team by ID
+   */
+  getTeam(teamId: string): IQueryResult<ITeam | null> {
+    try {
+      const row = this.db.prepare('SELECT * FROM teams WHERE id = ?').get(teamId) as ITeam | undefined;
+      return { success: true, data: row || null };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Get all teams in an organization
+   */
+  getOrganizationTeams(orgId: string): IQueryResult<ITeam[]> {
+    try {
+      const rows = this.db.prepare('SELECT * FROM teams WHERE org_id = ? ORDER BY name').all(orgId) as ITeam[];
+      return { success: true, data: rows };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Get all teams for a user
+   */
+  getUserTeams(userId: string): IQueryResult<ITeam[]> {
+    try {
+      const rows = this.db
+        .prepare(
+          `SELECT t.* FROM teams t
+         INNER JOIN team_members tm ON t.id = tm.team_id
+         WHERE tm.user_id = ?
+         ORDER BY t.name`
+        )
+        .all(userId) as ITeam[];
+      return { success: true, data: rows };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  // ─── Memberships ──────────────────────────────────────────────────
+
+  /**
+   * Add user to organization
+   */
+  addOrgMember(orgId: string, userId: string, role: MemberRole): IQueryResult<IOrgMember> {
+    try {
+      const now = Math.floor(Date.now() / 1000);
+      const id = `om_${uuid()}`;
+
+      this.db.prepare('INSERT INTO org_members (id, org_id, user_id, role, joined_at) VALUES (?, ?, ?, ?, ?)').run(id, orgId, userId, role, now);
+
+      return {
+        success: true,
+        data: { id, org_id: orgId, user_id: userId, role, joined_at: now },
+      };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Add user to team
+   */
+  addTeamMember(teamId: string, userId: string, role: MemberRole): IQueryResult<ITeamMember> {
+    try {
+      const now = Math.floor(Date.now() / 1000);
+      const id = `tm_${uuid()}`;
+
+      this.db.prepare('INSERT INTO team_members (id, team_id, user_id, role, joined_at) VALUES (?, ?, ?, ?, ?)').run(id, teamId, userId, role, now);
+
+      return {
+        success: true,
+        data: { id, team_id: teamId, user_id: userId, role, joined_at: now },
+      };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Get organization members
+   */
+  getOrgMembers(orgId: string): IQueryResult<Array<IOrgMember & { user: IUser }>> {
+    try {
+      const rows = this.db
+        .prepare(
+          `SELECT om.*, u.id as u_id, u.username, u.email, u.display_name, u.avatar_url, u.role as u_role
+         FROM org_members om
+         INNER JOIN users u ON om.user_id = u.id
+         WHERE om.org_id = ?
+         ORDER BY om.role, u.username`
+        )
+        .all(orgId) as any[];
+
+      const members = rows.map((row) => ({
+        id: row.id,
+        org_id: row.org_id,
+        user_id: row.user_id,
+        role: row.role as MemberRole,
+        joined_at: row.joined_at,
+        user: {
+          id: row.u_id,
+          username: row.username,
+          email: row.email,
+          display_name: row.display_name,
+          avatar_url: row.avatar_url,
+          role: row.u_role,
+        } as IUser,
+      }));
+
+      return { success: true, data: members };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Get team members
+   */
+  getTeamMembers(teamId: string): IQueryResult<Array<ITeamMember & { user: IUser }>> {
+    try {
+      const rows = this.db
+        .prepare(
+          `SELECT tm.*, u.id as u_id, u.username, u.email, u.display_name, u.avatar_url, u.role as u_role
+         FROM team_members tm
+         INNER JOIN users u ON tm.user_id = u.id
+         WHERE tm.team_id = ?
+         ORDER BY tm.role, u.username`
+        )
+        .all(teamId) as any[];
+
+      const members = rows.map((row) => ({
+        id: row.id,
+        team_id: row.team_id,
+        user_id: row.user_id,
+        role: row.role as MemberRole,
+        joined_at: row.joined_at,
+        user: {
+          id: row.u_id,
+          username: row.username,
+          email: row.email,
+          display_name: row.display_name,
+          avatar_url: row.avatar_url,
+          role: row.u_role,
+        } as IUser,
+      }));
+
+      return { success: true, data: members };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Remove user from organization (also removes from all org teams)
+   */
+  removeOrgMember(orgId: string, userId: string): IQueryResult<boolean> {
+    try {
+      // Get all team IDs in this org
+      const teams = this.db.prepare('SELECT id FROM teams WHERE org_id = ?').all(orgId) as { id: string }[];
+      const teamIds = teams.map((t) => t.id);
+
+      // Remove from all teams in org
+      if (teamIds.length > 0) {
+        this.db.prepare(`DELETE FROM team_members WHERE user_id = ? AND team_id IN (${teamIds.map(() => '?').join(',')})`).run(userId, ...teamIds);
+      }
+
+      // Remove from org
+      this.db.prepare('DELETE FROM org_members WHERE org_id = ? AND user_id = ?').run(orgId, userId);
+
+      return { success: true, data: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Remove user from team
+   */
+  removeTeamMember(teamId: string, userId: string): IQueryResult<boolean> {
+    try {
+      this.db.prepare('DELETE FROM team_members WHERE team_id = ? AND user_id = ?').run(teamId, userId);
+      return { success: true, data: true };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  // ─── Team/Org Directories ─────────────────────────────────────────
+
+  /**
+   * Get team directories
+   */
+  getTeamDirectories(teamId: string): IQueryResult<ITeamDirectories | null> {
+    try {
+      const row = this.db.prepare('SELECT * FROM team_directories WHERE team_id = ?').get(teamId) as ITeamDirectories | undefined;
+      return { success: true, data: row || null };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Upsert team directories
+   */
+  upsertTeamDirectories(dirs: Omit<ITeamDirectories, 'id' | 'created_at' | 'updated_at'>): IQueryResult<ITeamDirectories> {
+    try {
+      const now = Math.floor(Date.now() / 1000);
+      const id = `tdir_${dirs.team_id}`;
+
+      this.db
+        .prepare(
+          `INSERT INTO team_directories (id, team_id, base_dir, shared_skills_dir, shared_assistants_dir, shared_workspace_dir, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+         ON CONFLICT(team_id) DO UPDATE SET
+           base_dir = excluded.base_dir,
+           shared_skills_dir = excluded.shared_skills_dir,
+           shared_assistants_dir = excluded.shared_assistants_dir,
+           shared_workspace_dir = excluded.shared_workspace_dir,
+           updated_at = excluded.updated_at`
+        )
+        .run(id, dirs.team_id, dirs.base_dir, dirs.shared_skills_dir ?? null, dirs.shared_assistants_dir ?? null, dirs.shared_workspace_dir ?? null, now, now);
+
+      return {
+        success: true,
+        data: { id, ...dirs, created_at: now, updated_at: now },
+      };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Get organization directories
+   */
+  getOrgDirectories(orgId: string): IQueryResult<IOrgDirectories | null> {
+    try {
+      const row = this.db.prepare('SELECT * FROM org_directories WHERE org_id = ?').get(orgId) as IOrgDirectories | undefined;
+      return { success: true, data: row || null };
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
+   * Upsert organization directories
+   */
+  upsertOrgDirectories(dirs: Omit<IOrgDirectories, 'id' | 'created_at' | 'updated_at'>): IQueryResult<IOrgDirectories> {
+    try {
+      const now = Math.floor(Date.now() / 1000);
+      const id = `odir_${dirs.org_id}`;
+
+      this.db
+        .prepare(
+          `INSERT INTO org_directories (id, org_id, base_dir, shared_skills_dir, shared_assistants_dir, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?)
+         ON CONFLICT(org_id) DO UPDATE SET
+           base_dir = excluded.base_dir,
+           shared_skills_dir = excluded.shared_skills_dir,
+           shared_assistants_dir = excluded.shared_assistants_dir,
+           updated_at = excluded.updated_at`
+        )
+        .run(id, dirs.org_id, dirs.base_dir, dirs.shared_skills_dir ?? null, dirs.shared_assistants_dir ?? null, now, now);
+
+      return {
+        success: true,
+        data: { id, ...dirs, created_at: now, updated_at: now },
+      };
     } catch (error: any) {
       return { success: false, error: error.message };
     }

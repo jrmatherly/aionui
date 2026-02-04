@@ -49,6 +49,129 @@ export interface IUser {
 
 /**
  * ======================
+ * Organization & Team types (multi-tenant)
+ * ======================
+ */
+
+/**
+ * Organization - top-level tenant container
+ */
+export interface IOrganization {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  settings?: string; // JSON string of org settings
+  created_at: number;
+  updated_at: number;
+}
+
+/**
+ * Team - group within an organization
+ */
+export interface ITeam {
+  id: string;
+  org_id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  settings?: string; // JSON string of team settings
+  created_at: number;
+  updated_at: number;
+}
+
+/**
+ * Team/Org member role
+ */
+export type MemberRole = 'owner' | 'admin' | 'member' | 'viewer';
+
+/**
+ * Team membership
+ */
+export interface ITeamMember {
+  id: string;
+  team_id: string;
+  user_id: string;
+  role: MemberRole;
+  joined_at: number;
+}
+
+/**
+ * Organization membership
+ */
+export interface IOrgMember {
+  id: string;
+  org_id: string;
+  user_id: string;
+  role: MemberRole;
+  joined_at: number;
+}
+
+/**
+ * ======================
+ * Directory isolation types
+ * ======================
+ */
+
+/**
+ * Per-user directory paths
+ */
+export interface IUserDirectories {
+  id: string;
+  user_id: string;
+  base_dir: string;
+  cache_dir: string;
+  work_dir: string;
+  skills_dir?: string;
+  assistants_dir?: string;
+  created_at: number;
+  updated_at: number;
+}
+
+/**
+ * Team shared directories
+ */
+export interface ITeamDirectories {
+  id: string;
+  team_id: string;
+  base_dir: string;
+  shared_skills_dir?: string;
+  shared_assistants_dir?: string;
+  shared_workspace_dir?: string;
+  created_at: number;
+  updated_at: number;
+}
+
+/**
+ * Organization shared directories
+ */
+export interface IOrgDirectories {
+  id: string;
+  org_id: string;
+  base_dir: string;
+  shared_skills_dir?: string;
+  shared_assistants_dir?: string;
+  created_at: number;
+  updated_at: number;
+}
+
+/**
+ * Directory chain for resource resolution
+ * Resources are resolved in order: user -> team(s) -> org -> global
+ */
+export interface IDirectoryChain {
+  user?: IUserDirectories;
+  teams?: ITeamDirectories[];
+  organization?: IOrgDirectories;
+  global: {
+    skills_dir: string;
+    assistants_dir: string;
+    builtin_skills_dir: string;
+  };
+}
+
+/**
+ * ======================
  * Database query helper types
  * ======================
  */
