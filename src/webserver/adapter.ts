@@ -67,6 +67,10 @@ export function initWebAdapter(wss: WebSocketServer): void {
               ...data,
               data: { ...innerData, __webUiUserId: userId },
             };
+          } else if (innerData === undefined) {
+            // No-argument calls (void params): create data object with userId.
+            // Providers receive data.data, so we must populate it.
+            enriched = { ...data, data: { __webUiUserId: userId } };
           } else {
             // Primitive payloads (e.g. storage key strings): preserve the original
             // value and attach userId at the outer wrapper level instead.
