@@ -286,6 +286,22 @@ This project uses **Drift Detect** and **Serena** for enhanced AI-assisted devel
 - **Data boundaries** — `.drift/boundaries/rules.json` enforces auth data access rules
 - **Env variable tracking** — `drift env secrets` audits sensitive variable access (7 secrets tracked)
 
+### Serena MCP Tool Parameters
+
+Use these exact parameter names when calling Serena tools to avoid validation errors:
+
+| Tool                   | Required Parameter      | Value                                  | Notes                                                                    |
+| ---------------------- | ----------------------- | -------------------------------------- | ------------------------------------------------------------------------ |
+| `activate_project`     | `project`               | `"aionui"`                             | Project name from `.serena/project.yml`, NOT a filesystem path           |
+| `read_memory`          | `memory_file_name`      | e.g. `"project-architecture"`          | Memory name without `.md` extension                                      |
+| `list_memories`        | _(none)_                |                                        | No parameters required; must be called AFTER `activate_project` succeeds |
+| `find_symbol`          | `name_path`             | e.g. `"ClassName/method"`              | Supports substring matching                                              |
+| `get_symbols_overview` | `relative_path`         | e.g. `"src/process/database/index.ts"` | Path relative to project root                                            |
+| `replace_symbol_body`  | `name_path`, `new_body` |                                        | Use for editing entire symbol definitions                                |
+| `search_for_pattern`   | `pattern`               | regex string                           | Optional `relative_path` to restrict scope                               |
+
+**Sequencing:** Always call `activate_project` first and wait for success before calling `list_memories` or `read_memory`. Do not batch them in parallel.
+
 Key commands:
 
 ```bash
