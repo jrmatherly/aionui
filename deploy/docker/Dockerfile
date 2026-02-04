@@ -87,7 +87,59 @@ RUN echo "=== Build verification ===" && \
     echo "=== Verification complete ==="
 
 # -----------------------------------------------------------------------------
-# Stage 2: Runtime
+# Stage 2: CLI Installer (Multi-Agent Mode)
+# Installs optional CLI tools for multi-agent orchestration.
+# Each CLI is gated by a build ARG (default: false).
+# Uses the builder stage's Node.js + npm to install npm-based CLIs.
+# -----------------------------------------------------------------------------
+FROM builder AS cli-installer
+
+# Build ARGs for each CLI tool (set to 'true' to install)
+ARG INSTALL_CLAUDE_CODE=false
+ARG INSTALL_QWEN_CODE=false
+ARG INSTALL_CODEX=false
+ARG INSTALL_IFLOW=false
+ARG INSTALL_AUGGIE=false
+ARG INSTALL_COPILOT=false
+ARG INSTALL_QODER=false
+ARG INSTALL_OPENCODE=false
+
+# Install each CLI tool globally if its ARG is set to 'true'
+RUN if [ "$INSTALL_CLAUDE_CODE" = "true" ]; then \
+        echo "📦 Installing Claude Code CLI..." && \
+        npm install -g @anthropic-ai/claude-code; \
+    fi
+RUN if [ "$INSTALL_QWEN_CODE" = "true" ]; then \
+        echo "📦 Installing Qwen Code CLI..." && \
+        npm install -g @qwen-code/qwen-code; \
+    fi
+RUN if [ "$INSTALL_CODEX" = "true" ]; then \
+        echo "📦 Installing OpenAI Codex CLI..." && \
+        npm install -g @openai/codex; \
+    fi
+RUN if [ "$INSTALL_IFLOW" = "true" ]; then \
+        echo "📦 Installing iFlow CLI..." && \
+        npm install -g @iflow-ai/iflow-cli; \
+    fi
+RUN if [ "$INSTALL_AUGGIE" = "true" ]; then \
+        echo "📦 Installing Auggie CLI..." && \
+        npm install -g @augmentcode/auggie; \
+    fi
+RUN if [ "$INSTALL_COPILOT" = "true" ]; then \
+        echo "📦 Installing GitHub Copilot CLI..." && \
+        npm install -g @github/copilot; \
+    fi
+RUN if [ "$INSTALL_QODER" = "true" ]; then \
+        echo "📦 Installing Qoder CLI..." && \
+        npm install -g @qoder-ai/qodercli; \
+    fi
+RUN if [ "$INSTALL_OPENCODE" = "true" ]; then \
+        echo "📦 Installing OpenCode CLI..." && \
+        npm install -g opencode-ai; \
+    fi
+
+# -----------------------------------------------------------------------------
+# Stage 3: Runtime
 # Minimal image with only runtime dependencies
 # -----------------------------------------------------------------------------
 FROM debian:bookworm-slim AS runtime
@@ -96,7 +148,7 @@ FROM debian:bookworm-slim AS runtime
 LABEL org.opencontainers.image.source="https://github.com/jrmatherly/aionui" \
     org.opencontainers.image.title="AionUI" \
     org.opencontainers.image.description="AionUI WebUI Server - Transform CLI AI agents into a modern chat interface" \
-    org.opencontainers.image.version="1.8.1" \
+    org.opencontainers.image.version="1.8.2" \
     org.opencontainers.image.licenses="Apache-2.0"
 
 # Install Electron runtime dependencies and Xvfb for headless operation
@@ -131,6 +183,64 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
+
+# -----------------------------------------------------------------------------
+# Multi-Agent CLI: Copy Node.js runtime + installed CLIs from cli-installer
+# The debian:bookworm-slim base has no Node.js, so we copy the binary and
+# global npm packages from the cli-installer stage when any CLI is enabled.
+# Set INSTALL_CLI_NODE=true (auto or manual) to gate this copy.
+# -----------------------------------------------------------------------------
+ARG INSTALL_CLAUDE_CODE=false
+ARG INSTALL_QWEN_CODE=false
+ARG INSTALL_CODEX=false
+ARG INSTALL_IFLOW=false
+ARG INSTALL_AUGGIE=false
+ARG INSTALL_COPILOT=false
+ARG INSTALL_QODER=false
+ARG INSTALL_OPENCODE=false
+
+# Meta-arg: set to 'true' if ANY CLI is enabled (gates Node.js copy)
+ARG INSTALL_CLI_NODE=false
+
+# Copy Node.js binary from builder (needed to run npm-based CLIs)
+RUN if [ "$INSTALL_CLI_NODE" = "true" ] || \
+       [ "$INSTALL_CLAUDE_CODE" = "true" ] || \
+       [ "$INSTALL_QWEN_CODE" = "true" ] || \
+       [ "$INSTALL_CODEX" = "true" ] || \
+       [ "$INSTALL_IFLOW" = "true" ] || \
+       [ "$INSTALL_AUGGIE" = "true" ] || \
+       [ "$INSTALL_COPILOT" = "true" ] || \
+       [ "$INSTALL_QODER" = "true" ] || \
+       [ "$INSTALL_OPENCODE" = "true" ]; then \
+        echo "🔧 CLI tools enabled — Node.js runtime will be copied"; \
+    fi
+
+# Conditionally copy node binary and global npm packages
+COPY --from=cli-installer /usr/local/bin/node /usr/local/bin/node.cli
+COPY --from=cli-installer /usr/local/lib/node_modules /usr/local/lib/node_modules.cli
+
+# Move CLI assets into place only if any CLI is enabled; otherwise remove them
+RUN if [ "$INSTALL_CLI_NODE" = "true" ] || \
+       [ "$INSTALL_CLAUDE_CODE" = "true" ] || \
+       [ "$INSTALL_QWEN_CODE" = "true" ] || \
+       [ "$INSTALL_CODEX" = "true" ] || \
+       [ "$INSTALL_IFLOW" = "true" ] || \
+       [ "$INSTALL_AUGGIE" = "true" ] || \
+       [ "$INSTALL_COPILOT" = "true" ] || \
+       [ "$INSTALL_QODER" = "true" ] || \
+       [ "$INSTALL_OPENCODE" = "true" ]; then \
+        mv /usr/local/bin/node.cli /usr/local/bin/node && \
+        mv /usr/local/lib/node_modules.cli /usr/local/lib/node_modules && \
+        ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && \
+        echo "✅ Node.js and CLI tools installed in runtime"; \
+    else \
+        rm -f /usr/local/bin/node.cli && \
+        rm -rf /usr/local/lib/node_modules.cli && \
+        echo "ℹ️  No CLI tools requested — skipping Node.js copy"; \
+    fi
+
+# Add global npm bin directory to PATH (for CLI executables)
+ENV PATH="/usr/local/lib/node_modules/.bin:${PATH}"
 
 # Create non-root user for security
 RUN useradd --create-home --shell /bin/bash --uid 1000 aionui

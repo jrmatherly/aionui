@@ -30,6 +30,15 @@ services:
         NODE_VERSION: ${NODE_VERSION:-22.22.0}
         NPM_VERSION: ${NPM_VERSION:-11.8.0}
         TARGETARCH: ${TARGETARCH:-arm64}
+        # Multi-Agent CLI tools (set to 'true' to include, requires rebuild)
+        INSTALL_CLAUDE_CODE: ${INSTALL_CLAUDE_CODE:-false}
+        INSTALL_QWEN_CODE: ${INSTALL_QWEN_CODE:-false}
+        INSTALL_CODEX: ${INSTALL_CODEX:-false}
+        INSTALL_IFLOW: ${INSTALL_IFLOW:-false}
+        INSTALL_AUGGIE: ${INSTALL_AUGGIE:-false}
+        INSTALL_COPILOT: ${INSTALL_COPILOT:-false}
+        INSTALL_QODER: ${INSTALL_QODER:-false}
+        INSTALL_OPENCODE: ${INSTALL_OPENCODE:-false}
     container_name: aionui
     restart: unless-stopped
 
@@ -68,6 +77,12 @@ services:
       - AIONUI_WEBSITE_URL=${AIONUI_WEBSITE_URL:-}
       - AIONUI_CONTACT_URL=${AIONUI_CONTACT_URL:-}
       - AIONUI_FEEDBACK_URL=${AIONUI_FEEDBACK_URL:-}
+      # Multi-Agent CLI API Keys (optional, for env-based auth)
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - DASHSCOPE_API_KEY=${DASHSCOPE_API_KEY:-}
+      - MOONSHOT_API_KEY=${MOONSHOT_API_KEY:-}
+      - FACTORY_API_KEY=${FACTORY_API_KEY:-}
 
     # Persistent storage
     volumes:
@@ -77,6 +92,10 @@ services:
       - ./group-mappings.json:/etc/aionui/group-mappings.json:ro
       # Optional: Mount custom skills (read-only)
       # - ./custom-skills:/app/resources/skills:ro
+      # Optional: Mount CLI auth/config for OAuth-based CLIs (multi-agent mode)
+      # - ${HOME}/.claude:/home/aionui/.claude:ro
+      # - ${HOME}/.copilot:/home/aionui/.copilot:ro
+      # - ${HOME}/.auggie:/home/aionui/.auggie:ro
 
     # Shared memory for Chromium (prevents crashes)
     shm_size: '2gb'

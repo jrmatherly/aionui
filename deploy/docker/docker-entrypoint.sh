@@ -91,6 +91,23 @@ cleanup() {
 trap cleanup SIGTERM SIGINT SIGQUIT
 
 # -----------------------------------------------------------------------------
+# Detect Available CLI Tools (Multi-Agent Mode)
+# -----------------------------------------------------------------------------
+echo "🔍 Detecting Multi-Agent CLI tools..."
+CLI_FOUND=0
+for cli in claude qwen codex iflow auggie copilot qodercli opencode kimi goose droid; do
+    if command -v "$cli" &> /dev/null; then
+        echo "   ✅ $cli found: $(command -v "$cli")"
+        CLI_FOUND=$((CLI_FOUND + 1))
+    fi
+done
+if [ "$CLI_FOUND" -eq 0 ]; then
+    echo "   ℹ️  No CLI tools detected. Multi-Agent mode will use built-in Gemini only."
+    echo "   💡 Rebuild with --build-arg INSTALL_CLAUDE_CODE=true to add CLI tools."
+fi
+echo ""
+
+# -----------------------------------------------------------------------------
 # Start AionUI
 # -----------------------------------------------------------------------------
 echo ""
