@@ -54,6 +54,16 @@ typings/
 # Output of 'npm pack'
 *.tgz
 
+# Distribution files
+*.zip
+*.dmg
+*.exe
+*.rpm
+*.deb
+*.pkg
+*.AppImage
+*.msi
+
 # Yarn Integrity file
 .yarn-integrity
 

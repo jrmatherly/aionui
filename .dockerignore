@@ -82,6 +82,8 @@ deploy/docker/group-mappings.json
 .DS_Store
 *.dmg
 *.icns
+*.pkg
+*.AppImage
 
 # -----------------------------------------------------------------------------
 # Windows
