@@ -7,7 +7,7 @@
  */
 
 import { ensureDirectory, getDataPath } from '@process/utils';
-import bcrypt from 'bcryptjs';
+import { hash } from 'bcrypt-ts';
 import type Database from 'better-sqlite3';
 import BetterSqlite3 from 'better-sqlite3';
 import crypto from 'crypto';
@@ -32,16 +32,8 @@ const log = {
   highlight: (msg: string) => console.log(`${colors.cyan}${colors.bright}${msg}${colors.reset}`),
 };
 
-const hashPasswordAsync = (password: string, saltRounds: number): Promise<string> =>
-  new Promise((resolve, reject) => {
-    bcrypt.hash(password, saltRounds, (error, hash) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-      resolve(hash);
-    });
-  });
+// bcrypt-ts provides native Promise API
+const hashPasswordAsync = (password: string, saltRounds: number): Promise<string> => hash(password, saltRounds);
 
 // Hash password using bcrypt
 async function hashPassword(password: string): Promise<string> {

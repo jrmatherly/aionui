@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import bcrypt from 'bcryptjs';
+import { compare, hash } from 'bcrypt-ts';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import { AUTH_CONFIG } from '../../config/constants';
@@ -42,27 +42,10 @@ interface UserCredentials {
   createdAt: number;
 }
 
-const hashPasswordAsync = (password: string, saltRounds: number): Promise<string> =>
-  new Promise((resolve, reject) => {
-    bcrypt.hash(password, saltRounds, (error, hash) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-      resolve(hash);
-    });
-  });
+// bcrypt-ts provides native Promise API, no callback wrappers needed
+const hashPasswordAsync = (password: string, saltRounds: number): Promise<string> => hash(password, saltRounds);
 
-const comparePasswordAsync = (password: string, hash: string): Promise<boolean> =>
-  new Promise((resolve, reject) => {
-    bcrypt.compare(password, hash, (error, same) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-      resolve(same);
-    });
-  });
+const comparePasswordAsync = (password: string, hashValue: string): Promise<boolean> => compare(password, hashValue);
 
 /**
  * Get database instance lazily to avoid circular dependency

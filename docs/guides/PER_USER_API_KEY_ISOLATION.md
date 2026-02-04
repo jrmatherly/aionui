@@ -8,42 +8,41 @@ In multi-user deployments, each user can store their own API keys for various AI
 
 ## Architecture
 
-```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                              FRONTEND (Renderer)                             │
+│                              FRONTEND (Renderer)                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  ┌─────────────────────┐    ┌─────────────────────┐                         │
 │  │      User A         │    │      User B         │                         │
 │  │  (userId: user_a)   │    │  (userId: user_b)   │                         │
 │  └─────────┬───────────┘    └─────────┬───────────┘                         │
-│            │                          │                                      │
+│            │                          │                                     │
 │            │ Starts ACP               │ Starts ACP                          │
 │            │ Conversation             │ Conversation                        │
-│            ▼                          ▼                                      │
+│            ▼                          ▼                                     │
 │  ┌─────────────────────────────────────────────────┐                        │
-│  │         WebSocket Adapter                        │                        │
+│  │         WebSocket Adapter                       │                        │
 │  │  Injects __webUiUserId into IPC requests        │                        │
 │  └─────────────────────────────────────────────────┘                        │
-│                              │                                               │
-└──────────────────────────────┼───────────────────────────────────────────────┘
+│                              │                                              │
+└──────────────────────────────┼──────────────────────────────────────────────┘
                                │ IPC Bridge
                                ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                              MAIN PROCESS                                    │
+│                              MAIN PROCESS                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
+│                                                                             │
 │  ┌─────────────────────────────────────────────────┐                        │
-│  │         conversationBridge.ts                    │                        │
-│  │  • Extracts __webUiUserId from IPC request      │                        │
+│  │         conversationBridge.ts                   │                        │
+│  │  • Extracts__webUiUserId from IPC request       │                        │
 │  │  • Stores userId in conversations.user_id       │                        │
 │  └─────────────────────────────────────────────────┘                        │
-│                              │                                               │
-│                              ▼                                               │
+│                              │                                              │
+│                              ▼                                              │
 │  ┌─────────────────────────────────────────────────┐                        │
-│  │              SQLite Database                     │                        │
+│  │              SQLite Database                    │                        │
 │  │  ┌─────────────────────────────────────────┐    │                        │
-│  │  │ conversations                            │    │                        │
+│  │  │ conversations                           │    │                        │
 │  │  │  • id: "conv_123"                       │    │                        │
 │  │  │  • user_id: "user_a" ◄─── stored here   │    │                        │
 │  │  │  • type: "acp"                          │    │                        │
@@ -55,9 +54,8 @@ In multi-user deployments, each user can store their own API keys for various AI
 │  │  │  • encrypted_key: [AES-256-GCM]         │    │                        │
 │  │  └─────────────────────────────────────────┘    │                        │
 │  └─────────────────────────────────────────────────┘                        │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
-```
 
 ## Key Injection Flow
 
@@ -65,7 +63,7 @@ When a user sends a message to their CLI agent conversation:
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│  1. Message arrives for conversation "conv_123"                              │
+│  1. Message arrives for conversation "conv_123"                             │
 └────────────────────────────────────┬────────────────────────────────────────┘
                                      │
                                      ▼
@@ -105,18 +103,18 @@ When a user sends a message to their CLI agent conversation:
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │  7. CLI Process spawned with USER-SPECIFIC environment                      │
-│                                                                              │
+│                                                                             │
 │     spawn("claude", args, {                                                 │
 │       env: {                                                                │
 │         ...process.env,           // Container defaults                     │
 │         ...shellEnv,              // Shell environment (PATH, etc.)         │
-│         ...userApiKeys,           // ◄─── User A's decrypted keys          │
+│         ...userApiKeys,           // ◄─── User A's decrypted keys           │
 │         ...customEnv,             // Custom overrides                       │
 │       }                                                                     │
 │     })                                                                      │
-│                                                                              │
+│                                                                             │
 │     ANTHROPIC_API_KEY = "sk-ant-api03-..." (User A's key)                   │
-│                                                                              │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
