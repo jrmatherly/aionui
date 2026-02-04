@@ -51,8 +51,10 @@ export function initWebAdapter(wss: WebSocketServer): void {
       let enriched = data;
 
       if (userId && typeof data === 'object' && data !== null) {
-        // Bridge protocol: enrich the inner `data` field where providers read from
-        if ('id' in data && 'data' in data) {
+        // Bridge protocol detection: invoke payloads have an `id` field.
+        // The `data` key may be absent when invoke() is called with no arguments
+        // (JSON.stringify omits undefined values), so we check for `id` only.
+        if ('id' in data) {
           const innerData = data.data;
           enriched = {
             ...data,

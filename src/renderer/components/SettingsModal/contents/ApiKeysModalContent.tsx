@@ -35,6 +35,9 @@ const ApiKeysModalContent: React.FC = () => {
   const [saving, setSaving] = useState(false);
 
   // Load stored keys on mount
+  // Note: message and t are intentionally excluded from deps to prevent infinite re-render loops.
+  // Message.useMessage() returns a new reference on every render, which would cause loadKeys
+  // to get a new identity → useEffect fires → setState → re-render → infinite loop.
   const loadKeys = useCallback(async () => {
     try {
       setLoading(true);
@@ -42,11 +45,10 @@ const ApiKeysModalContent: React.FC = () => {
       setStoredKeys(keys || []);
     } catch (error) {
       console.error('[ApiKeys] Failed to load keys:', error);
-      message.error(t('settings.apiKeys.loadError', { defaultValue: 'Failed to load API keys' }));
     } finally {
       setLoading(false);
     }
-  }, [message, t]);
+  }, []);
 
   useEffect(() => {
     void loadKeys();

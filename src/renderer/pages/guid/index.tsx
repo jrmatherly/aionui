@@ -197,14 +197,23 @@ const Guid: React.FC = () => {
   const localeKey = resolveLocaleKey(i18n.language);
   const branding = useBranding();
 
-  // Open external link
-  const openLink = useCallback(async (url: string) => {
-    try {
-      await ipcBridge.shell.openExternal.invoke(url);
-    } catch (error) {
-      console.error('Failed to open external link:', error);
-    }
-  }, []);
+  // Open external link — use window.open in web mode (shell.openExternal calls xdg-open on server)
+  const isElectron = typeof (window as any).electronAPI !== 'undefined';
+  const openLink = useCallback(
+    async (url: string) => {
+      try {
+        if (isElectron) {
+          await ipcBridge.shell.openExternal.invoke(url);
+        } else {
+          window.open(url, '_blank', 'noopener,noreferrer');
+        }
+      } catch (error) {
+        console.error('Failed to open external link:', error);
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
+    },
+    [isElectron]
+  );
   const location = useLocation();
   const [input, setInput] = useState('');
   const [mentionQuery, setMentionQuery] = useState<string | null>(null);
