@@ -29,6 +29,7 @@ const DEFAULTS: BrandingConfig = {
   },
   features: {
     allowClaudeYolo: false,
+    allowGeminiYolo: false,
   },
 };
 

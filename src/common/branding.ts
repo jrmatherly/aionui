@@ -34,6 +34,8 @@ export interface BrandingDocsUrls {
 export interface BrandingFeatureFlags {
   /** Allow users to toggle Claude YOLO (skip permissions) mode in Tools settings */
   allowClaudeYolo: boolean;
+  /** Allow users to toggle Gemini YOLO (auto allow) mode in Gemini settings */
+  allowGeminiYolo: boolean;
 }
 
 export interface BrandingConfig {
@@ -124,6 +126,9 @@ export function getBrandingConfig(): BrandingConfig {
       // ALLOW_CLAUDE_YOLO=true enables the "Claude YOLO (Skip Permissions)" toggle in Tools settings.
       // Hidden by default for safety — only expose when explicitly enabled by the administrator.
       allowClaudeYolo: env('ALLOW_CLAUDE_YOLO', 'false').toLowerCase() === 'true',
+      // ALLOW_GEMINI_YOLO=true enables the "YOLO (Auto Allow)" toggle in Gemini settings.
+      // Hidden by default for safety — only expose when explicitly enabled by the administrator.
+      allowGeminiYolo: env('ALLOW_GEMINI_YOLO', 'false').toLowerCase() === 'true',
     },
   };
 }

@@ -12,6 +12,7 @@ import { Button, Divider, Form, Input, Message, Switch } from '@arco-design/web-
 import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useBranding } from '@/renderer/hooks/useBranding';
 import { useSettingsViewMode } from '../settingsViewContext';
 
 interface GeminiModalContentProps {
@@ -28,6 +29,7 @@ const GeminiModalContent: React.FC<GeminiModalContentProps> = ({ onRequestClose 
   const [userLoggedOut, setUserLoggedOut] = useState(false);
   const [currentAccountEmail, setCurrentAccountEmail] = useState<string | null>(null);
   const [message, messageContext] = Message.useMessage();
+  const branding = useBranding();
   const viewMode = useSettingsViewMode();
   const isPageMode = viewMode === 'page';
 
@@ -227,17 +229,20 @@ const GeminiModalContent: React.FC<GeminiModalContentProps> = ({ onRequestClose 
                 <Input className='aion-input' placeholder={t('settings.googleCloudProjectPlaceholder')} />
               </Form.Item>
 
-              <Form.Item label={t('settings.yoloMode')} field='yoloMode' layout='horizontal'>
-                {(value, form) => (
-                  <div
-                    className={classNames('flex justify-end', {
-                      'mt-12px w-full justify-start md:mt-0 md:w-auto md:justify-end': isPageMode,
-                    })}
-                  >
-                    <Switch checked={value.yoloMode} onChange={(checked) => form.setFieldValue('yoloMode', checked)} />
-                  </div>
-                )}
-              </Form.Item>
+              {/* YOLO toggle — only visible when ALLOW_GEMINI_YOLO=true */}
+              {branding.features?.allowGeminiYolo && (
+                <Form.Item label={t('settings.yoloMode')} field='yoloMode' layout='horizontal'>
+                  {(value, form) => (
+                    <div
+                      className={classNames('flex justify-end', {
+                        'mt-12px w-full justify-start md:mt-0 md:w-auto md:justify-end': isPageMode,
+                      })}
+                    >
+                      <Switch checked={value.yoloMode} onChange={(checked) => form.setFieldValue('yoloMode', checked)} />
+                    </div>
+                  )}
+                </Form.Item>
+              )}
             </Form>
           </div>
         </div>
