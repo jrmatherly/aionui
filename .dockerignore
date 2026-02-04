@@ -17,6 +17,7 @@ out/
 dist/
 .webpack/
 *.tsbuildinfo
+${env.ELECTRON_CACHE}/
 
 # -----------------------------------------------------------------------------
 # Development files

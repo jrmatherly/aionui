@@ -63,6 +63,7 @@ typings/
 *.pkg
 *.AppImage
 *.msi
+${env.ELECTRON_CACHE}/
 
 # Yarn Integrity file
 .yarn-integrity
