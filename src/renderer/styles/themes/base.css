@@ -366,6 +366,395 @@ body,
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Card & Panel Elevation System
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Base card with subtle elevation */
+.card-elevated {
+  background: var(--card-bg, var(--bg-1));
+  border: 1px solid var(--card-border, var(--border-base));
+  border-radius: 16px;
+  box-shadow: var(--card-shadow, none);
+  transition: all 0.2s ease;
+}
+
+.card-elevated:hover {
+  background: var(--card-hover-bg, var(--bg-2));
+  border-color: var(--card-hover-border, var(--border-base));
+}
+
+/* Higher elevation card */
+.card-elevated-lg {
+  background: var(--card-bg, var(--bg-1));
+  border: 1px solid var(--card-border, var(--border-base));
+  border-radius: 20px;
+  box-shadow: var(--card-shadow-lg, none);
+}
+
+/* Interactive card (clickable) */
+.card-interactive {
+  background: var(--card-bg, var(--bg-1));
+  border: 1px solid var(--card-border, var(--border-base));
+  border-radius: 12px;
+  box-shadow: var(--card-shadow, none);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.card-interactive:hover {
+  background: var(--card-hover-bg, var(--bg-2));
+  border-color: var(--card-hover-border, var(--border-base));
+  transform: translateY(-1px);
+  box-shadow: var(--card-shadow-lg, none);
+}
+
+.card-interactive:active {
+  transform: translateY(0);
+  box-shadow: var(--card-shadow, none);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Form Input Enhancements
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Enhanced input styling for dark mode */
+[data-theme='dark'] .arco-input,
+[data-theme='dark'] .arco-textarea,
+[data-theme='dark'] .arco-select-view,
+[data-theme='dark'] .arco-input-inner-wrapper {
+  background: var(--input-bg, rgba(255, 255, 255, 0.04)) !important;
+  border-color: var(--input-border, rgba(255, 255, 255, 0.08)) !important;
+  transition: all 0.2s ease !important;
+}
+
+[data-theme='dark'] .arco-input:hover,
+[data-theme='dark'] .arco-textarea:hover,
+[data-theme='dark'] .arco-select-view:hover,
+[data-theme='dark'] .arco-input-inner-wrapper:hover {
+  border-color: var(--input-border-hover, rgba(99, 102, 241, 0.4)) !important;
+}
+
+[data-theme='dark'] .arco-input:focus,
+[data-theme='dark'] .arco-input-focus,
+[data-theme='dark'] .arco-textarea:focus,
+[data-theme='dark'] .arco-select-view-focus {
+  border-color: var(--input-border-focus, rgba(99, 102, 241, 0.6)) !important;
+  box-shadow: 0 0 0 3px var(--input-focus-ring, rgba(99, 102, 241, 0.15)) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Button Hierarchy System
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Primary button enhancement */
+[data-theme='dark'] .arco-btn-primary {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25) !important;
+  transition: all 0.2s ease !important;
+}
+
+[data-theme='dark'] .arco-btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%) !important;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35) !important;
+  transform: translateY(-1px);
+}
+
+[data-theme='dark'] .arco-btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25) !important;
+}
+
+/* Secondary/outline button */
+[data-theme='dark'] .arco-btn-secondary,
+[data-theme='dark'] .arco-btn-outline {
+  background: transparent !important;
+  border: 1px solid var(--border-visible, rgba(255, 255, 255, 0.12)) !important;
+  color: var(--text-primary) !important;
+  transition: all 0.2s ease !important;
+}
+
+[data-theme='dark'] .arco-btn-secondary:hover:not(:disabled),
+[data-theme='dark'] .arco-btn-outline:hover:not(:disabled) {
+  background: var(--bg-hover) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Sidebar Active State Enhancement
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Enhanced active state for sidebar items */
+[data-theme='dark'] .chat-history__item.active,
+[data-theme='dark'] .settings-sider__item.active,
+[data-theme='dark'] .conversation-item.active {
+  background: var(--sidebar-active-bg, rgba(99, 102, 241, 0.12)) !important;
+  border-left: 3px solid var(--sidebar-active-border, #6366f1) !important;
+  margin-left: -3px;
+}
+
+/* Section headers in sidebar */
+[data-theme='dark'] .chat-history__section {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-disabled);
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Toggle Switch Enhancement
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Enabled toggle - use brand gradient */
+[data-theme='dark'] .arco-switch-checked {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+}
+
+[data-theme='dark'] .arco-switch-checked:hover {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%) !important;
+}
+
+/* Disabled toggle - muted background */
+[data-theme='dark'] .arco-switch:not(.arco-switch-checked) {
+  background: var(--bg-4) !important;
+}
+
+/* Focus ring for accessibility */
+[data-theme='dark'] .arco-switch:focus-visible {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Modal & Dialog Enhancements
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Enhanced modal backdrop */
+[data-theme='dark'] .arco-modal-mask {
+  background: rgba(0, 0, 0, 0.75) !important;
+  backdrop-filter: blur(4px);
+}
+
+/* Modal content */
+[data-theme='dark'] .arco-modal-content {
+  background: var(--bg-1) !important;
+  border: 1px solid var(--card-border, rgba(255, 255, 255, 0.06)) !important;
+  box-shadow: var(--card-shadow-lg) !important;
+}
+
+/* Modal title enhancement */
+[data-theme='dark'] .arco-modal-title {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Drawer Enhancement
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Drawer panel */
+[data-theme='dark'] .arco-drawer-content {
+  background: var(--bg-base) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Drawer header */
+[data-theme='dark'] .arco-drawer-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Drawer footer */
+[data-theme='dark'] .arco-drawer-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--bg-1);
+}
+
+/* Drawer title */
+[data-theme='dark'] .arco-drawer-title {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Table Enhancements
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Table header styling */
+[data-theme='dark'] .arco-table-th {
+  background: var(--bg-2) !important;
+  border-bottom: 1px solid var(--border-visible) !important;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-secondary) !important;
+}
+
+/* Table row hover */
+[data-theme='dark'] .arco-table-tr:hover .arco-table-td {
+  background: var(--bg-hover) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Empty State Enhancement
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.empty-state__icon {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+  opacity: 0.4;
+}
+
+.empty-state__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.empty-state__description {
+  font-size: 14px;
+  color: var(--text-secondary);
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Settings Page Card Enhancement
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Apply elevation to settings cards (bg-2 with border-radius) */
+[data-theme='dark'] .bg-2[class*='rd-'],
+[data-theme='dark'] .bg-2[class*='rounded-'],
+[data-theme='dark'] .bg-fill-2[class*='rd-'],
+[data-theme='dark'] .bg-fill-2[class*='rounded-'] {
+  border: 1px solid var(--card-border, rgba(255, 255, 255, 0.06));
+  box-shadow: var(--card-shadow, 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2));
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * List Item Cards Enhancement (Assistants, MCP Servers, etc.)
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* List items within settings panels - add subtle depth */
+[data-theme='dark'] .bg-fill-0[class*='rounded-'],
+[data-theme='dark'] .bg-fill-0.rounded-lg {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.2s ease;
+}
+
+[data-theme='dark'] .bg-fill-0[class*='rounded-']:hover,
+[data-theme='dark'] .bg-fill-0.rounded-lg:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* MCP Server Items - Enhanced styling */
+[data-theme='dark'] .space-y-12px > div[class*='rounded'] {
+  transition: all 0.2s ease;
+}
+
+[data-theme='dark'] .space-y-12px > div[class*='rounded']:hover {
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Tool List Enhancement (MCP tools expanded view)
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Tool function list items - add hover state and subtle separator */
+[data-theme='dark'] .tool-function-item,
+[data-theme='dark'] [class*='tool-list'] > div {
+  padding: 8px 12px;
+  margin: 2px 0;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+}
+
+[data-theme='dark'] .tool-function-item:hover,
+[data-theme='dark'] [class*='tool-list'] > div:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Chat input area enhancement */
+[data-theme='dark'] .guidInputCard,
+[data-theme='dark'] [class*='SendBox'] {
+  background: var(--bg-1) !important;
+  border: 1px solid var(--card-border, rgba(255, 255, 255, 0.06)) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--card-shadow, 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2)) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Collapse/Accordion Enhancement
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Collapse header styling */
+[data-theme='dark'] .arco-collapse-item-header {
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+[data-theme='dark'] .arco-collapse-item-header:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Collapse content area */
+[data-theme='dark'] .arco-collapse-item-content {
+  background: transparent;
+}
+
+/* Active collapse item indicator */
+[data-theme='dark'] .arco-collapse-item-active > .arco-collapse-item-header {
+  color: var(--text-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Typography Enhancements
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Page titles */
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+/* Section headers */
+.section-header {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+/* Small caps label style */
+.label-caps {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+
 /* Custom scrollbar styles */
 ::-webkit-scrollbar {
   width: 6px;
@@ -555,4 +944,59 @@ body,
 .arco-input,
 .arco-input-inner-wrapper {
   background-color: var(--fill-0) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Dropdown & Select Enhancement
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Dropdown menu styling */
+[data-theme='dark'] .arco-dropdown-menu,
+[data-theme='dark'] .arco-select-popup {
+  background: var(--bg-1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.4),
+    0 0 1px rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(12px);
+}
+
+/* Dropdown item hover */
+[data-theme='dark'] .arco-dropdown-menu-item:hover,
+[data-theme='dark'] .arco-select-option:hover {
+  background: rgba(99, 102, 241, 0.1) !important;
+}
+
+/* Dropdown item selected */
+[data-theme='dark'] .arco-select-option-selected {
+  background: rgba(99, 102, 241, 0.15) !important;
+  font-weight: 500;
+}
+
+/* Option group labels */
+[data-theme='dark'] .arco-select-group-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+  padding: 8px 12px 4px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Badge/Tag Enhancement
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Role badge (admin, user, etc.) */
+[data-theme='dark'] .arco-tag {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* Status badges with brand color */
+[data-theme='dark'] .arco-tag-purple,
+[data-theme='dark'] .arco-tag-arcoblue {
+  background: rgba(99, 102, 241, 0.15) !important;
+  color: #a5b4fc !important;
+  border: 1px solid rgba(99, 102, 241, 0.3) !important;
 }
