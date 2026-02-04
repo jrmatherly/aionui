@@ -61,6 +61,7 @@ services:
       - SCREEN_RESOLUTION=${SCREEN_RESOLUTION:-1024x768x24}
       # Security (set in .env for production)
       - JWT_SECRET=${JWT_SECRET}
+      - AIONUI_ADMIN_PASSWORD=${AIONUI_ADMIN_PASSWORD:-}
       # - AIONUI_HTTPS=${AIONUI_HTTPS:-false}
       # OIDC / EntraID SSO (optional)
       - OIDC_ENABLED=${OIDC_ENABLED:-false}

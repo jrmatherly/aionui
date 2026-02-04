@@ -122,6 +122,11 @@ function getServerIP(): string | null {
 /**
  * Initialize default admin account if no users exist
  *
+ * Uses AIONUI_ADMIN_PASSWORD env var if set, otherwise generates a random password.
+ * Only runs when the admin account has no valid password (first run or blank password).
+ * If the admin already has a password in the database, this is a no-op — the env var
+ * will NOT overwrite a previously set password on container restart.
+ *
  * @returns Initial credentials (only on first creation)
  */
 async function initializeDefaultAdmin(): Promise<{ username: string; password: string } | null> {
@@ -138,7 +143,10 @@ async function initializeDefaultAdmin(): Promise<{ username: string; password: s
     return null;
   }
 
-  const password = AuthService.generateRandomPassword();
+  // Use env var password if provided, otherwise generate a random one
+  const envPassword = process.env.AIONUI_ADMIN_PASSWORD?.trim();
+  const isEnvProvided = !!envPassword && envPassword.length > 0;
+  const password = isEnvProvided ? envPassword : AuthService.generateRandomPassword();
 
   try {
     const hashedPassword = await AuthService.hashPassword(password);
@@ -196,10 +204,15 @@ function displayInitialCredentials(credentials: { username: string; password: st
   console.log(`   QR URL: ${qrUrl}`);
 
   // Display traditional credentials as fallback
+  const isEnvPassword = !!process.env.AIONUI_ADMIN_PASSWORD?.trim();
   console.log('\n🔐 Or Use Initial Admin Credentials:');
   console.log(`   Username: ${credentials.username}`);
-  console.log(`   Password: ${credentials.password}`);
-  console.log('\n⚠️  Please change the password after first login!');
+  if (isEnvPassword) {
+    console.log('   Password: (set via AIONUI_ADMIN_PASSWORD)');
+  } else {
+    console.log(`   Password: ${credentials.password}`);
+    console.log('\n⚠️  Please change the password after first login!');
+  }
 
   console.log('='.repeat(70) + '\n');
 }
