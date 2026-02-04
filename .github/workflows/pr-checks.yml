@@ -13,7 +13,6 @@ permissions:
   contents: read
   pull-requests: write
   issues: write
-  id-token: write
 
 jobs:
   # Job 1: Check if PR links to an issue
@@ -103,7 +102,7 @@ jobs:
                 '### Why is this required?',
                 '',
                 'This helps us:',
-                '- Track all changes through our [Project Roadmap](https://github.com/orgs/iOfficeAI/projects/5)',
+                '- Track all changes through issues',
                 '- Maintain a clear history of issues and resolutions',
                 '- Ensure changes are properly reviewed and prioritized',
                 '',
@@ -132,7 +131,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup mise + tools
         uses: jdx/mise-action@v3
@@ -162,7 +161,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -220,7 +219,7 @@ jobs:
               '',
               '## PR Summary',
               '',
-              `Hello @${prAuthor}, I'm working on reviewing this pull request. Here's a quick summary:`,
+              `Hello @${prAuthor}, here's a quick summary of this pull request:`,
               '',
               '### Stats',
               '| Metric | Value |',
@@ -232,20 +231,8 @@ jobs:
               '### Files by Type',
               fileSummary,
               '',
-              '### Review Status',
-              '- Automated code review in progress...',
-              '',
               '---',
-              '**Using AI Review**',
-              '',
-              'You can request assistance at any point by creating a comment:',
-              '| Command | Description |',
-              '|---------|-------------|',
-              '| `@gemini-cli /review` | Request a code review |',
-              '| `@gemini-cli <question>` | Ask a question about this PR |',
-              '',
-              '---',
-              '*This is an automated summary. The detailed code review will follow shortly.*'
+              '*This is an automated summary.*'
             ].join('\n');
 
             await github.rest.issues.createComment({
@@ -256,18 +243,3 @@ jobs:
             });
 
             core.info('Posted PR summary.');
-
-  # Job 4: Trigger Gemini AI review
-  review:
-    name: AI Review
-    needs: [summary]
-    if: |
-      always() &&
-      (needs.summary.result == 'success' || needs.summary.result == 'skipped')
-    uses: "./.github/workflows/gemini-review.yml"
-    permissions:
-      contents: read
-      id-token: write
-      issues: write
-      pull-requests: write
-    secrets: inherit
