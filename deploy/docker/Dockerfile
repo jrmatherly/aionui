@@ -235,6 +235,24 @@ RUN if [ "$INSTALL_CLI_NODE" = "true" ] || \
         mv /usr/local/lib/node_modules.cli /usr/local/lib/node_modules && \
         ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && \
         ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx && \
+        # Create CLI tool symlinks (only if package exists)
+        # Paths verified via: npm view <package> bin --json
+        [ -f /usr/local/lib/node_modules/@anthropic-ai/claude-code/cli.js ] && \
+            ln -sf /usr/local/lib/node_modules/@anthropic-ai/claude-code/cli.js /usr/local/bin/claude || true && \
+        [ -f /usr/local/lib/node_modules/@qwen-code/qwen-code/cli.js ] && \
+            ln -sf /usr/local/lib/node_modules/@qwen-code/qwen-code/cli.js /usr/local/bin/qwen || true && \
+        [ -f /usr/local/lib/node_modules/@openai/codex/bin/codex.js ] && \
+            ln -sf /usr/local/lib/node_modules/@openai/codex/bin/codex.js /usr/local/bin/codex || true && \
+        [ -f /usr/local/lib/node_modules/@iflow-ai/iflow-cli/bundle/entry.js ] && \
+            ln -sf /usr/local/lib/node_modules/@iflow-ai/iflow-cli/bundle/entry.js /usr/local/bin/iflow || true && \
+        [ -f /usr/local/lib/node_modules/@augmentcode/auggie/augment.mjs ] && \
+            ln -sf /usr/local/lib/node_modules/@augmentcode/auggie/augment.mjs /usr/local/bin/auggie || true && \
+        [ -f /usr/local/lib/node_modules/@github/copilot/npm-loader.js ] && \
+            ln -sf /usr/local/lib/node_modules/@github/copilot/npm-loader.js /usr/local/bin/copilot || true && \
+        [ -f /usr/local/lib/node_modules/@qoder-ai/qodercli/bin/qodercli ] && \
+            ln -sf /usr/local/lib/node_modules/@qoder-ai/qodercli/bin/qodercli /usr/local/bin/qodercli || true && \
+        [ -f /usr/local/lib/node_modules/opencode-ai/bin/opencode ] && \
+            ln -sf /usr/local/lib/node_modules/opencode-ai/bin/opencode /usr/local/bin/opencode || true && \
         echo "✅ Node.js, npm, npx, and CLI tools installed in runtime"; \
     else \
         rm -f /usr/local/bin/node.cli && \
