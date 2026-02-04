@@ -4,14 +4,27 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { initUserApiKeyService } from '@/common/UserApiKeyService';
 import { logger } from '@office-ai/platform';
+import { getDatabase } from '@process/database';
 import { cronService } from '@process/services/cron/CronService';
+import { AuthService } from '@/webserver/auth/service/AuthService';
 import { initAllBridges } from './bridge';
 
 logger.config({ print: true });
 
 // Initialize all IPC bridges
 initAllBridges();
+
+// Initialize UserApiKeyService (requires database and JWT secret)
+try {
+  const db = getDatabase();
+  const jwtSecret = AuthService.getJwtSecret();
+  initUserApiKeyService(db.getRawDb(), jwtSecret);
+  console.log('[initBridge] UserApiKeyService initialized');
+} catch (error) {
+  console.error('[initBridge] Failed to initialize UserApiKeyService:', error);
+}
 
 // Initialize cron service (load jobs from database and start timers)
 void cronService.init().catch((error) => {

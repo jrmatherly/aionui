@@ -5,6 +5,7 @@
  */
 
 import type Database from 'better-sqlite3';
+import { migrate_v14_add_user_api_keys } from './migrations/v14_add_user_api_keys';
 
 /**
  * Migration script definition
@@ -547,9 +548,28 @@ const migration_v13: IMigration = {
 };
 
 /**
+ * Migration v13 -> v14: Add user_api_keys table for per-user API key storage
+ * Supports multi-user mode where each user can bring their own API keys
+ */
+const migration_v14: IMigration = {
+  version: 14,
+  name: 'Add user_api_keys table',
+  up: (db) => {
+    migrate_v14_add_user_api_keys(db);
+  },
+  down: (db) => {
+    db.exec(`
+      DROP INDEX IF EXISTS idx_user_api_keys_user_id;
+      DROP TABLE IF EXISTS user_api_keys;
+    `);
+    console.log('[Migration v14] Rolled back: Removed user_api_keys table');
+  },
+};
+
+/**
  * All migrations in order
  */
-export const ALL_MIGRATIONS: IMigration[] = [migration_v1, migration_v2, migration_v3, migration_v4, migration_v5, migration_v6, migration_v7, migration_v8, migration_v9, migration_v10, migration_v11, migration_v12, migration_v13];
+export const ALL_MIGRATIONS: IMigration[] = [migration_v1, migration_v2, migration_v3, migration_v4, migration_v5, migration_v6, migration_v7, migration_v8, migration_v9, migration_v10, migration_v11, migration_v12, migration_v13, migration_v14];
 
 /**
  * Get migrations needed to upgrade from one version to another

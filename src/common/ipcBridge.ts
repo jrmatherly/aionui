@@ -368,6 +368,13 @@ export const webui = {
   }>('webui.reset-password-result'),
 };
 
+// User API key management
+export const userApiKeys = {
+  set: bridge.buildProvider<void, { provider: string; apiKey: string; __webUiUserId?: string }>('userApiKeys.set'),
+  get: bridge.buildProvider<Array<{ provider: string; keyHint: string }>, { __webUiUserId?: string }>('userApiKeys.get'),
+  delete: bridge.buildProvider<boolean, { provider: string; __webUiUserId?: string }>('userApiKeys.delete'),
+};
+
 // Cron job management API
 export const cron = {
   // Query

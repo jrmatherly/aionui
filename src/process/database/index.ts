@@ -120,6 +120,14 @@ export class AionUIDatabase {
       .run(username, passwordHash, now, now, this.defaultUserId);
   }
   /**
+   * Get the underlying better-sqlite3 database instance.
+   * Used by services that need direct SQL access (e.g., UserApiKeyService).
+   */
+  getRawDb(): Database.Database {
+    return this.db;
+  }
+
+  /**
    * Close database connection
    */
   close(): void {

@@ -83,13 +83,30 @@ function loadShellEnvironment(): Record<string, string> {
 
 /**
  * Get enhanced environment variables by merging shell env with process.env.
- * Priority: process.env < shell env < customEnv
+ * Priority: process.env < shell env < userApiKeys < customEnv
+ *
+ * @param customEnv - Custom environment variable overrides
+ * @param userId - Optional user ID to load per-user API keys
  */
-export function getEnhancedEnv(customEnv?: Record<string, string>): Record<string, string> {
+export function getEnhancedEnv(customEnv?: Record<string, string>, userId?: string): Record<string, string> {
   const shellEnv = loadShellEnvironment();
+
+  // Get user-specific API keys if userId provided
+  let userApiKeys: Record<string, string> = {};
+  if (userId) {
+    try {
+      const { getUserApiKeyService } = require('@/common/UserApiKeyService');
+      const service = getUserApiKeyService();
+      userApiKeys = service.getEnvForUser(userId);
+    } catch (e) {
+      console.warn('[ACP] Failed to load user API keys:', e);
+    }
+  }
+
   return {
     ...process.env,
     ...shellEnv,
+    ...userApiKeys,
     ...customEnv,
   } as Record<string, string>;
 }
