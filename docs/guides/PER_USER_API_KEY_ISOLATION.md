@@ -8,7 +8,7 @@ In multi-user deployments, each user can store their own API keys for various AI
 
 ## Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                              FRONTEND (Renderer)                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
@@ -63,7 +63,7 @@ In multi-user deployments, each user can store their own API keys for various AI
 
 When a user sends a message to their CLI agent conversation:
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │  1. Message arrives for conversation "conv_123"                              │
 └────────────────────────────────────┬────────────────────────────────────────┘
@@ -141,7 +141,7 @@ This means:
 
 User API keys are encrypted using AES-256-GCM:
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │  Encryption Key Derivation                                                   │
 ├─────────────────────────────────────────────────────────────────────────────┤
