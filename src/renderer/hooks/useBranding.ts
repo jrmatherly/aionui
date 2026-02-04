@@ -1,6 +1,6 @@
 /**
- * @license
- * Copyright 2025 AionUi (aionui.com)
+ * @author Jason Matherly
+ * @modified 2026-02-04
  * SPDX-License-Identifier: Apache-2.0
  */
 
