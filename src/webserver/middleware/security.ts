@@ -41,7 +41,7 @@ export const apiRateLimiter = rateLimit({
     return `ip:${req.ip || req.socket.remoteAddress || 'unknown'}`;
   },
   // Disable IPv6 validation warning - we prefix keys with 'ip:' or 'user:' so raw IP isn't used as key
-  validate: { xForwardedForHeader: false },
+  validate: { keyGeneratorIpFallback: false },
 });
 
 /**
@@ -76,7 +76,7 @@ export const authenticatedActionLimiter = rateLimit({
     return `ip:${req.ip || req.socket.remoteAddress || 'unknown'}`;
   },
   // Disable IPv6 validation warning - we prefix keys with 'ip:' or 'user:' so raw IP isn't used as key
-  validate: { xForwardedForHeader: false },
+  validate: { keyGeneratorIpFallback: false },
 });
 
 /**
