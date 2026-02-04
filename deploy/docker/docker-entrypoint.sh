@@ -17,7 +17,11 @@ export DISPLAY=":${DISPLAY_NUM}"
 # -----------------------------------------------------------------------------
 # Start Xvfb (Virtual Framebuffer)
 # Electron requires a display server, even in headless mode
+# Clean up stale lockfile from previous crash/restart to prevent
+# "Server is already active for display N" errors
 # -----------------------------------------------------------------------------
+rm -f "/tmp/.X${DISPLAY_NUM}-lock" "/tmp/.X11-unix/X${DISPLAY_NUM}"
+
 echo "🖥️  Starting Xvfb on display :${DISPLAY_NUM}..."
 Xvfb ":${DISPLAY_NUM}" -screen 0 "${SCREEN_RESOLUTION}" -ac +extension GLX +render -noreset &
 XVFB_PID=$!

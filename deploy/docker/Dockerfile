@@ -50,7 +50,9 @@ COPY . .
 # electron-forge compiles webpack bundles (.webpack/) and rebuilds native
 # modules against Electron's Node ABI. Do NOT set CI=true — that would skip
 # native module rebuilding (rebuildConfig.onlyModules: [] in forge.config.ts).
+# Increase Node heap for webpack — default 2GB is insufficient for full rebuild.
 ARG TARGETARCH=arm64
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN npm exec electron-forge -- package --platform=linux --arch=${TARGETARCH}
 
 # Ensure .webpack output is at the expected location for electron-builder.
