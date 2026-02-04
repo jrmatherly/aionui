@@ -83,7 +83,7 @@ export class OpenAI2GeminiConverter implements ProtocolConverter<OpenAIChatCompl
 
   constructor(config: ConverterConfig = {}) {
     this.config = {
-      defaultModel: 'gemini-1.5-flash',
+      defaultModel: 'gemini-2.5-flash',
       ...config,
     };
   }

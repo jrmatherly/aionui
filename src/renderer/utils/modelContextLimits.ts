@@ -8,13 +8,15 @@
  * Known model context window size configurations
  */
 const MODEL_CONTEXT_LIMITS: Record<string, number> = {
-  // Gemini series
+  // Gemini series (current)
   'gemini-3-pro-preview': 1_048_576,
+  'gemini-3-flash-preview': 1_048_576,
   'gemini-3-pro-image-preview': 65_536,
   'gemini-2.5-pro': 1_048_576,
   'gemini-2.5-flash': 1_048_576,
   'gemini-2.5-flash-lite': 1_048_576,
   'gemini-2.5-flash-image': 32_768,
+  // Gemini series (legacy)
   'gemini-2.0-flash': 1_048_576,
   'gemini-2.0-flash-lite': 1_048_576,
   'gemini-1.5-pro': 2_097_152,
@@ -38,13 +40,13 @@ const MODEL_CONTEXT_LIMITS: Record<string, number> = {
   o3: 200_000,
   'o3-mini': 200_000,
 
-  // Claude series
-  'claude-opus-4.5': 200_000,
-  'claude-haiku-4.5': 200_000,
-  'claude-sonnet-4.5': 1_000_000,
-  'claude-opus-4.1': 200_000,
+  // Claude series (current - dated format)
+  'claude-opus-4-5': 200_000,
+  'claude-sonnet-4-5': 1_000_000,
+  'claude-haiku-4-5': 200_000,
+  // Claude series (legacy)
   'claude-opus-4': 200_000,
-  'claude-sonnet-4': 1_000_000,
+  'claude-sonnet-4': 200_000,
   'claude-3.7-sonnet': 200_000,
   'claude-3.5-haiku': 200_000,
   'claude-3-opus': 200_000,

@@ -34,7 +34,7 @@ export class GeminiRotatingClient extends RotatingApiClient<GoogleGenAI> {
     super(apiKeys, authType, createClient, options);
     this.config = config;
     this.converter = new OpenAI2GeminiConverter({
-      defaultModel: config.model || 'gemini-1.5-flash',
+      defaultModel: config.model || 'gemini-2.5-flash',
     });
   }
 
@@ -57,7 +57,7 @@ export class GeminiRotatingClient extends RotatingApiClient<GoogleGenAI> {
     return await this.executeWithRetry(async (client) => {
       // client is GoogleGenAI, we need client.models to get the content generator
       const model = await client.models.generateContent({
-        model: this.config.model || 'gemini-1.5-flash',
+        model: this.config.model || 'gemini-2.5-flash',
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
         ...config,
       });

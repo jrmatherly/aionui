@@ -14,11 +14,11 @@ const modelCapabilitiesCache = new Map<string, boolean | undefined>();
  */
 const CAPABILITY_PATTERNS: Record<ModelType, RegExp> = {
   text: /gpt|claude|gemini|qwen|llama|mistral|deepseek/i,
-  vision: /4o|claude-3|gemini-.*-pro|gemini-.*-flash|gemini-2\.0|qwen-vl|llava|vision/i,
-  function_calling: /gpt-4|claude-3|gemini|qwen|deepseek/i,
+  vision: /4o|claude-3|claude-.*-4|claude-opus|claude-sonnet|claude-haiku|gemini-.*-pro|gemini-.*-flash|gemini-2\.|gemini-3|qwen-vl|llava|vision/i,
+  function_calling: /gpt-4|claude-3|claude-.*-4|gemini|qwen|deepseek/i,
   image_generation: /flux|diffusion|stabilityai|sd-|dall|cogview|janus|midjourney|mj-|imagen/i,
   web_search: /search|perplexity/i,
-  reasoning: /o1-|reasoning|think/i,
+  reasoning: /o1-|o3|reasoning|think/i,
   embedding: /(?:^text-|embed|bge-|e5-|LLM2Vec|retrieval|uae-|gte-|jina-clip|jina-embeddings|voyage-)/i,
   rerank: /(?:rerank|re-rank|re-ranker|re-ranking|retrieval|retriever)/i,
   excludeFromPrimary: /dall-e|flux|stable-diffusion|midjourney|flash-image|image|embed|rerank/i, // Primary models to exclude
@@ -30,7 +30,7 @@ const CAPABILITY_PATTERNS: Record<ModelType, RegExp> = {
 const CAPABILITY_EXCLUSIONS: Record<ModelType, RegExp[]> = {
   text: [],
   vision: [/embed|rerank|dall-e|flux|stable-diffusion/i],
-  function_calling: [/aqa(?:-[\\w-]+)?/i, /imagen(?:-[\\w-]+)?/i, /o1-mini/i, /o1-preview/i, /gemini-1(?:\\.[\\w-]+)?/i, /dall-e/i, /embed/i, /rerank/i],
+  function_calling: [/aqa(?:-[\\w-]+)?/i, /imagen(?:-[\\w-]+)?/i, /o1-mini/i, /o1-preview/i, /o3-mini/i, /gemini-1(?:\\.[\\w-]+)?/i, /dall-e/i, /embed/i, /rerank/i],
   image_generation: [],
   web_search: [],
   reasoning: [],

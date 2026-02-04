@@ -36,7 +36,7 @@ export const getGeminiModeList = (options?: GeminiModeListOptions): GeminiModeOp
       label: 'Auto (Gemini 3)',
       value: 'auto', // Uses model router to auto-select gemini-3-pro-preview or gemini-2.5-flash
       description: descriptions.autoGemini3,
-      modelHint: 'gemini-3-pro-preview, gemini-2.5-flash',
+      modelHint: 'gemini-3-pro-preview, gemini-3-flash-preview',
     },
     {
       label: 'Auto (Gemini 2.5)',
@@ -55,6 +55,7 @@ export const getGeminiModeList = (options?: GeminiModeListOptions): GeminiModeOp
       // DEFAULT_GEMINI_FLASH_LITE_MODEL = 'gemini-2.5-flash-lite'
       subModels: [
         { label: 'gemini-3-pro-preview', value: 'gemini-3-pro-preview' },
+        { label: 'gemini-3-flash-preview', value: 'gemini-3-flash-preview' },
         { label: 'gemini-2.5-pro', value: 'gemini-2.5-pro' },
         { label: 'gemini-2.5-flash', value: 'gemini-2.5-flash' },
         { label: 'gemini-2.5-flash-lite', value: 'gemini-2.5-flash-lite' },

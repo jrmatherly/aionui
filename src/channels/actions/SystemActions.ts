@@ -62,7 +62,7 @@ export async function getTelegramDefaultModel(): Promise<TProviderWithModel> {
     name: 'Gemini',
     baseUrl: 'https://generativelanguage.googleapis.com/v1beta',
     apiKey: '',
-    useModel: 'gemini-2.0-flash',
+    useModel: 'gemini-2.5-flash',
   };
 }
 
