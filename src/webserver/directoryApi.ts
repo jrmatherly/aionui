@@ -2,24 +2,68 @@
  * @license
  * Copyright 2025 AionUi (aionui.com)
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * Directory browsing API for file/folder selection.
+ *
+ * SECURITY: In multi-user deployments, file browsing is scoped to the
+ * authenticated user's workspace directory. Users cannot navigate outside
+ * their workspace or see other users' files.
  */
 
+import type { Request } from 'express';
 import { Router } from 'express';
 import fs from 'fs';
-import os from 'os';
 import path from 'path';
+import { getDirectoryService } from '../process/services/DirectoryService';
 import { fileOperationLimiter } from './middleware/security';
 
-// Allow browsing within the running workspace and the current user's home directory only
-const DEFAULT_ALLOWED_DIRECTORIES = [process.cwd(), os.homedir()]
-  .map((dir) => {
+/**
+ * Get allowed directories for a user.
+ * In multi-user mode, this returns only the user's workspace.
+ * Falls back to a safe default if userId is not available.
+ */
+function getAllowedDirectoriesForUser(userId?: string): string[] {
+  if (userId) {
     try {
-      return fs.realpathSync(dir);
-    } catch {
-      return path.resolve(dir);
+      const directoryService = getDirectoryService();
+      const userWorkDir = directoryService.getUserWorkDir(userId);
+      // Also allow the cache dir for accessing uploaded files
+      const userCacheDir = directoryService.getUserCacheDir(userId);
+      return [userWorkDir, userCacheDir]
+        .map((dir) => {
+          try {
+            return fs.realpathSync(dir);
+          } catch {
+            return path.resolve(dir);
+          }
+        })
+        .filter((dir, index, arr) => dir && arr.indexOf(dir) === index);
+    } catch (error) {
+      console.error('[directoryApi] Failed to get user directories:', error);
     }
-  })
-  .filter((dir, index, arr) => dir && arr.indexOf(dir) === index);
+  }
+
+  // Fallback: return empty array (no access) if user context is not available
+  // This is safer than exposing system directories
+  console.warn('[directoryApi] No user context available, returning empty allowed directories');
+  return [];
+}
+
+/**
+ * Get default directory for a user (starting point for file browser)
+ */
+function getDefaultDirectoryForUser(userId?: string): string {
+  if (userId) {
+    try {
+      const directoryService = getDirectoryService();
+      return directoryService.getUserWorkDir(userId);
+    } catch (error) {
+      console.error('[directoryApi] Failed to get user workspace:', error);
+    }
+  }
+  // Fallback to /tmp if no user context (will fail validation anyway)
+  return '/tmp';
+}
 
 const router = Router();
 
@@ -28,20 +72,24 @@ const router = Router();
  * This function serves as a path sanitizer for CodeQL security analysis
  *
  * @param userPath - User-provided path
- * @param allowedBasePaths - Optional array of allowed base directories
+ * @param allowedBasePaths - Array of allowed base directories (user-scoped)
  * @returns Validated absolute path
  * @throws Error if path is invalid or outside allowed directories
  */
-function validatePath(userPath: string, allowedBasePaths = DEFAULT_ALLOWED_DIRECTORIES): string {
+function validatePath(userPath: string, allowedBasePaths: string[]): string {
   if (!userPath || typeof userPath !== 'string') {
     throw new Error('Invalid path: path must be a non-empty string');
   }
 
   const trimmedPath = userPath.trim();
-  const expandedPath = trimmedPath.startsWith('~') ? path.join(os.homedir(), trimmedPath.slice(1)) : trimmedPath;
+
+  // Disallow ~ expansion in multi-user mode (prevents access to other users' home dirs)
+  if (trimmedPath.startsWith('~')) {
+    throw new Error('Invalid path: home directory shortcuts not allowed');
+  }
 
   // First normalize to remove any .., ., and redundant separators
-  const normalizedPath = path.normalize(expandedPath);
+  const normalizedPath = path.normalize(trimmedPath);
 
   // Then resolve to absolute path (resolves symbolic links and relative paths)
   const resolvedPath = path.resolve(normalizedPath);
@@ -51,7 +99,7 @@ function validatePath(userPath: string, allowedBasePaths = DEFAULT_ALLOWED_DIREC
     throw new Error('Invalid path: null bytes detected');
   }
 
-  // If no allowed base paths specified, allow any valid absolute path
+  // Sanitize allowed base paths
   const sanitizedBasePaths = allowedBasePaths
     .map((basePath) => basePath && basePath.trim())
     .filter((basePath): basePath is string => Boolean(basePath))
@@ -66,7 +114,7 @@ function validatePath(userPath: string, allowedBasePaths = DEFAULT_ALLOWED_DIREC
     .filter((basePath, index, arr) => arr.indexOf(basePath) === index);
 
   if (sanitizedBasePaths.length === 0) {
-    throw new Error('Invalid configuration: no allowed base directories defined');
+    throw new Error('Access denied: no accessible directories available');
   }
 
   // Ensure resolved path is within one of the allowed base directories
@@ -76,7 +124,7 @@ function validatePath(userPath: string, allowedBasePaths = DEFAULT_ALLOWED_DIREC
   });
 
   if (!isAllowed) {
-    throw new Error('Invalid path: access denied to directory outside allowed paths');
+    throw new Error('Access denied: path is outside your workspace');
   }
 
   return resolvedPath;
@@ -84,22 +132,36 @@ function validatePath(userPath: string, allowedBasePaths = DEFAULT_ALLOWED_DIREC
 
 /**
  * Get directory listing
+ * Scoped to the authenticated user's workspace
  */
-// Rate limit directory browsing to mitigate brute-force scanning
-router.get('/browse', fileOperationLimiter, (req, res) => {
+router.get('/browse', fileOperationLimiter, (req: Request, res) => {
   try {
-    // Default to AionUi working directory instead of user home directory
-    const rawPath = (req.query.path as string) || process.cwd();
+    // Get user-scoped allowed directories
+    const userId = req.scopedUserId;
+    const allowedDirs = getAllowedDirectoriesForUser(userId);
 
-    // Validate path to prevent directory traversal
-    const validatedPath = validatePath(rawPath);
+    if (allowedDirs.length === 0) {
+      return res.status(403).json({ error: 'No accessible directories available' });
+    }
+
+    // Default to user's workspace instead of system directory
+    const rawPath = (req.query.path as string) || getDefaultDirectoryForUser(userId);
+
+    // Validate path against user's allowed directories
+    let validatedPath: string;
+    try {
+      validatedPath = validatePath(rawPath, allowedDirs);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Invalid path';
+      return res.status(403).json({ error: errorMessage });
+    }
 
     // Use fs.realpathSync to resolve all symbolic links and get canonical path
     // This breaks the taint flow for CodeQL analysis
     let dirPath: string;
     try {
       const canonicalPath = fs.realpathSync(validatedPath);
-      dirPath = validatePath(canonicalPath);
+      dirPath = validatePath(canonicalPath, allowedDirs);
     } catch (error) {
       return res.status(404).json({ error: 'Directory not found or inaccessible' });
     }
@@ -128,10 +190,10 @@ router.get('/browse', fileOperationLimiter, (req, res) => {
       .readdirSync(safeDir)
       .filter((name) => !name.startsWith('.')) // Filter hidden files/directories
       .map((name) => {
-        const itemPath = validatePath(path.join(safeDir, name), [safeDir]);
-        // Apply String() conversion to break taint flow for CodeQL
-        const safeItemPath = String(itemPath);
         try {
+          const itemPath = validatePath(path.join(safeDir, name), allowedDirs);
+          // Apply String() conversion to break taint flow for CodeQL
+          const safeItemPath = String(itemPath);
           const itemStats = fs.statSync(safeItemPath);
           const isDirectory = itemStats.isDirectory();
           const isFile = itemStats.isFile();
@@ -150,7 +212,7 @@ router.get('/browse', fileOperationLimiter, (req, res) => {
             modified: itemStats.mtime,
           };
         } catch (error) {
-          // Skip inaccessible files/directories
+          // Skip items that fail validation (outside allowed paths)
           return null;
         }
       })
@@ -163,23 +225,35 @@ router.get('/browse', fileOperationLimiter, (req, res) => {
       return a.name.localeCompare(b.name);
     });
 
+    // Determine if user can go up (only within allowed directories)
+    const parentPath = path.dirname(safeDir);
+    let canGoUp = false;
+    try {
+      validatePath(parentPath, allowedDirs);
+      canGoUp = true;
+    } catch {
+      // Parent is outside allowed directories
+      canGoUp = false;
+    }
+
     res.json({
       currentPath: safeDir,
-      parentPath: path.dirname(safeDir),
+      parentPath: canGoUp ? parentPath : undefined,
       items,
-      canGoUp: safeDir !== path.parse(safeDir).root,
+      canGoUp,
     });
   } catch (error) {
     console.error('Directory browse error:', error);
-    res.status(500).json({ error: 'Failed to read directory' });
+    const errorMessage = error instanceof Error ? error.message : 'Failed to read directory';
+    res.status(500).json({ error: errorMessage });
   }
 });
 
 /**
  * Validate whether a path is valid
+ * Scoped to the authenticated user's workspace
  */
-// Rate limit directory validation endpoint as well
-router.post('/validate', fileOperationLimiter, (req, res) => {
+router.post('/validate', fileOperationLimiter, (req: Request, res) => {
   try {
     const { path: rawPath } = req.body;
 
@@ -187,14 +261,28 @@ router.post('/validate', fileOperationLimiter, (req, res) => {
       return res.status(400).json({ error: 'Path is required' });
     }
 
-    // Validate path to prevent directory traversal
-    const validatedPath = validatePath(rawPath);
+    // Get user-scoped allowed directories
+    const userId = req.scopedUserId;
+    const allowedDirs = getAllowedDirectoriesForUser(userId);
+
+    if (allowedDirs.length === 0) {
+      return res.status(403).json({ error: 'No accessible directories available' });
+    }
+
+    // Validate path against user's allowed directories
+    let validatedPath: string;
+    try {
+      validatedPath = validatePath(rawPath, allowedDirs);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Invalid path';
+      return res.status(403).json({ error: errorMessage });
+    }
 
     // Use fs.realpathSync to get canonical path (acts as sanitizer for CodeQL)
     let dirPath: string;
     try {
       const canonicalPath = fs.realpathSync(validatedPath);
-      dirPath = validatePath(canonicalPath);
+      dirPath = validatePath(canonicalPath, allowedDirs);
     } catch (error) {
       return res.status(404).json({ error: 'Path does not exist' });
     }
@@ -230,43 +318,43 @@ router.post('/validate', fileOperationLimiter, (req, res) => {
   } catch (error) {
     console.error('Path validation error:', error);
     const errorMessage = error instanceof Error ? error.message : 'Failed to validate path';
-    res.status(error instanceof Error && error.message.includes('access denied') ? 403 : 500).json({ error: errorMessage });
+    res.status(error instanceof Error && error.message.includes('Access denied') ? 403 : 500).json({ error: errorMessage });
   }
 });
 
 /**
- * Get common directory shortcuts
+ * Get directory shortcuts for the current user
+ * Shows user's workspace and cache directories only
  */
-// Rate limit shortcut fetching to keep behavior consistent
-router.get('/shortcuts', fileOperationLimiter, (_req, res) => {
+router.get('/shortcuts', fileOperationLimiter, (req: Request, res) => {
   try {
+    const userId = req.scopedUserId;
+
+    if (!userId) {
+      return res.status(403).json({ error: 'Authentication required' });
+    }
+
+    const directoryService = getDirectoryService();
+    const userDirs = directoryService.getUserDirectories(userId);
+
     const shortcuts = [
       {
-        name: 'AionUi Directory',
-        path: process.cwd(),
-        icon: '🤖',
+        name: 'My Workspace',
+        path: userDirs.work_dir,
+        icon: '📁',
       },
       {
-        name: 'Home',
-        path: os.homedir(),
-        icon: '🏠',
+        name: 'My Files',
+        path: userDirs.cache_dir,
+        icon: '📂',
       },
-      {
-        name: 'Desktop',
-        path: path.join(os.homedir(), 'Desktop'),
-        icon: '🖥️',
-      },
-      {
-        name: 'Documents',
-        path: path.join(os.homedir(), 'Documents'),
-        icon: '📄',
-      },
-      {
-        name: 'Downloads',
-        path: path.join(os.homedir(), 'Downloads'),
-        icon: '📥',
-      },
-    ].filter((shortcut) => fs.existsSync(shortcut.path));
+    ].filter((shortcut) => {
+      try {
+        return fs.existsSync(shortcut.path);
+      } catch {
+        return false;
+      }
+    });
 
     res.json(shortcuts);
   } catch (error) {
