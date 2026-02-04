@@ -688,9 +688,8 @@ const initStorage = async () => {
     console.error('[InitStorage] Database initialization failed, falling back to file-based storage:', error);
   }
 
-  application.systemInfo.provider(() => {
-    return Promise.resolve(getSystemDir());
-  });
+  // NOTE: systemInfo provider is now in applicationBridge.ts
+  // It handles per-user directories via __webUiUserId from WebSocket adapter.
 };
 
 export const ProcessConfig = configFile;
