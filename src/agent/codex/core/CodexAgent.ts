@@ -36,6 +36,8 @@ export interface CodexAgentConfig {
   sandboxMode?: 'read-only' | 'workspace-write' | 'danger-full-access'; // Filesystem sandbox mode
   /** Yolo mode: skip confirmation prompts while keeping sandbox protection (for cron jobs) */
   yoloMode?: boolean;
+  /** User ID for per-user API key injection when spawning CLI agents */
+  userId?: string;
 }
 
 /**
@@ -52,6 +54,7 @@ export class CodexAgent {
   private readonly onNetworkError?: (error: NetworkError) => void;
   private readonly sandboxMode: 'read-only' | 'workspace-write' | 'danger-full-access';
   private readonly yoloMode: boolean;
+  private readonly userId?: string;
   private conn: CodexConnection | null = null;
   private conversationId: string | null = null;
 
@@ -71,6 +74,7 @@ export class CodexAgent {
     this.onNetworkError = cfg.onNetworkError;
     this.sandboxMode = cfg.sandboxMode || 'workspace-write'; // Default to workspace-write for file operations
     this.yoloMode = cfg.yoloMode || false;
+    this.userId = cfg.userId;
   }
 
   async start(): Promise<void> {
@@ -81,7 +85,8 @@ export class CodexAgent {
     try {
       // Let CodexConnection auto-detect the appropriate command based on version
       // Pass yoloMode option for cron jobs to enable automatic execution
-      await this.conn.start(this.cliPath || 'codex', this.workingDir, [], { yoloMode: this.yoloMode });
+      // Pass userId for per-user API key injection
+      await this.conn.start(this.cliPath || 'codex', this.workingDir, [], { yoloMode: this.yoloMode, userId: this.userId });
 
       // Wait for MCP server to be fully ready
       await this.conn.waitForServerReady(30000);

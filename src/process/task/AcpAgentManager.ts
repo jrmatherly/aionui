@@ -28,6 +28,8 @@ interface AcpAgentManagerData {
   enabledSkills?: string[];
   /** Force yolo mode (auto-approve) - used by CronService for scheduled tasks */
   yoloMode?: boolean;
+  /** User ID for per-user API key injection when spawning CLI agents */
+  userId?: string;
 }
 
 class AcpAgentManager extends BaseAgentManager<AcpAgentManagerData, AcpPermissionOption> {
@@ -104,6 +106,7 @@ class AcpAgentManager extends BaseAgentManager<AcpAgentManagerData, AcpPermissio
         workingDir: data.workspace,
         customArgs: customArgs,
         customEnv: customEnv,
+        userId: data.userId, // Per-user API key injection
         extra: {
           workspace: data.workspace,
           backend: data.backend,
@@ -112,6 +115,7 @@ class AcpAgentManager extends BaseAgentManager<AcpAgentManagerData, AcpPermissio
           customArgs: customArgs,
           customEnv: customEnv,
           yoloMode: yoloMode,
+          userId: data.userId, // Per-user API key injection
         },
         onStreamEvent: (message) => {
           // Handle preview_open event (chrome-devtools navigation interception)

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { getEnhancedEnv } from '@/agent/acp/AcpConnection';
 import type { CodexEventParams } from '@/common/codex/types';
 import { JSONRPC_VERSION } from '@/types/acpTypes';
 import type { ChildProcess } from 'child_process';
@@ -150,12 +151,13 @@ export class CodexConnection {
     }
   }
 
-  start(cliPath: string, cwd: string, args: string[] = [], options?: { yoloMode?: boolean }): Promise<void> {
+  start(cliPath: string, cwd: string, args: string[] = [], options?: { yoloMode?: boolean; userId?: string }): Promise<void> {
     // Auto-detect appropriate MCP command based on Codex version
-    const cleanEnv = { ...process.env };
-    delete cleanEnv.NODE_OPTIONS;
-    delete cleanEnv.NODE_INSPECT;
-    delete cleanEnv.NODE_DEBUG;
+    // Use enhanced env with shell variables and per-user API keys
+    const baseEnv = getEnhancedEnv(undefined, options?.userId);
+    delete baseEnv.NODE_OPTIONS;
+    delete baseEnv.NODE_INSPECT;
+    delete baseEnv.NODE_DEBUG;
     const isWindows = process.platform === 'win32';
     let finalArgs = args.length ? args : this.detectMcpCommand(cliPath);
 
@@ -180,7 +182,7 @@ export class CodexConnection {
           cwd,
           stdio: ['pipe', 'pipe', 'pipe'],
           env: {
-            ...process.env,
+            ...baseEnv,
             CODEX_NO_INTERACTIVE: '1',
             CODEX_AUTO_CONTINUE: '1',
           },

@@ -422,6 +422,37 @@ export class AionUIDatabase {
   }
 
   /**
+   * Get conversation with its owner userId
+   * Used for per-user API key injection when spawning CLI agents
+   * @param conversationId - Conversation ID to query
+   */
+  getConversationWithUserId(conversationId: string): IQueryResult<{ conversation: TChatConversation; userId: string }> {
+    try {
+      const row = this.db.prepare('SELECT * FROM conversations WHERE id = ?').get(conversationId) as IConversationRow | undefined;
+
+      if (!row) {
+        return {
+          success: false,
+          error: 'Conversation not found',
+        };
+      }
+
+      return {
+        success: true,
+        data: {
+          conversation: rowToConversation(row),
+          userId: row.user_id,
+        },
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  }
+
+  /**
    * Get the latest conversation by source type
    */
   getLatestConversationBySource(source: 'aionui' | 'telegram', userId: string = this.defaultUserId): IQueryResult<TChatConversation | null> {

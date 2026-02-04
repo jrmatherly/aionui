@@ -54,6 +54,7 @@ export interface AcpAgentConfig {
   workingDir: string;
   customArgs?: string[]; // Custom CLI arguments (for custom backend)
   customEnv?: Record<string, string>; // Custom environment variables (for custom backend)
+  userId?: string; // User ID for per-user API key injection
   extra?: {
     workspace?: string;
     backend: AcpBackend;
@@ -62,6 +63,7 @@ export interface AcpAgentConfig {
     customArgs?: string[];
     customEnv?: Record<string, string>;
     yoloMode?: boolean;
+    userId?: string; // User ID for per-user API key injection
   };
   onStreamEvent: (data: IResponseMessage) => void;
   onSignalEvent?: (data: IResponseMessage) => void; // New: send signal only, do not update UI
@@ -78,6 +80,7 @@ export class AcpAgent {
     customArgs?: string[];
     customEnv?: Record<string, string>;
     yoloMode?: boolean;
+    userId?: string;
   };
   private connection: AcpConnection;
   private adapter: AcpAdapter;
@@ -108,6 +111,7 @@ export class AcpAgent {
       customArgs: config.customArgs,
       customEnv: config.customEnv,
       yoloMode: false,
+      userId: config.userId, // Per-user API key injection
     };
 
     this.connection = new AcpConnection();
@@ -169,7 +173,7 @@ export class AcpAgent {
       });
 
       try {
-        await Promise.race([this.connection.connect(this.extra.backend, this.extra.cliPath, this.extra.workspace, this.extra.customArgs, this.extra.customEnv), connectTimeoutPromise]);
+        await Promise.race([this.connection.connect(this.extra.backend, this.extra.cliPath, this.extra.workspace, this.extra.customArgs, this.extra.customEnv, this.extra.userId), connectTimeoutPromise]);
       } finally {
         if (connectTimeoutId) {
           clearTimeout(connectTimeoutId);

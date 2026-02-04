@@ -129,11 +129,13 @@ interface PendingRequest<T = unknown> {
  * @param workingDir - Working directory for the spawned process
  * @param acpArgs - Arguments to enable ACP mode (e.g., ['acp'] for goose, ['--acp'] for auggie, ['exec','--output-format','acp'] for droid)
  * @param customEnv - Custom environment variables
+ * @param userId - User ID for per-user API key injection
  */
-export function createGenericSpawnConfig(cliPath: string, workingDir: string, acpArgs?: string[], customEnv?: Record<string, string>) {
+export function createGenericSpawnConfig(cliPath: string, workingDir: string, acpArgs?: string[], customEnv?: Record<string, string>, userId?: string) {
   const isWindows = process.platform === 'win32';
   // Use enhanced env that includes shell environment variables (PATH, SSL certs, etc.)
-  const env = getEnhancedEnv(customEnv);
+  // If userId provided, also includes per-user API keys from user_api_keys table
+  const env = getEnhancedEnv(customEnv, userId);
 
   // Default to --experimental-acp if no acpArgs specified
   const effectiveAcpArgs = acpArgs && acpArgs.length > 0 ? acpArgs : ['--experimental-acp'];
@@ -189,13 +191,13 @@ export class AcpConnection {
   private isSetupComplete = false;
 
   // Generic backend connection method
-  private async connectGenericBackend(backend: 'gemini' | 'qwen' | 'iflow' | 'droid' | 'goose' | 'auggie' | 'kimi' | 'opencode' | 'copilot' | 'qoder' | 'custom', cliPath: string, workingDir: string, acpArgs?: string[], customEnv?: Record<string, string>): Promise<void> {
-    const config = createGenericSpawnConfig(cliPath, workingDir, acpArgs, customEnv);
+  private async connectGenericBackend(backend: 'gemini' | 'qwen' | 'iflow' | 'droid' | 'goose' | 'auggie' | 'kimi' | 'opencode' | 'copilot' | 'qoder' | 'custom', cliPath: string, workingDir: string, acpArgs?: string[], customEnv?: Record<string, string>, userId?: string): Promise<void> {
+    const config = createGenericSpawnConfig(cliPath, workingDir, acpArgs, customEnv, userId);
     this.child = spawn(config.command, config.args, config.options);
     await this.setupChildProcessHandlers(backend);
   }
 
-  async connect(backend: AcpBackend, cliPath?: string, workingDir: string = process.cwd(), acpArgs?: string[], customEnv?: Record<string, string>): Promise<void> {
+  async connect(backend: AcpBackend, cliPath?: string, workingDir: string = process.cwd(), acpArgs?: string[], customEnv?: Record<string, string>, userId?: string): Promise<void> {
     if (this.child) {
       this.disconnect();
     }
@@ -207,7 +209,7 @@ export class AcpConnection {
 
     switch (backend) {
       case 'claude':
-        await this.connectClaude(workingDir);
+        await this.connectClaude(workingDir, userId);
         break;
 
       case 'gemini':
@@ -223,14 +225,14 @@ export class AcpConnection {
         if (!cliPath) {
           throw new Error(`CLI path is required for ${backend} backend`);
         }
-        await this.connectGenericBackend(backend, cliPath, workingDir, acpArgs);
+        await this.connectGenericBackend(backend, cliPath, workingDir, acpArgs, undefined, userId);
         break;
 
       case 'custom':
         if (!cliPath) {
           throw new Error('Custom agent CLI path/command is required');
         }
-        await this.connectGenericBackend('custom', cliPath, workingDir, acpArgs, customEnv);
+        await this.connectGenericBackend('custom', cliPath, workingDir, acpArgs, customEnv, userId);
         break;
 
       default:
@@ -238,13 +240,13 @@ export class AcpConnection {
     }
   }
 
-  private async connectClaude(workingDir: string = process.cwd()): Promise<void> {
+  private async connectClaude(workingDir: string = process.cwd(), userId?: string): Promise<void> {
     // Use NPX to run Claude Code ACP bridge directly from npm registry
     // This eliminates dependency packaging issues and simplifies deployment
     console.error('[ACP] Using NPX approach for Claude ACP bridge');
 
-    // Use enhanced env with shell variables, then clean up Node.js debugging vars
-    const cleanEnv = getEnhancedEnv();
+    // Use enhanced env with shell variables and per-user API keys, then clean up Node.js debugging vars
+    const cleanEnv = getEnhancedEnv(undefined, userId);
     delete cleanEnv.NODE_OPTIONS;
     delete cleanEnv.NODE_INSPECT;
     delete cleanEnv.NODE_DEBUG;

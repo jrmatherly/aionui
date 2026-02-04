@@ -326,6 +326,8 @@ export interface CodexAgentManagerData {
   enabledSkills?: string[];
   /** Full auto mode for cron jobs - skip confirmation prompts while keeping sandbox protection */
   yoloMode?: boolean;
+  /** User ID for per-user API key injection when spawning CLI agents */
+  userId?: string;
 }
 
 export interface ElicitationCreateData {

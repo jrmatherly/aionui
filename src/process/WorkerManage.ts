@@ -27,6 +27,8 @@ export interface BuildConversationOptions {
   yoloMode?: boolean;
   /** Skip task cache - create a new isolated instance */
   skipCache?: boolean;
+  /** User ID for per-user API key injection (auto-fetched from DB if not provided) */
+  userId?: string;
 }
 
 const getTaskById = (id: string) => {
@@ -72,6 +74,8 @@ const buildConversation = (conversation: TChatConversation, options?: BuildConve
         conversation_id: conversation.id,
         // Runtime options
         yoloMode: options?.yoloMode,
+        // Per-user API key injection
+        userId: options?.userId,
       });
       if (!options?.skipCache) {
         taskList.push({ id: conversation.id, task });
@@ -84,6 +88,8 @@ const buildConversation = (conversation: TChatConversation, options?: BuildConve
         conversation_id: conversation.id,
         // Runtime options
         yoloMode: options?.yoloMode,
+        // Per-user API key injection
+        userId: options?.userId,
       });
       if (!options?.skipCache) {
         taskList.push({ id: conversation.id, task });
@@ -108,21 +114,25 @@ const getTaskByIdRollbackBuild = async (id: string, options?: BuildConversationO
     }
   }
 
-  // Try to load from database first
+  // Try to load from database first (with userId for per-user API key injection)
   const db = getDatabase();
-  const dbResult = db.getConversation(id);
+  const dbResult = db.getConversationWithUserId(id);
   console.log(`[WorkerManage] Database lookup result: success=${dbResult.success}, hasData=${!!dbResult.data}`);
 
   if (dbResult.success && dbResult.data) {
-    console.log(`[WorkerManage] Building conversation from database: ${id}`);
-    return buildConversation(dbResult.data, options);
+    const { conversation, userId } = dbResult.data;
+    console.log(`[WorkerManage] Building conversation from database: ${id}, userId: ${userId}`);
+    return buildConversation(conversation, {
+      ...options,
+      userId, // Pass userId for per-user API key injection
+    });
   }
 
-  // Fallback to file storage
+  // Fallback to file storage (no userId available - will use container env vars)
   const list = (await ProcessChat.get('chat.history')) as TChatConversation[] | undefined;
   const conversation = list?.find((item) => item.id === id);
   if (conversation) {
-    console.log(`[WorkerManage] Building conversation from file storage: ${id}`);
+    console.log(`[WorkerManage] Building conversation from file storage: ${id} (no userId - using container env)`);
     return buildConversation(conversation, options);
   }
 

@@ -97,6 +97,7 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
         fileOperationHandler,
         sandboxMode: data.sandboxMode || 'workspace-write', // Enable file writing within workspace by default
         yoloMode: yoloMode, // yoloMode from CronService or config
+        userId: data.userId, // Per-user API key injection
         onNetworkError: (error) => {
           this.handleNetworkError(error);
         },
