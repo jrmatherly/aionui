@@ -1,0 +1,96 @@
+{
+  // Renovate configuration for AionUI
+  // Docs: https://docs.renovatebot.com/configuration-options/
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+
+  // Base presets
+  "extends": [
+    "config:recommended",       // Sensible defaults (grouping, scheduling, labels)
+    "group:allNonMajor",        // Group all minor+patch into one PR
+    ":separateMajorReleases",   // Major versions get their own PR
+    "group:definitelyTyped",    // Group all @types/* together
+    ":pinVersions"              // Pin exact versions in devDependencies
+  ],
+
+  // Schedule: run on weekends to avoid mid-week disruption
+  "schedule": ["after 8am and before 6pm on saturday and sunday"],
+  "timezone": "America/New_York",
+
+  // PR behavior
+  "prHourlyLimit": 5,
+  "prConcurrentLimit": 10,
+  "labels": ["dependencies"],
+  "assignees": ["jrmatherly"],
+
+  // Auto-merge patch updates if CI passes
+  "packageRules": [
+    {
+      // Auto-merge patch updates (low risk)
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "automergeType": "pr",
+      "automergeStrategy": "squash"
+    },
+    {
+      // Group Electron Forge monorepo updates
+      "extends": ["monorepo:electron-forge"],
+      "groupName": "Electron Forge",
+      "matchUpdateTypes": ["digest", "patch", "minor", "major"]
+    },
+    {
+      // Group Electron-related packages
+      "matchPackageNames": [
+        "electron",
+        "electron-builder",
+        "@electron/fuses",
+        "@electron/notarize"
+      ],
+      "groupName": "Electron ecosystem",
+      "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      // Group React ecosystem
+      "matchPackageNames": [
+        "react",
+        "react-dom",
+        "@types/react-dom"
+      ],
+      "groupName": "React"
+    },
+    {
+      // Group i18n packages
+      "matchPackageNames": [
+        "i18next",
+        "react-i18next",
+        "i18next-browser-languagedetector"
+      ],
+      "groupName": "i18n"
+    },
+    {
+      // Group GitHub Actions in workflows
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions",
+      "automerge": true
+    },
+    {
+      // Pin webpack-asset-relocator-loader — DO NOT UPGRADE
+      // Breaks Docker build pipeline (see commit 9c21d784)
+      "matchPackageNames": ["@vercel/webpack-asset-relocator-loader"],
+      "enabled": false
+    },
+    {
+      // Major Electron upgrades need careful review
+      "matchPackageNames": ["electron"],
+      "matchUpdateTypes": ["major"],
+      "labels": ["dependencies", "breaking-change"],
+      "automerge": false
+    }
+  ],
+
+  // Vulnerability alerts — create PRs immediately (don't wait for schedule)
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security"],
+    "schedule": ["at any time"]
+  }
+}
