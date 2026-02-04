@@ -31,6 +31,13 @@
           "confidence": 0.77
         },
         {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 818,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
           "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
           "line": 198,
           "column": 1,
@@ -43,19 +50,12 @@
           "column": 15,
           "isOutlier": false,
           "confidence": 0.77
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 165,
-          "column": 22,
-          "isOutlier": false,
-          "confidence": 0.595
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.009Z",
-        "lastSeen": "2026-02-04T05:34:32.009Z",
+        "firstSeen": "2026-02-04T08:05:41.501Z",
+        "lastSeen": "2026-02-04T08:05:41.501Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -78,10 +78,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.04,
+        "frequency": 0.08,
         "consistency": 0.9,
         "age": 0,
-        "spread": 2,
+        "spread": 3,
         "score": 0.77,
         "level": "medium"
       },
@@ -99,12 +99,26 @@
           "column": 16,
           "isOutlier": false,
           "confidence": 0.77
+        },
+        {
+          "file": ".github/workflows/build-and-deploy.yml",
+          "line": 128,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-deploy.yml",
+          "line": 129,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.009Z",
-        "lastSeen": "2026-02-04T05:34:32.009Z",
+        "firstSeen": "2026-02-04T08:05:41.501Z",
+        "lastSeen": "2026-02-04T08:05:41.501Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -145,8 +159,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.009Z",
-        "lastSeen": "2026-02-04T05:34:32.009Z",
+        "firstSeen": "2026-02-04T08:05:41.502Z",
+        "lastSeen": "2026-02-04T08:05:41.502Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -169,40 +183,33 @@
         }
       },
       "confidence": {
-        "frequency": 0.06,
+        "frequency": 0.04,
         "consistency": 0.9,
         "age": 0,
-        "spread": 3,
+        "spread": 2,
         "score": 0.77,
         "level": "medium"
       },
       "locations": [
+        {
+          "file": ".aionui/FEATURE_CHANNELS_LARK_LARK.md",
+          "line": 388,
+          "column": 32,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
         {
           "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
           "line": 20,
           "column": 36,
           "isOutlier": false,
           "confidence": 0.77
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 261,
-          "column": 31,
-          "isOutlier": false,
-          "confidence": 0.595
-        },
-        {
-          "file": ".github/workflows/gemini-scheduled-triage.yml",
-          "line": 59,
-          "column": 15,
-          "isOutlier": false,
-          "confidence": 0.77
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.010Z",
-        "lastSeen": "2026-02-04T05:34:32.010Z",
+        "firstSeen": "2026-02-04T08:05:41.502Z",
+        "lastSeen": "2026-02-04T08:05:41.502Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -267,26 +274,33 @@
         }
       },
       "confidence": {
-        "frequency": 0.02,
+        "frequency": 0.04,
         "consistency": 0.9,
         "age": 0,
         "spread": 1,
-        "score": 0.77,
+        "score": 0.6533333333333333,
         "level": "medium"
       },
       "locations": [
         {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 166,
-          "column": 90,
+          "file": ".github/workflows/build-and-deploy.yml",
+          "line": 128,
+          "column": 11,
           "isOutlier": false,
-          "confidence": 0.77
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".github/workflows/build-and-deploy.yml",
+          "line": 129,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.012Z",
-        "lastSeen": "2026-02-04T05:34:32.012Z",
+        "firstSeen": "2026-02-04T08:05:41.502Z",
+        "lastSeen": "2026-02-04T08:05:41.502Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -495,8 +509,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.009Z",
-        "lastSeen": "2026-02-04T05:34:32.009Z",
+        "firstSeen": "2026-02-04T08:05:41.502Z",
+        "lastSeen": "2026-02-04T08:05:41.502Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -537,8 +551,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.009Z",
-        "lastSeen": "2026-02-04T05:34:32.009Z",
+        "firstSeen": "2026-02-04T08:05:41.502Z",
+        "lastSeen": "2026-02-04T08:05:41.502Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -561,7 +575,7 @@
         }
       },
       "confidence": {
-        "frequency": 0.08,
+        "frequency": 0.06,
         "consistency": 0.9,
         "age": 0,
         "spread": 2,
@@ -570,38 +584,31 @@
       },
       "locations": [
         {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 26,
-          "column": 11,
-          "isOutlier": false,
-          "confidence": 0.8533333333333333
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 84,
+          "file": ".github/workflows/build-and-deploy.yml",
+          "line": 50,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.8533333333333333
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 140,
+          "line": 139,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 140,
-          "column": 26,
+          "line": 139,
+          "column": 25,
           "isOutlier": false,
           "confidence": 0.97
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.010Z",
-        "lastSeen": "2026-02-04T05:34:32.010Z",
+        "firstSeen": "2026-02-04T08:05:41.502Z",
+        "lastSeen": "2026-02-04T08:05:41.502Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -624,7 +631,7 @@
         }
       },
       "confidence": {
-        "frequency": 0.08,
+        "frequency": 0.06,
         "consistency": 0.9,
         "age": 0,
         "spread": 2,
@@ -633,38 +640,31 @@
       },
       "locations": [
         {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 26,
-          "column": 11,
-          "isOutlier": false,
-          "confidence": 0.8533333333333333
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 84,
+          "file": ".github/workflows/build-and-deploy.yml",
+          "line": 50,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.8533333333333333
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 140,
+          "line": 139,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 140,
-          "column": 26,
+          "line": 139,
+          "column": 25,
           "isOutlier": false,
           "confidence": 0.97
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.010Z",
-        "lastSeen": "2026-02-04T05:34:32.010Z",
+        "firstSeen": "2026-02-04T08:05:41.502Z",
+        "lastSeen": "2026-02-04T08:05:41.502Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -733,22 +733,22 @@
         "consistency": 0.9,
         "age": 0,
         "spread": 1,
-        "score": 0.95,
-        "level": "high"
+        "score": 0.7949999999999999,
+        "level": "medium"
       },
       "locations": [
         {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 320,
-          "column": 15,
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 763,
+          "column": 24,
           "isOutlier": false,
-          "confidence": 0.97
+          "confidence": 0.7949999999999999
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.012Z",
-        "lastSeen": "2026-02-04T05:34:32.012Z",
+        "firstSeen": "2026-02-04T08:05:41.502Z",
+        "lastSeen": "2026-02-04T08:05:41.502Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -771,38 +771,17 @@
         }
       },
       "confidence": {
-        "frequency": 0.08,
+        "frequency": 0.02,
         "consistency": 0.9,
         "age": 0,
-        "spread": 2,
+        "spread": 1,
         "score": 0.95,
         "level": "high"
       },
       "locations": [
         {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 195,
-          "column": 74,
-          "isOutlier": false,
-          "confidence": 0.97
-        },
-        {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 201,
-          "column": 72,
-          "isOutlier": false,
-          "confidence": 0.97
-        },
-        {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 234,
-          "column": 72,
-          "isOutlier": false,
-          "confidence": 0.97
-        },
-        {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 190,
+          "line": 189,
           "column": 41,
           "isOutlier": false,
           "confidence": 0.97
@@ -810,8 +789,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.012Z",
-        "lastSeen": "2026-02-04T05:34:32.012Z",
+        "firstSeen": "2026-02-04T08:05:41.503Z",
+        "lastSeen": "2026-02-04T08:05:41.503Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -864,6 +843,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-04T05:41:56.106Z",
-  "checksum": "b62e0e91dcc873de"
+  "lastUpdated": "2026-02-04T08:05:41.516Z",
+  "checksum": "b4ffd383523c0fab"
 }

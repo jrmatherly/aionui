@@ -15,10 +15,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.52,
+        "frequency": 0.34,
         "consistency": 0.9,
         "age": 0,
-        "spread": 7,
+        "spread": 5,
         "score": 0.77,
         "level": "medium"
       },
@@ -141,75 +141,12 @@
           "column": 7,
           "isOutlier": false,
           "confidence": 0.77
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 228,
-          "column": 27,
-          "isOutlier": false,
-          "confidence": 0.6066666666666667
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 228,
-          "column": 41,
-          "isOutlier": false,
-          "confidence": 0.6066666666666667
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 261,
-          "column": 91,
-          "isOutlier": false,
-          "confidence": 0.6066666666666667
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 268,
-          "column": 19,
-          "isOutlier": false,
-          "confidence": 0.6066666666666667
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 129,
-          "column": 242,
-          "isOutlier": false,
-          "confidence": 0.6066666666666667
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 182,
-          "column": 65,
-          "isOutlier": false,
-          "confidence": 0.6066666666666667
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 170,
-          "column": 45,
-          "isOutlier": false,
-          "confidence": 0.6066666666666667
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 170,
-          "column": 57,
-          "isOutlier": false,
-          "confidence": 0.6066666666666667
-        },
-        {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 113,
-          "column": 41,
-          "isOutlier": false,
-          "confidence": 0.77
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.008Z",
-        "lastSeen": "2026-02-04T05:34:32.008Z",
+        "firstSeen": "2026-02-04T08:05:41.501Z",
+        "lastSeen": "2026-02-04T08:05:41.501Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -232,10 +169,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.52,
+        "frequency": 0.3,
         "consistency": 0.9,
         "age": 0,
-        "spread": 6,
+        "spread": 4,
         "score": 0.77,
         "level": "medium"
       },
@@ -344,82 +281,12 @@
           "column": 7,
           "isOutlier": false,
           "confidence": 0.77
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 228,
-          "column": 27,
-          "isOutlier": false,
-          "confidence": 0.6258823529411766
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 228,
-          "column": 41,
-          "isOutlier": false,
-          "confidence": 0.6258823529411766
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 261,
-          "column": 91,
-          "isOutlier": false,
-          "confidence": 0.6258823529411766
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 268,
-          "column": 19,
-          "isOutlier": false,
-          "confidence": 0.6258823529411766
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 129,
-          "column": 242,
-          "isOutlier": false,
-          "confidence": 0.6258823529411766
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 182,
-          "column": 65,
-          "isOutlier": false,
-          "confidence": 0.6258823529411766
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 170,
-          "column": 50,
-          "isOutlier": false,
-          "confidence": 0.6258823529411766
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 170,
-          "column": 69,
-          "isOutlier": false,
-          "confidence": 0.6258823529411766
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 170,
-          "column": 91,
-          "isOutlier": false,
-          "confidence": 0.6258823529411766
-        },
-        {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 113,
-          "column": 41,
-          "isOutlier": false,
-          "confidence": 0.77
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.008Z",
-        "lastSeen": "2026-02-04T05:34:32.008Z",
+        "firstSeen": "2026-02-04T08:05:41.501Z",
+        "lastSeen": "2026-02-04T08:05:41.501Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -442,10 +309,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.63,
+        "frequency": 0.37,
         "consistency": 0.9,
         "age": 0,
-        "spread": 16,
+        "spread": 10,
         "score": 0.77,
         "level": "medium"
       },
@@ -682,220 +549,39 @@
           "confidence": 0.6824999999999999
         },
         {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 22,
+          "file": ".github/workflows/build-and-deploy.yml",
+          "line": 47,
           "column": 15,
           "isOutlier": false,
-          "confidence": 0.7408333333333332
+          "confidence": 0.77
         },
         {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 23,
-          "column": 23,
-          "isOutlier": false,
-          "confidence": 0.7408333333333332
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 80,
-          "column": 15,
-          "isOutlier": false,
-          "confidence": 0.7408333333333332
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 81,
-          "column": 23,
-          "isOutlier": false,
-          "confidence": 0.7408333333333332
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 86,
-          "column": 15,
-          "isOutlier": false,
-          "confidence": 0.7408333333333332
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 87,
-          "column": 23,
-          "isOutlier": false,
-          "confidence": 0.7408333333333332
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
+          "file": ".github/workflows/build-and-deploy.yml",
           "line": 94,
-          "column": 15,
-          "isOutlier": false,
-          "confidence": 0.7408333333333332
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 105,
-          "column": 15,
-          "isOutlier": false,
-          "confidence": 0.7408333333333332
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 111,
-          "column": 15,
-          "isOutlier": false,
-          "confidence": 0.7408333333333332
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 113,
-          "column": 25,
-          "isOutlier": false,
-          "confidence": 0.7408333333333332
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 146,
-          "column": 15,
-          "isOutlier": false,
-          "confidence": 0.7408333333333332
-        },
-        {
-          "file": ".github/workflows/bump-homebrew.yml",
-          "line": 43,
-          "column": 32,
+          "column": 22,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
-          "file": ".github/workflows/gemini-dispatch.yml",
-          "line": 127,
-          "column": 88,
-          "isOutlier": false,
-          "confidence": 0.77
-        },
-        {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 176,
-          "column": 118,
-          "isOutlier": false,
-          "confidence": 0.5790909090909091
-        },
-        {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 143,
-          "column": 184,
-          "isOutlier": false,
-          "confidence": 0.5790909090909091
-        },
-        {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 221,
-          "column": 30,
-          "isOutlier": false,
-          "confidence": 0.5790909090909091
-        },
-        {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 222,
-          "column": 30,
-          "isOutlier": false,
-          "confidence": 0.5790909090909091
-        },
-        {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 149,
-          "column": 107,
-          "isOutlier": false,
-          "confidence": 0.5790909090909091
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 228,
-          "column": 27,
-          "isOutlier": false,
-          "confidence": 0.5569565217391304
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 228,
-          "column": 41,
-          "isOutlier": false,
-          "confidence": 0.5569565217391304
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 261,
-          "column": 91,
-          "isOutlier": false,
-          "confidence": 0.5569565217391304
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 268,
-          "column": 19,
-          "isOutlier": false,
-          "confidence": 0.5569565217391304
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 129,
-          "column": 216,
-          "isOutlier": false,
-          "confidence": 0.5569565217391304
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 172,
-          "column": 58,
-          "isOutlier": false,
-          "confidence": 0.5569565217391304
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 123,
-          "column": 182,
-          "isOutlier": false,
-          "confidence": 0.5569565217391304
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 129,
-          "column": 242,
-          "isOutlier": false,
-          "confidence": 0.5569565217391304
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 182,
-          "column": 65,
-          "isOutlier": false,
-          "confidence": 0.5569565217391304
-        },
-        {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 113,
-          "column": 41,
+          "file": ".github/workflows/build-and-deploy.yml",
+          "line": 97,
+          "column": 22,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 137,
+          "line": 136,
           "column": 15,
-          "isOutlier": false,
-          "confidence": 0.595
-        },
-        {
-          "file": ".github/workflows/project-automation.yml",
-          "line": 291,
-          "column": 64,
-          "isOutlier": false,
-          "confidence": 0.69
+          "isOutlier": true,
+          "confidence": 0.595,
+          "outlierReason": "Low confidence outlier"
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.008Z",
-        "lastSeen": "2026-02-04T05:34:32.008Z",
+        "firstSeen": "2026-02-04T08:05:41.501Z",
+        "lastSeen": "2026-02-04T08:05:41.501Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -918,10 +604,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.15,
+        "frequency": 0.12,
         "consistency": 0.9,
         "age": 0,
-        "spread": 5,
+        "spread": 4,
         "score": 0.77,
         "level": "medium"
       },
@@ -962,6 +648,20 @@
           "confidence": 0.77
         },
         {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 672,
+          "column": 37,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_CHANNELS_LARK_LARK.md",
+          "line": 383,
+          "column": 31,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
           "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
           "line": 29,
           "column": 15,
@@ -995,47 +695,12 @@
           "column": 34,
           "isOutlier": false,
           "confidence": 0.77
-        },
-        {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 141,
-          "column": 25,
-          "isOutlier": false,
-          "confidence": 0.5366666666666666
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 164,
-          "column": 91,
-          "isOutlier": false,
-          "confidence": 0.595
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 166,
-          "column": 120,
-          "isOutlier": false,
-          "confidence": 0.595
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 174,
-          "column": 92,
-          "isOutlier": false,
-          "confidence": 0.595
-        },
-        {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 121,
-          "column": 54,
-          "isOutlier": false,
-          "confidence": 0.5366666666666666
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.008Z",
-        "lastSeen": "2026-02-04T05:34:32.008Z",
+        "firstSeen": "2026-02-04T08:05:41.501Z",
+        "lastSeen": "2026-02-04T08:05:41.501Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -1058,10 +723,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.78,
+        "frequency": 0.46,
         "consistency": 0.9,
         "age": 0,
-        "spread": 12,
+        "spread": 7,
         "score": 0.77,
         "level": "medium"
       },
@@ -1226,124 +891,12 @@
           "column": 7,
           "isOutlier": false,
           "confidence": 0.77
-        },
-        {
-          "file": ".github/workflows/gemini-dispatch.yml",
-          "line": 127,
-          "column": 88,
-          "isOutlier": false,
-          "confidence": 0.77
-        },
-        {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 143,
-          "column": 184,
-          "isOutlier": false,
-          "confidence": 0.5815384615384616
-        },
-        {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 221,
-          "column": 30,
-          "isOutlier": false,
-          "confidence": 0.5815384615384616
-        },
-        {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 222,
-          "column": 30,
-          "isOutlier": false,
-          "confidence": 0.5815384615384616
-        },
-        {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 176,
-          "column": 118,
-          "isOutlier": false,
-          "confidence": 0.5815384615384616
-        },
-        {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 149,
-          "column": 107,
-          "isOutlier": false,
-          "confidence": 0.5815384615384616
-        },
-        {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 145,
-          "column": 50,
-          "isOutlier": false,
-          "confidence": 0.5815384615384616
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 129,
-          "column": 216,
-          "isOutlier": false,
-          "confidence": 0.5313636363636363
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 228,
-          "column": 27,
-          "isOutlier": false,
-          "confidence": 0.5313636363636363
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 228,
-          "column": 41,
-          "isOutlier": false,
-          "confidence": 0.5313636363636363
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 261,
-          "column": 91,
-          "isOutlier": false,
-          "confidence": 0.5313636363636363
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 268,
-          "column": 19,
-          "isOutlier": false,
-          "confidence": 0.5313636363636363
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 123,
-          "column": 182,
-          "isOutlier": false,
-          "confidence": 0.5313636363636363
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 129,
-          "column": 280,
-          "isOutlier": false,
-          "confidence": 0.5313636363636363
-        },
-        {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 126,
-          "column": 13,
-          "isOutlier": false,
-          "confidence": 0.77
-        },
-        {
-          "file": ".github/workflows/project-automation.yml",
-          "line": 291,
-          "column": 64,
-          "isOutlier": false,
-          "confidence": 0.69
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.008Z",
-        "lastSeen": "2026-02-04T05:34:32.008Z",
+        "firstSeen": "2026-02-04T08:05:41.501Z",
+        "lastSeen": "2026-02-04T08:05:41.501Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -1366,10 +919,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.3,
+        "frequency": 0.12,
         "consistency": 0.9,
         "age": 0,
-        "spread": 5,
+        "spread": 4,
         "score": 0.77,
         "level": "medium"
       },
@@ -1389,92 +942,29 @@
           "confidence": 0.77
         },
         {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 22,
+          "file": ".github/workflows/build-and-deploy.yml",
+          "line": 47,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 23,
-          "column": 23,
-          "isOutlier": false,
-          "confidence": 0.77
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 80,
-          "column": 15,
-          "isOutlier": false,
-          "confidence": 0.77
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 81,
-          "column": 23,
-          "isOutlier": false,
-          "confidence": 0.77
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 86,
-          "column": 15,
-          "isOutlier": false,
-          "confidence": 0.77
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 87,
-          "column": 23,
-          "isOutlier": false,
-          "confidence": 0.77
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
+          "file": ".github/workflows/build-and-deploy.yml",
           "line": 94,
-          "column": 15,
+          "column": 22,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 105,
-          "column": 15,
-          "isOutlier": false,
-          "confidence": 0.77
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 111,
-          "column": 15,
-          "isOutlier": false,
-          "confidence": 0.77
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 113,
-          "column": 25,
-          "isOutlier": false,
-          "confidence": 0.77
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 146,
-          "column": 15,
-          "isOutlier": false,
-          "confidence": 0.77
-        },
-        {
-          "file": ".github/workflows/bump-homebrew.yml",
-          "line": 43,
-          "column": 32,
+          "file": ".github/workflows/build-and-deploy.yml",
+          "line": 97,
+          "column": 22,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 137,
+          "line": 136,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.77
@@ -1482,8 +972,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.010Z",
-        "lastSeen": "2026-02-04T05:34:32.010Z",
+        "firstSeen": "2026-02-04T08:05:41.502Z",
+        "lastSeen": "2026-02-04T08:05:41.502Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -1786,24 +1276,17 @@
         }
       },
       "confidence": {
-        "frequency": 0.02,
+        "frequency": 0.01,
         "consistency": 0.9,
         "age": 0,
-        "spread": 2,
+        "spread": 1,
         "score": 0.7949999999999999,
         "level": "medium"
       },
       "locations": [
         {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 214,
-          "column": 119,
-          "isOutlier": false,
-          "confidence": 0.7569565217391304
-        },
-        {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 50,
+          "line": 49,
           "column": 27,
           "isOutlier": false,
           "confidence": 0.7949999999999999
@@ -1811,8 +1294,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.012Z",
-        "lastSeen": "2026-02-04T05:34:32.012Z",
+        "firstSeen": "2026-02-04T08:05:41.502Z",
+        "lastSeen": "2026-02-04T08:05:41.502Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -1835,10 +1318,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.1,
+        "frequency": 0.01,
         "consistency": 0.9,
         "age": 0,
-        "spread": 3,
+        "spread": 1,
         "score": 0.8825,
         "level": "high"
       },
@@ -1847,78 +1330,14 @@
           "file": ".github/pull_request_template.md",
           "line": 17,
           "column": 94,
-          "isOutlier": true,
-          "confidence": 0.8825,
-          "outlierReason": "Value above IQR upper bound"
-        },
-        {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 126,
-          "column": 143,
           "isOutlier": false,
-          "confidence": 0.7790909090909091
-        },
-        {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 236,
-          "column": 166,
-          "isOutlier": false,
-          "confidence": 0.7790909090909091
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 151,
-          "column": 209,
-          "isOutlier": false,
-          "confidence": 0.7569565217391304
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 208,
-          "column": 141,
-          "isOutlier": false,
-          "confidence": 0.7569565217391304
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 210,
-          "column": 120,
-          "isOutlier": false,
-          "confidence": 0.7569565217391304
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 212,
-          "column": 113,
-          "isOutlier": false,
-          "confidence": 0.7569565217391304
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 210,
-          "column": 123,
-          "isOutlier": false,
-          "confidence": 0.7569565217391304
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 212,
-          "column": 116,
-          "isOutlier": false,
-          "confidence": 0.7569565217391304
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 151,
-          "column": 127,
-          "isOutlier": false,
-          "confidence": 0.7569565217391304
+          "confidence": 0.8825
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.010Z",
-        "lastSeen": "2026-02-04T05:34:32.010Z",
+        "firstSeen": "2026-02-04T08:05:41.502Z",
+        "lastSeen": "2026-02-04T08:05:41.502Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2081,38 +1500,17 @@
         }
       },
       "confidence": {
-        "frequency": 0.08,
+        "frequency": 0.02,
         "consistency": 0.9,
         "age": 0,
-        "spread": 2,
+        "spread": 1,
         "score": 0.8533333333333333,
         "level": "high"
       },
       "locations": [
         {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 214,
-          "column": 119,
-          "isOutlier": false,
-          "confidence": 0.7313636363636363
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 238,
-          "column": 21,
-          "isOutlier": false,
-          "confidence": 0.7313636363636363
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 248,
-          "column": 21,
-          "isOutlier": false,
-          "confidence": 0.7313636363636363
-        },
-        {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 50,
+          "line": 49,
           "column": 27,
           "isOutlier": false,
           "confidence": 0.8533333333333333
@@ -2120,8 +1518,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.012Z",
-        "lastSeen": "2026-02-04T05:34:32.012Z",
+        "firstSeen": "2026-02-04T08:05:41.502Z",
+        "lastSeen": "2026-02-04T08:05:41.502Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2144,24 +1542,17 @@
         }
       },
       "confidence": {
-        "frequency": 0.02,
+        "frequency": 0.01,
         "consistency": 0.9,
         "age": 0,
-        "spread": 2,
+        "spread": 1,
         "score": 0.8533333333333333,
         "level": "high"
       },
       "locations": [
         {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 57,
-          "column": 21,
-          "isOutlier": false,
-          "confidence": 0.7366666666666666
-        },
-        {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 177,
+          "line": 176,
           "column": 21,
           "isOutlier": false,
           "confidence": 0.8533333333333333
@@ -2169,8 +1560,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.012Z",
-        "lastSeen": "2026-02-04T05:34:32.012Z",
+        "firstSeen": "2026-02-04T08:05:41.502Z",
+        "lastSeen": "2026-02-04T08:05:41.502Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2193,31 +1584,24 @@
         }
       },
       "confidence": {
-        "frequency": 0.03,
+        "frequency": 0.02,
         "consistency": 0.9,
         "age": 0,
-        "spread": 2,
+        "spread": 1,
         "score": 0.8533333333333333,
         "level": "high"
       },
       "locations": [
         {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 245,
-          "column": 41,
-          "isOutlier": false,
-          "confidence": 0.7366666666666666
-        },
-        {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 65,
+          "line": 64,
           "column": 41,
           "isOutlier": false,
           "confidence": 0.8533333333333333
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 208,
+          "line": 207,
           "column": 45,
           "isOutlier": false,
           "confidence": 0.8533333333333333
@@ -2225,8 +1609,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.012Z",
-        "lastSeen": "2026-02-04T05:34:32.012Z",
+        "firstSeen": "2026-02-04T08:05:41.502Z",
+        "lastSeen": "2026-02-04T08:05:41.502Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2697,11 +2081,11 @@
         }
       },
       "confidence": {
-        "frequency": 0.16,
+        "frequency": 0.03,
         "consistency": 0.9,
         "age": 0,
-        "spread": 6,
-        "score": 0.9408333333333333,
+        "spread": 2,
+        "score": 0.8999999999999999,
         "level": "high"
       },
       "locations": [
@@ -2713,115 +2097,24 @@
           "confidence": 0.8999999999999999
         },
         {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 215,
-          "column": 15,
-          "isOutlier": false,
-          "confidence": 0.9408333333333333
-        },
-        {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 145,
-          "column": 94,
-          "isOutlier": false,
-          "confidence": 0.7790909090909091
-        },
-        {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 167,
-          "column": 139,
-          "isOutlier": false,
-          "confidence": 0.7790909090909091
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 170,
-          "column": 18,
-          "isOutlier": false,
-          "confidence": 0.7569565217391304
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 170,
-          "column": 50,
-          "isOutlier": false,
-          "confidence": 0.7569565217391304
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 170,
-          "column": 69,
-          "isOutlier": false,
-          "confidence": 0.7569565217391304
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 170,
-          "column": 91,
-          "isOutlier": false,
-          "confidence": 0.7569565217391304
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 170,
-          "column": 149,
-          "isOutlier": false,
-          "confidence": 0.7569565217391304
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 168,
-          "column": 199,
-          "isOutlier": false,
-          "confidence": 0.7569565217391304
-        },
-        {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 71,
+          "line": 70,
           "column": 68,
           "isOutlier": false,
           "confidence": 0.7949999999999999
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 97,
+          "line": 96,
           "column": 67,
           "isOutlier": false,
           "confidence": 0.7949999999999999
-        },
-        {
-          "file": ".github/workflows/project-automation.yml",
-          "line": 51,
-          "column": 112,
-          "isOutlier": false,
-          "confidence": 0.89
-        },
-        {
-          "file": ".github/workflows/project-automation.yml",
-          "line": 115,
-          "column": 18,
-          "isOutlier": false,
-          "confidence": 0.89
-        },
-        {
-          "file": ".github/workflows/project-automation.yml",
-          "line": 174,
-          "column": 18,
-          "isOutlier": false,
-          "confidence": 0.89
-        },
-        {
-          "file": ".github/workflows/project-automation.yml",
-          "line": 310,
-          "column": 20,
-          "isOutlier": false,
-          "confidence": 0.89
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.009Z",
-        "lastSeen": "2026-02-04T05:34:32.009Z",
+        "firstSeen": "2026-02-04T08:05:41.502Z",
+        "lastSeen": "2026-02-04T08:05:41.502Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2844,11 +2137,11 @@
         }
       },
       "confidence": {
-        "frequency": 0.3,
+        "frequency": 0.06,
         "consistency": 0.9,
         "age": 0,
-        "spread": 6,
-        "score": 0.95,
+        "spread": 2,
+        "score": 0.8825,
         "level": "high"
       },
       "locations": [
@@ -2860,108 +2153,24 @@
           "confidence": 0.8825
         },
         {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 215,
-          "column": 15,
-          "isOutlier": false,
-          "confidence": 0.97
-        },
-        {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 145,
-          "column": 94,
-          "isOutlier": false,
-          "confidence": 0.7815384615384615
-        },
-        {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 167,
-          "column": 139,
-          "isOutlier": false,
-          "confidence": 0.7815384615384615
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 170,
-          "column": 18,
-          "isOutlier": false,
-          "confidence": 0.7313636363636363
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 170,
-          "column": 50,
-          "isOutlier": false,
-          "confidence": 0.7313636363636363
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 170,
-          "column": 69,
-          "isOutlier": false,
-          "confidence": 0.7313636363636363
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 170,
-          "column": 91,
-          "isOutlier": false,
-          "confidence": 0.7313636363636363
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 170,
-          "column": 149,
-          "isOutlier": false,
-          "confidence": 0.7313636363636363
-        },
-        {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 97,
+          "line": 96,
           "column": 67,
           "isOutlier": false,
           "confidence": 0.8533333333333333
         },
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 71,
+          "line": 70,
           "column": 68,
           "isOutlier": false,
           "confidence": 0.8533333333333333
-        },
-        {
-          "file": ".github/workflows/project-automation.yml",
-          "line": 51,
-          "column": 112,
-          "isOutlier": false,
-          "confidence": 0.89
-        },
-        {
-          "file": ".github/workflows/project-automation.yml",
-          "line": 115,
-          "column": 18,
-          "isOutlier": false,
-          "confidence": 0.89
-        },
-        {
-          "file": ".github/workflows/project-automation.yml",
-          "line": 174,
-          "column": 18,
-          "isOutlier": false,
-          "confidence": 0.89
-        },
-        {
-          "file": ".github/workflows/project-automation.yml",
-          "line": 310,
-          "column": 20,
-          "isOutlier": false,
-          "confidence": 0.89
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.009Z",
-        "lastSeen": "2026-02-04T05:34:32.009Z",
+        "firstSeen": "2026-02-04T08:05:41.502Z",
+        "lastSeen": "2026-02-04T08:05:41.502Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -3002,8 +2211,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.010Z",
-        "lastSeen": "2026-02-04T05:34:32.010Z",
+        "firstSeen": "2026-02-04T08:05:41.502Z",
+        "lastSeen": "2026-02-04T08:05:41.502Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -3026,10 +2235,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.07,
+        "frequency": 0.02,
         "consistency": 0.9,
         "age": 0,
-        "spread": 3,
+        "spread": 1,
         "score": 0.95,
         "level": "high"
       },
@@ -3040,47 +2249,12 @@
           "column": 41,
           "isOutlier": false,
           "confidence": 0.97
-        },
-        {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 234,
-          "column": 216,
-          "isOutlier": false,
-          "confidence": 0.7366666666666666
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 119,
-          "column": 52,
-          "isOutlier": false,
-          "confidence": 0.7949999999999999
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 119,
-          "column": 241,
-          "isOutlier": false,
-          "confidence": 0.7949999999999999
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 149,
-          "column": 84,
-          "isOutlier": false,
-          "confidence": 0.7949999999999999
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 208,
-          "column": 92,
-          "isOutlier": false,
-          "confidence": 0.7949999999999999
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.010Z",
-        "lastSeen": "2026-02-04T05:34:32.010Z",
+        "firstSeen": "2026-02-04T08:05:41.502Z",
+        "lastSeen": "2026-02-04T08:05:41.502Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -3281,7 +2455,7 @@
       "locations": [
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 50,
+          "line": 49,
           "column": 27,
           "isOutlier": false,
           "confidence": 0.97
@@ -3289,8 +2463,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.013Z",
-        "lastSeen": "2026-02-04T05:34:32.013Z",
+        "firstSeen": "2026-02-04T08:05:41.502Z",
+        "lastSeen": "2026-02-04T08:05:41.502Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -3323,7 +2497,7 @@
       "locations": [
         {
           "file": ".github/workflows/pr-checks.yml",
-          "line": 50,
+          "line": 49,
           "column": 27,
           "isOutlier": false,
           "confidence": 0.97
@@ -3331,8 +2505,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.013Z",
-        "lastSeen": "2026-02-04T05:34:32.013Z",
+        "firstSeen": "2026-02-04T08:05:41.502Z",
+        "lastSeen": "2026-02-04T08:05:41.502Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -3343,6 +2517,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-04T05:41:56.102Z",
-  "checksum": "2c7bc66bdc1ba456"
+  "lastUpdated": "2026-02-04T08:05:41.512Z",
+  "checksum": "c47bd842480fa4ab"
 }
