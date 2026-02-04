@@ -205,6 +205,7 @@ The `UserApiKeyService` maps providers to environment variable names.
 ### Visible in UI (Settings → API Keys)
 
 **Common Providers:**
+
 | Provider | Environment Variable | Description |
 |----------|---------------------|-------------|
 | anthropic | ANTHROPIC_API_KEY | Claude models |
@@ -214,6 +215,7 @@ The `UserApiKeyService` maps providers to environment variable names.
 | openrouter | OPENROUTER_API_KEY | Multi-model proxy |
 
 **Other Providers:**
+
 | Provider | Environment Variable | Description |
 |----------|---------------------|-------------|
 | azure | AZURE_OPENAI_API_KEY | Azure-hosted OpenAI |
