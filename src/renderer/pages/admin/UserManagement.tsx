@@ -96,7 +96,7 @@ const UserManagement: React.FC = () => {
     {
       title: 'Username',
       dataIndex: 'username',
-      width: 160,
+      width: 140,
       render: (val: string, record: IAdminUser) => (
         <span>
           <strong>{val}</strong>
@@ -107,13 +107,14 @@ const UserManagement: React.FC = () => {
     {
       title: 'Email',
       dataIndex: 'email',
-      width: 220,
+      // Flexible width - will expand to fill remaining space
+      ellipsis: true,
       render: (val?: string) => val || '—',
     },
     {
       title: 'Role',
       dataIndex: 'role',
-      width: 100,
+      width: 80,
       render: (role: string) => (
         <Tag color={ROLE_COLORS[role] || 'gray'} size='small'>
           {role.toUpperCase()}
@@ -123,25 +124,24 @@ const UserManagement: React.FC = () => {
     {
       title: 'Auth',
       dataIndex: 'authMethod',
-      width: 100,
+      width: 70,
       render: (method: string) => <Tag size='small'>{method === 'oidc' ? 'EntraID' : 'Local'}</Tag>,
     },
     {
       title: 'Last Login',
       dataIndex: 'lastLogin',
-      width: 180,
-      render: (ts?: number) => formatTimestamp(ts),
+      width: 145,
+      render: (ts?: number) => <span className='text-xs'>{formatTimestamp(ts)}</span>,
     },
     {
       title: 'Created',
       dataIndex: 'createdAt',
-      width: 180,
-      render: (ts: number) => formatTimestamp(ts),
+      width: 145,
+      render: (ts: number) => <span className='text-xs'>{formatTimestamp(ts)}</span>,
     },
     {
       title: '',
-      width: 100,
-      fixed: 'right' as const,
+      width: 60,
       render: (_: unknown, record: IAdminUser) => (
         <Button
           type='text'
@@ -167,7 +167,7 @@ const UserManagement: React.FC = () => {
         </Button>
       </div>
 
-      <Table columns={columns} data={users} loading={loading} pagination={{ pageSize: 25, simple: true }} rowKey='id' size='small' scroll={{ x: 960 }} noDataElement={<div className='py-40px text-center color-gray-5'>No users found</div>} />
+      <Table columns={columns} data={users} loading={loading} pagination={{ pageSize: 25, simple: true }} rowKey='id' size='small' noDataElement={<div className='py-40px text-center color-gray-5'>No users found</div>} />
 
       <Modal title='Edit User Role' visible={!!editingUser} onOk={() => void handleRoleUpdate()} onCancel={() => setEditingUser(null)} confirmLoading={saving} autoFocus={false} style={{ maxWidth: 400 }}>
         {editingUser && (
