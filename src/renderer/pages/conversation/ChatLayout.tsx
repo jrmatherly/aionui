@@ -107,7 +107,7 @@ const ChatLayout: React.FC<{
         return stored === 'true';
       }
     } catch {
-      // 忽略错误
+      // Ignore error
     }
     return true; // Default collapsed
   });
@@ -154,7 +154,7 @@ const ChatLayout: React.FC<{
           try {
             localStorage.setItem(`workspace-preference-${conversationId}`, newState ? 'collapsed' : 'expanded');
           } catch {
-            // 忽略错误
+            // Ignore error
           }
         }
         return newState;
@@ -187,7 +187,7 @@ const ChatLayout: React.FC<{
             userPreference = stored;
           }
         } catch {
-          // 忽略错误
+          // Ignore error
         }
       }
 

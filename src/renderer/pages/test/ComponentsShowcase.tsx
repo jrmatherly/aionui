@@ -14,32 +14,32 @@ const ComponentsShowcase: React.FC = () => {
       {contextHolder}
 
       <div>
-        <h1 className='text-3xl font-bold mb-2'>AionUi 自定义组件样式展示</h1>
-        <p className='text-t-secondary'>展示所有在 arco-override.css 中自定义的组件样式</p>
+        <h1 className='text-3xl font-bold mb-2'>AionUi Custom Component Style Showcase</h1>
+        <p className='text-t-secondary'>Showcasing all custom component styles in arco-override.css</p>
       </div>
 
       {/* Message */}
       <section className='space-y-4'>
-        <h2 className='text-xl font-semibold'>Message - 消息提示</h2>
+        <h2 className='text-xl font-semibold'>Message - Notifications</h2>
         <div className='space-y-3'>
-          <Button type='primary' status='success' onClick={() => message.success('操作成功提示信息')} size='large'>
+          <Button type='primary' status='success' onClick={() => message.success('Operation successful')} size='large'>
             Success Message
           </Button>
-          <Button type='primary' status='warning' onClick={() => message.warning('警告提示信息')} size='large'>
+          <Button type='primary' status='warning' onClick={() => message.warning('Warning message')} size='large'>
             Warning Message
           </Button>
-          <Button type='primary' onClick={() => message.info('普通提示信息')} size='large'>
+          <Button type='primary' onClick={() => message.info('Info message')} size='large'>
             Info Message
           </Button>
-          <Button type='primary' status='danger' onClick={() => message.error('错误提示信息')} size='large'>
+          <Button type='primary' status='danger' onClick={() => message.error('Error message')} size='large'>
             Error Message
           </Button>
           <Button
             onClick={() => {
-              message.success('操作成功提示信息');
-              setTimeout(() => message.warning('警告提示信息'), 200);
-              setTimeout(() => message.info('普通提示信息'), 400);
-              setTimeout(() => message.error('错误提示信息'), 600);
+              message.success('Operation successful');
+              setTimeout(() => message.warning('Warning message'), 200);
+              setTimeout(() => message.info('Info message'), 400);
+              setTimeout(() => message.error('Error message'), 600);
             }}
             size='large'
           >
