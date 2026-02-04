@@ -225,6 +225,7 @@ const LoginPage: React.FC = () => {
       </div> */}
 
       <div className='login-page__card'>
+        {/* Language selector disabled - English only for now
         <label className='login-page__lang-select-wrapper' htmlFor='lang-select'>
           <select id='lang-select' className='login-page__lang-select' value={i18n.language} onChange={handleLanguageChange}>
             {supportedLanguages.map((lang) => (
@@ -234,6 +235,7 @@ const LoginPage: React.FC = () => {
             ))}
           </select>
         </label>
+        */}
 
         <div className='login-page__header'>
           <div className='login-page__logo'>
