@@ -29,11 +29,9 @@ export const ASSISTANT_PRESETS: AssistantPreset[] = [
     resourceDir: 'assistant/cowork',
     ruleFiles: {
       'en-US': 'cowork.md',
-      'zh-CN': 'cowork.md', // Use same file, content is simplified
     },
     skillFiles: {
       'en-US': 'cowork-skills.md',
-      'zh-CN': 'cowork-skills.zh-CN.md',
     },
     defaultEnabledSkills: ['skill-creator', 'pptx', 'docx', 'pdf', 'xlsx'],
     nameI18n: {
@@ -56,7 +54,6 @@ export const ASSISTANT_PRESETS: AssistantPreset[] = [
     resourceDir: 'assistant/pptx-generator',
     ruleFiles: {
       'en-US': 'pptx-generator.md',
-      'zh-CN': 'pptx-generator.zh-CN.md',
     },
     nameI18n: {
       'en-US': 'PPTX Generator',
@@ -78,7 +75,6 @@ export const ASSISTANT_PRESETS: AssistantPreset[] = [
     resourceDir: 'assistant/pdf-to-ppt',
     ruleFiles: {
       'en-US': 'pdf-to-ppt.md',
-      'zh-CN': 'pdf-to-ppt.zh-CN.md',
     },
     nameI18n: {
       'en-US': 'PDF to PPT',
@@ -100,7 +96,6 @@ export const ASSISTANT_PRESETS: AssistantPreset[] = [
     resourceDir: 'assistant/game-3d',
     ruleFiles: {
       'en-US': 'game-3d.md',
-      'zh-CN': 'game-3d.zh-CN.md',
     },
     nameI18n: {
       'en-US': '3D Game',
@@ -122,7 +117,6 @@ export const ASSISTANT_PRESETS: AssistantPreset[] = [
     resourceDir: 'assistant/ui-ux-pro-max',
     ruleFiles: {
       'en-US': 'ui-ux-pro-max.md',
-      'zh-CN': 'ui-ux-pro-max.zh-CN.md',
     },
     nameI18n: {
       'en-US': 'UI/UX Pro Max',
@@ -144,7 +138,6 @@ export const ASSISTANT_PRESETS: AssistantPreset[] = [
     resourceDir: 'assistant/planning-with-files',
     ruleFiles: {
       'en-US': 'planning-with-files.md',
-      'zh-CN': 'planning-with-files.zh-CN.md',
     },
     nameI18n: {
       'en-US': 'Planning with Files',
@@ -166,7 +159,6 @@ export const ASSISTANT_PRESETS: AssistantPreset[] = [
     resourceDir: 'assistant/human-3-coach',
     ruleFiles: {
       'en-US': 'human-3-coach.md',
-      'zh-CN': 'human-3-coach.zh-CN.md',
     },
     nameI18n: {
       'en-US': 'HUMAN 3.0 Coach',
@@ -188,11 +180,9 @@ export const ASSISTANT_PRESETS: AssistantPreset[] = [
     resourceDir: 'assistant/social-job-publisher',
     ruleFiles: {
       'en-US': 'social-job-publisher.md',
-      'zh-CN': 'social-job-publisher.zh-CN.md',
     },
     skillFiles: {
       'en-US': 'social-job-publisher-skills.md',
-      'zh-CN': 'social-job-publisher-skills.zh-CN.md',
     },
     defaultEnabledSkills: ['xiaohongshu-recruiter', 'x-recruiter'],
     nameI18n: {
@@ -215,11 +205,9 @@ export const ASSISTANT_PRESETS: AssistantPreset[] = [
     resourceDir: 'assistant/moltbook',
     ruleFiles: {
       'en-US': 'moltbook.md',
-      'zh-CN': 'moltbook.md',
     },
     skillFiles: {
       'en-US': 'moltbook-skills.md',
-      'zh-CN': 'moltbook-skills.zh-CN.md',
     },
     defaultEnabledSkills: ['moltbook'],
     nameI18n: {
@@ -242,7 +230,6 @@ export const ASSISTANT_PRESETS: AssistantPreset[] = [
     resourceDir: 'assistant/beautiful-mermaid',
     ruleFiles: {
       'en-US': 'beautiful-mermaid.md',
-      'zh-CN': 'beautiful-mermaid.zh-CN.md',
     },
     defaultEnabledSkills: ['mermaid'],
     nameI18n: {
