@@ -173,6 +173,25 @@ my-video
 .scratchpad/
 .local_docs/
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+.pytype/
+*.egg-info/
+*.egg
+.eggs/
+.venv/
+venv/
+ENV/
+.uv/
+
+
 # Drift Detect — track config + approved patterns, ignore transient data
 .drift/manifest.json
 .drift/source-of-truth.json
@@ -209,4 +228,4 @@ mise.local.lock
 
 # Docker — real group mappings contain tenant-specific EntraID group IDs
 deploy/docker/group-mappings.json
-# Note: .dockerignore is intentionally trackedSTYLING-PLAYBOOK.md
+# Note: .dockerignore is intentionally tracked
