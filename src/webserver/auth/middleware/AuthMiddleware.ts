@@ -12,6 +12,18 @@ import { createAuthMiddleware } from './TokenMiddleware';
 // Express Request type extension is defined in src/types/express.d.ts
 
 /**
+ * Sanitize a string for safe logging (prevents log injection attacks).
+ * Removes newlines, carriage returns, and control characters that could
+ * be used to forge log entries or inject ANSI escape sequences.
+ */
+function sanitizeForLog(str: string | undefined): string {
+  if (!str) return '';
+  // Remove control characters (0x00-0x1F, 0x7F-0x9F) including newlines and ANSI escapes
+  // eslint-disable-next-line no-control-regex
+  return str.replace(/[\u0000-\u001f\u007f-\u009f]/g, '');
+}
+
+/**
  * Authentication middleware class
  */
 export class AuthMiddleware {
@@ -79,14 +91,17 @@ export class AuthMiddleware {
    */
   public static requestLoggingMiddleware(req: Request, res: Response, next: NextFunction): void {
     const start = Date.now();
-    const ip = req.ip || req.connection.remoteAddress || 'unknown';
+    // Sanitize user-controlled values to prevent log injection
+    const method = sanitizeForLog(req.method);
+    const url = sanitizeForLog(req.url);
+    const ip = sanitizeForLog(req.ip || req.connection.remoteAddress || 'unknown');
 
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - ${ip}`);
+    console.log(`[${new Date().toISOString()}] ${method} ${url} - ${ip}`);
 
     // Log response time
     res.on('finish', () => {
       const duration = Date.now() - start;
-      console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - ${res.statusCode} - ${duration}ms`);
+      console.log(`[${new Date().toISOString()}] ${method} ${url} - ${res.statusCode} - ${duration}ms`);
     });
 
     next();

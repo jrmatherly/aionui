@@ -1,11 +1,20 @@
 /**
  * @author Jason Matherly
- * @modified 2026-02-03
+ * @modified 2026-02-05
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import type { NextFunction, Request, Response } from 'express';
 import { SERVER_CONFIG } from '@/webserver/config/constants';
+
+/**
+ * Sanitize a string for safe logging (prevents log injection attacks).
+ */
+function sanitizeForLog(str: string | undefined): string {
+  if (!str) return '';
+  // eslint-disable-next-line no-control-regex
+  return str.replace(/[\u0000-\u001f\u007f-\u009f]/g, '');
+}
 
 /**
  * Origin-based CSRF guard for endpoints excluded from tiny-csrf.
@@ -82,7 +91,7 @@ export function originGuard(req: Request, res: Response, next: NextFunction): vo
       next();
       return;
     }
-    console.warn(`[OriginGuard] Blocked request from origin: ${origin} to ${req.method} ${req.path}`);
+    console.warn(`[OriginGuard] Blocked request from origin: ${sanitizeForLog(origin)} to ${sanitizeForLog(req.method)} ${sanitizeForLog(req.path)}`);
     res.status(403).json({ success: false, error: 'Forbidden: cross-origin request blocked' });
     return;
   }
@@ -98,7 +107,7 @@ export function originGuard(req: Request, res: Response, next: NextFunction): vo
     } catch {
       /* invalid referer */
     }
-    console.warn(`[OriginGuard] Blocked request from referer: ${referer} to ${req.method} ${req.path}`);
+    console.warn(`[OriginGuard] Blocked request from referer: ${sanitizeForLog(referer)} to ${sanitizeForLog(req.method)} ${sanitizeForLog(req.path)}`);
     res.status(403).json({ success: false, error: 'Forbidden: cross-origin request blocked' });
     return;
   }
