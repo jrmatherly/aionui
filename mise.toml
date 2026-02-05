@@ -45,21 +45,22 @@ experimental = true
 # mise.lock is committed to version control (see dev-tools/mise-lock docs).
 lockfile = true
 
-# Show which tools are active when entering the project directory.
-# Helps developers confirm they have the right Node/npm versions.
-status.show_tools = true
+# Disable tool status display — noisy when global config has many tools
+# Use `mise ls` to see active tools for this project
+status.show_tools = false
 
 # Warn when dependencies are stale (e.g., package-lock.json newer than node_modules/).
 # Works with [prepare.npm] below.
 status.show_prepare_stale = true
 
 [hooks]
-# Auto-install tools when entering the project directory
-enter = "mise install -q"
+# Only install project-specific tools (node, git-cliff) — not inherited global tools
+# This prevents slow startup and terminal issues with large global configs
+enter = "mise install -q node git-cliff 2>/dev/null || true"
 
 # Upgrade npm inside Node's prefix after tool install.
-# Only runs the install when the current npm major version doesn't match.
-postinstall = 'npm -v 2>/dev/null | grep -q "^11\\." || npm install -g npm@11 >/dev/null 2>&1'
+# Only runs when npm major version doesn't match expected.
+postinstall = 'npm -v 2>/dev/null | grep -q "^11\\." || npm install -g npm@11 >/dev/null 2>&1 || true'
 
 # ─── Prepare ────────────────────────────────────────────────────────────────
 # Auto-detect stale dependencies and install them before task execution.
