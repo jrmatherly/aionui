@@ -198,9 +198,9 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 # Create data directory, X11 socket dir, and D-Bus system bus dir
 # /tmp/.X11-unix — needed by Xvfb (avoids _XSERVTransmkdir error when running as non-root)
 # /run/dbus — needed for D-Bus system bus (avoids Electron dbus/bus.cc errors)
-RUN mkdir -p /home/aionui/.config/AionUi /tmp/.X11-unix /run/dbus \
+RUN mkdir -p /home/aionui/.config/AionUi /tmp/.X11-unix /run/dbus /var/log/aionui \
     && chmod 1777 /tmp/.X11-unix \
-    && chown -R aionui:aionui /home/aionui /app
+    && chown -R aionui:aionui /home/aionui /app /var/log/aionui
 
 # Switch to non-root user
 USER aionui

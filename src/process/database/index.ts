@@ -13,6 +13,7 @@ import BetterSqlite3 from 'better-sqlite3';
 import fs from 'fs';
 import path from 'path';
 import { runMigrations as executeMigrations } from './migrations';
+import { syncLoggingConfigFromEnv } from './migrations/v17_add_logging_config';
 import { CURRENT_DB_VERSION, getDatabaseVersion, initSchema, setDatabaseVersion } from './schema';
 import type { IConversationRow, IMessageRow, IOrgDirectories, IOrgMember, IOrganization, IPaginatedResult, IQueryResult, ITeam, ITeamDirectories, ITeamMember, IUser, IUserDirectories, MemberRole, TChatConversation, TMessage } from './types';
 import { conversationToRow, messageToRow, rowToConversation, rowToMessage } from './types';
@@ -87,6 +88,10 @@ export class AionUIDatabase {
       }
 
       this.ensureSystemUser();
+
+      // Sync logging_config from environment variables on every startup
+      // so .env / docker-compose changes are reflected in the admin UI.
+      this.syncLoggingEnv();
     } catch (error) {
       log.error({ err: error }, 'Initialization failed');
       throw error;
@@ -95,6 +100,16 @@ export class AionUIDatabase {
 
   private runMigrations(from: number, to: number): void {
     executeMigrations(this.db, from, to);
+  }
+
+  /** Sync logging_config default row from env vars (runs every startup). */
+  private syncLoggingEnv(): void {
+    try {
+      syncLoggingConfigFromEnv(this.db);
+    } catch (error) {
+      // Non-fatal — table may not exist on very old DBs being migrated
+      log.warn({ err: error }, 'Could not sync logging config from env');
+    }
   }
 
   private ensureSystemUser(): void {
