@@ -7,11 +7,14 @@
 import type { Context } from 'grammy';
 import { Bot, GrammyError, HttpError } from 'grammy';
 
+import { createLogger } from '@/common/logger';
 import type { UserFromGetMe } from 'grammy/types';
 import type { BotInfo, IChannelPluginConfig, IUnifiedOutgoingMessage, PluginType } from '../../types';
 import { BasePlugin } from '../BasePlugin';
 import { TELEGRAM_MESSAGE_LIMIT, splitMessage, toTelegramSendParams, toUnifiedIncomingMessage } from './TelegramAdapter';
 import { extractAction, extractCategory } from './TelegramKeyboards';
+
+const log = createLogger('TelegramPlugin');
 
 /**
  * TelegramPlugin - Telegram Bot integration for Personal Assistant
@@ -37,7 +40,7 @@ export class TelegramPlugin extends BasePlugin {
    */
   protected async onInitialize(config: IChannelPluginConfig): Promise<void> {
     const token = config.credentials?.token;
-    console.log(`[TelegramPlugin] onInitialize called, hasToken=${!!token}, pluginId=${config.id}`);
+    log.debug({ hasToken: !!token, pluginId: config.id }, 'onInitialize called');
 
     if (!token) {
       throw new Error('Telegram bot token is required');
@@ -45,13 +48,13 @@ export class TelegramPlugin extends BasePlugin {
 
     // Create bot instance
     this.bot = new Bot(token);
-    console.log(`[TelegramPlugin] Bot instance created`);
+    log.info('Bot instance created');
 
     // Setup handlers
     this.setupHandlers();
-    console.log(`[TelegramPlugin] Handlers setup complete`);
+    log.debug('Handlers setup complete');
 
-    console.log(`[TelegramPlugin] Initialized plugin ${config.id}`);
+    log.info({ pluginId: config.id }, 'Initialized plugin');
   }
 
   /**
@@ -68,15 +71,15 @@ export class TelegramPlugin extends BasePlugin {
     try {
       // Get bot info first to validate the token
       this.botInfo = await this.bot.api.getMe();
-      console.log(`[TelegramPlugin] Bot info: @${this.botInfo.username}`);
+      log.info({ username: this.botInfo.username }, 'Bot info retrieved');
 
       // Start polling - grammY handles webhook deletion internally
       await this.startPolling();
 
       this.reconnectAttempts = 0;
-      console.log(`[TelegramPlugin] Started polling for @${this.botInfo.username}`);
+      log.info({ username: this.botInfo.username }, 'Started polling');
     } catch (error) {
-      console.error('[TelegramPlugin] Failed to start:', error);
+      log.error({ err: error }, 'Failed to start');
       throw error;
     }
   }
@@ -95,7 +98,7 @@ export class TelegramPlugin extends BasePlugin {
     this.activeUsers.clear();
     this.reconnectAttempts = 0;
 
-    console.log('[TelegramPlugin] Stopped and cleaned up');
+    log.info('Stopped and cleaned up');
   }
 
   /**
@@ -139,7 +142,7 @@ export class TelegramPlugin extends BasePlugin {
         const result = await this.bot.api.sendMessage(chatId, chunks[i], chunkOptions);
         lastMessageId = result.message_id.toString();
       } catch (error) {
-        console.error(`[TelegramPlugin] Failed to send message chunk ${i + 1}/${chunks.length}:`, error);
+        log.error({ err: error, chunkIndex: i + 1, totalChunks: chunks.length }, 'Failed to send message chunk');
         throw error;
       }
     }
@@ -170,7 +173,7 @@ export class TelegramPlugin extends BasePlugin {
       if (error instanceof GrammyError && error.description?.includes('message is not modified')) {
         return;
       }
-      console.error('[TelegramPlugin] Failed to edit message:', error);
+      log.error({ err: error }, 'Failed to edit message');
       throw error;
     }
   }
@@ -181,12 +184,12 @@ export class TelegramPlugin extends BasePlugin {
   private setupHandlers(): void {
     if (!this.bot) return;
 
-    console.log(`[TelegramPlugin] Setting up handlers on bot instance...`);
+    log.debug('Setting up handlers on bot instance...');
 
     // Debug: Log ALL incoming updates (must be first middleware)
     this.bot.use(async (ctx, next) => {
       const updateType = ctx.message ? 'message' : ctx.callbackQuery ? 'callback_query' : 'other';
-      console.log(`[TelegramPlugin] *** RAW UPDATE RECEIVED *** type=${updateType}, chatId=${ctx.chat?.id}`);
+      log.debug({ updateType, chatId: ctx.chat?.id }, 'RAW UPDATE RECEIVED');
       await next();
     });
 
@@ -197,13 +200,14 @@ export class TelegramPlugin extends BasePlugin {
 
     // Handle all text messages
     this.bot.on('message:text', async (ctx) => {
-      console.log(`[TelegramPlugin] *** message:text event received ***`);
+      log.debug('message:text event received');
       await this.handleTextMessage(ctx);
     });
 
     // Debug: Log all updates received
     this.bot.on('message', (ctx, next) => {
-      console.log(`[TelegramPlugin] *** message event received, type: ${ctx.message?.text ? 'text' : ctx.message?.photo ? 'photo' : 'other'} ***`);
+      const messageType = ctx.message?.text ? 'text' : ctx.message?.photo ? 'photo' : 'other';
+      log.debug({ messageType }, 'message event received');
       return next();
     });
 

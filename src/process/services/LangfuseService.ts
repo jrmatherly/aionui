@@ -35,7 +35,6 @@
 
 import { createLogger } from '@/common/logger';
 import Langfuse from 'langfuse';
-import type { CreateGenerationBody, CreateSpanBody, CreateTraceBody } from 'langfuse';
 
 const log = createLogger('Langfuse');
 
@@ -130,7 +129,7 @@ class LangfuseServiceImpl {
         userId: params.userId,
         sessionId: params.sessionId,
         metadata: params.metadata,
-      } as CreateTraceBody);
+      });
 
       trace.generation({
         name: params.name,
@@ -144,7 +143,7 @@ class LangfuseServiceImpl {
               totalTokens: params.totalTokens,
             }
           : undefined,
-      } as CreateGenerationBody);
+      });
     } catch (error) {
       log.error({ err: error }, 'Failed to trace generation');
     }
@@ -177,13 +176,13 @@ class LangfuseServiceImpl {
           ...params.metadata,
           messageCount: params.steps.length,
         },
-      } as CreateTraceBody);
+      });
 
       params.steps.forEach((step, index) => {
         trace.span({
           name: `${params.name}-step-${index}`,
           input: { role: step.role, content: step.content },
-        } as CreateSpanBody);
+        });
       });
     } catch (error) {
       log.error({ err: error }, 'Failed to trace conversation');

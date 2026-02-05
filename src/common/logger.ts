@@ -75,7 +75,7 @@ function resolveFormat(): 'json' | 'pretty' {
  *
  * In production: JSON to stdout (Docker/k8s log drivers handle the rest)
  * In development: Pretty-printed to stdout
- * If LOG_FILE is set: Also write JSON to file (always structured, regardless of format)
+ * If LOG_FILE is set: Also write JSON to file with rotation (pino-roll)
  * If SYSLOG_ENABLED: Forward to syslog/SIEM (RFC 5424 compliant)
  */
 function buildTransport(): pino.TransportMultiOptions | pino.TransportSingleOptions | undefined {
@@ -102,11 +102,25 @@ function buildTransport(): pino.TransportMultiOptions | pino.TransportSingleOpti
     });
   }
 
-  // Optional file output (always JSON for machine parsing)
+  // Optional file output with rotation (always JSON for machine parsing)
   if (logFile) {
+    const maxSizeMB = parseInt(process.env.LOG_MAX_SIZE_MB || '100', 10);
+    const retentionDays = parseInt(process.env.LOG_RETENTION_DAYS || '30', 10);
+
     targets.push({
-      target: 'pino/file',
-      options: { destination: logFile, mkdir: true },
+      target: 'pino-roll',
+      options: {
+        file: logFile,
+        // Rotate by size (MB)
+        size: `${maxSizeMB}M`,
+        // Rotate daily
+        frequency: 'daily',
+        // Keep files for retention period (approximate via maxFiles)
+        // Daily rotation → maxFiles = retentionDays
+        // Note: pino-roll doesn't have built-in retention, but maxFiles limits old file count
+        maxFiles: retentionDays,
+        mkdir: true,
+      },
     });
   }
 
