@@ -28,6 +28,9 @@
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
+import { createLogger } from '@/common/logger';
+
+const log = createLogger('OTEL');
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 import { NodeSDK } from '@opentelemetry/sdk-node';
@@ -82,7 +85,7 @@ let sdk: NodeSDK | null = null;
  */
 export function initializeOtel(): NodeSDK | null {
   if (!isOtelEnabled()) {
-    console.log('[OTEL] OpenTelemetry disabled (OTEL_ENABLED != true)');
+    log.info('OpenTelemetry disabled (OTEL_ENABLED != true)');
     return null;
   }
 
@@ -96,8 +99,8 @@ export function initializeOtel(): NodeSDK | null {
     const serviceVersion = getServiceVersion();
     const otlpEndpoint = getOtlpEndpoint();
 
-    console.log(`[OTEL] Initializing OpenTelemetry for service: ${serviceName} v${serviceVersion}`);
-    console.log(`[OTEL] OTLP endpoint: ${otlpEndpoint}`);
+    log.info({ serviceName, serviceVersion }, 'Initializing OpenTelemetry');
+    log.info({ endpoint: otlpEndpoint }, 'OTLP endpoint');
 
     // Create trace exporter
     const traceExporter = new OTLPTraceExporter({
@@ -125,15 +128,15 @@ export function initializeOtel(): NodeSDK | null {
 
     // Start the SDK
     sdk.start();
-    console.log('[OTEL] OpenTelemetry SDK started successfully');
+    log.info('OpenTelemetry SDK started successfully');
 
     // Graceful shutdown on process termination
     process.on('SIGTERM', async () => {
       try {
         await sdk?.shutdown();
-        console.log('[OTEL] OpenTelemetry SDK shut down successfully');
+        log.info('OpenTelemetry SDK shut down successfully');
       } catch (error) {
-        console.error('[OTEL] Error shutting down OpenTelemetry SDK:', error);
+        log.error({ err: error }, 'Error shutting down OpenTelemetry SDK');
       } finally {
         process.exit(0);
       }
@@ -141,7 +144,7 @@ export function initializeOtel(): NodeSDK | null {
 
     return sdk;
   } catch (error) {
-    console.error('[OTEL] Failed to initialize OpenTelemetry:', error);
+    log.error({ err: error }, 'Failed to initialize OpenTelemetry');
     return null;
   }
 }

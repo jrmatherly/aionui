@@ -5,12 +5,15 @@
  */
 
 import { DEFAULT_IMAGE_EXTENSION, MIME_TO_EXT_MAP } from '@/common/constants';
+import { createLogger } from '@/common/logger';
 import type { CompletedToolCall, Config, GeminiClient, ServerGeminiStreamEvent, ToolCallRequestInfo } from '@office-ai/aioncli-core';
 import { GeminiEventType as ServerGeminiEventType, executeToolCall } from '@office-ai/aioncli-core';
 import * as fs from 'fs';
 import * as path from 'path';
 import { parseAndFormatApiError } from './cli/errorParsing';
 import { DEFAULT_STREAM_RESILIENCE_CONFIG, StreamMonitor, globalToolCallGuard, type StreamConnectionEvent, type StreamResilienceConfig } from './cli/streamResilience';
+
+const log = createLogger('GeminiUtils');
 
 enum StreamProcessingStatus {
   Completed,
@@ -67,9 +70,9 @@ export const processGeminiStreamEvents = async (stream: AsyncIterable<ServerGemi
   const monitor = new StreamMonitor(monitorConfig, (event) => {
     // Handle connection state changes
     if (event.type === 'state_change') {
-      console.debug(`[StreamMonitor] State changed to: ${event.state}`, event.reason || '');
+      log.debug({ state: event.state, reason: event.reason || '' }, 'State changed');
     } else if (event.type === 'heartbeat_timeout') {
-      console.warn(`[StreamMonitor] Heartbeat timeout detected, last event: ${event.lastEventTime}`);
+      log.warn({ lastEventTime: event.lastEventTime }, 'Heartbeat timeout detected');
     }
     // Pass to external listener
     monitorOptions?.onConnectionEvent?.(event);
@@ -84,7 +87,7 @@ export const processGeminiStreamEvents = async (stream: AsyncIterable<ServerGemi
 
       // Check for heartbeat timeout (long period without data)
       if (monitor.isHeartbeatTimeout()) {
-        console.warn('[StreamMonitor] Stream heartbeat timeout, connection may be stale');
+        log.warn('Stream heartbeat timeout, connection may be stale');
         // Do not interrupt immediately; let upper layer handle it
       }
 
@@ -141,7 +144,7 @@ export const processGeminiStreamEvents = async (stream: AsyncIterable<ServerGemi
                   data: `![Generated Image](${relativePath})`,
                 });
               } catch (error) {
-                console.error('[InlineData] Failed to save image:', error);
+                log.error({ err: error }, 'Failed to save image');
                 onStreamEvent({
                   type: ServerGeminiEventType.Error,
                   data: `Failed to save generated image: ${error instanceof Error ? error.message : String(error)}`,
@@ -236,7 +239,7 @@ export const processGeminiStreamEvents = async (stream: AsyncIterable<ServerGemi
           // Some event types may not be handled yet
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const _unhandled: any = event;
-          console.warn('Unhandled event type:', _unhandled);
+          log.warn({ event: _unhandled }, 'Unhandled event type');
           break;
         }
       }
@@ -252,7 +255,7 @@ export const processGeminiStreamEvents = async (stream: AsyncIterable<ServerGemi
 
     // Check for connection-related errors
     if (errorMessage.includes('fetch failed') || errorMessage.includes('network') || errorMessage.includes('timeout') || errorMessage.includes('ECONNRESET') || errorMessage.includes('socket hang up')) {
-      console.error('[StreamMonitor] Connection error detected:', errorMessage);
+      log.error({ errorMessage }, 'Connection error detected');
       return StreamProcessingStatus.ConnectionLost;
     }
 
@@ -413,7 +416,7 @@ export const handleCompletedTools = (completedToolCallsFromScheduler: CompletedT
   const allToolsCancelled = geminiTools.every((tc) => {
     // If tool is still protected, don't consider it cancelled
     if (globalToolCallGuard.isProtected(tc.request.callId)) {
-      console.debug(`[ToolCallGuard] Tool ${tc.request.callId} is protected, not treating as cancelled`);
+      log.debug({ callId: tc.request.callId }, 'Tool is protected, not treating as cancelled');
       return false;
     }
     return tc.status === 'cancelled';

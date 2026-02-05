@@ -1,8 +1,11 @@
 import { acpConversation } from '@/common/ipcBridge';
 import type { IMcpServer } from '@/common/storage';
+import { createLogger } from '@/renderer/utils/logger';
 import React, { useEffect, useState } from 'react';
 import JsonImportModal from './JsonImportModal';
 import OneClickImportModal from './OneClickImportModal';
+
+const log = createLogger('AddMcpServerModal');
 
 interface AddMcpServerModalProps {
   visible: boolean;
@@ -39,7 +42,7 @@ const AddMcpServerModal: React.FC<AddMcpServerModalProps> = ({ visible, server, 
             setShowJsonModal(true);
           }
         } catch (error) {
-          console.error('[AddMcpServerModal] Failed to load agents:', error);
+          log.error({ err: error }, 'Failed to load agents');
           setShowJsonModal(true);
         }
       };

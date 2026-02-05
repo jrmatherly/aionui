@@ -1,11 +1,14 @@
 import { acpConversation } from '@/common/ipcBridge';
 import type { IMcpServer } from '@/common/storage';
 import { useMcpAgentStatus, useMcpConnection, useMcpModal, useMcpOAuth, useMcpOperations, useMcpServerCRUD, useMcpServers } from '@/renderer/hooks/mcp';
+import { createLogger } from '@/renderer/utils/logger';
 import { Button, Collapse, Dropdown, Menu, Modal } from '@arco-design/web-react';
 import { Down, Plus } from '@icon-park/react';
 import React from 'react';
 import AddMcpServerModal from '../components/AddMcpServerModal';
 import McpServerItem from './McpServerItem';
+
+const log = createLogger('McpManagement');
 
 interface McpManagementProps {
   message: ReturnType<typeof import('@arco-design/web-react').Message.useMessage>[0];
@@ -121,7 +124,7 @@ const McpManagement: React.FC<McpManagementProps> = ({ message }) => {
           setDetectedAgents(response.data.map((agent) => ({ backend: agent.backend, name: agent.name })));
         }
       } catch (error) {
-        console.error('Failed to load agents:', error);
+        log.error({ err: error }, 'Failed to load agents');
       }
     };
     void loadAgents();

@@ -1,10 +1,13 @@
 import type { IMcpServer, IMcpServerTransport, IMcpTool } from '@/common/storage';
 import AionModal from '@/renderer/components/base/AionModal';
 import { useThemeContext } from '@/renderer/context/ThemeContext';
+import { createLogger } from '@/renderer/utils/logger';
 import { Alert, Button } from '@arco-design/web-react';
 import { json } from '@codemirror/lang-json';
 import CodeMirror from '@uiw/react-codemirror';
 import React, { useCallback, useState } from 'react';
+
+const log = createLogger('JsonImportModal');
 interface JsonImportModalProps {
   visible: boolean;
   server?: IMcpServer;
@@ -89,13 +92,13 @@ const JsonImportModal: React.FC<JsonImportModalProps> = ({ visible, server, onCa
 
     if (Array.isArray(mcpServers)) {
       // TODO: Support array format import
-      console.warn('Array format not supported yet');
+      log.warn('Array format not supported yet');
       return;
     }
 
     const serverKeys = Object.keys(mcpServers);
     if (serverKeys.length === 0) {
-      console.warn('No MCP server found in configuration');
+      log.warn('No MCP server found in configuration');
       return;
     }
 
@@ -256,7 +259,7 @@ const JsonImportModal: React.FC<JsonImportModalProps> = ({ visible, server, onCa
                       setCopyStatus('success');
                       setTimeout(() => setCopyStatus('idle'), 2000);
                     } catch (err) {
-                      console.error('Copy failed:', err);
+                      log.error({ err }, 'Copy failed');
                       setCopyStatus('error');
                       setTimeout(() => setCopyStatus('idle'), 2000);
                     }

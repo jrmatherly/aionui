@@ -6,7 +6,10 @@
 
 // hooks/useColorScheme.ts - Color Scheme Management Hook
 import { ConfigStorage } from '@/common/storage';
+import { createLogger } from '@/renderer/utils/logger';
 import { useCallback, useEffect, useState } from 'react';
+
+const log = createLogger('useColorScheme');
 
 // Supported color schemes
 export type ColorScheme = 'default';
@@ -24,7 +27,7 @@ const initColorScheme = async () => {
     document.documentElement.setAttribute('data-color-scheme', initialScheme);
     return initialScheme;
   } catch (error) {
-    console.error('Failed to load initial color scheme:', error);
+    log.error({ err: error }, 'Failed to load initial color scheme');
     document.documentElement.setAttribute('data-color-scheme', DEFAULT_COLOR_SCHEME);
     return DEFAULT_COLOR_SCHEME;
   }
@@ -62,7 +65,7 @@ const useColorScheme = (): [ColorScheme, (scheme: ColorScheme) => Promise<void>]
         applyColorScheme(newScheme);
         await ConfigStorage.set('colorScheme', newScheme);
       } catch (error) {
-        console.error('Failed to save color scheme:', error);
+        log.error({ err: error, newScheme }, 'Failed to save color scheme');
         // Revert on error
         setColorSchemeState(colorScheme);
         applyColorScheme(colorScheme);
@@ -82,7 +85,7 @@ const useColorScheme = (): [ColorScheme, (scheme: ColorScheme) => Promise<void>]
           setColorSchemeState(initialScheme);
         })
         .catch((error) => {
-          console.error('Failed to initialize color scheme:', error);
+          log.error({ err: error }, 'Failed to initialize color scheme');
         });
     }
   }, []);

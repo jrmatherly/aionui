@@ -12,6 +12,7 @@ import { AuthType, clearOauthClientCache, CoreToolScheduler, FileDiscoveryServic
 import fs from 'fs';
 // src/core/ConfigManager.ts
 import { AIONUI_FILES_MARKER } from '@/common/constants';
+import { geminiLogger as log } from '@/common/logger';
 import { NavigationInterceptor } from '@/common/navigation';
 import type { TProviderWithModel } from '@/common/storage';
 import { uuid } from '@/common/utils';
@@ -262,7 +263,7 @@ export class GeminiAgent {
     if (this.enabledSkills && this.enabledSkills.length > 0) {
       const enabledSet = new Set(this.enabledSkills);
       this.config.getSkillManager().filterSkills((skill) => enabledSet.has(skill.name));
-      console.log(`[GeminiAgent] Filtered skills after initialize: ${this.enabledSkills.join(', ')}`);
+      log.info({ skills: this.enabledSkills.join(', ') }, 'Filtered skills after initialize');
     }
 
     // For Google OAuth auth, clear cached OAuth client to ensure fresh credentials
@@ -276,15 +277,15 @@ export class GeminiAgent {
 
     // Inject presetRules into userMemory at initialization
     // Rules define system behavior, should be effective from session start
-    console.log(`[GeminiAgent] presetRules length: ${this.presetRules?.length || 0}`);
+    log.debug({ presetRulesLength: this.presetRules?.length || 0 }, 'presetRules length');
     if (this.presetRules) {
       const currentMemory = this.config.getUserMemory();
       const rulesSection = `[Assistant System Rules]\n${this.presetRules}`;
       const combined = currentMemory ? `${rulesSection}\n\n${currentMemory}` : rulesSection;
       this.config.setUserMemory(combined);
-      console.log(`[GeminiAgent] Injected presetRules into userMemory, total length: ${combined.length}`);
+      log.info({ combinedLength: combined.length }, 'Injected presetRules into userMemory');
     } else {
-      console.log(`[GeminiAgent] No presetRules to inject`);
+      log.debug('No presetRules to inject');
     }
 
     // Note: Skills are prepended to the first message in send() method
@@ -388,12 +389,12 @@ export class GeminiAgent {
     // Stream connection event handling
     const onConnectionEvent = (event: StreamConnectionEvent) => {
       if (event.type === 'heartbeat_timeout') {
-        console.warn(`[GeminiAgent] Stream heartbeat timeout at ${new Date(event.lastEventTime).toISOString()}`);
+        log.warn({ timestamp: new Date(event.lastEventTime).toISOString() }, 'Stream heartbeat timeout');
         if (!heartbeatWarned) {
           heartbeatWarned = true;
         }
       } else if (event.type === 'state_change' && event.state === 'failed') {
-        console.error(`[GeminiAgent] Stream connection failed: ${event.reason}`);
+        log.error({ reason: event.reason }, 'Stream connection failed');
         this.onStreamEvent({
           type: 'error',
           data: `Connection lost: ${event.reason}. Please try again.`,
@@ -422,7 +423,7 @@ export class GeminiAgent {
             retryable: boolean;
           };
           if (eventData.retryable && retryCount < MAX_INVALID_STREAM_RETRIES && query && !abortController.signal.aborted) {
-            console.warn(`[GeminiAgent] Invalid stream detected, will retry (attempt ${retryCount + 1}/${MAX_INVALID_STREAM_RETRIES})`);
+            log.warn({ attempt: retryCount + 1, maxRetries: MAX_INVALID_STREAM_RETRIES }, 'Invalid stream detected, will retry');
             // Show retry hint to user
             this.onStreamEvent({
               type: 'info',
@@ -443,7 +444,7 @@ export class GeminiAgent {
       .then(async () => {
         // If invalid_stream detected and can retry, perform retry
         if (invalidStreamDetected && retryCount < MAX_INVALID_STREAM_RETRIES && query && !abortController.signal.aborted) {
-          console.log(`[GeminiAgent] Retrying after invalid stream (attempt ${retryCount + 1})`);
+          log.info({ attempt: retryCount + 1 }, 'Retrying after invalid stream');
 
           // Retry after delay
           await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
@@ -611,10 +612,10 @@ export class GeminiAgent {
         const tokenManager = getGlobalTokenManager(this.authType);
         const isTokenValid = await tokenManager.checkAndRefreshIfNeeded();
         if (!isTokenValid) {
-          console.warn('[GeminiAgent] OAuth token validation failed, proceeding anyway');
+          log.warn('OAuth token validation failed, proceeding anyway');
         }
       } catch (tokenError) {
-        console.warn('[GeminiAgent] OAuth token check error:', tokenError);
+        log.warn({ err: tokenError }, 'OAuth token check error');
         // Continue execution and let subsequent processes handle authentication errors
       }
     }

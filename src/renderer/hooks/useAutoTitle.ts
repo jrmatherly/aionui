@@ -1,7 +1,10 @@
 import { ipcBridge } from '@/common';
 import { useConversationTabs } from '@/renderer/pages/conversation/context/ConversationTabsContext';
 import { emitter } from '@/renderer/utils/emitter';
+import { createLogger } from '@/renderer/utils/logger';
 import { useCallback } from 'react';
+
+const log = createLogger('useAutoTitle');
 export const useAutoTitle = () => {
   const { updateTabName } = useConversationTabs();
 
@@ -25,7 +28,7 @@ export const useAutoTitle = () => {
           emitter.emit('chat.history.refresh');
         }
       } catch (error) {
-        console.error('Failed to auto-update conversation title:', error);
+        log.error({ err: error, conversationId }, 'Failed to auto-update conversation title');
       }
     },
     [updateTabName]

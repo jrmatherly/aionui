@@ -12,7 +12,9 @@ import { getDatabase } from './database/export';
 import { ProcessChat } from './initStorage';
 import type AgentBaseTask from './task/BaseAgentManager';
 import { GeminiAgentManager } from './task/GeminiAgentManager';
-import { sessionLogger as log } from '@/common/logger';
+import { createLogger } from '@/common/logger';
+
+const log = createLogger('WorkerManager');
 
 const taskList: {
   id: string;
@@ -104,13 +106,13 @@ const buildConversation = (conversation: TChatConversation, options?: BuildConve
 };
 
 const getTaskByIdRollbackBuild = async (id: string, options?: BuildConversationOptions): Promise<AgentBaseTask<unknown>> => {
-  console.log(`[WorkerManage] getTaskByIdRollbackBuild: id=${id}, options=${JSON.stringify(options)}`);
+  log.debug({ id, options }, 'getTaskByIdRollbackBuild');
 
   // If not skipping cache, check for existing task
   if (!options?.skipCache) {
     const task = taskList.find((item) => item.id === id)?.task;
     if (task) {
-      console.log(`[WorkerManage] Found existing task in memory for: ${id}`);
+      log.debug({ id }, 'Found existing task in memory');
       return Promise.resolve(task);
     }
   }
@@ -118,11 +120,11 @@ const getTaskByIdRollbackBuild = async (id: string, options?: BuildConversationO
   // Try to load from database first (with userId for per-user API key injection)
   const db = getDatabase();
   const dbResult = db.getConversationWithUserId(id);
-  console.log(`[WorkerManage] Database lookup result: success=${dbResult.success}, hasData=${!!dbResult.data}`);
+  log.debug({ id, success: dbResult.success, hasData: !!dbResult.data }, 'Database lookup result');
 
   if (dbResult.success && dbResult.data) {
     const { conversation, userId } = dbResult.data;
-    console.log(`[WorkerManage] Building conversation from database: ${id}, userId: ${userId}`);
+    log.debug({ id, userId }, 'Building conversation from database');
     return buildConversation(conversation, {
       ...options,
       userId, // Pass userId for per-user API key injection
@@ -133,11 +135,11 @@ const getTaskByIdRollbackBuild = async (id: string, options?: BuildConversationO
   const list = (await ProcessChat.get('chat.history')) as TChatConversation[] | undefined;
   const conversation = list?.find((item) => item.id === id);
   if (conversation) {
-    console.log(`[WorkerManage] Building conversation from file storage: ${id} (no userId - using container env)`);
+    log.debug({ id }, 'Building conversation from file storage (no userId - using container env)');
     return buildConversation(conversation, options);
   }
 
-  console.error('[WorkerManage] Conversation not found in database or file storage:', id);
+  log.error({ id }, 'Conversation not found in database or file storage');
   return Promise.reject(new Error('Conversation not found'));
 };
 

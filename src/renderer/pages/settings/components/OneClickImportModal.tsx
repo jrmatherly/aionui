@@ -3,9 +3,12 @@ import type { IMcpServer, IMcpTool } from '@/common/storage';
 import AionModal from '@/renderer/components/base/AionModal';
 import AionSteps from '@/renderer/components/base/AionSteps';
 import { iconColors } from '@/renderer/theme/colors';
+import { createLogger } from '@/renderer/utils/logger';
 import { Button, Select, Spin } from '@arco-design/web-react';
 import { Check } from '@icon-park/react';
 import React, { useEffect, useState } from 'react';
+
+const log = createLogger('OneClickImportModal');
 interface OneClickImportModalProps {
   visible: boolean;
   onCancel: () => void;
@@ -40,7 +43,7 @@ const OneClickImportModal: React.FC<OneClickImportModalProps> = ({ visible, onCa
             }
           }
         } catch (error) {
-          console.error('Failed to load agents:', error);
+          log.error({ err: error }, 'Failed to load agents');
         }
       };
       void loadAgents();
@@ -94,7 +97,7 @@ const OneClickImportModal: React.FC<OneClickImportModalProps> = ({ visible, onCa
         throw new Error(mcpResponse.msg || 'Failed to get MCP configs');
       }
     } catch (error) {
-      console.error('Failed to import from CLI:', error);
+      log.error({ err: error }, 'Failed to import from CLI');
       setImportableServers([]);
     } finally {
       setLoadingImport(false);

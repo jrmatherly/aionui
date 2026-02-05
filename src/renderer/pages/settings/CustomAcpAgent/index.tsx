@@ -1,11 +1,14 @@
 import { acpConversation } from '@/common/ipcBridge';
 import { ConfigStorage } from '@/common/storage';
+import { createLogger } from '@/renderer/utils/logger';
 import type { AcpBackendConfig } from '@/types/acpTypes';
 import { Button, Collapse, Modal } from '@arco-design/web-react';
 import { Delete, EditTwo, Plus } from '@icon-park/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { mutate } from 'swr';
 import CustomAcpAgentModal from './CustomAcpAgentModal';
+
+const log = createLogger('CustomAcpAgent');
 
 interface CustomAcpAgentProps {
   message: ReturnType<typeof import('@arco-design/web-react').Message.useMessage>[0];
@@ -62,13 +65,13 @@ const CustomAcpAgent: React.FC<CustomAcpAgentProps> = ({ message }) => {
           await (ConfigStorage as any).remove('acp.customAgent');
 
           setCustomAgents(migratedAgents);
-          console.log('[CustomAcpAgent] Migrated legacy single agent to new array format');
+          log.info('Migrated legacy single agent to new array format');
 
           // Refresh detection with new data
           await refreshAgentDetection();
         }
       } catch (error) {
-        console.error('Failed to load custom agents config:', error);
+        log.error({ err: error }, 'Failed to load custom agents config');
       }
     };
     void loadConfig();
@@ -98,7 +101,7 @@ const CustomAcpAgent: React.FC<CustomAcpAgentProps> = ({ message }) => {
 
         await refreshAgentDetection();
       } catch (error) {
-        console.error('Failed to save custom agent config:', error);
+        log.error({ err: error }, 'Failed to save custom agent config');
         message.error('Failed to save custom agent');
       }
     },
@@ -122,7 +125,7 @@ const CustomAcpAgent: React.FC<CustomAcpAgentProps> = ({ message }) => {
 
       await refreshAgentDetection();
     } catch (error) {
-      console.error('Failed to delete custom agent config:', error);
+      log.error({ err: error }, 'Failed to delete custom agent config');
       message.error('Failed to delete custom agent');
     }
   }, [agentToDelete, customAgents, message, refreshAgentDetection]);

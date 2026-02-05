@@ -1,6 +1,7 @@
 import { acpConversation } from '@/common/ipcBridge';
 import { ConfigStorage } from '@/common/storage';
 import { useThemeContext } from '@/renderer/context/ThemeContext';
+import { createLogger } from '@/renderer/utils/logger';
 import type { AcpBackendConfig } from '@/types/acpTypes';
 import type { Message } from '@arco-design/web-react';
 import { Button, Collapse, Input, Modal, Typography } from '@arco-design/web-react';
@@ -9,6 +10,8 @@ import { Delete, EditTwo, Lightning } from '@icon-park/react';
 import CodeMirror from '@uiw/react-codemirror';
 import React, { useCallback, useEffect, useState } from 'react';
 import { mutate } from 'swr';
+
+const log = createLogger('PresetManagement');
 
 interface PresetManagementProps {
   message: ReturnType<typeof Message.useMessage>[0];
@@ -33,7 +36,7 @@ const PresetManagement: React.FC<PresetManagementProps> = ({ message }) => {
         setPresets(agents.filter((a) => a.isPreset));
       }
     } catch (error) {
-      console.error('Failed to load presets:', error);
+      log.error({ err: error }, 'Failed to load presets');
     }
   }, []);
 
