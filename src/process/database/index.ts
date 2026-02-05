@@ -88,7 +88,7 @@ export class AionUIDatabase {
 
       this.ensureSystemUser();
     } catch (error) {
-      console.error('[Database] Initialization failed:', error);
+      log.error({ err: error }, 'Initialization failed');
       throw error;
     }
   }
@@ -512,7 +512,7 @@ export class AionUIDatabase {
         hasMore: (page + 1) * pageSize < countResult.count,
       };
     } catch (error: any) {
-      console.error('[Database] Get conversations error:', error);
+      log.error({ err: error }, 'Get conversations error');
       return {
         data: [],
         total: 0,
@@ -636,7 +636,7 @@ export class AionUIDatabase {
         hasMore: (page + 1) * pageSize < countResult.count,
       };
     } catch (error: any) {
-      console.error('[Database] Get messages error:', error);
+      log.error({ err: error }, 'Get messages error');
       return {
         data: [],
         total: 0,

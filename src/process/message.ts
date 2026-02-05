@@ -9,6 +9,7 @@ import { composeMessage } from '@/common/chatLib';
 import type { AcpBackend } from '@/types/acpTypes';
 import { getDatabase } from './database/export';
 import { ProcessChat } from './initStorage';
+import { conversationLogger as log } from '@/common/logger';
 
 const Cache = new Map<string, ConversationManageWithDB>();
 
@@ -100,14 +101,14 @@ async function ensureConversationExists(db: ReturnType<typeof getDatabase>, conv
   const conversation = (history || []).find((c) => c.id === conversation_id);
 
   if (!conversation) {
-    console.error(`[Message] Conversation ${conversation_id} not found in file storage either`);
+    log.error({ conversation_id }, 'Conversation not found in file storage either');
     return;
   }
 
   // Create conversation in database
   const result = db.createConversation(conversation);
   if (!result.success) {
-    console.error(`[Message] Failed to create conversation in database:`, result.error);
+    log.error({ conversation_id, error: result.error }, 'Failed to create conversation in database');
   }
 }
 
@@ -118,12 +119,12 @@ async function ensureConversationExists(db: ReturnType<typeof getDatabase>, conv
 export const addOrUpdateMessage = (conversation_id: string, message: TMessage, backend?: AcpBackend): void => {
   // Validate message
   if (!message) {
-    console.error('[Message] Cannot add or update undefined message');
+    log.error({ conversation_id }, 'Cannot add or update undefined message');
     return;
   }
 
   if (!message.id) {
-    console.error('[Message] Message missing required id field:', message);
+    log.error({ conversation_id, message }, 'Message missing required id field');
     return;
   }
 
@@ -150,7 +151,7 @@ export const executePendingCallbacks = (): void => {
       try {
         callback();
       } catch (error) {
-        console.error('[Message] Error in pending callback:', error);
+        log.error({ err: error }, 'Error in pending callback');
       }
     }
   }

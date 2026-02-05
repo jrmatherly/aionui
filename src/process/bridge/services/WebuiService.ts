@@ -9,6 +9,7 @@ import { UserRepository } from '@/webserver/auth/repository/UserRepository';
 import { AuthService } from '@/webserver/auth/service/AuthService';
 import { AUTH_CONFIG, SERVER_CONFIG } from '@/webserver/config/constants';
 import { networkInterfaces } from 'os';
+import { httpLogger as log } from '@/common/logger';
 
 /**
  * WebUI Service Layer - Encapsulates all WebUI-related business logic
@@ -72,7 +73,7 @@ export class WebuiService {
     try {
       return await handler();
     } catch (error) {
-      console.error(`[WebUI Service] ${context} error:`, error);
+      log.error({ context, err: error }, 'Operation error');
       return {
         success: false,
         msg: error instanceof Error ? error.message : `${context} failed`,

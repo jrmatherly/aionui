@@ -8,11 +8,15 @@
 // 1. Main process manages child processes -> Process manager that maintains all current child processes and handles their communication
 // 2. Child process management handles different agent tasks based on agent type, while all child processes share the same communication mechanism
 import { GeminiAgent } from '@/agent/gemini';
+import { createLogger } from '@/common/logger';
 import { forkTask } from './utils';
+
+const log = createLogger('GeminiWorker');
+
 export default forkTask(({ data }, pipe) => {
   pipe.log('gemini.init', data);
-  console.log(`[GeminiWorker] presetRules length: ${data.presetRules?.length || 0}`);
-  console.log(`[GeminiWorker] presetRules preview: ${data.presetRules?.substring(0, 200) || 'empty'}`);
+  log.debug({ presetRulesLength: data.presetRules?.length || 0 }, 'presetRules length');
+  log.debug({ presetRulesPreview: data.presetRules?.substring(0, 200) || 'empty' }, 'presetRules preview');
   const agent = new GeminiAgent({
     ...data,
     onStreamEvent(event) {

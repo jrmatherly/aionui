@@ -4,12 +4,15 @@ import { ConfigStorage } from '@/common/storage';
 import coworkSvg from '@/renderer/assets/cowork.svg';
 import EmojiPicker from '@/renderer/components/EmojiPicker';
 import MarkdownView from '@/renderer/components/Markdown';
+import { createLogger } from '@/renderer/utils/logger';
 import type { AcpBackendConfig, PresetAgentType } from '@/types/acpTypes';
 import type { Message } from '@arco-design/web-react';
 import { Avatar, Button, Checkbox, Collapse, Drawer, Input, Modal, Select, Switch, Typography } from '@arco-design/web-react';
 import { Close, Delete, FolderOpen, Plus, Robot, SettingOne } from '@icon-park/react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { mutate } from 'swr';
+
+const log = createLogger('AssistantManagement');
 
 // Skill info type
 interface SkillInfo {
@@ -107,7 +110,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
             setCommonPaths(response.data);
           }
         } catch (error) {
-          console.error('Failed to detect common paths:', error);
+          log.error({ err: error }, 'Failed to detect common paths');
         }
       })();
     }
@@ -129,7 +132,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
         const content = await ipcBridge.fs.readAssistantRule.invoke({ assistantId, locale: localeKey });
         return content || '';
       } catch (error) {
-        console.error(`Failed to load rule for ${assistantId}:`, error);
+        log.error({ err: error, assistantId }, 'Failed to load rule for assistant');
         return '';
       }
     },
@@ -143,7 +146,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
         const content = await ipcBridge.fs.readAssistantSkill.invoke({ assistantId, locale: localeKey });
         return content || '';
       } catch (error) {
-        console.error(`Failed to load skills for ${assistantId}:`, error);
+        log.error({ err: error, assistantId }, 'Failed to load skills for assistant');
         return '';
       }
     },
@@ -173,7 +176,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
       setAssistants(presetAssistants);
       setActiveAssistantId((prev) => prev || presetAssistants[0]?.id || null);
     } catch (error) {
-      console.error('Failed to load assistant presets:', error);
+      log.error({ err: error }, 'Failed to load assistant presets');
     }
   }, []);
 
@@ -239,7 +242,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
         setCustomSkills([]);
       }
     } catch (error) {
-      console.error('Failed to load assistant content:', error);
+      log.error({ err: error }, 'Failed to load assistant content');
       setEditContext('');
       setEditSkills('');
       setAvailableSkills([]);
@@ -267,7 +270,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
       const skillsList = await ipcBridge.fs.listAvailableSkills.invoke();
       setAvailableSkills(skillsList);
     } catch (error) {
-      console.error('Failed to load skills:', error);
+      log.error({ err: error }, 'Failed to load skills');
       setAvailableSkills([]);
     }
   };
@@ -292,7 +295,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
       setSelectedSkills(assistant.enabledSkills || []);
       setCustomSkills(assistant.customSkillNames || []);
     } catch (error) {
-      console.error('Failed to load assistant content for duplication:', error);
+      log.error({ err: error }, 'Failed to load assistant content for duplication');
       setEditContext('');
       setEditSkills('');
       setAvailableSkills([]);
@@ -323,7 +326,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
                 return;
               }
             } catch (error) {
-              console.error(`Failed to import skill "${pendingSkill.name}":`, error);
+              log.error({ err: error, skillName: pendingSkill.name }, 'Failed to import skill');
               message.error(`Failed to import skill "${pendingSkill.name}"`);
               return;
             }
@@ -435,7 +438,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
       message.success('Success');
       await refreshAgentDetection();
     } catch (error) {
-      console.error('Failed to delete assistant:', error);
+      log.error({ err: error }, 'Failed to delete assistant');
       message.error('Failed');
     }
   };
@@ -449,7 +452,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
       setAssistants(updatedAgents.filter((agent) => agent.isPreset));
       await refreshAgentDetection();
     } catch (error) {
-      console.error('Failed to toggle assistant:', error);
+      log.error({ err: error }, 'Failed to toggle assistant');
       message.error('Failed');
     }
   };

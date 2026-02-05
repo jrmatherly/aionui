@@ -9,6 +9,7 @@ import { app } from 'electron';
 import { existsSync, lstatSync, mkdirSync, readlinkSync, symlinkSync, unlinkSync } from 'fs';
 import fs from 'fs/promises';
 import path from 'path';
+import { fsLogger as log } from '@/common/logger';
 // Lazy import to break circular dependency: initStorage → utils → initStorage
 // getSystemDir is only needed at runtime (in copyFilesToDirectory), not at module load time
 const getSystemDirLazy = () => {
@@ -292,7 +293,7 @@ export async function verifyDirectoryFiles(dir1: string, dir2: string): Promise<
 
     return true;
   } catch (error) {
-    console.warn('[AionUi] Error verifying directory files:', error);
+    log.warn({ err: error }, 'Error verifying directory files');
     return false;
   }
 }
@@ -312,8 +313,8 @@ export const copyFilesToDirectory = async (dir: string, files?: string[], skipCl
     try {
       await fs.access(absoluteFilePath);
     } catch (error) {
-      console.warn(`[AionUi] Source file does not exist, skipping: ${absoluteFilePath}`);
-      console.warn(`[AionUi] Original path: ${file}`);
+      log.warn({ file: absoluteFilePath }, 'Source file does not exist, skipping');
+      log.warn({ originalPath: file }, 'Original path');
       // Skip non-existent files instead of throwing an error
       continue;
     }
@@ -334,7 +335,7 @@ export const copyFilesToDirectory = async (dir: string, files?: string[], skipCl
       await fs.copyFile(absoluteFilePath, destPath);
       copiedFiles.push(destPath);
     } catch (error) {
-      console.error(`[AionUi] Failed to copy file from ${absoluteFilePath} to ${destPath}:`, error);
+      log.error({ source: absoluteFilePath, dest: destPath, err: error }, 'Failed to copy file');
       // Continue processing other files instead of failing completely
     }
 
@@ -343,7 +344,7 @@ export const copyFilesToDirectory = async (dir: string, files?: string[], skipCl
       try {
         await fs.unlink(absoluteFilePath);
       } catch (error) {
-        console.warn(`Failed to cleanup temp file ${absoluteFilePath}:`, error);
+        log.warn({ file: absoluteFilePath, err: error }, 'Failed to cleanup temp file');
       }
     }
   }

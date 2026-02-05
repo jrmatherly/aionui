@@ -4,6 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { createLogger } from '@/common/logger';
+
+const log = createLogger('Pipe');
+
 const uuid = (len = 4) => {
   try {
     const crypto = require('crypto');
@@ -74,7 +78,7 @@ export class Pipe {
             const deferred = this.deferred(pipeId);
             if (pipeId) {
               deferred.pipe(this.call.bind(this)).catch((error: Error) => {
-                console.error('Failed to pipe deferred call:', error);
+                log.error({ err: error }, 'Failed to pipe deferred call');
               });
             }
             this.emit(type, data, deferred);
