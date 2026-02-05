@@ -5,10 +5,16 @@ import { Form, Input } from '@arco-design/web-react';
 import { LinkCloud } from '@icon-park/react';
 import React, { useEffect, useMemo } from 'react';
 // Provider Logo imports
+import AgentGatewayLogo from '@/renderer/assets/logos/agentgateway.svg';
 import AnthropicLogo from '@/renderer/assets/logos/anthropic.svg';
+import AzureLogo from '@/renderer/assets/logos/azure.svg';
+import EnvoyLogo from '@/renderer/assets/logos/envoy.svg';
 import GeminiLogo from '@/renderer/assets/logos/gemini.svg';
+import KongLogo from '@/renderer/assets/logos/kong.svg';
+import LiteLLMLogo from '@/renderer/assets/logos/litellm.svg';
 import OpenAILogo from '@/renderer/assets/logos/openai.svg';
 import OpenRouterLogo from '@/renderer/assets/logos/openrouter.svg';
+import PortkeyLogo from '@/renderer/assets/logos/portkey.svg';
 import XaiLogo from '@/renderer/assets/logos/xai.svg';
 
 /**
@@ -16,6 +22,15 @@ import XaiLogo from '@/renderer/assets/logos/xai.svg';
  * Alphabetical order; hidden providers commented out for easy re-enablement.
  */
 const PROVIDER_CONFIGS = [
+  // Gateway/Proxy providers
+  { name: 'AgentGateway', url: '', logo: AgentGatewayLogo },
+  { name: 'Azure OpenAI', url: '', logo: AzureLogo, platform: 'azure' },
+  { name: 'Azure AI Foundry', url: '', logo: AzureLogo, platform: 'azure-ai-foundry' },
+  { name: 'Envoy AI Gateway', url: '', logo: EnvoyLogo },
+  { name: 'Kong AI Gateway', url: '', logo: KongLogo },
+  { name: 'LiteLLM', url: '', logo: LiteLLMLogo },
+  { name: 'Portkey', url: 'https://api.portkey.ai/v1', logo: PortkeyLogo },
+  // Standard providers
   { name: 'Anthropic', url: 'https://api.anthropic.com/v1', logo: AnthropicLogo },
   { name: 'Gemini', url: '', logo: GeminiLogo, platform: 'gemini' },
   { name: 'Gemini (Vertex AI)', url: '', logo: GeminiLogo, platform: 'gemini-vertex-ai' },
