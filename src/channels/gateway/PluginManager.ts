@@ -5,6 +5,7 @@
  */
 
 import { channel as channelBridge } from '@/common/ipcBridge';
+import { pluginLogger } from '@/common/logger';
 import { getDatabase } from '@/process/database';
 import type { SessionManager } from '../core/SessionManager';
 import type { BasePlugin, PluginConfirmHandler, PluginMessageHandler } from '../plugins/BasePlugin';
@@ -21,7 +22,7 @@ const pluginRegistry: Map<PluginType, PluginConstructor> = new Map();
  */
 export function registerPlugin(type: PluginType, constructor: PluginConstructor): void {
   pluginRegistry.set(type, constructor);
-  console.log(`[PluginManager] Registered plugin type: ${type}`);
+  pluginLogger.info({ type }, 'Registered plugin type');
 }
 
 /**
@@ -118,7 +119,7 @@ export class PluginManager {
 
     // Check if plugin is already running
     if (this.plugins.has(id)) {
-      console.log(`[PluginManager] Plugin ${id} is already running`);
+      pluginLogger.info({ pluginId: id }, 'Plugin is already running');
       return;
     }
 
@@ -138,7 +139,7 @@ export class PluginManager {
       await plugin.initialize(config);
     } catch (error) {
       const errorMsg = `Plugin initialization failed: ${error instanceof Error ? error.message : String(error)}`;
-      console.error(`[PluginManager] ${errorMsg}`, error);
+      pluginLogger.error({ err: error, pluginId: id }, errorMsg);
       this.pluginErrors.set(id, errorMsg);
 
       // Update database status to error
@@ -155,7 +156,7 @@ export class PluginManager {
     if (this.messageHandler) {
       plugin.onMessage(this.messageHandler);
     } else {
-      console.warn(`[PluginManager] WARNING: No message handler set when starting plugin ${id}! Messages will not be processed.`);
+      pluginLogger.warn({ pluginId: id }, 'WARNING: No message handler set when starting plugin! Messages will not be processed.');
     }
 
     // Set confirm handler
@@ -168,7 +169,7 @@ export class PluginManager {
       await plugin.start();
     } catch (error) {
       const errorMsg = `Plugin start failed: ${error instanceof Error ? error.message : String(error)}`;
-      console.error(`[PluginManager] ${errorMsg}`, error);
+      pluginLogger.error({ err: error, pluginId: id }, errorMsg);
       this.pluginErrors.set(id, errorMsg);
 
       // Update database status to error
@@ -191,7 +192,7 @@ export class PluginManager {
     // Emit status change event
     this.emitStatusChange(id, plugin);
 
-    console.log(`[PluginManager] Plugin ${id} started successfully`);
+    pluginLogger.info({ pluginId: id }, 'Plugin started successfully');
   }
 
   /**
@@ -200,7 +201,7 @@ export class PluginManager {
   async stopPlugin(pluginId: string): Promise<void> {
     const plugin = this.plugins.get(pluginId);
     if (!plugin) {
-      console.log(`[PluginManager] Plugin ${pluginId} is not running`);
+      pluginLogger.info({ pluginId }, 'Plugin is not running');
       return;
     }
 

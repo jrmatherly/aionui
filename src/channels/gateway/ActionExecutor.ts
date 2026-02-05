@@ -601,6 +601,6 @@ export class ActionExecutor {
       this.actionRegistry.set(action.name, action);
     }
 
-    console.log(`[ActionExecutor] Registered ${this.actionRegistry.size} actions`);
+    log.info({ count: this.actionRegistry.size }, 'Registered actions');
   }
 }

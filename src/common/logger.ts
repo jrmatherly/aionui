@@ -76,10 +76,12 @@ function resolveFormat(): 'json' | 'pretty' {
  * In production: JSON to stdout (Docker/k8s log drivers handle the rest)
  * In development: Pretty-printed to stdout
  * If LOG_FILE is set: Also write JSON to file (always structured, regardless of format)
+ * If SYSLOG_ENABLED: Forward to syslog/SIEM (RFC 5424 compliant)
  */
 function buildTransport(): pino.TransportMultiOptions | pino.TransportSingleOptions | undefined {
   const format = resolveFormat();
   const logFile = process.env.LOG_FILE;
+  const syslogEnabled = process.env.SYSLOG_ENABLED === 'true';
 
   const targets: pino.TransportTargetOptions[] = [];
 
@@ -105,6 +107,29 @@ function buildTransport(): pino.TransportMultiOptions | pino.TransportSingleOpti
     targets.push({
       target: 'pino/file',
       options: { destination: logFile, mkdir: true },
+    });
+  }
+
+  // Optional syslog forwarding (SIEM integration)
+  if (syslogEnabled) {
+    const syslogHost = process.env.SYSLOG_HOST || 'localhost';
+    const syslogPort = parseInt(process.env.SYSLOG_PORT || '514', 10);
+    const syslogProtocol = process.env.SYSLOG_PROTOCOL || 'udp';
+    const syslogFacility = parseInt(process.env.SYSLOG_FACILITY || '16', 10); // local0 = 16
+
+    targets.push({
+      target: 'pino-syslog',
+      options: {
+        host: syslogHost,
+        port: syslogPort,
+        protocol: syslogProtocol as 'tcp' | 'udp' | 'tls',
+        facility: syslogFacility,
+        appname: 'aionui',
+        // RFC 5424 format (structured data)
+        format: 'rfc5424',
+        // Include structured data in syslog message
+        includeProperties: ['component', 'requestId', 'userId', 'traceId', 'spanId'],
+      },
     });
   }
 
