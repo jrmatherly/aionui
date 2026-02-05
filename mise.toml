@@ -20,6 +20,10 @@ min_version = { hard = "2025.1.0", soft = "2026.1.0" }
 # Contributors can override locally via mise.local.toml if needed.
 node = "24"
 
+# git-cliff — changelog generator (https://git-cliff.org)
+# Major-pinned: auto-updates within 2.x, exact version locked in mise.lock.
+git-cliff = "2"
+
 # npm — Node 24 bundles npm 11.6.x, but the project standardizes on npm 11.9+
 # (see engines in package.json). We upgrade npm inside Node's prefix via
 # [hooks.postinstall] because mise's npm tool (npm:npm backend) installs to a
@@ -303,3 +307,23 @@ echo ""
 echo "=== Pattern Summary ==="
 drift export --format summary 2>/dev/null || true
 """
+
+# ─── Changelog Tasks ──────────────────────────────────────────────────────
+# Automated changelog generation via git-cliff.
+# See: cliff.toml for template and parser configuration.
+
+[tasks.changelog]
+description = "Generate CHANGELOG.md from git history"
+run = "git cliff -o CHANGELOG.md"
+
+[tasks."changelog:latest"]
+description = "Show changelog for latest release only"
+run = "git cliff --latest --strip header"
+
+[tasks."changelog:unreleased"]
+description = "Preview unreleased changes"
+run = "git cliff --unreleased"
+
+[tasks."changelog:bump"]
+description = "Show what the next version would be"
+run = "git cliff --bumped-version"

@@ -34,7 +34,9 @@
     "test:contract": "jest tests/contract",
     "test:integration": "jest tests/integration",
     "prepare": "husky",
-    "postinstall": "node scripts/postinstall.js"
+    "postinstall": "node scripts/postinstall.js",
+    "changelog": "git cliff -o CHANGELOG.md",
+    "changelog:preview": "git cliff --unreleased"
   },
   "keywords": [],
   "author": {

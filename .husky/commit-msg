@@ -1,5 +1,5 @@
 # Simple commit message format check
-commit_regex='^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: .{1,50}'
+commit_regex='^(feat|fix|docs|style|refactor|test|chore|perf)(\(.+\))?: .{1,50}'
 
 # Skip validation for merge commits
 if head -n 1 "$1" | grep -qE '^Merge (branch|pull request)'; then
@@ -16,6 +16,7 @@ if ! grep -qE "$commit_regex" "$1"; then
     echo "  refactor: Code refactoring"
     echo "  test: Add tests"
     echo "  chore: Changes to the build process or auxiliary tools"
+    echo "  perf: Improve performance"
     echo ""
     echo "Example:"
     echo "  feat: Add user login feature"

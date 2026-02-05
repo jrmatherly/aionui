@@ -142,6 +142,14 @@ npm run dist:linux         # Linux build
 mise run docker:build      # Build Docker image
 mise run docker:up         # Start container
 mise run docker:down       # Stop container
+
+# Changelog (git-cliff)
+mise run changelog             # Generate CHANGELOG.md
+mise run changelog:latest      # Show latest release notes
+mise run changelog:unreleased  # Preview unreleased changes
+mise run changelog:bump        # Show next version number
+npm run changelog              # Generate CHANGELOG.md (without mise)
+npm run changelog:preview      # Preview unreleased (without mise)
 ```
 
 ## Code Conventions
@@ -300,6 +308,7 @@ Supports routing through proxy providers:
 | `jest.config.js`       | Test configuration                  |
 | `mise.toml`            | Tool versions, tasks, env vars      |
 | `mise.lock`            | Pinned tool versions with checksums |
+| `cliff.toml`           | Changelog generation (git-cliff)    |
 
 ## Testing
 
