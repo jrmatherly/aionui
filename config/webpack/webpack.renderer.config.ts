@@ -9,6 +9,14 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 export const rendererConfig: Configuration = {
   mode: isDevelopment ? 'development' : 'production',
   devtool: isDevelopment ? 'source-map' : false,
+  // Persistent filesystem cache for incremental rebuilds (same as main process).
+  cache: {
+    type: 'filesystem',
+    cacheDirectory: path.resolve(__dirname, '../../.webpack-cache/renderer'),
+    buildDependencies: {
+      config: [__filename, path.resolve(__dirname, 'webpack.plugins.ts'), path.resolve(__dirname, 'webpack.rules.ts')],
+    },
+  },
   module: {
     rules,
   },

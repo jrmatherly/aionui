@@ -95,6 +95,7 @@ ${env.ELECTRON_CACHE}/
 
 # Webpack
 .webpack/
+.webpack-cache/
 
 # Vite
 .vite/

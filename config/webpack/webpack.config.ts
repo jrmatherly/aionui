@@ -12,6 +12,17 @@ export const mainConfig: Configuration = {
    */
   mode: isDevelopment ? 'development' : 'production',
   devtool: isDevelopment ? 'source-map' : false,
+  // Persistent filesystem cache for incremental rebuilds.
+  // Subsequent builds only recompile changed modules, reducing rebuild time
+  // from minutes to seconds. The cache directory is .gitignored.
+  cache: {
+    type: 'filesystem',
+    cacheDirectory: path.resolve(__dirname, '../../.webpack-cache/main'),
+    buildDependencies: {
+      // Invalidate cache when webpack config changes
+      config: [__filename, path.resolve(__dirname, 'webpack.plugins.ts'), path.resolve(__dirname, 'webpack.rules.ts')],
+    },
+  },
   // entry: "./src/index.ts",
   entry: {
     index: './src/index.ts',
