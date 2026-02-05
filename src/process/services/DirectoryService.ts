@@ -16,6 +16,7 @@ import path from 'path';
 import { getDatabase } from '../database';
 import type { IDirectoryChain, IOrgDirectories, ITeamDirectories, IUserDirectories } from '../database/types';
 import { getSystemDir } from '../initStorage';
+import { fsLogger as log } from '@/common/logger';
 
 /**
  * Singleton service for managing per-user and team directory isolation
@@ -87,7 +88,7 @@ export class DirectoryService {
     // Save to database
     const result = db.upsertUserDirectories(userDirs);
     if (!result.success || !result.data) {
-      console.error('[DirectoryService] Failed to save user directories:', result.error);
+      log.error({ userId, error: result.error }, 'Failed to save user directories');
       // Return computed directories even if DB save failed
       return {
         id: `udir_${userId}`,
@@ -97,7 +98,7 @@ export class DirectoryService {
       };
     }
 
-    console.log(`[DirectoryService] Created user directories for ${userId}`);
+    log.info({ userId }, 'Created user directories');
     return result.data;
   }
 
@@ -173,11 +174,11 @@ export class DirectoryService {
     // Save to database
     const result = db.upsertTeamDirectories(teamDirs);
     if (!result.success || !result.data) {
-      console.error('[DirectoryService] Failed to save team directories:', result.error);
+      log.error({ teamId, error: result.error }, 'Failed to save team directories');
       return null;
     }
 
-    console.log(`[DirectoryService] Created team directories for ${teamId}`);
+    log.info({ teamId }, 'Created team directories');
     return result.data;
   }
 
@@ -212,11 +213,11 @@ export class DirectoryService {
     // Save to database
     const result = db.upsertOrgDirectories(orgDirs);
     if (!result.success || !result.data) {
-      console.error('[DirectoryService] Failed to save org directories:', result.error);
+      log.error({ orgId, error: result.error }, 'Failed to save org directories');
       return null;
     }
 
-    console.log(`[DirectoryService] Created org directories for ${orgId}`);
+    log.info({ orgId }, 'Created org directories');
     return result.data;
   }
 
@@ -388,7 +389,7 @@ export class DirectoryService {
    * Called when a user first logs in
    */
   initializeUserDirectories(userId: string): IUserDirectories {
-    console.log(`[DirectoryService] Initializing directories for user ${userId}`);
+    log.info({ userId }, 'Initializing directories for user');
     return this.getUserDirectories(userId);
   }
 
@@ -399,7 +400,7 @@ export class DirectoryService {
   cleanupUserDirectories(userId: string): void {
     const db = getDatabase();
     db.deleteUserDirectories(userId);
-    console.log(`[DirectoryService] Removed directory records for user ${userId}`);
+    log.info({ userId }, 'Removed directory records for user');
   }
 }
 

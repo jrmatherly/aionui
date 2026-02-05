@@ -9,6 +9,7 @@ import { MCPOAuthProvider, OAUTH_DISPLAY_MESSAGE_EVENT } from '@office-ai/aioncl
 import { MCPOAuthTokenStorage } from '@office-ai/aioncli-core/dist/src/mcp/oauth-token-storage.js';
 import { EventEmitter } from 'node:events';
 import type { IMcpServer } from '../../../common/storage';
+import { mcpLogger as log } from '@/common/logger';
 
 export interface OAuthStatus {
   isAuthenticated: boolean;
@@ -34,7 +35,7 @@ export class McpOAuthService {
 
     // Listen for OAuth display message events
     this.eventEmitter.on(OAUTH_DISPLAY_MESSAGE_EVENT, (message: string) => {
-      console.log('[McpOAuthService] OAuth Message:', message);
+      log.info({ message }, 'OAuth Message');
       // Can be sent to frontend via WebSocket
     });
   }
@@ -104,7 +105,7 @@ export class McpOAuthService {
         needsLogin: false,
       };
     } catch (error) {
-      console.error('[McpOAuthService] Error checking OAuth status:', error);
+      log.error({ err: error }, 'Error checking OAuth status');
       return {
         isAuthenticated: false,
         needsLogin: false,
@@ -146,10 +147,10 @@ export class McpOAuthService {
       // Execute OAuth authentication flow
       await this.oauthProvider.authenticate(server.name, config, url, this.eventEmitter);
 
-      console.log(`[McpOAuthService] OAuth login successful for ${server.name}`);
+      log.info({ serverName: server.name }, 'OAuth login successful');
       return { success: true };
     } catch (error) {
-      console.error('[McpOAuthService] OAuth login failed:', error);
+      log.error({ err: error }, 'OAuth login failed');
       return {
         success: false,
         error: error instanceof Error ? error.message : String(error),
@@ -165,7 +166,7 @@ export class McpOAuthService {
       const config = oauthConfig || { enabled: true };
       return await this.oauthProvider.getValidToken(server.name, config);
     } catch (error) {
-      console.error('[McpOAuthService] Failed to get valid token:', error);
+      log.error({ err: error }, 'Failed to get valid token');
       return null;
     }
   }
@@ -176,9 +177,9 @@ export class McpOAuthService {
   async logout(serverName: string): Promise<void> {
     try {
       await this.tokenStorage.deleteCredentials(serverName);
-      console.log(`[McpOAuthService] Logged out from ${serverName}`);
+      log.info({ serverName }, 'Logged out from server');
     } catch (error) {
-      console.error('[McpOAuthService] Failed to logout:', error);
+      log.error({ err: error }, 'Failed to logout');
       throw error;
     }
   }
@@ -190,7 +191,7 @@ export class McpOAuthService {
     try {
       return await this.tokenStorage.listServers();
     } catch (error) {
-      console.error('[McpOAuthService] Failed to list servers:', error);
+      log.error({ err: error }, 'Failed to list servers');
       return [];
     }
   }
