@@ -45,7 +45,7 @@
 
 ### Data & Storage
 
-- **Better SQLite3** - Local database (schema v15)
+- **Better SQLite3** - Local database (schema v16)
 - **Zod** - Data validation
 
 ## Project Structure
@@ -202,6 +202,7 @@ Do not add `🤖 Generated with Claude` or similar signatures to commits.
 
 - **User Management**: Admin page for user CRUD and role assignment (`src/renderer/pages/admin/UserManagement.tsx`)
 - **Group Mappings**: Map OIDC groups to application roles (`src/renderer/pages/admin/GroupMappings.tsx`)
+- **Global Models**: Shared model configurations available to all users (`src/renderer/pages/admin/GlobalModels.tsx`)
 - **Profile Page**: User profile with password change capability (`src/renderer/pages/settings/ProfilePage.tsx`)
 
 ### Middleware Stack

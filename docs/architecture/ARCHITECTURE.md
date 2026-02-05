@@ -399,6 +399,41 @@ CREATE TABLE token_blacklist (
     exp INTEGER NOT NULL,                -- Expiration timestamp
     blacklisted_at INTEGER NOT NULL
 );
+
+-- Global Models - Schema v16
+-- Admin-managed shared model configurations
+CREATE TABLE global_models (
+    id TEXT PRIMARY KEY,
+    platform TEXT NOT NULL,              -- e.g., 'openai', 'anthropic'
+    name TEXT NOT NULL,                  -- Display name
+    base_url TEXT NOT NULL DEFAULT '',   -- API endpoint
+    encrypted_api_key TEXT,              -- AES-256-GCM encrypted
+    models TEXT NOT NULL DEFAULT '[]',   -- JSON array of model names
+    capabilities TEXT,                   -- JSON array (e.g., ["vision"])
+    context_limit INTEGER,               -- Token limit
+    custom_headers TEXT,                 -- JSON object for gateway headers
+    enabled INTEGER NOT NULL DEFAULT 1,  -- 1=active, 0=disabled
+    priority INTEGER NOT NULL DEFAULT 0, -- Display order (higher=first)
+    created_by TEXT NOT NULL,            -- Admin user ID
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
+    FOREIGN KEY (created_by) REFERENCES users(id)
+);
+
+-- User Model Overrides - Schema v16
+-- Tracks per-user overrides for global models
+CREATE TABLE user_model_overrides (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    global_model_id TEXT NOT NULL,
+    override_type TEXT NOT NULL,         -- 'hidden' or 'modified'
+    local_provider_id TEXT,              -- If modified, user's local copy ID
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (global_model_id) REFERENCES global_models(id) ON DELETE CASCADE,
+    UNIQUE(user_id, global_model_id)
+);
 ```
 
 ## IPC Communication
