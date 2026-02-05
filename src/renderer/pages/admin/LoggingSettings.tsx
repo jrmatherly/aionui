@@ -7,18 +7,7 @@
  * Allows runtime control of log levels, OTEL, syslog, and Langfuse settings.
  */
 
-import {
-  Button,
-  Card,
-  Divider,
-  Form,
-  Input,
-  InputNumber,
-  Message,
-  Select,
-  Space,
-  Switch,
-} from '@arco-design/web-react';
+import { Button, Card, Divider, Form, Input, InputNumber, Message, Select, Space, Switch } from '@arco-design/web-react';
 import { Check, Refresh } from '@icon-park/react';
 import React, { useCallback, useEffect, useState } from 'react';
 
@@ -151,7 +140,7 @@ const LoggingSettings: React.FC = () => {
 
       <Form
         form={form}
-        layout="vertical"
+        layout='vertical'
         initialValues={{
           log_level: 'info',
           retention_days: 30,
@@ -170,13 +159,9 @@ const LoggingSettings: React.FC = () => {
         }}
       >
         {/* Core Logging Settings */}
-        <Card title="Core Logging" bordered style={{ marginBottom: '20px' }}>
-          <FormItem
-            label="Log Level"
-            field="log_level"
-            rules={[{ required: true, message: 'Log level is required' }]}
-          >
-            <Select placeholder="Select log level" disabled={loading}>
+        <Card title='Core Logging' bordered style={{ marginBottom: '20px' }}>
+          <FormItem label='Log Level' field='log_level' rules={[{ required: true, message: 'Log level is required' }]}>
+            <Select placeholder='Select log level' disabled={loading}>
               {LOG_LEVELS.map((level) => (
                 <Option key={level} value={level}>
                   {level.toUpperCase()}
@@ -186,43 +171,31 @@ const LoggingSettings: React.FC = () => {
           </FormItem>
 
           <FormItem
-            label="Retention Days"
-            field="retention_days"
+            label='Retention Days'
+            field='retention_days'
             rules={[
               { required: true, message: 'Retention days is required' },
               { type: 'number', min: 1, max: 365, message: 'Must be between 1 and 365' },
             ]}
           >
-            <InputNumber
-              placeholder="Days to keep logs"
-              min={1}
-              max={365}
-              style={{ width: '100%' }}
-              disabled={loading}
-            />
+            <InputNumber placeholder='Days to keep logs' min={1} max={365} style={{ width: '100%' }} disabled={loading} />
           </FormItem>
 
           <FormItem
-            label="Max Log File Size (MB)"
-            field="max_size_mb"
+            label='Max Log File Size (MB)'
+            field='max_size_mb'
             rules={[
               { required: true, message: 'Max size is required' },
               { type: 'number', min: 10, max: 10000, message: 'Must be between 10 and 10000' },
             ]}
           >
-            <InputNumber
-              placeholder="Max file size in MB"
-              min={10}
-              max={10000}
-              style={{ width: '100%' }}
-              disabled={loading}
-            />
+            <InputNumber placeholder='Max file size in MB' min={10} max={10000} style={{ width: '100%' }} disabled={loading} />
           </FormItem>
         </Card>
 
         {/* OpenTelemetry Settings */}
-        <Card title="OpenTelemetry (Distributed Tracing)" bordered style={{ marginBottom: '20px' }}>
-          <FormItem label="Enable OTEL" field="otel_enabled" triggerPropName="checked">
+        <Card title='OpenTelemetry (Distributed Tracing)' bordered style={{ marginBottom: '20px' }}>
+          <FormItem label='Enable OTEL' field='otel_enabled' triggerPropName='checked'>
             <Switch disabled={loading} />
           </FormItem>
 
@@ -232,8 +205,8 @@ const LoggingSettings: React.FC = () => {
               return (
                 <>
                   <FormItem
-                    label="OTLP Endpoint"
-                    field="otel_endpoint"
+                    label='OTLP Endpoint'
+                    field='otel_endpoint'
                     rules={[
                       {
                         required: otelEnabled,
@@ -241,14 +214,11 @@ const LoggingSettings: React.FC = () => {
                       },
                     ]}
                   >
-                    <Input
-                      placeholder="http://localhost:4318"
-                      disabled={loading || !otelEnabled}
-                    />
+                    <Input placeholder='http://localhost:4318' disabled={loading || !otelEnabled} />
                   </FormItem>
 
-                  <FormItem label="Protocol" field="otel_protocol">
-                    <Select placeholder="Select protocol" disabled={loading || !otelEnabled}>
+                  <FormItem label='Protocol' field='otel_protocol'>
+                    <Select placeholder='Select protocol' disabled={loading || !otelEnabled}>
                       {OTEL_PROTOCOLS.map((protocol) => (
                         <Option key={protocol} value={protocol}>
                           {protocol.toUpperCase()}
@@ -257,8 +227,8 @@ const LoggingSettings: React.FC = () => {
                     </Select>
                   </FormItem>
 
-                  <FormItem label="Service Name" field="otel_service_name">
-                    <Input placeholder="aionui" disabled={loading || !otelEnabled} />
+                  <FormItem label='Service Name' field='otel_service_name'>
+                    <Input placeholder='aionui' disabled={loading || !otelEnabled} />
                   </FormItem>
                 </>
               );
@@ -267,8 +237,8 @@ const LoggingSettings: React.FC = () => {
         </Card>
 
         {/* Syslog Settings */}
-        <Card title="Syslog / SIEM Forwarding" bordered style={{ marginBottom: '20px' }}>
-          <FormItem label="Enable Syslog" field="syslog_enabled" triggerPropName="checked">
+        <Card title='Syslog / SIEM Forwarding' bordered style={{ marginBottom: '20px' }}>
+          <FormItem label='Enable Syslog' field='syslog_enabled' triggerPropName='checked'>
             <Switch disabled={loading} />
           </FormItem>
 
@@ -278,8 +248,8 @@ const LoggingSettings: React.FC = () => {
               return (
                 <>
                   <FormItem
-                    label="Syslog Host"
-                    field="syslog_host"
+                    label='Syslog Host'
+                    field='syslog_host'
                     rules={[
                       {
                         required: syslogEnabled,
@@ -287,12 +257,12 @@ const LoggingSettings: React.FC = () => {
                       },
                     ]}
                   >
-                    <Input placeholder="syslog.example.com" disabled={loading || !syslogEnabled} />
+                    <Input placeholder='syslog.example.com' disabled={loading || !syslogEnabled} />
                   </FormItem>
 
                   <FormItem
-                    label="Port"
-                    field="syslog_port"
+                    label='Port'
+                    field='syslog_port'
                     rules={[
                       {
                         required: syslogEnabled,
@@ -301,17 +271,11 @@ const LoggingSettings: React.FC = () => {
                       { type: 'number', min: 1, max: 65535, message: 'Invalid port number' },
                     ]}
                   >
-                    <InputNumber
-                      placeholder="514"
-                      min={1}
-                      max={65535}
-                      style={{ width: '100%' }}
-                      disabled={loading || !syslogEnabled}
-                    />
+                    <InputNumber placeholder='514' min={1} max={65535} style={{ width: '100%' }} disabled={loading || !syslogEnabled} />
                   </FormItem>
 
-                  <FormItem label="Protocol" field="syslog_protocol">
-                    <Select placeholder="Select protocol" disabled={loading || !syslogEnabled}>
+                  <FormItem label='Protocol' field='syslog_protocol'>
+                    <Select placeholder='Select protocol' disabled={loading || !syslogEnabled}>
                       {SYSLOG_PROTOCOLS.map((protocol) => (
                         <Option key={protocol} value={protocol}>
                           {protocol.toUpperCase()}
@@ -320,31 +284,13 @@ const LoggingSettings: React.FC = () => {
                     </Select>
                   </FormItem>
 
-                  <FormItem
-                    label="Facility"
-                    field="syslog_facility"
-                    rules={[
-                      { type: 'number', min: 0, max: 23, message: 'Must be between 0 and 23' },
-                    ]}
-                  >
-                    <InputNumber
-                      placeholder="16 (local0)"
-                      min={0}
-                      max={23}
-                      style={{ width: '100%' }}
-                      disabled={loading || !syslogEnabled}
-                    />
+                  <FormItem label='Facility' field='syslog_facility' rules={[{ type: 'number', min: 0, max: 23, message: 'Must be between 0 and 23' }]}>
+                    <InputNumber placeholder='16 (local0)' min={0} max={23} style={{ width: '100%' }} disabled={loading || !syslogEnabled} />
                   </FormItem>
 
                   {syslogEnabled && (
                     <FormItem>
-                      <Button
-                        type="outline"
-                        icon={testingSyslog ? <Refresh spin /> : <Check />}
-                        onClick={handleTestSyslog}
-                        loading={testingSyslog}
-                        disabled={loading}
-                      >
+                      <Button type='outline' icon={testingSyslog ? <Refresh spin /> : <Check />} onClick={handleTestSyslog} loading={testingSyslog} disabled={loading}>
                         Test Syslog Connectivity
                       </Button>
                     </FormItem>
@@ -356,22 +302,19 @@ const LoggingSettings: React.FC = () => {
         </Card>
 
         {/* Langfuse Settings */}
-        <Card title="Langfuse (LLM Observability)" bordered style={{ marginBottom: '20px' }}>
-          <FormItem label="Enable Langfuse" field="langfuse_enabled" triggerPropName="checked">
+        <Card title='Langfuse (LLM Observability)' bordered style={{ marginBottom: '20px' }}>
+          <FormItem label='Enable Langfuse' field='langfuse_enabled' triggerPropName='checked'>
             <Switch disabled={loading} />
           </FormItem>
 
-          <Form.Item
-            noStyle
-            shouldUpdate={(prev, next) => prev.langfuse_enabled !== next.langfuse_enabled}
-          >
+          <Form.Item noStyle shouldUpdate={(prev, next) => prev.langfuse_enabled !== next.langfuse_enabled}>
             {(values) => {
               const langfuseEnabled = values.langfuse_enabled;
               return (
                 <>
                   <FormItem
-                    label="Langfuse Host"
-                    field="langfuse_host"
+                    label='Langfuse Host'
+                    field='langfuse_host'
                     rules={[
                       {
                         required: langfuseEnabled,
@@ -379,15 +322,12 @@ const LoggingSettings: React.FC = () => {
                       },
                     ]}
                   >
-                    <Input
-                      placeholder="https://cloud.langfuse.com"
-                      disabled={loading || !langfuseEnabled}
-                    />
+                    <Input placeholder='https://cloud.langfuse.com' disabled={loading || !langfuseEnabled} />
                   </FormItem>
 
                   <FormItem
-                    label="Public Key"
-                    field="langfuse_public_key"
+                    label='Public Key'
+                    field='langfuse_public_key'
                     rules={[
                       {
                         required: langfuseEnabled,
@@ -395,16 +335,12 @@ const LoggingSettings: React.FC = () => {
                       },
                     ]}
                   >
-                    <Input.Password
-                      placeholder="pk-..."
-                      disabled={loading || !langfuseEnabled}
-                      visibilityToggle
-                    />
+                    <Input.Password placeholder='pk-...' disabled={loading || !langfuseEnabled} visibilityToggle />
                   </FormItem>
 
                   <FormItem
-                    label="Secret Key"
-                    field="langfuse_secret_key"
+                    label='Secret Key'
+                    field='langfuse_secret_key'
                     rules={[
                       {
                         required: langfuseEnabled,
@@ -412,11 +348,7 @@ const LoggingSettings: React.FC = () => {
                       },
                     ]}
                   >
-                    <Input.Password
-                      placeholder="sk-..."
-                      disabled={loading || !langfuseEnabled}
-                      visibilityToggle
-                    />
+                    <Input.Password placeholder='sk-...' disabled={loading || !langfuseEnabled} visibilityToggle />
                   </FormItem>
                 </>
               );
@@ -427,8 +359,8 @@ const LoggingSettings: React.FC = () => {
         <Divider />
 
         {/* Action Buttons */}
-        <Space size="medium">
-          <Button type="primary" onClick={handleSave} loading={saving} disabled={loading}>
+        <Space size='medium'>
+          <Button type='primary' onClick={handleSave} loading={saving} disabled={loading}>
             Save Configuration
           </Button>
           <Button onClick={fetchConfig} disabled={loading || saving}>
