@@ -12,6 +12,7 @@ import { getDirectoryService } from '../services/DirectoryService';
 import { copyDirectoryRecursively } from '../utils';
 import WorkerManage from '../WorkerManage';
 import { getZoomFactor, setZoomFactor } from '../utils/zoom';
+import { fsLogger as log } from '@/common/logger';
 
 export function initApplicationBridge(): void {
   ipcBridge.application.restart.provider(() => {
@@ -56,7 +57,7 @@ export function initApplicationBridge(): void {
           isUserScoped: true,
         });
       } catch (error) {
-        console.warn('[applicationBridge] Failed to get user directories, using system defaults:', error);
+        log.warn({ userId, err: error }, 'Failed to get user directories, using system defaults');
       }
     }
 

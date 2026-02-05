@@ -7,6 +7,7 @@
 import type { TChatConversation } from '@/common/storage';
 import { getDatabase } from '@process/database';
 import { ProcessChatMessage } from '../initStorage';
+import { dbLogger as log } from '@/common/logger';
 
 /**
  * Migrate a conversation from file storage to database
@@ -27,7 +28,7 @@ export async function migrateConversationToDatabase(conversation: TChatConversat
     // Create conversation in database
     const result = db.createConversation(conversation);
     if (!result.success) {
-      console.error('[Migration] Failed to migrate conversation:', result.error);
+      log.error({ conversationId: conversation.id, error: result.error }, 'Failed to migrate conversation');
       return;
     }
 
@@ -39,14 +40,14 @@ export async function migrateConversationToDatabase(conversation: TChatConversat
         for (const message of messages) {
           const insertResult = db.insertMessage(message);
           if (!insertResult.success) {
-            console.error('[Migration] Failed to migrate message:', insertResult.error);
+            log.error({ messageId: message.id, error: insertResult.error }, 'Failed to migrate message');
           }
         }
       }
     } catch (error) {
-      console.warn('[Migration] No messages to migrate:', error);
+      log.warn({ conversationId: conversation.id, err: error }, 'No messages to migrate');
     }
   } catch (error) {
-    console.error('[Migration] Failed to migrate conversation:', error);
+    log.error({ conversationId: conversation.id, err: error }, 'Failed to migrate conversation');
   }
 }

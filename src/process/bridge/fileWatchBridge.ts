@@ -6,6 +6,7 @@
 
 import { ipcBridge } from '@/common';
 import fs from 'fs';
+import { fsLogger as log } from '@/common/logger';
 
 // Store all file watchers
 const watchers = new Map<string, fs.FSWatcher>();
@@ -31,7 +32,7 @@ export function initFileWatchBridge(): void {
 
       return Promise.resolve({ success: true });
     } catch (error) {
-      console.error('[FileWatch] Failed to start watching:', error);
+      log.error({ filePath, err: error }, 'Failed to start watching');
       return Promise.resolve({ success: false, msg: error instanceof Error ? error.message : 'Unknown error' });
     }
   });
@@ -46,7 +47,7 @@ export function initFileWatchBridge(): void {
       }
       return Promise.resolve({ success: false, msg: 'No watcher found for this file' });
     } catch (error) {
-      console.error('[FileWatch] Failed to stop watching:', error);
+      log.error({ filePath, err: error }, 'Failed to stop watching');
       return Promise.resolve({ success: false, msg: error instanceof Error ? error.message : 'Unknown error' });
     }
   });
@@ -60,7 +61,7 @@ export function initFileWatchBridge(): void {
       watchers.clear();
       return Promise.resolve({ success: true });
     } catch (error) {
-      console.error('[FileWatch] Failed to stop all watches:', error);
+      log.error({ err: error }, 'Failed to stop all watches');
       return Promise.resolve({ success: false, msg: error instanceof Error ? error.message : 'Unknown error' });
     }
   });

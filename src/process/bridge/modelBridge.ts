@@ -12,6 +12,7 @@ import OpenAI from 'openai';
 import { ipcBridge } from '../../common';
 import { ProcessConfig } from '../initStorage';
 import { GlobalModelService } from '../services/GlobalModelService';
+import { modelLogger as log } from '@/common/logger';
 
 /**
  * Common path patterns for OpenAI-compatible APIs
@@ -39,7 +40,7 @@ export function initModelBridge(): void {
 
     // For Vertex AI platform, return the supported model list directly
     if (platform?.includes('vertex-ai')) {
-      console.log('Using Vertex AI model list');
+      log.info('Using Vertex AI model list');
       const vertexAIModels = ['gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-3-flash-preview', 'gemini-3-pro-preview'];
       return { success: true, data: { mode: vertexAIModels } };
     }
@@ -78,7 +79,7 @@ export function initModelBridge(): void {
       } catch (e: any) {
         // For Gemini platform, fall back to default model list on API failure
         if (platform?.includes('gemini')) {
-          console.warn('Failed to fetch Gemini models via API, falling back to default list:', e.message);
+          log.warn({ error: e.message }, 'Failed to fetch Gemini models via API, falling back to default list');
           const defaultGeminiModels = ['gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-3-flash-preview', 'gemini-3-pro-preview'];
           return { success: true, data: { mode: defaultGeminiModels } };
         }

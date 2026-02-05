@@ -9,6 +9,7 @@ import { getDatabase } from '@process/database';
 import { ipcBridge } from '../../common';
 import { ProcessChat } from '../initStorage';
 import { migrateConversationToDatabase } from './migrationUtils';
+import { dbLogger as log } from '@/common/logger';
 
 export function initDatabaseBridge(): void {
   // Get conversation messages from database
@@ -18,7 +19,7 @@ export function initDatabaseBridge(): void {
       const result = db.getConversationMessages(conversation_id, page, pageSize);
       return Promise.resolve(result.data || []);
     } catch (error) {
-      console.error('[DatabaseBridge] Error getting conversation messages:', error);
+      log.error({ conversation_id, err: error }, 'Error getting conversation messages');
       return Promise.resolve([]);
     }
   });
@@ -38,7 +39,7 @@ export function initDatabaseBridge(): void {
       try {
         fileConversations = (await ProcessChat.get('chat.history')) || [];
       } catch (error) {
-        console.warn('[DatabaseBridge] No file-based conversations found:', error);
+        log.warn({ err: error }, 'No file-based conversations found');
       }
 
       // Use database conversations as the primary source while backfilling missing ones from file storage
@@ -63,7 +64,7 @@ export function initDatabaseBridge(): void {
       allConversations.sort((a, b) => (b.modifyTime || b.createTime || 0) - (a.modifyTime || a.createTime || 0));
       return allConversations;
     } catch (error) {
-      console.error('[DatabaseBridge] Error getting user conversations:', error);
+      log.error({ err: error }, 'Error getting user conversations');
       return [];
     }
   });

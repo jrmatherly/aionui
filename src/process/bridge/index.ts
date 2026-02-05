@@ -27,6 +27,7 @@ import { initUpdateBridge } from './updateBridge';
 import { initUserApiKeysBridge } from './userApiKeysBridge';
 import { initWebuiBridge } from './webuiBridge';
 import { initWindowControlsBridge } from './windowControlsBridge';
+import { acpLogger as log } from '@/common/logger';
 
 /**
  * Initialize all IPC bridge modules
@@ -64,7 +65,7 @@ export async function initializeAcpDetector(): Promise<void> {
   try {
     await acpDetector.initialize();
   } catch (error) {
-    console.error('[ACP] Failed to initialize detector:', error);
+    log.error({ err: error }, 'Failed to initialize detector');
   }
 }
 
