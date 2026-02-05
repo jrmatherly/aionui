@@ -6,8 +6,6 @@
 
 import { Modal } from '@arco-design/web-react';
 import type React from 'react';
-import { useTranslation } from 'react-i18next';
-
 /**
  * Close tab confirmation state
  */
@@ -69,41 +67,39 @@ interface PreviewConfirmModalsProps {
  * Contains exit edit confirmation and close tab confirmation dialogs
  */
 const PreviewConfirmModals: React.FC<PreviewConfirmModalsProps> = ({ showExitConfirm, closeTabConfirm, onConfirmExit, onCancelExit, onSaveAndCloseTab, onCloseWithoutSave, onCancelCloseTab }) => {
-  const { t } = useTranslation();
-
   return (
     <>
       {/* Exit edit confirmation modal */}
-      <Modal visible={showExitConfirm} title={t('preview.unsavedChangesTitle')} onCancel={onCancelExit} onOk={onConfirmExit} okText={t('preview.confirmExit')} cancelText={t('preview.continueEdit')} style={{ borderRadius: '12px' }} alignCenter getPopupContainer={() => document.body}>
-        <div className='text-14px text-t-secondary'>{t('preview.unsavedChangesMessage')}</div>
+      <Modal visible={showExitConfirm} title={'Unsaved Changes'} onCancel={onCancelExit} onOk={onConfirmExit} okText={'Confirm Exit'} cancelText={'Continue Editing'} style={{ borderRadius: '12px' }} alignCenter getPopupContainer={() => document.body}>
+        <div className='text-14px text-t-secondary'>{'You have unsaved changes. Are you sure you want to exit editing?'}</div>
       </Modal>
 
       {/* Close tab confirmation modal */}
       <Modal
         visible={closeTabConfirm.show}
-        title={t('preview.closeTabTitle')}
+        title={'Close Tab'}
         onCancel={onCancelCloseTab}
         onOk={onSaveAndCloseTab}
-        okText={t('preview.saveAndClose')}
-        cancelText={t('common.cancel')}
+        okText={'Save and Close'}
+        cancelText={'Cancel'}
         style={{ borderRadius: '12px' }}
         alignCenter
         getPopupContainer={() => document.body}
         footer={
           <div className='flex justify-end gap-8px'>
             <button className='px-16px py-6px cursor-pointer border-none hover:bg-bg-3 transition-colors text-14px text-t-primary' onClick={onCancelCloseTab}>
-              {t('common.cancel')}
+              {'Cancel'}
             </button>
             <button className='px-16px py-6px cursor-pointer border-none hover:bg-bg-3 transition-colors text-14px text-t-primary' onClick={onCloseWithoutSave}>
-              {t('preview.closeWithoutSave')}
+              {"Don't Save"}
             </button>
             <button className='px-16px py-6px cursor-pointer border-none bg-primary text-white hover:opacity-80 transition-opacity text-14px' onClick={onSaveAndCloseTab}>
-              {t('preview.saveAndClose')}
+              {'Save and Close'}
             </button>
           </div>
         }
       >
-        <div className='text-14px text-t-secondary'>{t('preview.closeTabMessage')}</div>
+        <div className='text-14px text-t-secondary'>{'The current content has not been saved. Do you want to save before closing?'}</div>
       </Modal>
     </>
   );

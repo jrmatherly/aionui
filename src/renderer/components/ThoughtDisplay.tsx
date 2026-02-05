@@ -7,8 +7,6 @@
 import { useThemeContext } from '@/renderer/context/ThemeContext';
 import { Spin, Tag } from '@arco-design/web-react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 export interface ThoughtData {
   subject: string;
   description: string;
@@ -37,7 +35,6 @@ const formatElapsedTime = (seconds: number): string => {
 
 const ThoughtDisplay: React.FC<ThoughtDisplayProps> = ({ thought, style = 'default', running = false, onStop }) => {
   const { theme } = useThemeContext();
-  const { t } = useTranslation();
   const [elapsedTime, setElapsedTime] = useState(0);
   const startTimeRef = useRef<number>(Date.now());
 
@@ -105,9 +102,9 @@ const ThoughtDisplay: React.FC<ThoughtDisplayProps> = ({ thought, style = 'defau
       <div className='px-10px py-10px rd-20px text-14px pb-40px lh-20px text-t-primary flex items-center gap-8px' style={containerStyle}>
         <Spin size={14} />
         <span className='text-t-secondary'>
-          {t('conversation.chat.processing')}
+          {'Processing...'}
           <span className='ml-8px opacity-60'>
-            ({t('common.escToCancel')}, {formatElapsedTime(elapsedTime)})
+            ({'esc to cancel'}, {formatElapsedTime(elapsedTime)})
           </span>
         </span>
       </div>
@@ -124,7 +121,7 @@ const ThoughtDisplay: React.FC<ThoughtDisplayProps> = ({ thought, style = 'defau
         <span className='flex-1 truncate'>{thought.description}</span>
         {running && (
           <span className='text-t-tertiary text-12px whitespace-nowrap'>
-            ({t('common.escToCancel')}, {formatElapsedTime(elapsedTime)})
+            ({'esc to cancel'}, {formatElapsedTime(elapsedTime)})
           </span>
         )}
       </div>

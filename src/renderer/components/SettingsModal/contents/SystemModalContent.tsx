@@ -11,7 +11,6 @@ import { Alert, Button, Form, Modal, Tooltip } from '@arco-design/web-react';
 import { FolderOpen } from '@icon-park/react';
 import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 import { useSettingsViewMode } from '../settingsViewContext';
 
@@ -25,7 +24,6 @@ const DirInputItem: React.FC<{
   /** Form field name */
   field: string;
 }> = ({ label, field }) => {
-  const { t } = useTranslation();
   return (
     <Form.Item label={label} field={field}>
       {(value, form) => {
@@ -49,8 +47,8 @@ const DirInputItem: React.FC<{
 
         return (
           <div className='aion-dir-input h-[32px] flex items-center rounded-8px border border-solid border-transparent pl-14px bg-[var(--fill-0)]'>
-            <Tooltip content={currentValue || t('settings.dirNotConfigured')} position='top'>
-              <div className='flex-1 min-w-0 text-13px text-t-primary truncate '>{currentValue || t('settings.dirNotConfigured')}</div>
+            <Tooltip content={currentValue || 'Not configured yet'} position='top'>
+              <div className='flex-1 min-w-0 text-13px text-t-primary truncate '>{currentValue || 'Not configured yet'}</div>
             </Tooltip>
             <Button
               type='text'
@@ -100,7 +98,6 @@ interface SystemModalContentProps {
 }
 
 const SystemModalContent: React.FC<SystemModalContentProps> = ({ onRequestClose }) => {
-  const { t } = useTranslation();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [modal, modalContextHolder] = Modal.useModal();
@@ -126,8 +123,8 @@ const SystemModalContent: React.FC<SystemModalContentProps> = ({ onRequestClose 
   const saveDirConfigValidate = (_values: { cacheDir: string; workDir: string }): Promise<unknown> => {
     return new Promise((resolve, reject) => {
       modal.confirm({
-        title: t('settings.updateConfirm'),
-        content: t('settings.restartConfirm'),
+        title: 'Confirm Changes',
+        content: 'Changes will restart the application. Continue?',
         onOk: resolve,
         onCancel: reject,
       });
@@ -208,8 +205,8 @@ const SystemModalContent: React.FC<SystemModalContentProps> = ({ onRequestClose 
               ))}
             </div>
             <Form form={form} layout='vertical' className='space-y-16px'>
-              <DirInputItem label={t('settings.cacheDir')} field='cacheDir' />
-              <DirInputItem label={t('settings.workDir')} field='workDir' />
+              <DirInputItem label={'Cache Directory'} field='cacheDir' />
+              <DirInputItem label={'Work Directory'} field='workDir' />
               {error && <Alert className='mt-16px' type='error' content={typeof error === 'string' ? error : JSON.stringify(error)} />}
             </Form>
           </div>
@@ -219,10 +216,10 @@ const SystemModalContent: React.FC<SystemModalContentProps> = ({ onRequestClose 
       {/* Footer with action buttons */}
       <div className={classNames('flex-shrink-0 flex gap-10px border-t border-border-2 px-24px pt-10px', isPageMode ? 'border-none px-0 pt-10px flex-col md:flex-row md:justify-end' : 'justify-end')}>
         <Button className={classNames('rd-100px', isPageMode && 'w-full md:w-auto')} onClick={handleCancel}>
-          {t('common.cancel')}
+          {'Cancel'}
         </Button>
         <Button type='primary' loading={loading} onClick={onSubmit} className={classNames('rd-100px', isPageMode && 'w-full md:w-auto')}>
-          {t('common.save')}
+          {'Save'}
         </Button>
       </div>
     </div>

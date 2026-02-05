@@ -19,8 +19,6 @@ import { buildDisplayMessage } from '@/renderer/utils/messageFiles';
 import { Button, Tag } from '@arco-design/web-react';
 import { Plus } from '@icon-park/react';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 interface CodexDraftData {
   _type: 'codex';
   atPath: Array<string | FileOrFolderItem>;
@@ -37,7 +35,6 @@ const useCodexSendBoxDraft = getSendBoxDraftHook('codex', {
 
 const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }) => {
   const [workspacePath, setWorkspacePath] = useState('');
-  const { t } = useTranslation();
   const { checkAndUpdateTitle } = useAutoTitle();
   const addOrUpdateMessage = useAddOrUpdateMessage();
   const { setSendBoxHandler } = usePreviewContext();
@@ -368,14 +365,7 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
         loading={running || aiProcessing}
         disabled={aiProcessing}
         className='z-10'
-        placeholder={
-          aiProcessing
-            ? t('conversation.chat.processing')
-            : t('acp.sendbox.placeholder', {
-                backend: 'Codex',
-                defaultValue: `Send message to Codex...`,
-              })
-        }
+        placeholder={aiProcessing ? 'Processing...' : `Send message to ${'Codex'}...`}
         onStop={handleStop}
         onFilesAdded={handleFilesAdded}
         supportedExts={allSupportedExts}

@@ -10,12 +10,10 @@ import { Button, Divider, Switch, Typography } from '@arco-design/web-react';
 import { Github, Right } from '@icon-park/react';
 import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import packageJson from '../../../../../package.json';
 import { useSettingsViewMode } from '../settingsViewContext';
 
 const AboutModalContent: React.FC = () => {
-  const { t } = useTranslation();
   const viewMode = useSettingsViewMode();
   const isPageMode = viewMode === 'page';
   const isElectron = typeof (window as any).electronAPI !== 'undefined';
@@ -56,27 +54,27 @@ const AboutModalContent: React.FC = () => {
 
   const linkItems = [
     {
-      title: t('settings.helpDocumentation'),
+      title: 'Help Documentation',
       url: branding.github.wiki,
       icon: <Right theme='outline' size='16' />,
     },
     {
-      title: t('settings.updateLog'),
+      title: 'Update Log',
       url: branding.github.releases,
       icon: <Right theme='outline' size='16' />,
     },
     {
-      title: t('settings.feedback'),
+      title: 'Feedback',
       url: branding.github.issues,
       icon: <Right theme='outline' size='16' />,
     },
     {
-      title: t('settings.contactMe'),
+      title: 'Contact Me',
       url: branding.contactUrl,
       icon: <Right theme='outline' size='16' />,
     },
     {
-      title: t('settings.officialWebsite'),
+      title: 'Official Website',
       url: branding.websiteUrl,
       icon: <Right theme='outline' size='16' />,
     },
@@ -92,7 +90,7 @@ const AboutModalContent: React.FC = () => {
             <Typography.Title heading={3} className='text-24px font-bold text-t-primary mb-8px'>
               AionUi
             </Typography.Title>
-            <Typography.Text className='text-14px text-t-secondary mb-12px text-center'>{t('settings.appDescription')}</Typography.Text>
+            <Typography.Text className='text-14px text-t-secondary mb-12px text-center'>{'Free, local, open-source GUI app for Gemini CLI'}</Typography.Text>
             <div className='flex items-center justify-center gap-8px mb-16px'>
               <span className='px-10px py-4px rd-6px text-13px bg-fill-2 text-t-primary font-500'>v{packageJson.version}</span>
               <div className='text-t-primary cursor-pointer hover:text-t-secondary transition-colors p-4px' onClick={() => openLink(branding.github.repo).catch((error) => console.error('Failed to open link:', error))}>
@@ -104,10 +102,10 @@ const AboutModalContent: React.FC = () => {
             {isElectron && (
               <div className='flex flex-col items-center gap-12px w-full max-w-300px bg-fill-2 p-16px rounded-lg'>
                 <Button type='primary' long onClick={checkUpdate}>
-                  {t('settings.checkForUpdates')}
+                  {'Check for updates'}
                 </Button>
                 <div className='flex items-center justify-between w-full'>
-                  <Typography.Text className='text-12px text-t-secondary'>{t('settings.includePrereleaseUpdates')}</Typography.Text>
+                  <Typography.Text className='text-12px text-t-secondary'>{'Include prerelease/dev builds'}</Typography.Text>
                   <Switch size='small' checked={includePrerelease} onChange={handlePrereleaseChange} />
                 </div>
               </div>

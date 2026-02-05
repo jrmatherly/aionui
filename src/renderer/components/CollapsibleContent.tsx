@@ -8,8 +8,6 @@ import { useThemeContext } from '@/renderer/context/ThemeContext';
 import { Down, Up } from '@icon-park/react';
 import classNames from 'classnames';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 // Gradient mask constants
 // mask-image mode: fade out content itself, suitable for scenarios with background color (like Alert)
 const MASK_GRADIENT = 'linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0.4) 90%, rgba(0, 0, 0, 0) 100%)';
@@ -65,7 +63,7 @@ interface CollapsibleContentProps {
  * ```
  */
 export const CollapsibleContent: React.FC<CollapsibleContentProps> = ({ children, maxHeight = 240, defaultCollapsed = true, className, contentClassName, useMask = false, allowHorizontalScroll = false }) => {
-  const { t } = useTranslation(); // i18n
+  // i18n
   const { theme } = useThemeContext(); // Theme context (light/dark)
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed); // Collapse state
   const [needsCollapse, setNeedsCollapse] = useState(false); // Whether collapse feature is needed
@@ -185,13 +183,13 @@ export const CollapsibleContent: React.FC<CollapsibleContentProps> = ({ children
             {isCollapsed ? (
               <>
                 {/* Expand more */}
-                <span className='leading-none'>{t('common.expandMore')}</span>
+                <span className='leading-none'>{'Expand More'}</span>
                 <Down theme='outline' size='14' fill='currentColor' className='inline-block' />
               </>
             ) : (
               <>
                 {/* Collapse */}
-                <span className='leading-none'>{t('common.collapse')}</span>
+                <span className='leading-none'>{'Collapse'}</span>
                 <Up theme='outline' size='14' fill='currentColor' className='inline-block' />
               </>
             )}

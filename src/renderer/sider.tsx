@@ -1,7 +1,6 @@
 import { Tooltip } from '@arco-design/web-react';
 import { ArrowCircleLeft, Plus, SettingTwo } from '@icon-park/react';
 import React, { useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import UserMenu from './components/UserMenu';
 import WorkspaceGroupedHistory from './pages/conversation/WorkspaceGroupedHistory';
@@ -17,8 +16,6 @@ interface SiderProps {
 const Sider: React.FC<SiderProps> = ({ onSessionClick, collapsed = false }) => {
   const location = useLocation();
   const { pathname, search, hash } = location;
-
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const { closePreview } = usePreviewContext();
   const isSettings = pathname.startsWith('/settings');
@@ -53,7 +50,7 @@ const Sider: React.FC<SiderProps> = ({ onSessionClick, collapsed = false }) => {
           <SettingsSider collapsed={collapsed}></SettingsSider>
         ) : (
           <div className='size-full flex flex-col'>
-            <Tooltip disabled={!collapsed} content={t('conversation.welcome.newConversation')} position='right'>
+            <Tooltip disabled={!collapsed} content={'New Chat'} position='right'>
               <div
                 className='flex items-center justify-start gap-10px px-12px py-8px hover:bg-hover rd-0.5rem mb-8px cursor-pointer group shrink-0'
                 onClick={() => {
@@ -68,7 +65,7 @@ const Sider: React.FC<SiderProps> = ({ onSessionClick, collapsed = false }) => {
                 }}
               >
                 <Plus theme='outline' size='24' fill={iconColors.primary} className='flex' />
-                <span className='collapsed-hidden font-bold text-t-primary'>{t('conversation.welcome.newConversation')}</span>
+                <span className='collapsed-hidden font-bold text-t-primary'>{'New Chat'}</span>
               </div>
             </Tooltip>
             <WorkspaceGroupedHistory collapsed={collapsed} onSessionClick={onSessionClick}></WorkspaceGroupedHistory>
@@ -78,10 +75,10 @@ const Sider: React.FC<SiderProps> = ({ onSessionClick, collapsed = false }) => {
       {/* Footer - user menu + settings button */}
       <div className='shrink-0 sider-footer'>
         <UserMenu collapsed={collapsed} />
-        <Tooltip disabled={!collapsed} content={isSettings ? t('common.back') : t('common.settings')} position='right'>
+        <Tooltip disabled={!collapsed} content={isSettings ? 'Back to Chat' : 'Settings'} position='right'>
           <div onClick={handleSettingsClick} className='flex items-center justify-start gap-10px px-12px py-8px hover:bg-hover rd-0.5rem mb-8px cursor-pointer'>
             {isSettings ? <ArrowCircleLeft className='flex' theme='outline' size='24' fill={iconColors.primary} /> : <SettingTwo className='flex' theme='outline' size='24' fill={iconColors.primary} />}
-            <span className='collapsed-hidden text-t-primary'>{isSettings ? t('common.back') : t('common.settings')}</span>
+            <span className='collapsed-hidden text-t-primary'>{isSettings ? 'Back to Chat' : 'Settings'}</span>
           </div>
         </Tooltip>
       </div>

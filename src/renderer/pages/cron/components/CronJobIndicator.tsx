@@ -8,8 +8,6 @@ import { iconColors } from '@/renderer/theme/colors';
 import { Tooltip } from '@arco-design/web-react';
 import { AlarmClock, Attention, PauseOne } from '@icon-park/react';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-
 export type CronJobStatus = 'none' | 'active' | 'paused' | 'error' | 'unread' | 'unconfigured';
 
 interface CronJobIndicatorProps {
@@ -23,8 +21,6 @@ interface CronJobIndicatorProps {
  * Used in ChatHistory to distinguish conversations with scheduled tasks
  */
 const CronJobIndicator: React.FC<CronJobIndicatorProps> = ({ status, size = 14, className = '' }) => {
-  const { t } = useTranslation();
-
   if (status === 'none') {
     return null;
   }
@@ -63,15 +59,15 @@ const CronJobIndicator: React.FC<CronJobIndicatorProps> = ({ status, size = 14, 
   const getTooltip = () => {
     switch (status) {
       case 'unread':
-        return t('cron.status.unread');
+        return 'New execution';
       case 'active':
-        return t('cron.status.active');
+        return 'Active';
       case 'paused':
-        return t('cron.status.paused');
+        return 'Paused';
       case 'error':
-        return t('cron.status.error');
+        return 'Error';
       case 'unconfigured':
-        return t('cron.status.unconfigured');
+        return 'No scheduled task';
       default:
         return '';
     }

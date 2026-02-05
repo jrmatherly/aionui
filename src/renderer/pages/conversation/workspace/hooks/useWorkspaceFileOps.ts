@@ -18,7 +18,6 @@ interface UseWorkspaceFileOpsOptions {
   workspace: string;
   eventPrefix: 'gemini' | 'acp' | 'codex';
   messageApi: MessageApi;
-  t: (key: string) => string;
 
   // Dependencies from useWorkspaceTree
   setFiles: React.Dispatch<React.SetStateAction<IDirOrFile[]>>;
@@ -48,7 +47,7 @@ interface UseWorkspaceFileOpsOptions {
  * useWorkspaceFileOps - File operations logic (open, delete, rename, preview, add to chat)
  */
 export function useWorkspaceFileOps(options: UseWorkspaceFileOpsOptions) {
-  const { workspace, eventPrefix, messageApi, t, setFiles, setSelected, setExpandedKeys, selectedKeysRef, selectedNodeRef, ensureNodeSelected, refreshWorkspace, renameModal, deleteModal, renameLoading, setRenameLoading, closeRenameModal, closeDeleteModal, closeContextMenu, setRenameModal, setDeleteModal, openPreview } = options;
+  const { workspace, eventPrefix, messageApi, setFiles, setSelected, setExpandedKeys, selectedKeysRef, selectedNodeRef, ensureNodeSelected, refreshWorkspace, renameModal, deleteModal, renameLoading, setRenameLoading, closeRenameModal, closeDeleteModal, closeContextMenu, setRenameModal, setDeleteModal, openPreview } = options;
 
   /**
    * Open file or folder with system default handler
@@ -59,10 +58,10 @@ export function useWorkspaceFileOps(options: UseWorkspaceFileOpsOptions) {
       try {
         await ipcBridge.shell.openFile.invoke(nodeData.fullPath);
       } catch (error) {
-        messageApi.error(t('conversation.workspace.contextMenu.openFailed') || 'Failed to open');
+        messageApi.error('Failed to open');
       }
     },
-    [messageApi, t]
+    [messageApi]
   );
 
   /**
@@ -74,10 +73,10 @@ export function useWorkspaceFileOps(options: UseWorkspaceFileOpsOptions) {
       try {
         await ipcBridge.shell.showItemInFolder.invoke(nodeData.fullPath);
       } catch (error) {
-        messageApi.error(t('conversation.workspace.contextMenu.revealFailed') || 'Failed to reveal');
+        messageApi.error('Failed to open containing folder');
       }
     },
-    [messageApi, t]
+    [messageApi]
   );
 
   /**
@@ -102,13 +101,13 @@ export function useWorkspaceFileOps(options: UseWorkspaceFileOpsOptions) {
       setDeleteModal((prev) => ({ ...prev, loading: true }));
       const res = await removeWorkspaceEntry(deleteModal.target.fullPath);
       if (!res?.success) {
-        const errorMsg = res?.msg || t('conversation.workspace.contextMenu.deleteFailed');
+        const errorMsg = res?.msg;
         messageApi.error(errorMsg);
         setDeleteModal((prev) => ({ ...prev, loading: false }));
         return;
       }
 
-      messageApi.success(t('conversation.workspace.contextMenu.deleteSuccess'));
+      messageApi.success('Deleted successfully');
       setSelected([]);
       selectedKeysRef.current = [];
       selectedNodeRef.current = null;
@@ -116,10 +115,10 @@ export function useWorkspaceFileOps(options: UseWorkspaceFileOpsOptions) {
       closeDeleteModal();
       setTimeout(() => refreshWorkspace(), 200);
     } catch (error) {
-      messageApi.error(t('conversation.workspace.contextMenu.deleteFailed'));
+      messageApi.error('Delete failed');
       setDeleteModal((prev) => ({ ...prev, loading: false }));
     }
-  }, [deleteModal.target, closeDeleteModal, eventPrefix, messageApi, refreshWorkspace, t, setSelected, selectedKeysRef, selectedNodeRef, setDeleteModal]);
+  }, [deleteModal.target, closeDeleteModal, eventPrefix, messageApi, refreshWorkspace, setSelected, selectedKeysRef, selectedNodeRef, setDeleteModal]);
 
   /**
    * Wrap promise with timeout guard
@@ -152,7 +151,7 @@ export function useWorkspaceFileOps(options: UseWorkspaceFileOpsOptions) {
     const trimmedName = renameModal.value.trim();
 
     if (!trimmedName) {
-      messageApi.warning(t('conversation.workspace.contextMenu.renameEmpty'));
+      messageApi.warning('Name cannot be empty');
       return;
     }
 
@@ -178,7 +177,7 @@ export function useWorkspaceFileOps(options: UseWorkspaceFileOpsOptions) {
       setRenameLoading(true);
       const response = await waitWithTimeout(renameWorkspaceEntry(target.fullPath, trimmedName));
       if (!response?.success) {
-        const errorMsg = response?.msg || t('conversation.workspace.contextMenu.renameFailed');
+        const errorMsg = response?.msg;
         messageApi.error(errorMsg);
         return;
       }
@@ -203,17 +202,17 @@ export function useWorkspaceFileOps(options: UseWorkspaceFileOpsOptions) {
         selectedNodeRef.current = null;
       }
 
-      messageApi.success(t('conversation.workspace.contextMenu.renameSuccess'));
+      messageApi.success('Renamed successfully');
     } catch (error) {
       if (error instanceof Error && error.message === 'timeout') {
-        messageApi.error(t('conversation.workspace.contextMenu.renameTimeout'));
+        messageApi.error('Rename request timed out, please try again');
       } else {
-        messageApi.error(t('conversation.workspace.contextMenu.renameFailed'));
+        messageApi.error('Rename failed');
       }
     } finally {
       setRenameLoading(false);
     }
-  }, [closeRenameModal, eventPrefix, messageApi, renameLoading, renameModal, t, waitWithTimeout, setFiles, setExpandedKeys, setSelected, selectedKeysRef, selectedNodeRef, setRenameLoading]);
+  }, [closeRenameModal, eventPrefix, messageApi, renameLoading, renameModal, waitWithTimeout, setFiles, setExpandedKeys, setSelected, selectedKeysRef, selectedNodeRef, setRenameLoading]);
 
   /**
    * Add to chat
@@ -232,9 +231,9 @@ export function useWorkspaceFileOps(options: UseWorkspaceFileOpsOptions) {
       };
 
       emitter.emit(`${eventPrefix}.selected.file.append`, [payload]);
-      messageApi.success(t('conversation.workspace.contextMenu.addedToChat'));
+      messageApi.success('Added to chat');
     },
-    [closeContextMenu, ensureNodeSelected, eventPrefix, messageApi, t]
+    [closeContextMenu, ensureNodeSelected, eventPrefix, messageApi]
   );
 
   /**
@@ -248,7 +247,7 @@ export function useWorkspaceFileOps(options: UseWorkspaceFileOpsOptions) {
         closeContextMenu();
 
         // Determine content type based on file extension
-        const ext = nodeData.name.toLowerCase().split('.').pop() || '';
+        const ext = nodeData.name.toLowerCase().split('.').pop();
 
         // List of supported image formats
         const imageExtensions = ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp', 'svg', 'ico', 'tif', 'tiff', 'avif'];
@@ -302,10 +301,10 @@ export function useWorkspaceFileOps(options: UseWorkspaceFileOpsOptions) {
           editable: contentType === 'markdown' || contentType === 'image' ? false : undefined,
         });
       } catch (error) {
-        messageApi.error(t('conversation.workspace.contextMenu.previewFailed'));
+        messageApi.error('Failed to preview');
       }
     },
-    [closeContextMenu, openPreview, workspace, messageApi, t]
+    [closeContextMenu, openPreview, workspace, messageApi]
   );
 
   /**

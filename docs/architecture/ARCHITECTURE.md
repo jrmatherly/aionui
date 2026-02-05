@@ -494,7 +494,7 @@ contextBridge.exposeInMainWorld('electron', {
 - **CSRF Protection**: `tiny-csrf` middleware
   - Excluded routes: `/login`, `/api/auth/refresh`
   - Token validation on state-changing requests
-- **Secure Cookies**: 
+- **Secure Cookies**:
   - `HttpOnly`: Prevents XSS access
   - `SameSite=Strict`: CSRF protection
   - `Secure`: HTTPS-only in remote mode

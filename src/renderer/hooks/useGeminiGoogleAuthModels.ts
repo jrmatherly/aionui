@@ -7,7 +7,6 @@
 import { ipcBridge } from '@/common';
 import { ConfigStorage } from '@/common/storage';
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 import { getGeminiModeList, type GeminiModeOption } from './useModeModeList';
 
@@ -23,7 +22,6 @@ export interface GeminiGoogleAuthModelResult {
 }
 
 export const useGeminiGoogleAuthModels = (): GeminiGoogleAuthModelResult => {
-  const { t } = useTranslation();
   const { data: geminiConfig } = useSWR('gemini.config', () => ConfigStorage.get('gemini.config'));
   const proxyKey = geminiConfig?.proxy || '';
 
@@ -44,11 +42,11 @@ export const useGeminiGoogleAuthModels = (): GeminiGoogleAuthModelResult => {
   // Generate model list matching terminal CLI
   const descriptions = useMemo(
     () => ({
-      autoGemini3: t('gemini.mode.autoGemini3Desc', 'Let Gemini CLI decide the best model for the task: gemini-3-pro, gemini-3-flash'),
-      autoGemini25: t('gemini.mode.autoGemini25Desc', 'Let Gemini CLI decide the best model for the task: gemini-2.5-pro, gemini-2.5-flash'),
-      manual: t('gemini.mode.manualDesc', 'Manually select a model'),
+      autoGemini3: 'Let Gemini CLI decide the best model for the task: gemini-3-pro, gemini-3-flash',
+      autoGemini25: 'Let Gemini CLI decide the best model for the task: gemini-2.5-pro, gemini-2.5-flash',
+      manual: 'Manually select a model',
     }),
-    [t]
+    []
   );
   const geminiModeOptions = useMemo(() => getGeminiModeList({ descriptions }), [descriptions]);
 

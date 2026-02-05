@@ -36,30 +36,29 @@ export const getActivityTime = (conversation: TChatConversation): number => {
  * @param currentTime - The current timestamp (usually Date.now())
  * @param t - The i18n translation function
  */
-export const getTimelineLabel = (time: number, currentTime: number, t: (key: string) => string): string => {
+export const getTimelineLabel = (time: number, currentTime: number): string => {
   const daysDiff = diffDay(currentTime, time);
 
-  if (daysDiff === 0) return t('conversation.history.today');
-  if (daysDiff === 1) return t('conversation.history.yesterday');
-  if (daysDiff < 7) return t('conversation.history.recent7Days');
-  return t('conversation.history.earlier');
+  if (daysDiff === 0) return 'Today';
+  if (daysDiff === 1) return 'Yesterday';
+  if (daysDiff < 7) return 'Last 7 Days';
+  return 'Earlier';
 };
 
 /**
  * Create a timeline group function that deduplicates consecutive same-label items
  *
- * @param t - The i18n translation function
  * @returns A function that returns the timeline label or empty string if same as previous
  */
-export const createTimelineGrouper = (t: (key: string) => string) => {
+export const createTimelineGrouper = () => {
   const current = Date.now();
   let prevTime: number;
 
   const format = (time: number) => {
-    if (diffDay(current, time) === 0) return t('conversation.history.today');
-    if (diffDay(current, time) === 1) return t('conversation.history.yesterday');
-    if (diffDay(current, time) < 7) return t('conversation.history.recent7Days');
-    return t('conversation.history.earlier');
+    if (diffDay(current, time) === 0) return 'Today';
+    if (diffDay(current, time) === 1) return 'Yesterday';
+    if (diffDay(current, time) < 7) return 'Last 7 Days';
+    return 'Earlier';
   };
 
   return (conversation: TChatConversation) => {

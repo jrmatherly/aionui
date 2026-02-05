@@ -23,7 +23,6 @@ import { getModelContextLimit } from '@/renderer/utils/modelContextLimits';
 import { Button, Message, Tag } from '@arco-design/web-react';
 import { Plus } from '@icon-park/react';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import type { GeminiModelSelection } from './useGeminiModelSelection';
 
 const useGeminiSendBoxDraft = getSendBoxDraftHook('gemini', {
@@ -332,7 +331,6 @@ const GeminiSendBox: React.FC<{
   modelSelection: GeminiModelSelection;
 }> = ({ conversation_id, modelSelection }) => {
   const [workspacePath, setWorkspacePath] = useState('');
-  const { t } = useTranslation();
   const { checkAndUpdateTitle } = useAutoTitle();
   const quotaPromptedRef = useRef<string | null>(null);
   const exhaustedModelsRef = useRef(new Set<string>());
@@ -391,15 +389,15 @@ const GeminiSendBox: React.FC<{
       }
       const fallbackTarget = resolveFallbackTarget(exhaustedModelsRef.current);
       if (!fallbackTarget || !currentModel || fallbackTarget.model === currentModel.useModel) {
-        Message.warning(t('conversation.chat.quotaExceededNoFallback', { defaultValue: 'Model quota reached. Please switch to another available model.' }));
+        Message.warning('Model quota reached. Please switch to another available model.');
         return;
       }
 
       void handleSelectModel(fallbackTarget.provider, fallbackTarget.model).then(() => {
-        Message.success(t('conversation.chat.quotaSwitched', { defaultValue: `Switched to ${fallbackTarget.model}.`, model: fallbackTarget.model }));
+        Message.success(`Switched to ${fallbackTarget.model}.`);
       });
     },
-    [currentModel, handleSelectModel, isQuotaErrorMessage, resolveFallbackTarget, t]
+    [currentModel, handleSelectModel, isQuotaErrorMessage, resolveFallbackTarget]
   );
 
   const { thought, running, tokenUsage, setActiveMsgId, setWaitingResponse, resetState } = useGeminiMessage(conversation_id, handleGeminiError);
@@ -581,7 +579,7 @@ const GeminiSendBox: React.FC<{
         disabled={!currentModel?.useModel}
         // 占位提示同步右上角选择的模型，确保用户感知当前目标
         // Keep placeholder in sync with header selection so users know the active target
-        placeholder={currentModel?.useModel ? t('conversation.chat.sendMessageTo', { model: getDisplayModelName(currentModel.useModel) }) : t('conversation.chat.noModelSelected')}
+        placeholder={currentModel?.useModel ? `Send message to ${getDisplayModelName(currentModel.useModel)}` : 'No model selected for current session, cannot send message'}
         onStop={handleStop}
         className='z-10'
         onFilesAdded={handleFilesAdded}

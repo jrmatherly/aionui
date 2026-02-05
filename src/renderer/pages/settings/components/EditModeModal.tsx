@@ -4,8 +4,6 @@ import ModalHOC from '@/renderer/utils/ModalHOC';
 import { Form, Input } from '@arco-design/web-react';
 import { LinkCloud } from '@icon-park/react';
 import React, { useEffect, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-
 // Provider Logo imports
 import AnthropicLogo from '@/renderer/assets/logos/anthropic.svg';
 import GeminiLogo from '@/renderer/assets/logos/gemini.svg';
@@ -66,7 +64,6 @@ const ProviderLogo: React.FC<{ logo: string | null; name: string; size?: number 
 };
 
 const EditModeModal = ModalHOC<{ data?: IProvider; onChange(data: IProvider): void }>(({ modalProps, modalCtrl, ...props }) => {
-  const { t } = useTranslation();
   const { data } = props;
   const [form] = Form.useForm();
 
@@ -90,7 +87,7 @@ const EditModeModal = ModalHOC<{ data?: IProvider; onChange(data: IProvider): vo
     <AionModal
       visible={modalProps.visible}
       onCancel={modalCtrl.close}
-      header={{ title: t('settings.editModel'), showClose: true }}
+      header={{ title: 'Edit Model Platform', showClose: true }}
       style={{ minHeight: '400px', maxHeight: '90vh', borderRadius: 16 }}
       contentStyle={{ background: 'var(--bg-1)', borderRadius: 16, padding: '20px 24px 16px', overflow: 'auto' }}
       onOk={async () => {
@@ -107,8 +104,8 @@ const EditModeModal = ModalHOC<{ data?: IProvider; onChange(data: IProvider): vo
         props.onChange({ ...(data || {}), ...values, customHeaders });
         modalCtrl.close();
       }}
-      okText={t('common.save')}
-      cancelText={t('common.cancel')}
+      okText={'Save'}
+      cancelText={'Cancel'}
     >
       <div className='py-20px'>
         <Form form={form} layout='vertical'>
@@ -117,23 +114,23 @@ const EditModeModal = ModalHOC<{ data?: IProvider; onChange(data: IProvider): vo
             label={
               <div className='flex items-center gap-6px'>
                 <ProviderLogo logo={providerLogo} name={data?.name || ''} size={16} />
-                <span>{t('settings.modelProvider')}</span>
+                <span>{'Model Provider'}</span>
               </div>
             }
             field='name'
             required
             rules={[{ required: true }]}
           >
-            <Input placeholder={t('settings.modelProvider')} />
+            <Input placeholder={'Model Provider'} />
           </Form.Item>
 
           {/* Base URL / Endpoint URL */}
-          <Form.Item label={t('settings.baseUrl')} required={data?.platform !== 'gemini' && data?.platform !== 'gemini-vertex-ai'} rules={[{ required: data?.platform !== 'gemini' && data?.platform !== 'gemini-vertex-ai' }]} field={'baseUrl'}>
+          <Form.Item label={'base url'} required={data?.platform !== 'gemini' && data?.platform !== 'gemini-vertex-ai'} rules={[{ required: data?.platform !== 'gemini' && data?.platform !== 'gemini-vertex-ai' }]} field={'baseUrl'}>
             <Input placeholder='https://api.example.com/v1' />
           </Form.Item>
 
-          <Form.Item label={t('settings.apiKey')} required rules={[{ required: true }]} field={'apiKey'} extra={<div className='text-11px text-t-secondary mt-2'>💡 {t('settings.multiApiKeyEditTip')}</div>}>
-            <Input.TextArea rows={4} placeholder={t('settings.apiKeyPlaceholder')} />
+          <Form.Item label={'API Key'} required rules={[{ required: true }]} field={'apiKey'} extra={<div className='text-11px text-t-secondary mt-2'>💡 {'Support multiple API Keys, one per line, system will auto-rotate'}</div>}>
+            <Input.TextArea rows={4} placeholder={'Enter API Key(s), one per line for multiple keys'} />
           </Form.Item>
 
           {/* Custom Headers */}

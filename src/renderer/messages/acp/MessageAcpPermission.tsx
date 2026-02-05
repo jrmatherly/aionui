@@ -8,8 +8,6 @@ import type { IMessageAcpPermission } from '@/common/chatLib';
 import { conversation } from '@/common/ipcBridge';
 import { Button, Card, Radio, Typography } from '@arco-design/web-react';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 const { Text } = Typography;
 
 interface MessageAcpPermissionProps {
@@ -18,20 +16,18 @@ interface MessageAcpPermissionProps {
 
 const MessageAcpPermission: React.FC<MessageAcpPermissionProps> = React.memo(({ message }) => {
   const { options = [], toolCall } = message.content || {};
-  const { t } = useTranslation();
-
   // Generate display info based on actual data
   const getToolInfo = () => {
     if (!toolCall) {
       return {
-        title: t('messages.permissionRequest'),
-        description: t('messages.agentRequestingPermission'),
+        title: 'Permission Request',
+        description: 'The agent is requesting permission.',
         icon: '🔐',
       };
     }
 
     // Use actual data from toolCall directly
-    const displayTitle = toolCall.title || toolCall.rawInput?.description || t('messages.permissionRequest');
+    const displayTitle = toolCall.title || toolCall.rawInput?.description || 'Permission Request';
 
     // Simple icon mapping
     const kindIcons: Record<string, string> = {
@@ -93,17 +89,17 @@ const MessageAcpPermission: React.FC<MessageAcpPermissionProps> = React.memo(({ 
         </div>
         {(toolCall.rawInput?.command || toolCall.title) && (
           <div>
-            <Text className='text-xs text-t-secondary mb-1'>{t('messages.command')}</Text>
+            <Text className='text-xs text-t-secondary mb-1'>{'Command:'}</Text>
             <code className='text-xs bg-1 p-2 rounded block text-t-primary break-all'>{toolCall.rawInput?.command || toolCall.title}</code>
           </div>
         )}
         {!hasResponded && (
           <>
-            <div className='mt-10px'>{t('messages.chooseAction')}</div>
+            <div className='mt-10px'>{'Choose an action:'}</div>
             <Radio.Group direction='vertical' size='mini' value={selected} onChange={setSelected}>
               {options && options.length > 0 ? (
                 options.map((option, index) => {
-                  const optionName = option?.name || `${t('messages.option')} ${index + 1}`;
+                  const optionName = option?.name || `${'Option'} ${index + 1}`;
                   const optionId = option?.optionId || `option_${index}`;
                   return (
                     <Radio key={optionId} value={optionId}>
@@ -112,12 +108,12 @@ const MessageAcpPermission: React.FC<MessageAcpPermissionProps> = React.memo(({ 
                   );
                 })
               ) : (
-                <Text type='secondary'>{t('messages.noOptionsAvailable')}</Text>
+                <Text type='secondary'>{'No options available'}</Text>
               )}
             </Radio.Group>
             <div className='flex justify-start pl-20px'>
               <Button type='primary' size='mini' disabled={!selected || isResponding} onClick={handleConfirm}>
-                {isResponding ? t('messages.processing') : t('messages.confirm')}
+                {isResponding ? 'Processing...' : 'Confirm'}
               </Button>
             </div>
           </>
@@ -126,7 +122,7 @@ const MessageAcpPermission: React.FC<MessageAcpPermissionProps> = React.memo(({ 
         {hasResponded && (
           <div className='mt-10px p-2 rounded-md border' style={{ backgroundColor: 'var(--color-success-light-1)', borderColor: 'rgb(var(--success-3))' }}>
             <Text className='text-sm' style={{ color: 'rgb(var(--success-6))' }}>
-              ✓ {t('messages.responseSentSuccessfully')}
+              ✓ {'Response sent successfully'}
             </Text>
           </div>
         )}

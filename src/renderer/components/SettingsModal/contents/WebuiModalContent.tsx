@@ -13,7 +13,6 @@ import { Form, Input, Message, Switch, Tooltip } from '@arco-design/web-react';
 import { Copy, Refresh } from '@icon-park/react';
 import { QRCodeSVG } from 'qrcode.react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useSettingsViewMode } from '../settingsViewContext';
 import ChannelModalContent from './ChannelModalContent';
 
@@ -56,7 +55,6 @@ const InfoRow: React.FC<{ label: string; value: string; onCopy?: () => void; sho
  * WebUI settings content component
  */
 const WebuiModalContent: React.FC = () => {
-  const { t } = useTranslation();
   const branding = useBranding();
   const viewMode = useSettingsViewMode();
   const isPageMode = viewMode === 'page';
@@ -257,17 +255,17 @@ const WebuiModalContent: React.FC = () => {
           }));
         }
 
-        Message.success(t('settings.webui.startSuccess'));
+        Message.success('WebUI started successfully');
         // Start result contains all needed data, no need for delayed status fetch
       } else {
         // Update UI immediately, stop server async
         setStatus((prev) => (prev ? { ...prev, running: false } : null));
-        Message.success(t('settings.webui.stopSuccess'));
+        Message.success('WebUI stopped');
         webui.stop.invoke().catch((err) => console.error('WebUI stop error:', err));
       }
     } catch (error) {
       console.error('Toggle WebUI error:', error);
-      Message.error(t('settings.webui.operationFailed'));
+      Message.error('Operation failed');
     } finally {
       setStartLoading(false);
     }
@@ -311,7 +309,7 @@ const WebuiModalContent: React.FC = () => {
             initialPassword: responsePassword || cachedPassword || prev?.initialPassword,
           }));
 
-          Message.success(t('settings.webui.restartSuccess'));
+          Message.success('WebUI restarted');
         } else {
           // Response is null or failed, but server might have started, check status
           let statusResult: { success: boolean; data?: IWebUIStatus } | null = null;
@@ -328,16 +326,16 @@ const WebuiModalContent: React.FC = () => {
 
             setAllowRemote(checked);
             setStatus(statusResult.data);
-            Message.success(t('settings.webui.restartSuccess'));
+            Message.success('WebUI restarted');
           } else {
             // Really failed to start
-            Message.error(t('settings.webui.operationFailed'));
+            Message.error('Operation failed');
             setStatus((prev) => (prev ? { ...prev, running: false } : null));
           }
         }
       } catch (error) {
         console.error('[WebuiModal] Restart error:', error);
-        Message.error(t('settings.webui.operationFailed'));
+        Message.error('Operation failed');
       } finally {
         setStartLoading(false);
       }
@@ -376,7 +374,7 @@ const WebuiModalContent: React.FC = () => {
   // Copy content
   const handleCopy = (text: string) => {
     void navigator.clipboard.writeText(text);
-    Message.success(t('common.copySuccess'));
+    Message.success('Copied');
   };
 
   // Copy password (immediately hide after copying)
@@ -384,7 +382,7 @@ const WebuiModalContent: React.FC = () => {
     const password = status?.initialPassword || cachedPassword;
     if (password) {
       void navigator.clipboard.writeText(password);
-      Message.success(t('common.copySuccess'));
+      Message.success('Copied');
       // Hide plaintext immediately after copying, icon changes to reset
       setCanShowPlainPassword(false);
     }
@@ -415,7 +413,7 @@ const WebuiModalContent: React.FC = () => {
       }
 
       if (result.success) {
-        Message.success(t('settings.webui.passwordChanged'));
+        Message.success('Password changed successfully');
         setSetPasswordModalVisible(false);
         form.resetFields();
         // Update cached password, no longer show plaintext
@@ -423,11 +421,11 @@ const WebuiModalContent: React.FC = () => {
         setCanShowPlainPassword(false);
         setStatus((prev) => (prev ? { ...prev, initialPassword: undefined } : null));
       } else {
-        Message.error(result.msg || t('settings.webui.passwordChangeFailed'));
+        Message.error(result.msg || 'Failed to change password');
       }
     } catch (error) {
       console.error('Set new password error:', error);
-      Message.error(t('settings.webui.passwordChangeFailed'));
+      Message.error('Failed to change password');
     } finally {
       setPasswordLoading(false);
     }
@@ -465,15 +463,15 @@ const WebuiModalContent: React.FC = () => {
         );
       } else {
         console.error('Generate QR code failed:', result?.msg);
-        Message.error(t('settings.webui.qrGenerateFailed'));
+        Message.error('Failed to generate QR code');
       }
     } catch (error) {
       console.error('Generate QR code error:', error);
-      Message.error(t('settings.webui.qrGenerateFailed'));
+      Message.error('Failed to generate QR code');
     } finally {
       setQrLoading(false);
     }
-  }, [status?.running, t]);
+  }, [status?.running]);
 
   // Auto-generate QR code when server starts and remote access is allowed
   useEffect(() => {
@@ -512,11 +510,11 @@ const WebuiModalContent: React.FC = () => {
   // Password shows *** by default, only show plaintext on first startup
   // Show loading state when resetting
   const getDisplayPassword = () => {
-    if (resetLoading) return t('common.loading');
+    if (resetLoading) return 'Please wait...';
     // Show plaintext when allowed and has password
     if (canShowPlainPassword && actualPassword) return actualPassword;
     // Otherwise show ******
-    return t('settings.webui.passwordHidden');
+    return '******';
   };
   const displayPassword = getDisplayPassword();
 
@@ -525,8 +523,8 @@ const WebuiModalContent: React.FC = () => {
     return (
       <div className='flex flex-col h-full w-full'>
         <div className='flex flex-col items-center justify-center h-200px px-32px text-center'>
-          <div className='text-16px font-500 text-t-primary mb-8px'>{t('settings.webui.browserNotSupported')}</div>
-          <div className='text-14px text-t-secondary'>{t('settings.webui.browserNotSupportedDesc')}</div>
+          <div className='text-16px font-500 text-t-primary mb-8px'>{'WebUI settings not available in browser'}</div>
+          <div className='text-14px text-t-secondary'>{'For security reasons, WebUI settings can only be managed in the desktop application. Please open the settings panel in AionUi desktop app to configure.'}</div>
         </div>
       </div>
     );
@@ -541,25 +539,25 @@ const WebuiModalContent: React.FC = () => {
 
           {/* Description */}
           <div className='p-16px bg-fill-2 rd-12px border border-line text-13px text-t-secondary leading-relaxed'>
-            <p className='m-0'>{t('settings.webui.description')}</p>
-            <p className='m-0 mt-4px'>{t('settings.webui.steps')}</p>
+            <p className='m-0'>{'Use AionUi as your "24/7 Remote Assistant" - arrange tasks from any remote device, anytime, anywhere.'}</p>
+            <p className='m-0 mt-4px'>{'Step 1. Turn on WebUI; Step 2. Copy the access URL; Step 3. Open in remote browser'}</p>
           </div>
 
           {/* WebUI Service Card */}
           <div className='px-[12px] md:px-[32px] py-16px bg-2 rd-16px'>
             {/* Enable WebUI */}
-            <PreferenceRow label={t('settings.webui.enable')} extra={startLoading ? <span className='text-12px text-warning'>{t('settings.webui.starting')}</span> : status?.running ? <span className='text-12px text-green-500'>✓ {t('settings.webui.running')}</span> : null}>
+            <PreferenceRow label={'Enable WebUI'} extra={startLoading ? <span className='text-12px text-warning'>{'Starting…'}</span> : status?.running ? <span className='text-12px text-green-500'>✓ {'Running'}</span> : null}>
               <Switch checked={status?.running || startLoading} loading={startLoading} onChange={handleToggle} />
             </PreferenceRow>
 
             {/* Access URL (only when running) */}
             {status?.running && (
-              <PreferenceRow label={t('settings.webui.accessUrl')}>
+              <PreferenceRow label={'Access URL'}>
                 <div className='flex items-center gap-8px'>
                   <button className='text-14px text-primary font-mono hover:underline cursor-pointer bg-transparent border-none p-0' onClick={() => shell.openExternal.invoke(getDisplayUrl()).catch(console.error)}>
                     {getDisplayUrl()}
                   </button>
-                  <Tooltip content={t('common.copy')}>
+                  <Tooltip content={'Copy'}>
                     <button className='p-4px text-t-tertiary hover:text-t-primary cursor-pointer bg-transparent border-none' onClick={() => handleCopy(getDisplayUrl())}>
                       <Copy size={16} />
                     </button>
@@ -570,13 +568,13 @@ const WebuiModalContent: React.FC = () => {
 
             {/* Allow LAN Access */}
             <PreferenceRow
-              label={t('settings.webui.allowRemote')}
+              label={'Allow Remote Access'}
               description={
                 <>
-                  {t('settings.webui.allowRemoteDesc')}
+                  {'Use remote software/server for secure remote access'}
                   {'  '}
                   <button className='text-primary hover:underline cursor-pointer bg-transparent border-none p-0 text-12px' onClick={() => shell.openExternal.invoke(branding.docs.remoteAccess).catch(console.error)}>
-                    {t('settings.webui.viewGuide')}
+                    {'View Guide'}
                   </button>
                 </>
               }
@@ -587,7 +585,7 @@ const WebuiModalContent: React.FC = () => {
 
           {/* Login Info Card */}
           <div className='px-[12px] md:px-[32px] py-16px bg-2 rd-16px'>
-            <div className='text-14px font-500 mb-8px text-t-primary'>{t('settings.webui.loginInfo')}</div>
+            <div className='text-14px font-500 mb-8px text-t-primary'>{'Login Info'}</div>
 
             {/* Username */}
             <InfoRow label='Username:' value={status?.adminUsername || 'admin'} onCopy={() => handleCopy(status?.adminUsername || 'admin')} />
@@ -599,14 +597,14 @@ const WebuiModalContent: React.FC = () => {
                 <span className='text-14px text-t-primary'>{displayPassword}</span>
                 {canShowPlainPassword && actualPassword ? (
                   // Show copy icon when plaintext is visible
-                  <Tooltip content={t('settings.webui.copyPasswordTooltip')}>
+                  <Tooltip content={'Click to copy password'}>
                     <button className='p-4px bg-transparent border-none text-t-tertiary hover:text-t-primary cursor-pointer' onClick={handleCopyPassword}>
                       <Copy size={16} />
                     </button>
                   </Tooltip>
                 ) : (
                   // Show reset icon when password is hidden
-                  <Tooltip content={t('settings.webui.resetPasswordTooltip')}>
+                  <Tooltip content={'Forgot password? Click to set a new one (no current password required)'}>
                     <button className='p-4px bg-transparent border-none text-t-tertiary hover:text-t-primary cursor-pointer' onClick={handleResetPassword} disabled={resetLoading}>
                       <Refresh size={16} className={resetLoading ? 'animate-spin' : ''} />
                     </button>
@@ -619,29 +617,29 @@ const WebuiModalContent: React.FC = () => {
             {status?.running && allowRemote && (
               <>
                 <div className='border-t border-line my-12px' />
-                <div className='text-14px font-500 mb-4px text-t-primary'>{t('settings.webui.qrLogin')}</div>
-                <div className='text-12px text-t-tertiary mb-12px'>{t('settings.webui.qrLoginHint')}</div>
+                <div className='text-14px font-500 mb-4px text-t-primary'>{'QR Code Login'}</div>
+                <div className='text-12px text-t-tertiary mb-12px'>{'Scan the QR code with your phone to log in automatically on mobile browser'}</div>
 
                 <div className='flex flex-col items-center gap-12px'>
                   {/* QR Code display area */}
                   <div className='p-12px bg-white rd-10px'>
                     {qrLoading ? (
                       <div className='w-140px h-140px flex items-center justify-center'>
-                        <span className='text-14px text-t-tertiary'>{t('common.loading')}</span>
+                        <span className='text-14px text-t-tertiary'>{'Please wait...'}</span>
                       </div>
                     ) : qrUrl ? (
                       <QRCodeSVG value={qrUrl} size={140} level='M' />
                     ) : (
                       <div className='w-140px h-140px flex items-center justify-center'>
-                        <span className='text-14px text-t-tertiary'>{t('settings.webui.qrGenerateFailed')}</span>
+                        <span className='text-14px text-t-tertiary'>{'Failed to generate QR code'}</span>
                       </div>
                     )}
                   </div>
 
                   {/* Expiration time and refresh button */}
                   <div className='flex items-center gap-8px'>
-                    {qrExpiresAt && <span className='text-12px text-t-tertiary'>{t('settings.webui.qrExpires', { time: formatExpiresAt(qrExpiresAt) })}</span>}
-                    <Tooltip content={t('settings.webui.refreshQr')}>
+                    {qrExpiresAt && <span className='text-12px text-t-tertiary'>{`Expires at ${formatExpiresAt(qrExpiresAt)}`}</span>}
+                    <Tooltip content={'Refresh QR Code'}>
                       <button className='p-4px bg-transparent border-none text-t-tertiary hover:text-t-primary cursor-pointer' onClick={() => void generateQRCode()} disabled={qrLoading}>
                         <Refresh size={16} className={qrLoading ? 'animate-spin' : ''} />
                       </button>
@@ -654,34 +652,34 @@ const WebuiModalContent: React.FC = () => {
 
           {/* Channels Configuration */}
           <div className='mt-24px'>
-            <h2 className='text-20px font-500 text-t-primary m-0 mb-16px'>{t('settings.channels', 'Channels')}</h2>
+            <h2 className='text-20px font-500 text-t-primary m-0 mb-16px'>{'Channels'}</h2>
             <ChannelModalContent />
           </div>
         </div>
       </AionScrollArea>
 
       {/* Set New Password Modal */}
-      <AionModal visible={setPasswordModalVisible} onCancel={() => setSetPasswordModalVisible(false)} onOk={handleSetNewPassword} confirmLoading={passwordLoading} title={t('settings.webui.setNewPassword')} size='small'>
+      <AionModal visible={setPasswordModalVisible} onCancel={() => setSetPasswordModalVisible(false)} onOk={handleSetNewPassword} confirmLoading={passwordLoading} title={'Set New Password'} size='small'>
         <Form form={form} layout='vertical' className='pt-16px'>
           <Form.Item
-            label={t('settings.webui.newPassword')}
+            label={'New Password'}
             field='newPassword'
             rules={[
-              { required: true, message: t('settings.webui.newPasswordRequired') },
-              { minLength: 8, message: t('settings.webui.passwordMinLength') },
+              { required: true, message: 'Please enter new password' },
+              { minLength: 8, message: 'Password must be at least 8 characters' },
             ]}
           >
-            <Input.Password placeholder={t('settings.webui.newPasswordPlaceholder')} />
+            <Input.Password placeholder={'Enter new password (at least 8 characters)'} />
           </Form.Item>
           <Form.Item
-            label={t('settings.webui.confirmPassword')}
+            label={'Confirm Password'}
             field='confirmPassword'
             rules={[
-              { required: true, message: t('settings.webui.confirmPasswordRequired') },
+              { required: true, message: 'Please confirm new password' },
               {
                 validator: (value, callback) => {
                   if (value !== form.getFieldValue('newPassword')) {
-                    callback(t('settings.webui.passwordMismatch'));
+                    callback('Passwords do not match');
                   } else {
                     callback();
                   }
@@ -689,7 +687,7 @@ const WebuiModalContent: React.FC = () => {
               },
             ]}
           >
-            <Input.Password placeholder={t('settings.webui.confirmPasswordPlaceholder')} />
+            <Input.Password placeholder={'Enter new password again'} />
           </Form.Item>
         </Form>
       </AionModal>

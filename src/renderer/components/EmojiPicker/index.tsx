@@ -6,8 +6,6 @@
 
 import { Popover } from '@arco-design/web-react';
 import React, { useCallback, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 // Common emoji categories with popular emojis
 const EMOJI_CATEGORIES = {
   recent: {
@@ -68,7 +66,6 @@ interface EmojiPickerProps {
 }
 
 const EmojiPicker: React.FC<EmojiPickerProps> = ({ value, onChange, children, placement = 'bl' }) => {
-  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const [activeCategory, setActiveCategory] = useState<CategoryKey>('smileys');
 
@@ -144,7 +141,7 @@ const EmojiPicker: React.FC<EmojiPickerProps> = ({ value, onChange, children, pl
             ))}
           </div>
         ) : (
-          <div className='text-center text-t-secondary py-16px text-14px'>{t('settings.noRecentEmojis', { defaultValue: 'No recent emojis' })}</div>
+          <div className='text-center text-t-secondary py-16px text-14px'>{'No recent emojis'}</div>
         )}
       </div>
     </div>

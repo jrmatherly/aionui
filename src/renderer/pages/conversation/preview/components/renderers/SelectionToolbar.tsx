@@ -7,7 +7,6 @@
 import type { SelectionPosition } from '@/renderer/hooks/useTextSelection';
 import { autoUpdate, flip, offset, shift, useFloating } from '@floating-ui/react';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { usePreviewContext } from '../../context/PreviewContext';
 
 interface SelectionToolbarProps {
@@ -22,7 +21,6 @@ interface SelectionToolbarProps {
  * Displays when user selects text, providing "Add to chat" functionality
  */
 const SelectionToolbar: React.FC<SelectionToolbarProps> = ({ selectedText, position, onClear }) => {
-  const { t } = useTranslation();
   const { addToSendBox } = usePreviewContext();
 
   // Use Floating UI to position toolbar (follow mouse position)
@@ -69,7 +67,7 @@ const SelectionToolbar: React.FC<SelectionToolbarProps> = ({ selectedText, posit
   return (
     <div ref={refs.setFloating} style={{ ...floatingStyles, zIndex: 99999 }}>
       <div className='flex items-center px-12px py-8px bg-white dark:bg-gray-800 rd-8px shadow-lg border-1 border-solid border-gray-200 dark:border-gray-700 cursor-pointer hover:opacity-80 transition-opacity' onMouseDown={handleMouseDown}>
-        <span className='text-13px text-t-primary font-medium whitespace-nowrap leading-16px'>{t('preview.addToChat')}</span>
+        <span className='text-13px text-t-primary font-medium whitespace-nowrap leading-16px'>{'Add to chat'}</span>
       </div>
     </div>
   );

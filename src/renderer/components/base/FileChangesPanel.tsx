@@ -8,8 +8,6 @@ import { iconColors } from '@/renderer/theme/colors';
 import { Down, PreviewOpen } from '@icon-park/react';
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 /**
  * File change item data
  */
@@ -46,7 +44,6 @@ export interface FileChangesPanelProps {
  * Used to display generated/modified files in conversation, supports expand/collapse
  */
 const FileChangesPanel: React.FC<FileChangesPanelProps> = ({ title, files, defaultExpanded = true, onFileClick, className }) => {
-  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(defaultExpanded);
 
   if (files.length === 0) {
@@ -83,7 +80,7 @@ const FileChangesPanel: React.FC<FileChangesPanelProps> = ({ title, files, defau
                 {/* Preview button - show on hover */}
                 <span className='group-hover:opacity-100 transition-opacity shrink-0 ml-8px flex items-center gap-4px text-12px text-t-secondary'>
                   <PreviewOpen className='line-height-8px' theme='outline' size='14' fill={iconColors.secondary} />
-                  {t('preview.preview')}
+                  {'Preview'}
                 </span>
               </div>
             </div>

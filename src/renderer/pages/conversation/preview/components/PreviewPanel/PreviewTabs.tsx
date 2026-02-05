@@ -8,7 +8,6 @@ import { iconColors } from '@/renderer/theme/colors';
 import { IconShrink } from '@arco-design/web-react/icon';
 import { Close } from '@icon-park/react';
 import type React from 'react';
-import { useTranslation } from 'react-i18next';
 import type { TabFadeState } from '../../hooks/useTabOverflow';
 
 /**
@@ -84,7 +83,6 @@ interface PreviewTabsProps {
  * Includes left/right gradient indicators to prompt users that more tabs can be scrolled
  */
 const PreviewTabs: React.FC<PreviewTabsProps> = ({ tabs, activeTabId, tabFadeState, tabsContainerRef, onSwitchTab, onCloseTab, onContextMenu, onClosePanel }) => {
-  const { t } = useTranslation();
   const { left: showLeftFade, right: showRightFade } = tabFadeState;
 
   return (
@@ -104,7 +102,7 @@ const PreviewTabs: React.FC<PreviewTabsProps> = ({ tabs, activeTabId, tabFadeSta
                 <span className='text-12px whitespace-nowrap flex items-center gap-4px'>
                   {tab.title}
                   {/* Unsaved indicator */}
-                  {tab.isDirty && <span className='w-6px h-6px rd-full bg-primary' title={t('preview.unsavedChangesTitle')} />}
+                  {tab.isDirty && <span className='w-6px h-6px rd-full bg-primary' title={'Unsaved Changes'} />}
                 </span>
                 <Close
                   theme='outline'
@@ -119,14 +117,14 @@ const PreviewTabs: React.FC<PreviewTabsProps> = ({ tabs, activeTabId, tabFadeSta
               </div>
             ))
           ) : (
-            <div className='text-12px text-t-tertiary px-12px'>{t('preview.noTabs')}</div>
+            <div className='text-12px text-t-tertiary px-12px'>{'No tabs open'}</div>
           )}
         </div>
 
         {/* Collapse panel button */}
         {onClosePanel && (
           <div className='flex items-center h-full px-12px flex-shrink-0 rounded-tr-[16px]'>
-            <div className='flex items-center justify-center w-24px h-24px rd-4px cursor-pointer hover:bg-bg-3 transition-colors' onClick={onClosePanel} title={t('preview.collapsePanel')}>
+            <div className='flex items-center justify-center w-24px h-24px rd-4px cursor-pointer hover:bg-bg-3 transition-colors' onClick={onClosePanel} title={'Collapse panel'}>
               <IconShrink style={{ fontSize: 16, color: iconColors.secondary }} />
             </div>
           </div>

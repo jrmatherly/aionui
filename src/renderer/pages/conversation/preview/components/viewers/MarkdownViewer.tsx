@@ -11,7 +11,6 @@ import { useTextSelection } from '@/renderer/hooks/useTextSelection';
 import { useTypingAnimation } from '@/renderer/hooks/useTypingAnimation';
 import 'katex/dist/katex.min.css';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { vs, vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import rehypeKatex from 'rehype-katex';
@@ -173,7 +172,6 @@ const rewriteExternalMediaUrls = (markdown: string): string => {
 // This function has many parameters; keeping it on a single line allows Prettier to control the format while using eslint-disable to bypass length limits
 // eslint-disable-next-line max-len
 const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({ content, onClose, hideToolbar = false, viewMode: externalViewMode, onViewModeChange, onContentChange, containerRef: externalContainerRef, onScroll: externalOnScroll, filePath }) => {
-  const { t } = useTranslation();
   const internalContainerRef = useRef<HTMLDivElement>(null);
   const containerRef = externalContainerRef || internalContainerRef; // Use external ref or internal ref
   const [currentTheme, setCurrentTheme] = useState<'light' | 'dark'>(() => {
@@ -325,7 +323,7 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({ content, onClose, hid
                 `}
                 onClick={() => handleViewModeChange('preview')}
               >
-                {t('preview.preview')}
+                {'Preview'}
               </div>
               {/* Source Tab */}
               <div
@@ -335,20 +333,20 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({ content, onClose, hid
                 `}
                 onClick={() => handleViewModeChange('source')}
               >
-                {t('preview.source')}
+                {'Source'}
               </div>
             </div>
 
             {/* Right button group: Download + Close */}
             <div className='flex items-center gap-8px flex-shrink-0'>
               {/* Download button */}
-              <div className='flex items-center gap-4px px-8px py-4px rd-4px cursor-pointer hover:bg-bg-3 transition-colors' onClick={handleDownload} title={t('preview.downloadMarkdown')}>
+              <div className='flex items-center gap-4px px-8px py-4px rd-4px cursor-pointer hover:bg-bg-3 transition-colors' onClick={handleDownload} title={'Download Markdown file'}>
                 <svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='text-t-secondary'>
                   <path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4' />
                   <polyline points='7 10 12 15 17 10' />
                   <line x1='12' y1='15' x2='12' y2='3' />
                 </svg>
-                <span className='text-12px text-t-secondary'>{t('common.download')}</span>
+                <span className='text-12px text-t-secondary'>{'Download'}</span>
               </div>
             </div>
           </div>

@@ -9,8 +9,6 @@ import { Button, Drawer, Form, Input, Message, Popconfirm, Switch } from '@arco-
 import { AlarmClock, DeleteOne } from '@icon-park/react';
 import dayjs from 'dayjs';
 import React, { useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 const FormItem = Form.Item;
 const TextArea = Input.TextArea;
 
@@ -23,7 +21,6 @@ interface CronJobDrawerProps {
 }
 
 const CronJobDrawer: React.FC<CronJobDrawerProps> = ({ visible, job, onClose, onSave, onDelete }) => {
-  const { t } = useTranslation();
   const [form] = Form.useForm();
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -59,7 +56,7 @@ const CronJobDrawer: React.FC<CronJobDrawerProps> = ({ visible, job, onClose, on
         enabled: values.enabled,
       });
 
-      Message.success(t('cron.drawer.saveSuccess'));
+      Message.success('Saved successfully');
       onClose();
     } catch (err) {
       if (err instanceof Error) {
@@ -74,7 +71,7 @@ const CronJobDrawer: React.FC<CronJobDrawerProps> = ({ visible, job, onClose, on
     setDeleting(true);
     try {
       await onDelete();
-      Message.success(t('cron.deleteSuccess'));
+      Message.success('Task deleted');
       onClose();
     } catch (err) {
       Message.error(String(err));
@@ -89,7 +86,7 @@ const CronJobDrawer: React.FC<CronJobDrawerProps> = ({ visible, job, onClose, on
       title={
         <div className='inline-flex items-center gap-8px'>
           <AlarmClock theme='outline' size={18} strokeWidth={4} fill='currentColor' className='flex items-center' />
-          <span className='leading-none'>{t('cron.drawer.title')}</span>
+          <span className='leading-none'>{'Scheduled Task Details'}</span>
         </div>
       }
       visible={visible}
@@ -97,11 +94,11 @@ const CronJobDrawer: React.FC<CronJobDrawerProps> = ({ visible, job, onClose, on
       footer={
         <div className='flex justify-between'>
           <Button type='primary' shape='round' loading={saving} onClick={handleSave}>
-            {t('cron.drawer.save')}
+            {'Save'}
           </Button>
-          <Popconfirm title={t('cron.confirmDelete')} onOk={handleDelete}>
+          <Popconfirm title={'Are you sure you want to delete this scheduled task?'} onOk={handleDelete}>
             <Button status='danger' shape='round' loading={deleting} icon={<DeleteOne theme='outline' size={14} />}>
-              {t('cron.actions.delete')}
+              {'Delete'}
             </Button>
           </Popconfirm>
         </div>
@@ -111,7 +108,7 @@ const CronJobDrawer: React.FC<CronJobDrawerProps> = ({ visible, job, onClose, on
         {/* Name Section */}
         <div className='bg-2 rd-16px px-16px py-16px'>
           <div className='flex items-center justify-between'>
-            <span className='text-14px'>{t('cron.drawer.name')}</span>
+            <span className='text-14px'>{'Name'}</span>
             <span className='text-14px font-medium'>{job.name}</span>
           </div>
         </div>
@@ -119,10 +116,10 @@ const CronJobDrawer: React.FC<CronJobDrawerProps> = ({ visible, job, onClose, on
         {/* Task Status Section */}
         <div className='bg-2 rd-16px px-16px py-16px'>
           <div className='flex items-center justify-between'>
-            <span className='text-14px'>{t('cron.drawer.taskStatus')}</span>
+            <span className='text-14px'>{'Task Status'}</span>
             <div className='flex items-center gap-8px'>
               <Form.Item shouldUpdate noStyle>
-                {(values) => <span className='text-14px text-text-3'>{values.enabled ? t('cron.drawer.enabled') : t('cron.drawer.disabled')}</span>}
+                {(values) => <span className='text-14px text-text-3'>{values.enabled ? 'Enabled' : 'Disabled'}</span>}
               </Form.Item>
               <FormItem field='enabled' triggerPropName='checked' noStyle>
                 <Switch />
@@ -133,20 +130,20 @@ const CronJobDrawer: React.FC<CronJobDrawerProps> = ({ visible, job, onClose, on
 
         {/* Command Section */}
         <div className='bg-2 rd-16px px-16px py-16px'>
-          <FormItem label={t('cron.drawer.command')} field='command' rules={[{ required: true }]} className='!mb-0'>
-            <TextArea placeholder={t('cron.drawer.commandPlaceholder')} autoSize={{ minRows: 2, maxRows: 10 }} className='!bg-bg-1' />
+          <FormItem label={'Command'} field='command' rules={[{ required: true }]} className='!mb-0'>
+            <TextArea placeholder={'Enter command to execute'} autoSize={{ minRows: 2, maxRows: 10 }} className='!bg-bg-1' />
           </FormItem>
         </div>
 
         {/* Schedule Info Section */}
         <div className='bg-2 rd-16px px-16px py-16px space-y-12px'>
           <div className='flex items-center justify-between'>
-            <span className='text-14px'>{t('cron.drawer.schedule')}</span>
+            <span className='text-14px'>{'Schedule'}</span>
             <span className='text-14px font-medium'>{job.schedule.description}</span>
           </div>
           {nextRunTime && (
             <div className='flex items-center justify-between'>
-              <span className='text-14px'>{t('cron.drawer.nextRun')}</span>
+              <span className='text-14px'>{'Next Run'}</span>
               <span className='text-14px font-medium'>{nextRunTime}</span>
             </div>
           )}

@@ -11,7 +11,6 @@ import { Alert, Tooltip } from '@arco-design/web-react';
 import { Copy } from '@icon-park/react';
 import classNames from 'classnames';
 import React, { useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import CollapsibleContent from '../components/CollapsibleContent';
 import FilePreview from '../components/FilePreview';
 import HorizontalFileList from '../components/HorizontalFileList';
@@ -53,7 +52,6 @@ const useFormatContent = (content: string) => {
 const MessageText: React.FC<{ message: IMessageText }> = ({ message }) => {
   const { text, files } = parseFileMarker(message.content.content);
   const { data, json } = useFormatContent(text);
-  const { t } = useTranslation();
   const [showCopyAlert, setShowCopyAlert] = useState(false);
   const isUserMessage = message.position === 'right';
   const avatars = useMessageAvatars();
@@ -82,7 +80,7 @@ const MessageText: React.FC<{ message: IMessageText }> = ({ message }) => {
   };
 
   const copyButton = (
-    <Tooltip content={t('common.copy', { defaultValue: 'Copy' })}>
+    <Tooltip content={'Copy'}>
       <div className='p-4px rd-4px cursor-pointer hover:bg-3 transition-colors opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto focus-within:opacity-100 focus-within:pointer-events-auto' onClick={handleCopy} style={{ lineHeight: 0 }}>
         <Copy theme='outline' size='16' fill={iconColors.secondary} />
       </div>
@@ -146,7 +144,7 @@ const MessageText: React.FC<{ message: IMessageText }> = ({ message }) => {
         {/* Message content */}
         {messageContent}
       </div>
-      {showCopyAlert && <Alert type='success' content={t('messages.copySuccess')} showIcon className='fixed top-20px left-50% transform -translate-x-50% z-9999 w-max max-w-[80%]' style={{ boxShadow: '0px 2px 12px rgba(0,0,0,0.12)' }} closable={false} />}
+      {showCopyAlert && <Alert type='success' content={'Copied successfully'} showIcon className='fixed top-20px left-50% transform -translate-x-50% z-9999 w-max max-w-[80%]' style={{ boxShadow: '0px 2px 12px rgba(0,0,0,0.12)' }} closable={false} />}
     </>
   );
 };

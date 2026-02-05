@@ -9,7 +9,6 @@ import { usePreviewContext } from '@/renderer/pages/conversation/preview';
 import { Button, Input, Message, Tag } from '@arco-design/web-react';
 import { ArrowUp, CloseSmall } from '@icon-park/react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useCompositionInput } from '../hooks/useCompositionInput';
 import { useDragUpload } from '../hooks/useDragUpload';
 import { useLatestRef } from '../hooks/useLatestRef';
@@ -38,7 +37,6 @@ const SendBox: React.FC<{
   lockMultiLine?: boolean;
   sendButtonPrefix?: React.ReactNode;
 }> = ({ onSend, onStop, prefix, className, loading, tools, disabled, placeholder, value: input = '', onChange: setInput = constVoid, onFilesAdded, supportedExts = allSupportedExts, defaultMultiLine = false, lockMultiLine = false, sendButtonPrefix }) => {
-  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [isSingleLine, setIsSingleLine] = useState(!defaultMultiLine);
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -185,7 +183,7 @@ const SendBox: React.FC<{
 
   const sendMessageHandler = () => {
     if (loading || isLoading) {
-      message.warning(t('messages.conversationInProgress'));
+      message.warning('A conversation is currently in progress...');
       return;
     }
     if (!input.trim() && domSnippets.length === 0) {

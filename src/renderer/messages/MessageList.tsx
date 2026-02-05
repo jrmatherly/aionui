@@ -13,7 +13,6 @@ import MessageAcpPermission from '@renderer/messages/acp/MessageAcpPermission';
 import MessageAcpToolCall from '@renderer/messages/acp/MessageAcpToolCall';
 import classNames from 'classnames';
 import React, { createContext, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import type { VirtuosoHandle } from 'react-virtuoso';
 import { Virtuoso } from 'react-virtuoso';
 import HOC from '../utils/HOC';
@@ -59,7 +58,6 @@ const MessageItem: React.FC<{ message: TMessage }> = React.memo(
       </div>
     );
   })(({ message }) => {
-    const { t } = useTranslation();
     switch (message.type) {
       case 'text':
         return <MessageText message={message}></MessageText>;
@@ -83,7 +81,7 @@ const MessageItem: React.FC<{ message: TMessage }> = React.memo(
       case 'plan':
         return <MessagePlan message={message}></MessagePlan>;
       default:
-        return <div>{t('messages.unknownMessageType', { type: (message as any).type })}</div>;
+        return <div>{`Unknown message type: ${(message as any).type}`}</div>;
     }
   }),
   (prev, next) => prev.message.id === next.message.id && prev.message.content === next.message.content && prev.message.position === next.message.position && prev.message.type === next.message.type
@@ -95,8 +93,6 @@ const MessageList: React.FC<{ className?: string }> = () => {
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [atBottom, setAtBottom] = useState(true);
   const previousListLengthRef = useRef(list.length);
-  const { t } = useTranslation();
-
   // Pre-process message list to group Codex turn_diff messages
   const processedList = useMemo(() => {
     const result: Array<IMessageVO> = [];
@@ -241,7 +237,7 @@ const MessageList: React.FC<{ className?: string }> = () => {
           <div className='absolute bottom-0 left-0 right-0 h-100px pointer-events-none' />
           {/* Scroll button */}
           <div className='absolute bottom-20px left-50% transform -translate-x-50% z-100'>
-            <div className='flex items-center justify-center w-40px h-40px rd-full bg-base shadow-lg cursor-pointer hover:bg-1 transition-all hover:scale-110 border-1 border-solid border-3' onClick={handleScrollButtonClick} title={t('messages.scrollToBottom')} style={{ lineHeight: 0 }}>
+            <div className='flex items-center justify-center w-40px h-40px rd-full bg-base shadow-lg cursor-pointer hover:bg-1 transition-all hover:scale-110 border-1 border-solid border-3' onClick={handleScrollButtonClick} title={'Scroll to bottom'} style={{ lineHeight: 0 }}>
               <Down theme='filled' size='20' fill={iconColors.secondary} style={{ display: 'block' }} />
             </div>
           </div>

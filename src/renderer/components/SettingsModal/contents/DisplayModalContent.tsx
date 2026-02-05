@@ -12,7 +12,6 @@ import AionScrollArea from '@/renderer/components/base/AionScrollArea';
 import { iconColors } from '@/renderer/theme/colors';
 import { Down, Up } from '@icon-park/react';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { useSettingsViewMode } from '../settingsViewContext';
 
 /**
@@ -42,7 +41,6 @@ const PreferenceRow: React.FC<{
  * - Custom CSS editor
  */
 const DisplayModalContent: React.FC = () => {
-  const { t } = useTranslation();
   const viewMode = useSettingsViewMode();
   const isPageMode = viewMode === 'page';
 
@@ -51,8 +49,8 @@ const DisplayModalContent: React.FC = () => {
 
   // Display items configuration
   const displayItems = [
-    { key: 'theme', label: t('settings.theme'), component: <ThemeSwitcher /> },
-    { key: 'fontSize', label: t('settings.fontSize'), component: <FontSizeControl /> },
+    { key: 'theme', label: 'Theme', component: <ThemeSwitcher /> },
+    { key: 'fontSize', label: 'Scale', component: <FontSizeControl /> },
   ];
 
   return (
@@ -73,7 +71,7 @@ const DisplayModalContent: React.FC = () => {
 
           {/* CSS Theme Settings - Collapsible */}
           <AionCollapse bordered={false} defaultActiveKey={['css']} expandIcon={renderExpandIcon} expandIconPosition='right'>
-            <AionCollapse.Item name='css' header={<span className='text-14px text-2'>{t('settings.cssSettings')}</span>} className='bg-transparent' contentStyle={{ padding: '12px 0 0' }}>
+            <AionCollapse.Item name='css' header={<span className='text-14px text-2'>{'CSS Settings'}</span>} className='bg-transparent' contentStyle={{ padding: '12px 0 0' }}>
               <CssThemeSettings />
             </AionCollapse.Item>
           </AionCollapse>

@@ -7,8 +7,6 @@
 import type { IMessageAgentStatus } from '@/common/chatLib';
 import { Badge, Typography } from '@arco-design/web-react';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-
 const { Text } = Typography;
 
 interface MessageAgentStatusProps {
@@ -19,25 +17,24 @@ interface MessageAgentStatusProps {
  * Unified agent status message component for all ACP-based agents (Claude, Qwen, Codex, etc.)
  */
 const MessageAgentStatus: React.FC<MessageAgentStatusProps> = ({ message }) => {
-  const { t } = useTranslation();
   const { backend, status } = message.content;
 
   const getStatusBadge = () => {
     switch (status) {
       case 'connecting':
-        return <Badge status='processing' text={t('acp.status.connecting', { agent: backend })} />;
+        return <Badge status='processing' text={`Connecting to ${backend}...`} />;
       case 'connected':
-        return <Badge status='success' text={t('acp.status.connected', { agent: backend })} />;
+        return <Badge status='success' text={`Connected to ${backend}`} />;
       case 'authenticated':
-        return <Badge status='success' text={t('acp.status.authenticated', { agent: backend })} />;
+        return <Badge status='success' text={`Authenticated with ${backend}`} />;
       case 'session_active':
-        return <Badge status='success' text={t('acp.status.session_active', { agent: backend })} />;
+        return <Badge status='success' text={`Active session with ${backend}`} />;
       case 'disconnected':
-        return <Badge status='default' text={t('acp.status.disconnected', { agent: backend })} />;
+        return <Badge status='default' text={`Disconnected from ${backend}`} />;
       case 'error':
-        return <Badge status='error' text={t('acp.status.error')} />;
+        return <Badge status='error' text={'Connection error'} />;
       default:
-        return <Badge status='default' text={t('acp.status.unknown')} />;
+        return <Badge status='default' text={'Unknown status'} />;
     }
   };
 

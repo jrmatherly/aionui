@@ -11,14 +11,11 @@ import AionModal from '@/renderer/components/base/AionModal';
 import { Button, Progress } from '@arco-design/web-react';
 import { CheckOne, CloseOne, Download, FolderOpen, Refresh } from '@icon-park/react';
 import React, { useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 type UpdateStatus = 'checking' | 'upToDate' | 'available' | 'downloading' | 'success' | 'error';
 
 type UpdateInfo = UpdateReleaseInfo;
 
 const UpdateModal: React.FC = () => {
-  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const [status, setStatus] = useState<UpdateStatus>('checking');
   const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
@@ -45,7 +42,7 @@ const UpdateModal: React.FC = () => {
     try {
       const res = await ipcBridge.update.check.invoke({ includePrerelease });
       if (!res?.success) {
-        throw new Error(res?.msg || t('update.checkFailed'));
+        throw new Error(res?.msg || 'Failed to check for updates');
       }
       setCurrentVersion(res.data?.currentVersion || '');
 
@@ -71,7 +68,7 @@ const UpdateModal: React.FC = () => {
     try {
       const asset = updateInfo.recommendedAsset;
       if (!asset) {
-        throw new Error(t('update.noCompatibleAsset'));
+        throw new Error('No compatible download found for this platform');
       }
 
       const res = await ipcBridge.update.download.invoke({
@@ -79,7 +76,7 @@ const UpdateModal: React.FC = () => {
         fileName: asset.name,
       });
       if (!res?.success || !res.data) {
-        throw new Error(res?.msg || t('update.downloadStartFailed'));
+        throw new Error(res?.msg || 'Failed to start download');
       }
 
       setDownloadId(res.data.downloadId);
@@ -141,14 +138,14 @@ const UpdateModal: React.FC = () => {
         }
       } else if (evt.status === 'error' || evt.status === 'cancelled') {
         setStatus('error');
-        setErrorMsg(evt.error || t('update.downloadFailed'));
+        setErrorMsg(evt.error || 'Download failed');
       }
     });
 
     return () => {
       removeProgressListener();
     };
-  }, [downloadId, t]);
+  }, [downloadId]);
 
   const handleClose = () => {
     setVisible(false);
@@ -177,7 +174,7 @@ const UpdateModal: React.FC = () => {
               <div className='absolute inset-0 border-3 border-fill-3 rounded-full' />
               <div className='absolute inset-0 border-3 border-primary border-t-transparent rounded-full animate-spin' />
             </div>
-            <div className='text-15px text-t-primary font-500'>{t('update.checking')}</div>
+            <div className='text-15px text-t-primary font-500'>{'Checking for updates...'}</div>
           </div>
         );
 
@@ -187,8 +184,8 @@ const UpdateModal: React.FC = () => {
             <div className='w-56px h-56px bg-[rgb(var(--success-6))]/12 rounded-full flex items-center justify-center mb-20px'>
               <CheckOne theme='filled' size='28' fill='rgb(var(--success-6))' />
             </div>
-            <div className='text-16px text-t-primary font-600 mb-8px'>{t('update.upToDateTitle')}</div>
-            <div className='text-13px text-t-tertiary'>{t('update.currentVersion', { version: currentVersion || '-' })}</div>
+            <div className='text-16px text-t-primary font-600 mb-8px'>{"You're up to date"}</div>
+            <div className='text-13px text-t-tertiary'>{`Current version: ${currentVersion || '-'}`}</div>
           </div>
         );
 
@@ -202,14 +199,14 @@ const UpdateModal: React.FC = () => {
                   <Download size='20' fill='rgb(var(--primary-6))' />
                 </div>
                 <div>
-                  <div className='text-15px font-600 text-t-primary'>{t('update.availableTitle')}</div>
+                  <div className='text-15px font-600 text-t-primary'>{'Update available'}</div>
                   <div className='text-12px text-t-tertiary mt-2px'>
                     {currentVersion} → <span className='text-[rgb(var(--primary-6))] font-500'>{updateInfo?.version}</span>
                   </div>
                 </div>
               </div>
               <Button type='primary' size='small' onClick={startDownload} className='!px-16px'>
-                {t('update.downloadButton')}
+                {'Download'}
               </Button>
             </div>
 
@@ -221,7 +218,7 @@ const UpdateModal: React.FC = () => {
                   <MarkdownView>{updateInfo.body}</MarkdownView>
                 </div>
               ) : (
-                <div className='text-13px text-t-tertiary italic'>{t('update.noReleaseNotes')}</div>
+                <div className='text-13px text-t-tertiary italic'>{'No release notes provided.'}</div>
               )}
             </div>
           </div>
@@ -233,7 +230,7 @@ const UpdateModal: React.FC = () => {
             <div className='w-56px h-56px bg-[rgb(var(--primary-6))]/12 rounded-full flex items-center justify-center mb-20px'>
               <Download size='24' fill='rgb(var(--primary-6))' className='animate-bounce' />
             </div>
-            <div className='text-16px text-t-primary font-600 mb-20px'>{t('update.downloadingTitle')}</div>
+            <div className='text-16px text-t-primary font-600 mb-20px'>{'Downloading update...'}</div>
             <div className='w-full max-w-320px'>
               <Progress percent={progress.percent} status='normal' showText={false} strokeWidth={6} className='!mb-12px' />
               <div className='flex justify-between text-12px text-t-tertiary'>
@@ -252,14 +249,14 @@ const UpdateModal: React.FC = () => {
             <div className='w-56px h-56px bg-[rgb(var(--success-6))]/12 rounded-full flex items-center justify-center mb-20px'>
               <CheckOne theme='filled' size='28' fill='rgb(var(--success-6))' />
             </div>
-            <div className='text-16px text-t-primary font-600 mb-8px'>{t('update.downloadCompleteTitle')}</div>
+            <div className='text-16px text-t-primary font-600 mb-8px'>{'Download complete'}</div>
             <div className='text-12px text-t-tertiary mb-24px text-center max-w-360px break-all line-clamp-2'>{downloadPath}</div>
             <div className='flex gap-12px'>
               <Button size='small' onClick={showInFolder} icon={<FolderOpen size='14' />} className='!px-16px'>
-                {t('update.showInFolder')}
+                {'Show in folder'}
               </Button>
               <Button type='primary' size='small' onClick={openFile} className='!px-16px'>
-                {t('update.openFile')}
+                {'Open file'}
               </Button>
             </div>
           </div>
@@ -271,10 +268,10 @@ const UpdateModal: React.FC = () => {
             <div className='w-56px h-56px bg-[rgb(var(--danger-6))]/12 rounded-full flex items-center justify-center mb-20px'>
               <CloseOne theme='filled' size='28' fill='rgb(var(--danger-6))' />
             </div>
-            <div className='text-16px text-t-primary font-600 mb-8px'>{t('update.errorTitle')}</div>
+            <div className='text-16px text-t-primary font-600 mb-8px'>{'Update failed'}</div>
             <div className='text-13px text-t-tertiary mb-24px text-center max-w-360px'>{errorMsg}</div>
             <Button size='small' onClick={checkForUpdates} icon={<Refresh size='14' />} className='!px-16px'>
-              {t('common.retry')}
+              {'Retry'}
             </Button>
           </div>
         );
@@ -287,7 +284,7 @@ const UpdateModal: React.FC = () => {
       onCancel={handleClose}
       size={status === 'available' ? 'medium' : 'small'}
       header={{
-        title: t('update.modalTitle'),
+        title: 'Software update',
         showClose: true,
       }}
       footer={{ render: () => null }}

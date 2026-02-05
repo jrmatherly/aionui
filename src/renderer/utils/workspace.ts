@@ -46,10 +46,10 @@ export const getWorkspaceDisplayName = (workspacePath: string, t?: (key: string)
       const timestamp = parseInt(match[1], 10);
       const date = new Date(timestamp);
       const dateStr = date.toLocaleDateString();
-      const label = t ? t('conversation.workspace.temporarySpace') : 'Temporary Session';
+      const label = t ? 'Temporary Space' : 'Temporary Session';
       return `${label} (${dateStr})`;
     }
-    return t ? t('conversation.workspace.temporarySpace') : 'Temporary Session';
+    return t ? 'Temporary Space' : 'Temporary Session';
   }
 
   // For regular workspace, show the last directory name

@@ -16,7 +16,6 @@ import { Empty, Input, Popconfirm, Tooltip } from '@arco-design/web-react';
 import { DeleteOne, EditOne, MessageOne } from '@icon-park/react';
 import classNames from 'classnames';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import WorkspaceCollapse from './WorkspaceCollapse';
 import { useConversationTabs } from './context/ConversationTabsContext';
@@ -41,13 +40,20 @@ interface TimelineSection {
 }
 
 // Helper to get timeline label for a conversation
-const getConversationTimelineLabel = (conversation: TChatConversation, t: (key: string) => string): string => {
+const getConversationTimelineLabel = (conversation: TChatConversation): string => {
   const time = getActivityTime(conversation);
-  return getTimelineLabel(time, Date.now(), t);
+  return getTimelineLabel(time, Date.now());
 };
 
 // Group by timeline and workspace
-const groupConversationsByTimelineAndWorkspace = (conversations: TChatConversation[], t: (key: string) => string): TimelineSection[] => {
+const timelineLabels: Record<string, string> = {
+  'conversation.history.today': 'Today',
+  'conversation.history.yesterday': 'Yesterday',
+  'conversation.history.recent7Days': 'Last 7 Days',
+  'conversation.history.earlier': 'Earlier',
+};
+
+const groupConversationsByTimelineAndWorkspace = (conversations: TChatConversation[]): TimelineSection[] => {
   // Step 1: Group all conversations by workspace first
   const allWorkspaceGroups = new Map<string, TChatConversation[]>();
   const withoutWorkspaceConvs: TChatConversation[] = [];
@@ -74,7 +80,7 @@ const groupConversationsByTimelineAndWorkspace = (conversations: TChatConversati
     const sortedConvs = convList.sort((a, b) => getActivityTime(b) - getActivityTime(a));
     // Use the most recent conversation's timeline
     const latestConv = sortedConvs[0];
-    const timeline = getConversationTimelineLabel(latestConv, t);
+    const timeline = getConversationTimelineLabel(latestConv);
 
     if (!workspaceGroupsByTimeline.has(timeline)) {
       workspaceGroupsByTimeline.set(timeline, []);
@@ -91,7 +97,7 @@ const groupConversationsByTimelineAndWorkspace = (conversations: TChatConversati
   const withoutWorkspaceByTimeline = new Map<string, TChatConversation[]>();
 
   withoutWorkspaceConvs.forEach((conv) => {
-    const timeline = getConversationTimelineLabel(conv, t);
+    const timeline = getConversationTimelineLabel(conv);
     if (!withoutWorkspaceByTimeline.has(timeline)) {
       withoutWorkspaceByTimeline.set(timeline, []);
     }
@@ -103,7 +109,7 @@ const groupConversationsByTimelineAndWorkspace = (conversations: TChatConversati
   const sections: TimelineSection[] = [];
 
   timelineOrder.forEach((timelineKey) => {
-    const timeline = t(timelineKey);
+    const timeline = timelineLabels[timelineKey] || timelineKey;
     const withWorkspace = workspaceGroupsByTimeline.get(timeline) || [];
     const withoutWorkspace = withoutWorkspaceByTimeline.get(timeline) || [];
 
@@ -165,7 +171,6 @@ const WorkspaceGroupedHistory: React.FC<{ onSessionClick?: () => void; collapsed
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState<string>('');
   const { id } = useParams();
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const { openTab, closeAllTabs, activeTab, updateTabName } = useConversationTabs();
   const { getJobStatus, markAsRead } = useCronJobsMap();
@@ -215,8 +220,8 @@ const WorkspaceGroupedHistory: React.FC<{ onSessionClick?: () => void; collapsed
 
   // Group by timeline and workspace
   const timelineSections = useMemo(() => {
-    return groupConversationsByTimelineAndWorkspace(conversations, t);
-  }, [conversations, t]);
+    return groupConversationsByTimelineAndWorkspace(conversations);
+  }, [conversations]);
 
   // Expand all workspaces by default (only execute once when expansion state is not yet recorded)
   useEffect(() => {
@@ -353,7 +358,7 @@ const WorkspaceGroupedHistory: React.FC<{ onSessionClick?: () => void; collapsed
       const cronStatus = getJobStatus(conversation.id);
 
       return (
-        <Tooltip key={conversation.id} disabled={!collapsed} content={conversation.name || t('conversation.welcome.newConversation')} position='right'>
+        <Tooltip key={conversation.id} disabled={!collapsed} content={conversation.name || 'New Chat'} position='right'>
           <div
             id={'c-' + conversation.id}
             className={classNames('chat-history__item hover:bg-hover px-12px py-8px rd-8px flex justify-start items-center group cursor-pointer relative overflow-hidden shrink-0 conversation-item [&.conversation-item+&.conversation-item]:mt-2px min-w-0', {
@@ -383,10 +388,10 @@ const WorkspaceGroupedHistory: React.FC<{ onSessionClick?: () => void; collapsed
                   <EditOne theme='outline' size='20' className='flex' />
                 </span>
                 <Popconfirm
-                  title={t('conversation.history.deleteTitle')}
-                  content={t('conversation.history.deleteConfirm')}
-                  okText={t('conversation.history.confirmDelete')}
-                  cancelText={t('conversation.history.cancelDelete')}
+                  title={'Delete chat'}
+                  content={'Are you sure you want to delete this chat?'}
+                  okText={'Yes'}
+                  cancelText={'No'}
                   onOk={(event) => {
                     event.stopPropagation();
                     handleRemoveConversation(conversation.id);
@@ -410,7 +415,7 @@ const WorkspaceGroupedHistory: React.FC<{ onSessionClick?: () => void; collapsed
         </Tooltip>
       );
     },
-    [id, collapsed, editingId, editingName, t, handleConversationClick, handleEditStart, handleEditKeyDown, handleEditSave, handleRemoveConversation, getJobStatus]
+    [id, collapsed, editingId, editingName, handleConversationClick, handleEditStart, handleEditKeyDown, handleEditSave, handleRemoveConversation, getJobStatus]
   );
 
   // If no conversations, show empty state
@@ -418,7 +423,7 @@ const WorkspaceGroupedHistory: React.FC<{ onSessionClick?: () => void; collapsed
     return (
       <FlexFullContainer>
         <div className='flex-center'>
-          <Empty description={t('conversation.history.noHistory')} />
+          <Empty description={'No chat history'} />
         </div>
       </FlexFullContainer>
     );

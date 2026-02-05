@@ -230,83 +230,75 @@ export class GeminiAgentManager extends BaseAgentManager<
     switch (confirmationDetails.type) {
       case 'edit':
         {
-          question = t('messages.confirmation.applyChange');
+          question = 'Apply this change?';
           description = confirmationDetails.fileName;
           options.push(
             {
-              label: t('messages.confirmation.yesAllowOnce'),
+              label: 'Yes, allow once',
               value: ToolConfirmationOutcome.ProceedOnce,
             },
             {
-              label: t('messages.confirmation.yesAllowAlways'),
+              label: 'Yes, allow always',
               value: ToolConfirmationOutcome.ProceedAlways,
             },
-            { label: t('messages.confirmation.no'), value: ToolConfirmationOutcome.Cancel }
+            { label: 'No (esc)', value: ToolConfirmationOutcome.Cancel }
           );
         }
         break;
       case 'exec':
         {
-          question = t('messages.confirmation.allowExecution');
+          question = 'Allow execution?';
           description = confirmationDetails.command;
           options.push(
             {
-              label: t('messages.confirmation.yesAllowOnce'),
+              label: 'Yes, allow once',
               value: ToolConfirmationOutcome.ProceedOnce,
             },
             {
-              label: t('messages.confirmation.yesAllowAlways'),
+              label: 'Yes, allow always',
               value: ToolConfirmationOutcome.ProceedAlways,
             },
-            { label: t('messages.confirmation.no'), value: ToolConfirmationOutcome.Cancel }
+            { label: 'No (esc)', value: ToolConfirmationOutcome.Cancel }
           );
         }
         break;
       case 'info':
         {
-          question = t('messages.confirmation.proceed');
+          question = 'Do you want to proceed?';
           description = confirmationDetails.urls?.join(';') || confirmationDetails.prompt;
           options.push(
             {
-              label: t('messages.confirmation.yesAllowOnce'),
+              label: 'Yes, allow once',
               value: ToolConfirmationOutcome.ProceedOnce,
             },
             {
-              label: t('messages.confirmation.yesAllowAlways'),
+              label: 'Yes, allow always',
               value: ToolConfirmationOutcome.ProceedAlways,
             },
-            { label: t('messages.confirmation.no'), value: ToolConfirmationOutcome.Cancel }
+            { label: 'No (esc)', value: ToolConfirmationOutcome.Cancel }
           );
         }
         break;
       default: {
         const mcpProps = confirmationDetails;
-        question = t('messages.confirmation.allowMCPTool', {
-          toolName: mcpProps.toolName,
-          serverName: mcpProps.serverName,
-        });
+        question = `Allow execution of MCP tool "${mcpProps.toolName}" from server "${mcpProps.serverName}"?`;
         description = confirmationDetails.serverName + ':' + confirmationDetails.toolName;
         options.push(
           {
-            label: t('messages.confirmation.yesAllowOnce'),
+            label: 'Yes, allow once',
             value: ToolConfirmationOutcome.ProceedOnce,
           },
           {
-            label: t('messages.confirmation.yesAlwaysAllowTool', {
-              toolName: mcpProps.toolName,
-              serverName: mcpProps.serverName,
-            }),
+            label: `Yes, always allow tool "${mcpProps.toolName}" from server "${mcpProps.serverName}"`,
             value: ToolConfirmationOutcome.ProceedAlwaysTool,
             params: { toolName: mcpProps.toolName, serverName: mcpProps.serverName },
           },
           {
-            label: t('messages.confirmation.yesAlwaysAllowServer', {
-              serverName: mcpProps.serverName,
-            }),
+            label: `Yes, always allow all tools from server "${mcpProps.serverName}"`,
             value: ToolConfirmationOutcome.ProceedAlwaysServer,
             params: { serverName: mcpProps.serverName },
           },
-          { label: t('messages.confirmation.no'), value: ToolConfirmationOutcome.Cancel }
+          { label: 'No (esc)', value: ToolConfirmationOutcome.Cancel }
         );
       }
     }

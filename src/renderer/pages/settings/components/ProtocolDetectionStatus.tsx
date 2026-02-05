@@ -7,8 +7,6 @@
 import type { ProtocolDetectionResponse, ProtocolType } from '@/common/utils/protocolDetector';
 import { Loading } from '@icon-park/react';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-
 /**
  * Protocol Detection Status Component
  *
@@ -38,31 +36,18 @@ const PROTOCOL_ICONS: Record<ProtocolType, { color: string; bgColor: string }> =
 /**
  * Get translated suggestion message
  */
-const getSuggestionMessage = (suggestion: ProtocolDetectionResponse['suggestion'], t: (key: string, params?: Record<string, string>) => string): string => {
+const getSuggestionMessage = (suggestion: ProtocolDetectionResponse['suggestion']): string => {
   if (!suggestion) return '';
-
-  // Prefer using i18n key for translation
-  if (suggestion.i18nKey) {
-    const translated = t(suggestion.i18nKey, suggestion.i18nParams);
-    // If translation result equals key, translation failed, fallback to message
-    if (translated !== suggestion.i18nKey) {
-      return translated;
-    }
-  }
-
-  // Fallback to original message
   return suggestion.message;
 };
 
 const ProtocolDetectionStatus: React.FC<ProtocolDetectionStatusProps> = ({ isDetecting, result, currentPlatform, onSwitchPlatform }) => {
-  const { t } = useTranslation();
-
   // Detecting in progress
   if (isDetecting) {
     return (
       <div className='flex items-center gap-6px text-12px text-t-secondary py-4px'>
         <Loading theme='outline' size={14} className='animate-spin' />
-        <span>{t('settings.protocolDetecting')}</span>
+        <span>{'Detecting API protocol...'}</span>
       </div>
     );
   }
@@ -98,7 +83,7 @@ const ProtocolDetectionStatus: React.FC<ProtocolDetectionStatusProps> = ({ isDet
                 {protocol === 'openai' ? 'O' : protocol === 'gemini' ? 'G' : protocol === 'anthropic' ? 'A' : '?'}
               </span>
             </div>
-            <span className='text-t-secondary truncate'>{getSuggestionMessage(suggestion, t)}</span>
+            <span className='text-t-secondary truncate'>{getSuggestionMessage(suggestion)}</span>
           </div>
 
           {showSwitchButton && onSwitchPlatform && (
@@ -111,7 +96,7 @@ const ProtocolDetectionStatus: React.FC<ProtocolDetectionStatusProps> = ({ isDet
               }}
               onClick={() => onSwitchPlatform(suggestion.suggestedPlatform!)}
             >
-              {t('settings.switchPlatform')}
+              {'Switch'}
             </button>
           )}
         </div>
@@ -119,7 +104,7 @@ const ProtocolDetectionStatus: React.FC<ProtocolDetectionStatusProps> = ({ isDet
         {/* Multi-key test result */}
         {multiKeyResult && multiKeyResult.total > 1 && (
           <div className='flex items-center gap-6px text-11px text-t-tertiary pl-22px'>
-            <span>{multiKeyResult.invalid === 0 ? t('settings.multiKeyAllValid', { total: String(multiKeyResult.total) }) : multiKeyResult.valid === 0 ? t('settings.multiKeyAllInvalid', { total: String(multiKeyResult.total) }) : t('settings.multiKeyPartialValid', { valid: String(multiKeyResult.valid), invalid: String(multiKeyResult.invalid) })}</span>
+            <span>{multiKeyResult.invalid === 0 ? `All ${String(multiKeyResult.total)} keys are valid` : multiKeyResult.valid === 0 ? `All ${String(multiKeyResult.total)} keys are invalid` : `${String(multiKeyResult.valid)} valid, ${String(multiKeyResult.invalid)} invalid`}</span>
           </div>
         )}
       </div>
@@ -133,7 +118,7 @@ const ProtocolDetectionStatus: React.FC<ProtocolDetectionStatusProps> = ({ isDet
         <div className='flex items-center justify-center w-16px h-16px rounded-4px bg-warning/10 shrink-0'>
           <span className='text-10px font-medium'>!</span>
         </div>
-        <span className='truncate'>{suggestion ? getSuggestionMessage(suggestion, t) : result.error}</span>
+        <span className='truncate'>{suggestion ? getSuggestionMessage(suggestion) : result.error}</span>
       </div>
     );
   }

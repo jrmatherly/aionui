@@ -17,13 +17,11 @@ import { Button, Divider, Dropdown, Form, Menu, Message, Modal, Switch, Tooltip 
 import { Down, Help, Plus } from '@icon-park/react';
 import classNames from 'classnames';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useSettingsViewMode } from '../settingsViewContext';
 
 type MessageInstance = ReturnType<typeof Message.useMessage>[0];
 
 const ModalMcpManagementSection: React.FC<{ message: MessageInstance; isPageMode?: boolean }> = ({ message, isPageMode }) => {
-  const { t } = useTranslation();
   const { mcpServers, saveMcpServers } = useMcpServers();
   const { agentInstallStatus, setAgentInstallStatus, isServerLoading, checkSingleServerInstallStatus } = useMcpAgentStatus();
   const { syncMcpToAgents, removeMcpFromAgents } = useMcpOperations(mcpServers, message);
@@ -45,13 +43,13 @@ const ModalMcpManagementSection: React.FC<{ message: MessageInstance; isPageMode
       const result = await login(server);
 
       if (result.success) {
-        message.success(`${server.name}: ${t('settings.mcpOAuthLoginSuccess') || 'Login successful'}`);
+        message.success(`${server.name}: ${'OAuth login successful'}`);
         void handleTestMcpConnection(server);
       } else {
-        message.error(`${server.name}: ${result.error || t('settings.mcpOAuthLoginFailed') || 'Login failed'}`);
+        message.error(`${server.name}: ${result.error}`);
       }
     },
-    [login, message, t, handleTestMcpConnection]
+    [login, message, handleTestMcpConnection]
   );
 
   const wrappedHandleAddMcpServer = useCallback(
@@ -151,7 +149,7 @@ const ModalMcpManagementSection: React.FC<{ message: MessageInstance; isPageMode
                   showAddMcpModal();
                 }}
               >
-                {t('settings.mcpImportFromJSON')}
+                {'Import from JSON'}
               </Menu.Item>
               <Menu.Item
                 key='oneclick'
@@ -161,13 +159,13 @@ const ModalMcpManagementSection: React.FC<{ message: MessageInstance; isPageMode
                   showAddMcpModal();
                 }}
               >
-                {t('settings.mcpOneKeyImport')}
+                {'One-Click Import'}
               </Menu.Item>
             </Menu>
           }
         >
           <Button type='outline' icon={<Plus size={'16'} />} shape='round' onClick={(e) => e.stopPropagation()}>
-            {t('settings.mcpAddServer')} <Down size='12' />
+            {'Manual Add'} <Down size='12' />
           </Button>
         </Dropdown>
       );
@@ -183,7 +181,7 @@ const ModalMcpManagementSection: React.FC<{ message: MessageInstance; isPageMode
           showAddMcpModal();
         }}
       >
-        {t('settings.mcpAddServer')}
+        {'Manual Add'}
       </Button>
     );
   };
@@ -191,13 +189,13 @@ const ModalMcpManagementSection: React.FC<{ message: MessageInstance; isPageMode
   return (
     <div className='flex flex-col gap-16px min-h-0'>
       <div className='flex gap-8px items-center justify-between'>
-        <div className='text-14px text-t-primary'>{t('settings.mcpSettings')}</div>
+        <div className='text-14px text-t-primary'>{'MCP Tools Configuration'}</div>
         <div>{renderAddButton()}</div>
       </div>
 
       <div className='flex-1 min-h-0'>
         {mcpServers.length === 0 ? (
-          <div className='py-24px text-center text-t-secondary text-14px border border-dashed border-border-2 rd-12px'>{t('settings.mcpNoServersFound')}</div>
+          <div className='py-24px text-center text-t-secondary text-14px border border-dashed border-border-2 rd-12px'>{'No MCP servers found'}</div>
         ) : (
           <AionScrollArea className={classNames('max-h-360px', isPageMode && 'max-h-none')} disableOverflow={isPageMode}>
             <div className='space-y-12px'>
@@ -211,15 +209,14 @@ const ModalMcpManagementSection: React.FC<{ message: MessageInstance; isPageMode
 
       <AddMcpServerModal visible={showMcpModal} server={editingMcpServer} onCancel={hideMcpModal} onSubmit={editingMcpServer ? (serverData) => wrappedHandleEditMcpServer(editingMcpServer, serverData) : wrappedHandleAddMcpServer} onBatchImport={wrappedHandleBatchImportMcpServers} importMode={importMode} />
 
-      <Modal title={t('settings.mcpDeleteServer')} visible={deleteConfirmVisible} onCancel={hideDeleteConfirm} onOk={handleConfirmDelete} okButtonProps={{ status: 'danger' }} okText={t('common.confirm')} cancelText={t('common.cancel')}>
-        <p>{t('settings.mcpDeleteConfirm')}</p>
+      <Modal title={'Delete'} visible={deleteConfirmVisible} onCancel={hideDeleteConfirm} onOk={handleConfirmDelete} okButtonProps={{ status: 'danger' }} okText={'Confirm'} cancelText={'Cancel'}>
+        <p>{'Are you sure you want to delete this MCP server?'}</p>
       </Modal>
     </div>
   );
 };
 
 const ToolsModalContent: React.FC = () => {
-  const { t } = useTranslation();
   const branding = useBranding();
   const [mcpMessage, mcpMessageContext] = Message.useMessage({ maxCount: 10 });
   const [imageGenerationModel, setImageGenerationModel] = useState<IConfigStorageRefer['tools.imageGenerationModel'] | undefined>();
@@ -338,14 +335,14 @@ const ToolsModalContent: React.FC = () => {
           {/* Image Generation */}
           <div className='px-[12px] md:px-[32px] py-[24px] bg-2 rd-12px md:rd-16px border border-border-2'>
             <div className='flex items-center justify-between mb-16px'>
-              <span className='text-14px text-t-primary'>{t('settings.imageGeneration')}</span>
+              <span className='text-14px text-t-primary'>{'Image Generation'}</span>
               <Switch disabled={!imageGenerationModelList.length || !imageGenerationModel?.useModel} checked={imageGenerationModel?.switch} onChange={(checked) => handleImageGenerationModelChange({ switch: checked })} />
             </div>
 
             <Divider className='mt-0px mb-20px' />
 
             <Form layout='horizontal' labelAlign='left' className='space-y-12px'>
-              <Form.Item label={t('settings.imageGenerationModel')}>
+              <Form.Item label={'Image Model'}>
                 {imageGenerationModelList.length > 0 ? (
                   <AionSelect
                     value={imageGenerationModel?.id && imageGenerationModel?.useModel ? `${imageGenerationModel.id}|${imageGenerationModel.useModel}` : undefined}
@@ -369,13 +366,13 @@ const ToolsModalContent: React.FC = () => {
                   </AionSelect>
                 ) : (
                   <div className='text-t-secondary flex items-center'>
-                    {t('settings.noAvailable')}
+                    {'No available image models, please configure first.'}
                     <Tooltip
                       content={
                         <div>
-                          {t('settings.needHelpTooltip')}
+                          {'If you need help, please check'}
                           <a href={branding.docs.imageGeneration} target='_blank' rel='noopener noreferrer' className='text-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-5))] underline ml-4px' onClick={(e) => e.stopPropagation()}>
-                            {t('settings.configGuide')}
+                            {'configuration guide'}
                           </a>
                         </div>
                       }
@@ -395,8 +392,8 @@ const ToolsModalContent: React.FC = () => {
             <div className='px-[12px] md:px-[32px] py-[24px] bg-2 rd-12px md:rd-16px border border-border-2'>
               <div className='flex items-center justify-between mb-16px'>
                 <span className='text-14px text-t-primary flex items-center gap-8px'>
-                  {t('settings.claudeYoloMode')}
-                  <Tooltip content={t('settings.claudeYoloModeDesc')} position='top'>
+                  {'Claude YOLO (Skip Permissions)'}
+                  <Tooltip content={'Bypass all Claude Code permission checks (equivalent to --dangerously-skip-permissions).'} position='top'>
                     <span className='inline-flex cursor-help text-[rgb(var(--primary-6))]'>
                       <Help theme='outline' size='14' />
                     </span>

@@ -4,12 +4,10 @@ import { Tooltip } from '@arco-design/web-react';
 import { Computer, Earth, Gemini, Info, Key, LinkCloud, Robot, System, Toolkit } from '@icon-park/react';
 import classNames from 'classnames';
 import React, { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const SettingsSider: React.FC<{ collapsed?: boolean }> = ({ collapsed = false }) => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
   const { pathname } = useLocation();
 
   // Check if running in Electron desktop environment
@@ -18,32 +16,32 @@ const SettingsSider: React.FC<{ collapsed?: boolean }> = ({ collapsed = false })
   const menus = useMemo(() => {
     const items = [
       {
-        label: t('settings.gemini'),
+        label: 'Gemini',
         icon: <Gemini />,
         path: 'gemini',
       },
       {
-        label: t('settings.model'),
+        label: 'Model',
         icon: <LinkCloud />,
         path: 'model',
       },
       {
-        label: t('settings.assistants', { defaultValue: 'Assistants' }),
+        label: 'Assistants',
         icon: <Robot />,
         path: 'agent',
       },
       {
-        label: t('settings.tools'),
+        label: 'Tools',
         icon: <Toolkit />,
         path: 'tools',
       },
       {
-        label: t('settings.display'),
+        label: 'Display',
         icon: <Computer />,
         path: 'display',
       },
       {
-        label: t('settings.apiKeys', { defaultValue: 'API Keys' }),
+        label: 'API Keys',
         icon: <Key />,
         path: 'apikeys',
       },
@@ -52,7 +50,7 @@ const SettingsSider: React.FC<{ collapsed?: boolean }> = ({ collapsed = false })
     // Only add WebUI option on desktop (includes Assistant config)
     if (isDesktop) {
       items.push({
-        label: t('settings.webui'),
+        label: 'WebUI',
         icon: <Earth />,
         path: 'webui',
       });
@@ -60,19 +58,19 @@ const SettingsSider: React.FC<{ collapsed?: boolean }> = ({ collapsed = false })
 
     items.push(
       {
-        label: t('settings.system'),
+        label: 'System',
         icon: <System />,
         path: 'system',
       },
       {
-        label: t('settings.about'),
+        label: 'About',
         icon: <Info />,
         path: 'about',
       }
     );
 
     return items;
-  }, [t, isDesktop]);
+  }, [isDesktop]);
   return (
     <div className={classNames('flex-1 settings-sider flex flex-col gap-2px', { 'settings-sider--collapsed': collapsed })}>
       {menus.map((item) => {

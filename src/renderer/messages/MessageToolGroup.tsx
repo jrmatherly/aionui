@@ -11,7 +11,6 @@ import { Alert, Button, Image, Message, Radio, Tag, Tooltip } from '@arco-design
 import { Copy, Download, LoadingOne } from '@icon-park/react';
 import 'diff2html/bundles/css/diff2html.min.css';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import CollapsibleContent from '../components/CollapsibleContent';
 import Diff2Html from '../components/Diff2Html';
 import LocalImageView from '../components/LocalImageView';
@@ -33,7 +32,7 @@ interface IMessageToolGroupProps {
   message: IMessageToolGroup;
 }
 
-const useConfirmationButtons = (confirmationDetails: IMessageToolGroupProps['message']['content'][number]['confirmationDetails'], t: (key: string, options?: any) => string) => {
+const useConfirmationButtons = (confirmationDetails: IMessageToolGroupProps['message']['content'][number]['confirmationDetails']) => {
   return useMemo(() => {
     if (!confirmationDetails) return {};
     let question: string;
@@ -41,77 +40,69 @@ const useConfirmationButtons = (confirmationDetails: IMessageToolGroupProps['mes
     switch (confirmationDetails.type) {
       case 'edit':
         {
-          question = t('messages.confirmation.applyChange');
+          question = 'Apply this change?';
           options.push(
             {
-              label: t('messages.confirmation.yesAllowOnce'),
+              label: 'Yes, allow once',
               value: ToolConfirmationOutcome.ProceedOnce,
             },
             {
-              label: t('messages.confirmation.yesAllowAlways'),
+              label: 'Yes, allow always',
               value: ToolConfirmationOutcome.ProceedAlways,
             },
-            { label: t('messages.confirmation.no'), value: ToolConfirmationOutcome.Cancel }
+            { label: 'No (esc)', value: ToolConfirmationOutcome.Cancel }
           );
         }
         break;
       case 'exec':
         {
-          question = t('messages.confirmation.allowExecution');
+          question = 'Allow execution?';
           options.push(
             {
-              label: t('messages.confirmation.yesAllowOnce'),
+              label: 'Yes, allow once',
               value: ToolConfirmationOutcome.ProceedOnce,
             },
             {
-              label: t('messages.confirmation.yesAllowAlways'),
+              label: 'Yes, allow always',
               value: ToolConfirmationOutcome.ProceedAlways,
             },
-            { label: t('messages.confirmation.no'), value: ToolConfirmationOutcome.Cancel }
+            { label: 'No (esc)', value: ToolConfirmationOutcome.Cancel }
           );
         }
         break;
       case 'info':
         {
-          question = t('messages.confirmation.proceed');
+          question = 'Do you want to proceed?';
           options.push(
             {
-              label: t('messages.confirmation.yesAllowOnce'),
+              label: 'Yes, allow once',
               value: ToolConfirmationOutcome.ProceedOnce,
             },
             {
-              label: t('messages.confirmation.yesAllowAlways'),
+              label: 'Yes, allow always',
               value: ToolConfirmationOutcome.ProceedAlways,
             },
-            { label: t('messages.confirmation.no'), value: ToolConfirmationOutcome.Cancel }
+            { label: 'No (esc)', value: ToolConfirmationOutcome.Cancel }
           );
         }
         break;
       default: {
         const mcpProps = confirmationDetails;
-        question = t('messages.confirmation.allowMCPTool', {
-          toolName: mcpProps.toolName,
-          serverName: mcpProps.serverName,
-        });
+        question = `Allow execution of MCP tool "${mcpProps.toolName}" from server "${mcpProps.serverName}"?`;
         options.push(
           {
-            label: t('messages.confirmation.yesAllowOnce'),
+            label: 'Yes, allow once',
             value: ToolConfirmationOutcome.ProceedOnce,
           },
           {
-            label: t('messages.confirmation.yesAlwaysAllowTool', {
-              toolName: mcpProps.toolName,
-              serverName: mcpProps.serverName,
-            }),
+            label: `Yes, always allow tool "${mcpProps.toolName}" from server "${mcpProps.serverName}"`,
             value: ToolConfirmationOutcome.ProceedAlwaysTool,
           },
           {
-            label: t('messages.confirmation.yesAlwaysAllowServer', {
-              serverName: mcpProps.serverName,
-            }),
+            label: `Yes, always allow all tools from server "${mcpProps.serverName}"`,
             value: ToolConfirmationOutcome.ProceedAlwaysServer,
           },
-          { label: t('messages.confirmation.no'), value: ToolConfirmationOutcome.Cancel }
+          { label: 'No (esc)', value: ToolConfirmationOutcome.Cancel }
         );
       }
     }
@@ -119,14 +110,13 @@ const useConfirmationButtons = (confirmationDetails: IMessageToolGroupProps['mes
       question,
       options,
     };
-  }, [confirmationDetails, t]);
+  }, [confirmationDetails]);
 };
 
 const ConfirmationDetails: React.FC<{
   content: IMessageToolGroupProps['message']['content'][number];
   onConfirm: (outcome: ToolConfirmationOutcome) => void;
 }> = ({ content, onConfirm }) => {
-  const { t } = useTranslation();
   const { confirmationDetails } = content;
   if (!confirmationDetails) return;
   const node = useMemo(() => {
@@ -154,7 +144,7 @@ const ConfirmationDetails: React.FC<{
     }
   }, [confirmationDetails, content]);
 
-  const { question = '', options = [] } = useConfirmationButtons(confirmationDetails, t);
+  const { question = '', options = [] } = useConfirmationButtons(confirmationDetails);
 
   const [selected, setSelected] = useState<ToolConfirmationOutcome | null>(null);
 
@@ -175,7 +165,7 @@ const ConfirmationDetails: React.FC<{
           </Radio.Group>
           <div className='flex justify-start pl-20px'>
             <Button type='primary' size='mini' disabled={!selected} onClick={() => onConfirm(selected)}>
-              {t('messages.confirm')}
+              {'Confirm'}
             </Button>
           </div>
         </>
@@ -189,7 +179,6 @@ const ImageDisplay: React.FC<{
   imgUrl: string;
   relativePath?: string;
 }> = ({ imgUrl, relativePath }) => {
-  const { t } = useTranslation();
   const [messageApi, messageContext] = Message.useMessage();
   const [imageUrl, setImageUrl] = useState<string>(imgUrl);
   const [loading, setLoading] = useState(true);
@@ -236,7 +225,7 @@ const ImageDisplay: React.FC<{
               [blob.type]: blob,
             }),
           ]);
-          messageApi.success(t('messages.copySuccess', { defaultValue: 'Copied' }));
+          messageApi.success('Copied successfully');
           return;
         } catch (clipboardError) {
           console.warn('[ImageDisplay] Clipboard API failed, trying fallback:', clipboardError);
@@ -260,7 +249,7 @@ const ImageDisplay: React.FC<{
       ctx.drawImage(img, 0, 0);
       canvas.toBlob(async (canvasBlob) => {
         if (!canvasBlob) {
-          messageApi.error(t('messages.copyFailed', { defaultValue: 'Failed to copy' }));
+          messageApi.error('Failed to copy');
           return;
         }
         try {
@@ -269,17 +258,17 @@ const ImageDisplay: React.FC<{
               'image/png': canvasBlob,
             }),
           ]);
-          messageApi.success(t('messages.copySuccess', { defaultValue: 'Copied' }));
+          messageApi.success('Copied successfully');
         } catch (canvasError) {
           console.error('[ImageDisplay] Canvas fallback also failed:', canvasError);
-          messageApi.error(t('messages.copyFailed', { defaultValue: 'Failed to copy' }));
+          messageApi.error('Failed to copy');
         }
       }, 'image/png');
     } catch (error) {
       console.error('Failed to copy image:', error);
-      messageApi.error(t('messages.copyFailed', { defaultValue: 'Failed to copy' }));
+      messageApi.error('Failed to copy');
     }
-  }, [getImageBlob, imageUrl, t, messageApi]);
+  }, [getImageBlob, imageUrl, messageApi]);
 
   const handleDownload = useCallback(async () => {
     try {
@@ -296,19 +285,19 @@ const ImageDisplay: React.FC<{
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      messageApi.success(t('messages.downloadSuccess', { defaultValue: 'Download successful' }));
+      messageApi.success('Download successful');
     } catch (error) {
       console.error('Failed to download image:', error);
-      messageApi.error(t('messages.downloadFailed', { defaultValue: 'Failed to download' }));
+      messageApi.error('Failed to download');
     }
-  }, [getImageBlob, relativePath, t, messageApi]);
+  }, [getImageBlob, relativePath, messageApi]);
 
   // Loading state
   if (loading) {
     return (
       <div className='flex items-center gap-8px my-8px'>
         <LoadingOne className='loading' theme='outline' size='14' fill={iconColors.primary} />
-        <span className='text-t-secondary text-sm'>{t('common.loading', { defaultValue: 'Loading...' })}</span>
+        <span className='text-t-secondary text-sm'>{'Please wait...'}</span>
       </div>
     );
   }
@@ -317,7 +306,7 @@ const ImageDisplay: React.FC<{
   if (error || !imageUrl) {
     return (
       <div className='flex items-center gap-8px my-8px text-t-secondary text-sm'>
-        <span>{t('messages.imageLoadFailed', { defaultValue: 'Failed to load image' })}</span>
+        <span>{'Failed to load image'}</span>
       </div>
     );
   }
@@ -345,10 +334,10 @@ const ImageDisplay: React.FC<{
         {inPreviewGroup ? imageElement : <Image.PreviewGroup>{imageElement}</Image.PreviewGroup>}
         {/* Action buttons */}
         <div className='flex gap-8px'>
-          <Tooltip content={t('common.copy', { defaultValue: 'Copy' })}>
+          <Tooltip content={'Copy'}>
             <Button type='secondary' size='small' shape='circle' icon={<Copy theme='outline' size='14' fill={iconColors.primary} />} onClick={handleCopy} />
           </Tooltip>
-          <Tooltip content={t('common.download', { defaultValue: 'Download' })}>
+          <Tooltip content={'Download'}>
             <Button type='secondary' size='small' shape='circle' icon={<Download theme='outline' size='14' fill={iconColors.primary} />} onClick={handleDownload} />
           </Tooltip>
         </div>
@@ -386,8 +375,6 @@ const ToolResultDisplay: React.FC<{
 };
 
 const MessageToolGroup: React.FC<IMessageToolGroupProps> = ({ message }) => {
-  const { t } = useTranslation();
-
   // Collect all WriteFile results for summary display
   const writeFileResults = useMemo(() => {
     return message.content.filter((item) => item.name === 'WriteFile' && item.resultDisplay && typeof item.resultDisplay === 'object' && 'fileDiff' in item.resultDisplay).map((item) => item.resultDisplay as WriteFileResult);
@@ -464,7 +451,7 @@ const MessageToolGroup: React.FC<IMessageToolGroupProps> = ({ message }) => {
                 <div>
                   <Tag className={'mr-4px'}>
                     {name}
-                    {status === 'Canceled' ? `(${t('messages.canceledExecution')})` : ''}
+                    {status === 'Canceled' ? `(${'Execution canceled'})` : ''}
                   </Tag>
                 </div>
               }

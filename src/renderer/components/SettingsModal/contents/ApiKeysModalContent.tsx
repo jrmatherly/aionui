@@ -13,7 +13,6 @@ import AionScrollArea from '@/renderer/components/base/AionScrollArea';
 import { Alert, Button, Collapse, Empty, Form, Input, Message, Modal, Popconfirm, Spin, Tag, Tooltip } from '@arco-design/web-react';
 import { Delete, Key, Link, Plus, Save } from '@icon-park/react';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useSettingsViewMode } from '../settingsViewContext';
 
 interface StoredKey {
@@ -22,7 +21,6 @@ interface StoredKey {
 }
 
 const ApiKeysModalContent: React.FC = () => {
-  const { t } = useTranslation();
   const viewMode = useSettingsViewMode();
   const isPageMode = viewMode === 'page';
 
@@ -57,21 +55,21 @@ const ApiKeysModalContent: React.FC = () => {
   // Save a new key
   const handleSaveKey = async () => {
     if (!selectedProvider || !apiKeyInput.trim()) {
-      message.warning(t('settings.apiKeys.enterKey', { defaultValue: 'Please enter an API key' }));
+      message.warning('Please enter an API key');
       return;
     }
 
     try {
       setSaving(true);
       await userApiKeys.set.invoke({ provider: selectedProvider, apiKey: apiKeyInput.trim() });
-      message.success(t('settings.apiKeys.saved', { defaultValue: 'API key saved successfully' }));
+      message.success('API key saved successfully');
       setAddModalVisible(false);
       setSelectedProvider(null);
       setApiKeyInput('');
       await loadKeys();
     } catch (error) {
       console.error('[ApiKeys] Failed to save key:', error);
-      message.error(t('settings.apiKeys.saveError', { defaultValue: 'Failed to save API key' }));
+      message.error('Failed to save API key');
     } finally {
       setSaving(false);
     }
@@ -81,11 +79,11 @@ const ApiKeysModalContent: React.FC = () => {
   const handleDeleteKey = async (provider: string) => {
     try {
       await userApiKeys.delete.invoke({ provider });
-      message.success(t('settings.apiKeys.deleted', { defaultValue: 'API key deleted' }));
+      message.success('API key deleted');
       await loadKeys();
     } catch (error) {
       console.error('[ApiKeys] Failed to delete key:', error);
-      message.error(t('settings.apiKeys.deleteError', { defaultValue: 'Failed to delete API key' }));
+      message.error('Failed to delete API key');
     }
   };
 
@@ -129,7 +127,7 @@ const ApiKeysModalContent: React.FC = () => {
               <span className='font-medium text-t-primary'>{info.name}</span>
               {hasKey && (
                 <Tag color='green' size='small'>
-                  {t('settings.apiKeys.configured', { defaultValue: 'Configured' })}
+                  {'Configured'}
                 </Tag>
               )}
             </div>
@@ -139,25 +137,25 @@ const ApiKeysModalContent: React.FC = () => {
 
         <div className='flex items-center gap-8px shrink-0'>
           {info.link && (
-            <Tooltip content={t('settings.apiKeys.getKey', { defaultValue: 'Get API key' })}>
+            <Tooltip content={'Get API key'}>
               <Button type='text' size='small' icon={<Link theme='outline' size='16' />} onClick={() => window.open(info.link, '_blank')} />
             </Tooltip>
           )}
 
           {hasKey ? (
             <>
-              <Tooltip content={t('settings.apiKeys.update', { defaultValue: 'Update key' })}>
+              <Tooltip content={'Update key'}>
                 <Button type='text' size='small' icon={<Save theme='outline' size='16' />} onClick={() => openAddModal(provider)} />
               </Tooltip>
-              <Popconfirm title={t('settings.apiKeys.confirmDelete', { defaultValue: 'Delete this API key?' })} onOk={() => handleDeleteKey(provider)}>
-                <Tooltip content={t('settings.apiKeys.delete', { defaultValue: 'Delete key' })}>
+              <Popconfirm title={'Delete this API key?'} onOk={() => handleDeleteKey(provider)}>
+                <Tooltip content={'Delete key'}>
                   <Button type='text' size='small' status='danger' icon={<Delete theme='outline' size='16' />} />
                 </Tooltip>
               </Popconfirm>
             </>
           ) : (
             <Button type='primary' size='small' icon={<Plus theme='outline' size='14' />} onClick={() => openAddModal(provider)}>
-              {t('settings.apiKeys.add', { defaultValue: 'Add' })}
+              {'Add'}
             </Button>
           )}
         </div>
@@ -174,17 +172,7 @@ const ApiKeysModalContent: React.FC = () => {
 
       <AionScrollArea className='flex-1 min-h-0 pb-16px scrollbar-hide' disableOverflow={isPageMode}>
         {/* Security notice */}
-        <Alert
-          type='info'
-          className='mb-16px'
-          content={
-            <div className='text-12px'>
-              {t('settings.apiKeys.securityNote', {
-                defaultValue: 'Your API keys are encrypted and stored securely. They are only used when you run CLI agents and are never shared with other users.',
-              })}
-            </div>
-          }
-        />
+        <Alert type='info' className='mb-16px' content={<div className='text-12px'>{'Your API keys are encrypted and stored securely. They are only used when you run CLI agents and are never shared with other users.'}</div>} />
 
         {loading ? (
           <div className='flex items-center justify-center py-40px'>
@@ -193,13 +181,13 @@ const ApiKeysModalContent: React.FC = () => {
         ) : (
           <Collapse defaultActiveKey={['common', 'other']} bordered={false}>
             {/* Common providers */}
-            <Collapse.Item header={<span className='font-medium'>{t('settings.apiKeys.commonProviders', { defaultValue: 'Common Providers' })}</span>} name='common'>
+            <Collapse.Item header={<span className='font-medium'>{'Common Providers'}</span>} name='common'>
               <div className='pt-8px'>{COMMON_PROVIDERS.map((provider) => renderProviderCard(provider))}</div>
             </Collapse.Item>
 
             {/* Other providers */}
-            <Collapse.Item header={<span className='font-medium'>{t('settings.apiKeys.otherProviders', { defaultValue: 'Other Providers' })}</span>} name='other'>
-              <div className='pt-8px'>{otherProviders.length > 0 ? otherProviders.map((provider) => renderProviderCard(provider)) : <Empty description={t('settings.apiKeys.noOther', { defaultValue: 'No other providers' })} />}</div>
+            <Collapse.Item header={<span className='font-medium'>{'Other Providers'}</span>} name='other'>
+              <div className='pt-8px'>{otherProviders.length > 0 ? otherProviders.map((provider) => renderProviderCard(provider)) : <Empty description={'No other providers'} />}</div>
             </Collapse.Item>
           </Collapse>
         )}
@@ -207,19 +195,7 @@ const ApiKeysModalContent: React.FC = () => {
 
       {/* Add/Update key modal */}
       <Modal
-        title={
-          selectedProvider
-            ? hasStoredKey(selectedProvider)
-              ? t('settings.apiKeys.updateTitle', {
-                  provider: getProviderInfo(selectedProvider).name,
-                  defaultValue: `Update ${getProviderInfo(selectedProvider).name} API Key`,
-                })
-              : t('settings.apiKeys.addTitle', {
-                  provider: getProviderInfo(selectedProvider).name,
-                  defaultValue: `Add ${getProviderInfo(selectedProvider).name} API Key`,
-                })
-            : ''
-        }
+        title={selectedProvider ? (hasStoredKey(selectedProvider) ? `Update ${getProviderInfo(selectedProvider).name} API Key` : `Add ${getProviderInfo(selectedProvider).name} API Key`) : ''}
         visible={addModalVisible}
         onCancel={() => {
           setAddModalVisible(false);
@@ -228,19 +204,19 @@ const ApiKeysModalContent: React.FC = () => {
         }}
         onOk={handleSaveKey}
         confirmLoading={saving}
-        okText={t('common.save', { defaultValue: 'Save' })}
-        cancelText={t('common.cancel', { defaultValue: 'Cancel' })}
+        okText={'Save'}
+        cancelText={'Cancel'}
       >
         <Form layout='vertical'>
-          <Form.Item label={t('settings.apiKeys.apiKey', { defaultValue: 'API Key' })}>
-            <Input.Password placeholder={hasStoredKey(selectedProvider || '') ? t('settings.apiKeys.enterNewKey', { defaultValue: 'Enter new API key to update' }) : t('settings.apiKeys.enterKey', { defaultValue: 'Enter your API key' })} value={apiKeyInput} onChange={setApiKeyInput} autoFocus />
+          <Form.Item label={'API Key'}>
+            <Input.Password placeholder={hasStoredKey(selectedProvider || '') ? 'Enter new API key to update' : 'Enter your API key'} value={apiKeyInput} onChange={setApiKeyInput} autoFocus />
           </Form.Item>
 
           {selectedProvider && getProviderInfo(selectedProvider).link && (
             <div className='text-12px text-t-secondary'>
-              {t('settings.apiKeys.getKeyFrom', { defaultValue: "Don't have a key?" })}{' '}
+              {"Don't have a key?"}{' '}
               <a href={getProviderInfo(selectedProvider).link} target='_blank' rel='noopener noreferrer' className='text-primary'>
-                {t('settings.apiKeys.getOne', { defaultValue: 'Get one here' })} →
+                {'Get one here'} →
               </a>
             </div>
           )}

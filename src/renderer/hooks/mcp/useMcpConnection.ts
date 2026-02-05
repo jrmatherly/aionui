@@ -1,7 +1,6 @@
 import { mcpService } from '@/common/ipcBridge';
 import type { IMcpServer } from '@/common/storage';
 import { useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { globalMessageQueue } from './messageQueue';
 
 /**
@@ -24,7 +23,6 @@ export const useMcpConnection = (
   message: ReturnType<typeof import('@arco-design/web-react').Message.useMessage>[0],
   onAuthRequired?: (server: IMcpServer) => void // Callback when authentication is required
 ) => {
-  const { t } = useTranslation();
   const [testingServers, setTestingServers] = useState<Record<string, boolean>>({});
 
   // Connection test function
@@ -53,7 +51,7 @@ export const useMcpConnection = (
           if (result.needsAuth) {
             await updateServerStatus('disconnected');
             await globalMessageQueue.add(() => {
-              message.warning(`${server.name}: ${t('settings.mcpAuthRequired') || 'Authentication required'}`);
+              message.warning(`${server.name}: ${'Authentication required'}`);
             });
 
             // Trigger authentication callback
@@ -71,7 +69,7 @@ export const useMcpConnection = (
               lastConnected: Date.now(),
             });
             await globalMessageQueue.add(() => {
-              message.success(`${server.name}: ${t('settings.mcpTestConnectionSuccess')}`);
+              message.success(`${server.name}: ${'Connection test successful'}`);
             });
 
             // Connection test successful, no additional action needed
@@ -81,7 +79,7 @@ export const useMcpConnection = (
             await updateServerStatus('error', {
               enabled: false,
             });
-            const errorMsg = truncateErrorMessage(result.error || t('settings.mcpError'));
+            const errorMsg = truncateErrorMessage(result.error);
             await globalMessageQueue.add(() => {
               message.error({ content: `${server.name}: ${errorMsg}`, duration: 5000 });
             });
@@ -91,7 +89,7 @@ export const useMcpConnection = (
           await updateServerStatus('error', {
             enabled: false,
           });
-          const errorMsg = truncateErrorMessage(response.msg || t('settings.mcpError'));
+          const errorMsg = truncateErrorMessage(response.msg);
           await globalMessageQueue.add(() => {
             message.error({ content: `${server.name}: ${errorMsg}`, duration: 5000 });
           });
@@ -101,7 +99,7 @@ export const useMcpConnection = (
         await updateServerStatus('error', {
           enabled: false,
         });
-        const errorMsg = truncateErrorMessage(error instanceof Error ? error.message : t('settings.mcpError'));
+        const errorMsg = truncateErrorMessage(error instanceof Error ? error.message : 'Error');
         await globalMessageQueue.add(() => {
           message.error({ content: `${server.name}: ${errorMsg}`, duration: 5000 });
         });
@@ -109,7 +107,7 @@ export const useMcpConnection = (
         setTestingServers((prev) => ({ ...prev, [server.id]: false }));
       }
     },
-    [saveMcpServers, message, t, onAuthRequired]
+    [saveMcpServers, message, onAuthRequired]
   );
 
   return {

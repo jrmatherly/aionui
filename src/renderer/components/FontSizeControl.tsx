@@ -6,7 +6,6 @@
 
 import { Button, Slider } from '@arco-design/web-react';
 import React, { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useThemeContext } from '../context/ThemeContext';
 import { FONT_SCALE_DEFAULT, FONT_SCALE_MAX, FONT_SCALE_MIN, FONT_SCALE_STEP } from '../hooks/useFontScale';
 
@@ -27,7 +26,6 @@ const clamp = (value: number) => Math.min(FONT_SCALE_MAX, Math.max(FONT_SCALE_MI
  * Provides interface scaling with slider and button controls
  */
 const FontSizeControl: React.FC = () => {
-  const { t } = useTranslation();
   const { fontScale, setFontScale } = useThemeContext();
 
   // Format display value as percentage
@@ -82,7 +80,7 @@ const FontSizeControl: React.FC = () => {
           {formattedValue}
         </span>
         <Button size='mini' type='text' className='p-0' onClick={handleReset} disabled={Math.abs(fontScale - FONT_SCALE_DEFAULT) < RESET_THRESHOLD}>
-          {t('settings.fontSizeReset')}
+          {'Reset zoom'}
         </Button>
       </div>
     </div>

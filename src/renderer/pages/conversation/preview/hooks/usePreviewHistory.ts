@@ -8,7 +8,6 @@ import { ipcBridge } from '@/common';
 import type { PreviewHistoryTarget, PreviewSnapshotInfo } from '@/common/types/preview';
 import { Message } from '@arco-design/web-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { SNAPSHOT_DEBOUNCE_TIME } from '../constants';
 
 /**
@@ -101,7 +100,6 @@ interface UsePreviewHistoryReturn {
  * @returns History management related states and methods
  */
 export const usePreviewHistory = ({ activeTab, updateContent }: UsePreviewHistoryOptions): UsePreviewHistoryReturn => {
-  const { t } = useTranslation();
   const [historyVersions, setHistoryVersions] = useState<PreviewSnapshotInfo[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [snapshotSaving, setSnapshotSaving] = useState(false);
@@ -138,13 +136,13 @@ export const usePreviewHistory = ({ activeTab, updateContent }: UsePreviewHistor
       setHistoryVersions(versions || []);
       setHistoryError(null);
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : t('common.unknownError');
-      setHistoryError(`${t('preview.loadHistoryFailed')}: ${errorMsg}`);
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      setHistoryError(`${'Failed to load history'}: ${errorMsg}`);
       setHistoryVersions([]);
     } finally {
       setHistoryLoading(false);
     }
-  }, [historyTarget, t]);
+  }, [historyTarget]);
 
   // Auto refresh history when historyTarget changes
   useEffect(() => {
@@ -161,7 +159,7 @@ export const usePreviewHistory = ({ activeTab, updateContent }: UsePreviewHistor
     // Debounce check: Ignore if less than 1 second since last save
     const now = Date.now();
     if (now - lastSnapshotTimeRef.current < SNAPSHOT_DEBOUNCE_TIME) {
-      messageApi.info(t('preview.tooFrequent'));
+      messageApi.info('Too frequent, please try later');
       return;
     }
 
@@ -169,15 +167,15 @@ export const usePreviewHistory = ({ activeTab, updateContent }: UsePreviewHistor
       setSnapshotSaving(true);
       lastSnapshotTimeRef.current = now; // Update last save time
       await ipcBridge.previewHistory.save.invoke({ target: historyTarget, content: activeTab.content });
-      messageApi.success(t('preview.snapshotSaved'));
+      messageApi.success('Snapshot saved');
       await refreshHistory();
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : t('common.unknownError');
-      messageApi.error(`${t('preview.snapshotSaveFailed')}: ${errorMsg}`);
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      messageApi.error(`${'Failed to save snapshot'}: ${errorMsg}`);
     } finally {
       setSnapshotSaving(false);
     }
-  }, [historyTarget, activeTab, snapshotSaving, messageApi, refreshHistory, t]);
+  }, [historyTarget, activeTab, snapshotSaving, messageApi, refreshHistory]);
 
   // Select history snapshot
   const handleSnapshotSelect = useCallback(
@@ -189,16 +187,16 @@ export const usePreviewHistory = ({ activeTab, updateContent }: UsePreviewHistor
         const result = await ipcBridge.previewHistory.getContent.invoke({ target: historyTarget, snapshotId: snapshot.id });
         if (result?.content) {
           updateContent(result.content);
-          messageApi.success(t('preview.historyLoaded'));
+          messageApi.success('History version loaded');
         } else {
-          throw new Error(t('preview.errors.emptySnapshot'));
+          throw new Error('Snapshot content is empty');
         }
       } catch (error) {
-        const errorMsg = error instanceof Error ? error.message : t('common.unknownError');
-        messageApi.error(`${t('preview.historyLoadFailed')}: ${errorMsg}`);
+        const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+        messageApi.error(`${'Failed to load history version'}: ${errorMsg}`);
       }
     },
-    [historyTarget, messageApi, updateContent, t]
+    [historyTarget, messageApi, updateContent]
   );
 
   return {

@@ -42,7 +42,6 @@ import { Button, ConfigProvider, Dropdown, Input, Menu, Tooltip } from '@arco-de
 import { IconClose } from '@arco-design/web-react/icon';
 import { ArrowUp, Down, FolderOpen, Plus, Robot, UploadOne } from '@icon-park/react';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useSWR, { mutate } from 'swr';
 import styles from './index.module.css';
@@ -190,11 +189,10 @@ const CUSTOM_AVATAR_IMAGE_MAP: Record<string, string> = {
 };
 
 const Guid: React.FC = () => {
-  const { t, i18n } = useTranslation();
   const guidContainerRef = useRef<HTMLDivElement>(null);
   const { closeAllTabs, openTab } = useConversationTabs();
   const { activeBorderColor, inactiveBorderColor, activeShadow } = useInputFocusRing();
-  const localeKey = resolveLocaleKey(i18n.language);
+  const localeKey = 'en-US';
   const branding = useBranding();
 
   // Open external link — use window.open in web mode (shell.openExternal calls xdg-open on server)
@@ -500,13 +498,13 @@ const Guid: React.FC = () => {
             ))
           ) : (
             <Menu.Item key='empty' disabled>
-              {t('conversation.welcome.none', { defaultValue: 'None' })}
+              {'None'}
             </Menu.Item>
           )}
         </Menu>
       </div>
     ),
-    [filteredMentionOptions, mentionMenuSelectedKey, selectMentionAgent, t]
+    [filteredMentionOptions, mentionMenuSelectedKey, selectMentionAgent]
   );
 
   // Get available ACP agents - based on global flag
@@ -935,8 +933,12 @@ const Guid: React.FC = () => {
         // Check if it's an authentication error
         const errorMessage = error instanceof Error ? error.message : String(error);
         if (errorMessage.includes('[ACP-AUTH-')) {
-          console.error(t('acp.auth.console_error'), errorMessage);
-          const confirmed = window.confirm(t('acp.auth.failed_confirm', { backend: selectedAgent, error: errorMessage }));
+          console.error('ACP authentication error details:', errorMessage);
+          const confirmed = window.confirm(`ACP ${selectedAgent} authentication failed:
+
+${errorMessage}
+
+Would you like to go to settings page to configure now?`);
           if (confirmed) {
             void navigate('/settings/model');
           }
@@ -1086,7 +1088,7 @@ const Guid: React.FC = () => {
 
   // Typewriter effect
   useEffect(() => {
-    const fullText = t('conversation.welcome.placeholder');
+    const fullText = 'Send a message, upload files, open a folder, or create a scheduled task...';
     let currentIndex = 0;
     const typingSpeed = 80; // Typing speed per character (ms)
     let intervalId: ReturnType<typeof setInterval> | null = null;
@@ -1116,12 +1118,12 @@ const Guid: React.FC = () => {
       clearTimeout(initialDelay);
       if (intervalId) clearInterval(intervalId);
     };
-  }, [t]);
+  }, []);
   return (
     <ConfigProvider getPopupContainer={() => guidContainerRef.current || document.body}>
       <div ref={guidContainerRef} className={styles.guidContainer}>
         <div className={styles.guidLayout}>
-          <p className={`text-2xl font-semibold mb-8 text-0 text-center`}>{t('conversation.welcome.title')}</p>
+          <p className={`text-2xl font-semibold mb-8 text-0 text-center`}>{"Hi, what's your plan for today?"}</p>
 
           {/* Agent Selector - below title */}
           {availableAgents && availableAgents.length > 0 && (
@@ -1222,7 +1224,7 @@ const Guid: React.FC = () => {
                 </Dropdown>
               </div>
             )}
-            <Input.TextArea autoSize={{ minRows: 3, maxRows: 20 }} placeholder={typewriterPlaceholder || t('conversation.welcome.placeholder')} className={`text-16px focus:b-none rounded-xl !bg-transparent !b-none !resize-none !p-0 ${styles.lightPlaceholder}`} value={input} onChange={handleInputChange} onPaste={onPaste} onFocus={handleTextareaFocus} onBlur={handleTextareaBlur} {...compositionHandlers} onKeyDown={handleInputKeyDown}></Input.TextArea>
+            <Input.TextArea autoSize={{ minRows: 3, maxRows: 20 }} placeholder={typewriterPlaceholder || 'Send a message, upload files, open a folder, or create a scheduled task...'} className={`text-16px focus:b-none rounded-xl !bg-transparent !b-none !resize-none !p-0 ${styles.lightPlaceholder}`} value={input} onChange={handleInputChange} onPaste={onPaste} onFocus={handleTextareaFocus} onBlur={handleTextareaBlur} {...compositionHandlers} onKeyDown={handleInputKeyDown}></Input.TextArea>
             {mentionOpen && (
               <div className='absolute z-50' style={{ left: 16, top: 44 }}>
                 {mentionMenu}
@@ -1274,13 +1276,13 @@ const Guid: React.FC = () => {
                       <Menu.Item key='file'>
                         <div className='flex items-center gap-8px'>
                           <UploadOne theme='outline' size='16' fill={iconColors.secondary} style={{ lineHeight: 0 }} />
-                          <span>{t('conversation.welcome.uploadFile')}</span>
+                          <span>{'Upload Files'}</span>
                         </div>
                       </Menu.Item>
                       <Menu.Item key='workspace'>
                         <div className='flex items-center gap-8px'>
                           <FolderOpen theme='outline' size='16' fill={iconColors.secondary} style={{ lineHeight: 0 }} />
-                          <span>{t('conversation.welcome.specifyWorkspace')}</span>
+                          <span>{'Chat in Folder'}</span>
                         </div>
                       </Menu.Item>
                     </Menu>
@@ -1305,12 +1307,12 @@ const Guid: React.FC = () => {
                           ? [
                               /* No available models hint */
                               <Menu.Item key='no-models' className='px-12px py-12px text-t-secondary text-14px text-center flex justify-center items-center' disabled>
-                                {t('settings.noAvailableModels')}
+                                {'No available models'}
                               </Menu.Item>,
                               /* Add Model option */
                               <Menu.Item key='add-model' className='text-12px text-t-secondary' onClick={() => navigate('/settings/model')}>
                                 <Plus theme='outline' size='12' />
-                                {t('settings.addModel')}
+                                {'Add Model'}
                               </Menu.Item>,
                             ]
                           : [
@@ -1393,14 +1395,14 @@ const Guid: React.FC = () => {
                               /* Add Model option */
                               <Menu.Item key='add-model' className='text-12px text-t-secondary' onClick={() => navigate('/settings/model')}>
                                 <Plus theme='outline' size='12' />
-                                {t('settings.addModel')}
+                                {'Add Model'}
                               </Menu.Item>,
                             ]}
                       </Menu>
                     }
                   >
                     <Button className={'sendbox-model-btn'} shape='round'>
-                      {currentModel ? formatGeminiModelLabel(currentModel, currentModel.useModel) : t('conversation.welcome.selectModel')}
+                      {currentModel ? formatGeminiModelLabel(currentModel, currentModel.useModel) : 'Select Model'}
                     </Button>
                   </Dropdown>
                 )}
@@ -1455,11 +1457,11 @@ const Guid: React.FC = () => {
                   <FolderOpen className='m-r-8px flex-shrink-0' theme='outline' size='16' fill={iconColors.secondary} style={{ lineHeight: 0 }} />
                   <Tooltip content={dir} position='top'>
                     <span className='truncate'>
-                      {t('conversation.welcome.currentWorkspace')}: {dir}
+                      {'Current Workspace'}: {dir}
                     </span>
                   </Tooltip>
                 </div>
-                <Tooltip content={t('conversation.welcome.clearWorkspace')} position='top'>
+                <Tooltip content={'Remove folder'} position='top'>
                   <IconClose className='hover:text-[rgb(var(--danger-6))] hover:bg-3 transition-colors' strokeWidth={3} style={{ fontSize: 16 }} onClick={() => setDir('')} />
                 </Tooltip>
               </div>
@@ -1474,7 +1476,7 @@ const Guid: React.FC = () => {
                 <div className='flex flex-col w-full animate-fade-in'>
                   <div className='w-full'>
                     <div className='flex items-center justify-between py-8px cursor-pointer select-none' onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}>
-                      <span className='text-13px text-[rgb(var(--primary-6))] opacity-80'>{t('settings.assistantDescription', { defaultValue: 'Assistant Description' })}</span>
+                      <span className='text-13px text-[rgb(var(--primary-6))] opacity-80'>{'Assistant Description'}</span>
                       <Down theme='outline' size={14} fill='rgb(var(--primary-6))' className={`transition-transform duration-300 ${isDescriptionExpanded ? 'rotate-180' : ''}`} />
                     </div>
                     <div className={`overflow-hidden transition-all duration-300 ${isDescriptionExpanded ? 'max-h-500px mt-4px opacity-100' : 'max-h-0 opacity-0'}`}>
@@ -1485,7 +1487,7 @@ const Guid: React.FC = () => {
                           background: 'var(--color-fill-1)',
                         }}
                       >
-                        {customAgents.find((a) => a.id === selectedAgentInfo.customAgentId)?.descriptionI18n?.[localeKey] || customAgents.find((a) => a.id === selectedAgentInfo.customAgentId)?.description || t('settings.assistantDescriptionPlaceholder', { defaultValue: 'No description' })}
+                        {customAgents.find((a) => a.id === selectedAgentInfo.customAgentId)?.descriptionI18n?.[localeKey] || customAgents.find((a) => a.id === selectedAgentInfo.customAgentId)?.description || 'What can this assistant help with?'}
                       </div>
                     </div>
                   </div>
@@ -1547,7 +1549,7 @@ const Guid: React.FC = () => {
                     })}
                   <div className='h-28px flex items-center gap-8px px-16px rd-100px cursor-pointer transition-all text-t-secondary hover:text-t-primary hover:bg-fill-2 b-1 b-dashed b-aou-2 select-none' onClick={() => navigate('/settings/agent')}>
                     <Plus theme='outline' size={14} className='line-height-0' />
-                    <span className='text-13px'>{t('settings.createAssistant', { defaultValue: 'Create' })}</span>
+                    <span className='text-13px'>{'Create Assistant'}</span>
                   </div>
                 </div>
               )}
@@ -1557,13 +1559,13 @@ const Guid: React.FC = () => {
 
         {/* Bottom quick action buttons */}
         <div className='absolute bottom-32px left-50% -translate-x-1/2 flex flex-col justify-center items-center'>
-          {/* <div className='text-text-3 text-14px mt-24px mb-12px'>{t('conversation.welcome.quickActionsTitle')}</div> */}
+          {/* <div className='text-text-3 text-14px mt-24px mb-12px'>{'What can AionUi do?'}</div> */}
           <div className='flex justify-center items-center gap-24px'>
             <div className='group flex items-center justify-center w-36px h-36px rd-50% bg-fill-0 cursor-pointer overflow-hidden whitespace-nowrap hover:w-200px hover:rd-28px hover:px-20px hover:justify-start hover:gap-10px transition-all duration-400 ease-[cubic-bezier(0.2,0.8,0.3,1)]' style={quickActionStyle(hoveredQuickAction === 'feedback')} onMouseEnter={() => setHoveredQuickAction('feedback')} onMouseLeave={() => setHoveredQuickAction(null)} onClick={() => openLink(branding.feedbackUrl)}>
               <svg className='flex-shrink-0 text-[var(--color-text-3)] group-hover:text-[#2C7FFF] transition-colors duration-300' width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
                 <path d='M6.58335 16.6674C8.17384 17.4832 10.0034 17.7042 11.7424 17.2905C13.4814 16.8768 15.0155 15.8555 16.0681 14.4108C17.1208 12.9661 17.6229 11.1929 17.4838 9.41082C17.3448 7.6287 16.5738 5.95483 15.3099 4.69085C14.0459 3.42687 12.372 2.6559 10.5899 2.51687C8.80776 2.37784 7.03458 2.8799 5.58987 3.93256C4.14516 4.98523 3.12393 6.51928 2.71021 8.25828C2.29648 9.99729 2.51747 11.8269 3.33335 13.4174L1.66669 18.334L6.58335 16.6674Z' stroke='currentColor' strokeWidth='1.66667' strokeLinecap='round' strokeLinejoin='round' />
               </svg>
-              <span className='opacity-0 max-w-0 overflow-hidden text-14px text-[var(--color-text-2)] font-bold group-hover:opacity-100 group-hover:max-w-250px transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.3,1)]'>{t('conversation.welcome.quickActionFeedback')}</span>
+              <span className='opacity-0 max-w-0 overflow-hidden text-14px text-[var(--color-text-2)] font-bold group-hover:opacity-100 group-hover:max-w-250px transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.3,1)]'>{'Got feedback or suggestions?'}</span>
             </div>
             <div className='group flex items-center justify-center w-36px h-36px rd-50% bg-fill-0 cursor-pointer overflow-hidden whitespace-nowrap hover:w-200px hover:rd-28px hover:px-20px hover:justify-start hover:gap-10px transition-all duration-400 ease-[cubic-bezier(0.2,0.8,0.3,1)]' style={quickActionStyle(hoveredQuickAction === 'repo')} onMouseEnter={() => setHoveredQuickAction('repo')} onMouseLeave={() => setHoveredQuickAction(null)} onClick={() => openLink(branding.github.repo)}>
               <svg className='flex-shrink-0 text-[var(--color-text-3)] group-hover:text-[#FE9900] transition-colors duration-300' width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -1575,7 +1577,7 @@ const Guid: React.FC = () => {
                   strokeLinejoin='round'
                 />
               </svg>
-              <span className='opacity-0 max-w-0 overflow-hidden text-14px text-[var(--color-text-2)] font-bold group-hover:opacity-100 group-hover:max-w-250px transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.3,1)]'>{t('conversation.welcome.quickActionStar')}</span>
+              <span className='opacity-0 max-w-0 overflow-hidden text-14px text-[var(--color-text-2)] font-bold group-hover:opacity-100 group-hover:max-w-250px transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.3,1)]'>{'Like us? Give us a star!'}</span>
             </div>
           </div>
         </div>

@@ -9,7 +9,6 @@ import { uuid } from '@/common/utils';
 import { Button, Message, Modal } from '@arco-design/web-react';
 import { CheckOne, EditTwo, Plus } from '@icon-park/react';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import CssThemeModal from './CssThemeModal';
 import { BACKGROUND_BLOCK_START, injectBackgroundCssBlock } from './backgroundUtils';
 import { DEFAULT_THEME_ID, PRESET_THEMES } from './presets';
@@ -42,7 +41,6 @@ const normalizeUserThemes = (themes: ICssTheme[]): { normalized: ICssTheme[]; up
  * For managing and switching CSS skin themes
  */
 const CssThemeSettings: React.FC = () => {
-  const { t } = useTranslation();
   const [themes, setThemes] = useState<ICssTheme[]>([]);
   const [activeThemeId, setActiveThemeId] = useState<string>('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -104,13 +102,13 @@ const CssThemeSettings: React.FC = () => {
         setActiveThemeId(theme.id);
         await ConfigStorage.set('css.activeThemeId', theme.id);
         applyThemeCss(theme.css);
-        Message.success(t('settings.cssTheme.applied', { name: theme.name }));
+        Message.success(`Applied theme: ${theme.name}`);
       } catch (error) {
         console.error('Failed to apply theme:', error);
-        Message.error(t('settings.cssTheme.applyFailed'));
+        Message.error('Failed to apply theme');
       }
     },
-    [applyThemeCss, t]
+    [applyThemeCss]
   );
 
   /**
@@ -162,13 +160,13 @@ const CssThemeSettings: React.FC = () => {
         setThemes(updatedThemes);
         setModalVisible(false);
         setEditingTheme(null);
-        Message.success(t('common.saveSuccess'));
+        Message.success('Saved successfully');
       } catch (error) {
         console.error('Failed to save theme:', error);
-        Message.error(t('common.saveFailed'));
+        Message.error('Failed to save');
       }
     },
-    [editingTheme, themes, t]
+    [editingTheme, themes]
   );
 
   /**
@@ -177,8 +175,8 @@ const CssThemeSettings: React.FC = () => {
   const handleDeleteTheme = useCallback(
     (themeId: string) => {
       Modal.confirm({
-        title: t('common.confirmDelete'),
-        content: t('settings.cssTheme.deleteConfirm'),
+        title: 'Confirm Delete',
+        content: 'Are you sure you want to delete this theme? This action cannot be undone.',
         okButtonProps: { status: 'danger' },
         onOk: async () => {
           try {
@@ -196,24 +194,24 @@ const CssThemeSettings: React.FC = () => {
             setThemes(updatedThemes);
             setModalVisible(false);
             setEditingTheme(null);
-            Message.success(t('common.deleteSuccess'));
+            Message.success('Deleted successfully');
           } catch (error) {
             console.error('Failed to delete theme:', error);
-            Message.error(t('common.deleteFailed'));
+            Message.error('Failed to delete');
           }
         },
       });
     },
-    [themes, activeThemeId, applyThemeCss, t]
+    [themes, activeThemeId, applyThemeCss]
   );
 
   return (
     <div className='space-y-16px'>
       {/* Header */}
       <div className='flex items-center justify-between'>
-        <span className='text-14px text-t-secondary'>{t('settings.cssTheme.selectOrCustomize')}</span>
+        <span className='text-14px text-t-secondary'>{'Select preset theme or custom CSS'}</span>
         <Button type='outline' size='small' className='rd-20px' icon={<Plus theme='outline' size='14' />} onClick={handleAddTheme}>
-          {t('settings.cssTheme.addManually')}
+          {'Add Manually'}
         </Button>
       </div>
 

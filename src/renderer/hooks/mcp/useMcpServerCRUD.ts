@@ -2,15 +2,11 @@ import type { IMcpServer } from '@/common/storage';
 import { ConfigStorage } from '@/common/storage';
 import type React from 'react';
 import { useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-
 /**
  * MCP Server CRUD operations Hook
  * Handles add, edit, delete, enable/disable operations for MCP servers
  */
 export const useMcpServerCRUD = (mcpServers: IMcpServer[], saveMcpServers: (serversOrUpdater: IMcpServer[] | ((prev: IMcpServer[]) => IMcpServer[])) => Promise<void>, syncMcpToAgents: (server: IMcpServer, skipRecheck?: boolean) => Promise<void>, removeMcpFromAgents: (serverName: string, successMessage?: string) => Promise<void>, checkSingleServerInstallStatus: (serverName: string) => Promise<void>, setAgentInstallStatus: React.Dispatch<React.SetStateAction<Record<string, string[]>>>, message: ReturnType<typeof import('@arco-design/web-react').Message.useMessage>[0]) => {
-  const { t } = useTranslation();
-
   // Add MCP server
   const handleAddMcpServer = useCallback(
     async (serverData: Omit<IMcpServer, 'id' | 'createdAt' | 'updatedAt'>) => {
@@ -52,7 +48,7 @@ export const useMcpServerCRUD = (mcpServers: IMcpServer[], saveMcpServers: (serv
       // Return newly added/updated server for subsequent connection tests
       return serverToSync;
     },
-    [saveMcpServers, syncMcpToAgents, message, t, checkSingleServerInstallStatus]
+    [saveMcpServers, syncMcpToAgents, message, checkSingleServerInstallStatus]
   );
 
   // Batch import MCP servers
@@ -101,7 +97,7 @@ export const useMcpServerCRUD = (mcpServers: IMcpServer[], saveMcpServers: (serv
       // Return list of newly added servers for subsequent connection tests
       return addedServers;
     },
-    [saveMcpServers, syncMcpToAgents, message, t, checkSingleServerInstallStatus]
+    [saveMcpServers, syncMcpToAgents, message, checkSingleServerInstallStatus]
   );
 
   // Edit MCP server
@@ -122,14 +118,14 @@ export const useMcpServerCRUD = (mcpServers: IMcpServer[], saveMcpServers: (serv
         return prevServers.map((server) => (server.id === editingMcpServer.id ? updatedServer : server));
       });
 
-      message.success(t('settings.mcpImportSuccess'));
+      message.success('Import successful');
       // Immediately check installation status for this server after edit (installation status only)
       setTimeout(() => void checkSingleServerInstallStatus(serverData.name), 100);
 
       // Return updated server object for subsequent connection tests
       return updatedServer;
     },
-    [saveMcpServers, message, t, checkSingleServerInstallStatus]
+    [saveMcpServers, message, checkSingleServerInstallStatus]
   );
 
   // Delete MCP server
@@ -161,15 +157,15 @@ export const useMcpServerCRUD = (mcpServers: IMcpServer[], saveMcpServers: (serv
       try {
         // If server is enabled, need to delete MCP config from all agents
         if (targetServer.enabled) {
-          await removeMcpFromAgents(targetServer.name, t('settings.mcpDeletedWithCleanup'));
+          await removeMcpFromAgents(targetServer.name, 'MCP server deleted and configuration cleaned up');
         } else {
-          message.success(t('settings.mcpDeleted'));
+          message.success('MCP server deleted');
         }
       } catch (error) {
-        message.error(t('settings.mcpDeleteError'));
+        message.error('Error deleting MCP configuration');
       }
     },
-    [saveMcpServers, setAgentInstallStatus, removeMcpFromAgents, message, t]
+    [saveMcpServers, setAgentInstallStatus, removeMcpFromAgents, message]
   );
 
   // Enable/Disable MCP server
@@ -215,10 +211,10 @@ export const useMcpServerCRUD = (mcpServers: IMcpServer[], saveMcpServers: (serv
           });
         }
       } catch (error) {
-        message.error(enabled ? t('settings.mcpSyncError') : t('settings.mcpRemoveError'));
+        message.error(enabled ? 'MCP configuration sync failed' : 'MCP configuration removal failed');
       }
     },
-    [saveMcpServers, syncMcpToAgents, removeMcpFromAgents, checkSingleServerInstallStatus, setAgentInstallStatus, message, t]
+    [saveMcpServers, syncMcpToAgents, removeMcpFromAgents, checkSingleServerInstallStatus, setAgentInstallStatus, message]
   );
 
   return {

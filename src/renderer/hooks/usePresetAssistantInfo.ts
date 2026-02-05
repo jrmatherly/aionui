@@ -9,7 +9,6 @@ import type { TChatConversation } from '@/common/storage';
 import { ConfigStorage } from '@/common/storage';
 import CoworkLogo from '@/renderer/assets/cowork.svg';
 import { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 
 export interface PresetAssistantInfo {
@@ -86,8 +85,6 @@ function buildPresetInfo(presetId: string, locale: string): PresetAssistantInfo 
  * @returns Preset assistant info or null
  */
 export function usePresetAssistantInfo(conversation: TChatConversation | undefined): PresetAssistantInfo | null {
-  const { i18n } = useTranslation();
-
   // Fetch custom agents to support custom preset assistants
   const { data: customAgents } = useSWR('acp.customAgents', () => ConfigStorage.get('acp.customAgents'));
 
@@ -97,8 +94,8 @@ export function usePresetAssistantInfo(conversation: TChatConversation | undefin
     const presetId = resolvePresetId(conversation);
     if (!presetId) return null;
 
-    // First try to find in built-in presets
-    const builtinInfo = buildPresetInfo(presetId, i18n.language || 'en-US');
+    // First try to find in built-in presets (English only)
+    const builtinInfo = buildPresetInfo(presetId, 'en-US');
     if (builtinInfo) {
       return builtinInfo;
     }
@@ -107,12 +104,7 @@ export function usePresetAssistantInfo(conversation: TChatConversation | undefin
     if (customAgents && Array.isArray(customAgents)) {
       const customAgent = customAgents.find((agent) => agent.id === presetId || agent.id === `builtin-${presetId}`);
       if (customAgent) {
-        const locale = i18n.language || 'en-US';
-        const resolveLocaleKey = (lang: string) => {
-          if (lang.startsWith('zh')) return 'zh-CN';
-          return 'en-US';
-        };
-        const localeKey = resolveLocaleKey(locale);
+        const localeKey = 'en-US';
 
         // Handle avatar: could be emoji or svg filename
         let logo = customAgent.avatar || '🤖';
@@ -144,5 +136,5 @@ export function usePresetAssistantInfo(conversation: TChatConversation | undefin
     }
 
     return null;
-  }, [conversation, i18n.language, customAgents]);
+  }, [conversation, customAgents]);
 }

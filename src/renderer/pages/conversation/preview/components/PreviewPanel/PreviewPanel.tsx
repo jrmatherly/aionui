@@ -9,7 +9,6 @@ import { useLayoutContext } from '@/renderer/context/LayoutContext';
 import { useResizableSplit } from '@/renderer/hooks/useResizableSplit';
 import type React from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { PreviewConfirmModals, PreviewContextMenu, PreviewHistoryDropdown, PreviewTabs, PreviewToolbar, type CloseTabConfirmState, type ContextMenuState, type PreviewTab } from '.';
 import { DEFAULT_SPLIT_RATIO, FILE_TYPES_WITH_BUILTIN_OPEN, MAX_SPLIT_WIDTH, MIN_SPLIT_WIDTH } from '../../constants';
 import { usePreviewContext } from '../../context/PreviewContext';
@@ -35,7 +34,6 @@ import WordPreview from '../viewers/WordViewer';
  * Supports multiple tabs, each tab can display different types of content
  */
 const PreviewPanel: React.FC = () => {
-  const { t } = useTranslation();
   const { isOpen, tabs, activeTabId, activeTab, closeTab, switchTab, closePreview, updateContent, saveContent, addDomSnippet } = usePreviewContext();
   const layout = useLayoutContext();
 
@@ -172,15 +170,15 @@ const PreviewPanel: React.FC = () => {
     try {
       const success = await saveContent(closeTabConfirm.tabId);
       if (!success) {
-        throw new Error(t('common.saveFailed'));
+        throw new Error('Failed to save');
       }
       closeTab(closeTabConfirm.tabId);
       setCloseTabConfirm({ show: false, tabId: null });
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : t('common.unknownError');
-      messageApi.error(`${t('common.saveFailed')}: ${errorMsg}`);
+      const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      messageApi.error(`${'Failed to save'}: ${errorMsg}`);
     }
-  }, [closeTabConfirm.tabId, saveContent, closeTab, messageApi, t]);
+  }, [closeTabConfirm.tabId, saveContent, closeTab, messageApi]);
 
   // Close tab without saving
   const handleCloseWithoutSave = useCallback(() => {
@@ -280,11 +278,7 @@ const PreviewPanel: React.FC = () => {
         }
 
         if (!dataUrl) {
-          messageApi.error(
-            t('messages.downloadFailed', {
-              defaultValue: 'Failed to download',
-            })
-          );
+          messageApi.error('Failed to download');
           return;
         }
 
@@ -323,7 +317,7 @@ const PreviewPanel: React.FC = () => {
       }
 
       if (!blob) {
-        messageApi.error(t('messages.downloadFailed', { defaultValue: 'Failed to download' }));
+        messageApi.error('Failed to download');
         return;
       }
 
@@ -345,25 +339,25 @@ const PreviewPanel: React.FC = () => {
       URL.revokeObjectURL(url); // Release URL object
     } catch (error) {
       console.error('[PreviewPanel] Failed to download file:', error);
-      messageApi.error(t('messages.downloadFailed', { defaultValue: 'Failed to download' }));
+      messageApi.error('Failed to download');
     }
-  }, [content, contentType, metadata?.fileName, metadata?.filePath, metadata?.language, messageApi, t]);
+  }, [content, contentType, metadata?.fileName, metadata?.filePath, metadata?.language, messageApi]);
 
   // Open file in system default application
   const handleOpenInSystem = useCallback(async () => {
     if (!metadata?.filePath) {
-      messageApi.error(t('preview.openInSystemFailed'));
+      messageApi.error('Failed to open with system app');
       return;
     }
 
     try {
       // Open file with system default application
       await ipcBridge.shell.openFile.invoke(metadata.filePath);
-      messageApi.success(t('preview.openInSystemSuccess'));
+      messageApi.success('Opened in system default app');
     } catch (err) {
-      messageApi.error(t('preview.openInSystemFailed'));
+      messageApi.error('Failed to open with system app');
     }
-  }, [metadata?.filePath, messageApi, t]);
+  }, [metadata?.filePath, messageApi]);
 
   // Render history dropdown
   const renderHistoryDropdown = () => {
@@ -392,7 +386,7 @@ const PreviewPanel: React.FC = () => {
             {/* Left: Editor */}
             <div className='flex flex-col relative' style={{ width: `${splitRatio}%` }}>
               <div className='h-40px flex items-center px-12px bg-bg-2'>
-                <span className='text-12px text-t-secondary'>{t('preview.editor')}</span>
+                <span className='text-12px text-t-secondary'>{'Editor'}</span>
               </div>
               <div className='flex-1 overflow-hidden'>
                 <MarkdownEditor value={content} onChange={updateContent} containerRef={editorContainerRef} onScroll={handleEditorScroll} />
@@ -406,7 +400,7 @@ const PreviewPanel: React.FC = () => {
             {/* Right: Preview */}
             <div className='flex flex-col' style={{ width: `${100 - splitRatio}%`, minWidth: 0 }}>
               <div className='h-40px flex items-center px-12px bg-bg-2'>
-                <span className='text-12px text-t-secondary'>{t('preview.preview')}</span>
+                <span className='text-12px text-t-secondary'>{'Preview'}</span>
               </div>
               <div className='flex flex-col flex-1 overflow-hidden'>
                 <MarkdownPreview content={content} hideToolbar containerRef={previewContainerRef} onScroll={handlePreviewScroll} filePath={metadata?.filePath} />
@@ -428,7 +422,7 @@ const PreviewPanel: React.FC = () => {
         if (layout?.isMobile) {
           return (
             <div className='flex-1 overflow-hidden'>
-              <HTMLRenderer content={content} filePath={metadata?.filePath} copySuccessMessage={t('preview.html.copySuccess')} inspectMode={inspectMode} onElementSelected={handleElementSelected} />
+              <HTMLRenderer content={content} filePath={metadata?.filePath} copySuccessMessage={'Copied HTML snippet'} inspectMode={inspectMode} onElementSelected={handleElementSelected} />
             </div>
           );
         }
@@ -439,7 +433,7 @@ const PreviewPanel: React.FC = () => {
             {/* Left: Editor */}
             <div className='flex flex-col relative' style={{ width: `${splitRatio}%` }}>
               <div className='h-40px flex items-center px-12px bg-bg-2'>
-                <span className='text-12px text-t-secondary'>{t('preview.editor')}</span>
+                <span className='text-12px text-t-secondary'>{'Editor'}</span>
               </div>
               <div className='flex-1 overflow-hidden'>
                 <HTMLEditor value={content} onChange={updateContent} containerRef={editorContainerRef} onScroll={handleEditorScroll} filePath={metadata?.filePath} />
@@ -453,12 +447,12 @@ const PreviewPanel: React.FC = () => {
             {/* Right: Preview */}
             <div className='flex flex-col' style={{ width: `${100 - splitRatio}%`, minWidth: 0 }}>
               <div className='h-40px flex items-center justify-between px-12px bg-bg-2'>
-                <span className='text-12px text-t-secondary'>{t('preview.preview')}</span>
+                <span className='text-12px text-t-secondary'>{'Preview'}</span>
               </div>
               <div className='flex flex-col flex-1 overflow-hidden'>
                 {/* prettier-ignore */}
                 {}
-                <HTMLRenderer content={content} filePath={metadata?.filePath} containerRef={previewContainerRef} onScroll={handlePreviewScroll} inspectMode={inspectMode} copySuccessMessage={t('preview.html.copySuccess')} onElementSelected={handleElementSelected} />
+                <HTMLRenderer content={content} filePath={metadata?.filePath} containerRef={previewContainerRef} onScroll={handlePreviewScroll} inspectMode={inspectMode} copySuccessMessage={'Copied HTML snippet'} onElementSelected={handleElementSelected} />
               </div>
             </div>
           </div>
@@ -476,7 +470,7 @@ const PreviewPanel: React.FC = () => {
         // Preview mode
         return (
           <div className='flex-1 overflow-hidden'>
-            <HTMLRenderer content={content} filePath={metadata?.filePath} inspectMode={inspectMode} copySuccessMessage={t('preview.html.copySuccess')} onElementSelected={handleElementSelected} />
+            <HTMLRenderer content={content} filePath={metadata?.filePath} inspectMode={inspectMode} copySuccessMessage={'Copied HTML snippet'} onElementSelected={handleElementSelected} />
           </div>
         );
       }
@@ -493,7 +487,7 @@ const PreviewPanel: React.FC = () => {
             {/* Left: Editor */}
             <div className='flex flex-col relative' style={{ width: `${splitRatio}%` }}>
               <div className='h-40px flex items-center px-12px bg-bg-2'>
-                <span className='text-12px text-t-secondary'>{t('preview.editor')}</span>
+                <span className='text-12px text-t-secondary'>{'Editor'}</span>
               </div>
               <div className='flex-1 overflow-hidden'>
                 <TextEditor value={content} onChange={updateContent} />
@@ -507,7 +501,7 @@ const PreviewPanel: React.FC = () => {
             {/* Right: Preview */}
             <div className='flex flex-col' style={{ width: `${100 - splitRatio}%`, minWidth: 0 }}>
               <div className='h-40px flex items-center px-12px bg-bg-2'>
-                <span className='text-12px text-t-secondary'>{t('preview.preview')}</span>
+                <span className='text-12px text-t-secondary'>{'Preview'}</span>
               </div>
               <div className='flex flex-col flex-1 overflow-hidden'>
                 <CodePreview content={content} language={metadata?.language} hideToolbar />

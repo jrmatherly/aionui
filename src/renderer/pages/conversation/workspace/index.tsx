@@ -20,7 +20,6 @@ import { Checkbox, Empty, Input, Message, Modal, Tooltip, Tree } from '@arco-des
 import type { RefInputType } from '@arco-design/web-react/es/Input/interface';
 import { Down, FileText, FolderOpen, Refresh, Search } from '@icon-park/react';
 import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useWorkspaceDragImport } from './hooks/useWorkspaceDragImport';
 import { useWorkspaceEvents } from './hooks/useWorkspaceEvents';
@@ -50,7 +49,6 @@ const ChangeWorkspaceIcon: React.FC<React.SVGProps<SVGSVGElement>> = ({ classNam
 };
 
 const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, eventPrefix = 'gemini', messageApi: externalMessageApi }) => {
-  const { t } = useTranslation();
   const { openPreview } = usePreviewContext();
   const navigate = useNavigate();
 
@@ -100,7 +98,6 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
   const pasteHook = useWorkspacePaste({
     workspace,
     messageApi,
-    t,
     files: treeHook.files,
     selected: treeHook.selected,
     selectedNodeRef: treeHook.selectedNodeRef,
@@ -112,7 +109,6 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
 
   const dragImportHook = useWorkspaceDragImport({
     messageApi,
-    t,
     onFilesDropped: pasteHook.handleFilesToAdd,
   });
 
@@ -143,7 +139,6 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
     workspace,
     eventPrefix,
     messageApi,
-    t,
     setFiles: treeHook.setFiles,
     setSelected: treeHook.setSelected,
     setExpandedKeys: treeHook.setExpandedKeys,
@@ -205,10 +200,10 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
   // Get workspace display name using shared utility
   const workspaceDisplayName = useMemo(() => {
     if (isTemporaryWorkspace) {
-      return t('conversation.workspace.temporarySpace');
+      return 'Temporary Space';
     }
     return getDisplayName(workspace);
-  }, [workspace, isTemporaryWorkspace, t]);
+  }, [workspace, isTemporaryWorkspace]);
 
   // Workspace migration handlers
   const handleOpenMigrationModal = useCallback(() => {
@@ -234,28 +229,28 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
         }
       } catch (error) {
         console.error('Failed to open directory dialog:', error);
-        messageApi.error(t('conversation.workspace.migration.selectFolderError'));
+        messageApi.error('Failed to select folder');
       }
     } else {
       // WebUI: show directory selection modal
       setShowDirectorySelector(true);
     }
-  }, [messageApi, t]);
+  }, [messageApi]);
 
   const handleMigrationConfirm = useCallback(async () => {
     if (!isTemporaryWorkspace) {
-      messageApi.error(t('conversation.workspace.migration.error'));
+      messageApi.error('Failed to migrate workspace');
       return;
     }
 
     const targetWorkspace = selectedTargetPath.trim();
     if (!targetWorkspace) {
-      messageApi.error(t('conversation.workspace.migration.noTargetPath'));
+      messageApi.error('Please select a target folder');
       return;
     }
 
     if (targetWorkspace === workspace) {
-      messageApi.warning(t('conversation.workspace.migration.selectFolderError'));
+      messageApi.warning('Failed to select folder');
       return;
     }
 
@@ -335,13 +330,13 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
       // Navigate to new conversation
       void navigate(`/conversation/${newId}`);
       emitter.emit('chat.history.refresh');
-      messageApi.success(t('conversation.workspace.migration.success'));
+      messageApi.success('Workspace migrated successfully');
     } catch (error) {
       console.error('Failed to migrate workspace:', error);
-      messageApi.error(t('conversation.workspace.migration.error'));
+      messageApi.error('Failed to migrate workspace');
       setMigrationLoading(false);
     }
-  }, [selectedTargetPath, conversation_id, workspace, t, messageApi, navigate]);
+  }, [selectedTargetPath, conversation_id, workspace, messageApi, navigate]);
 
   const handleCloseMigrationModal = useCallback(() => {
     if (!migrationLoading) {
@@ -465,21 +460,9 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
                 boxShadow: '0 20px 60px rgba(15, 23, 42, 0.45)',
               }}
             >
-              <div className='text-18px font-semibold mb-8px'>
-                {t('conversation.workspace.dragOverlayTitle', {
-                  defaultValue: 'Drop to import',
-                })}
-              </div>
-              <div className='text-14px opacity-90 mb-4px'>
-                {t('conversation.workspace.dragOverlayDesc', {
-                  defaultValue: 'Drag files or folders here to copy them into this workspace.',
-                })}
-              </div>
-              <div className='text-12px opacity-70'>
-                {t('conversation.workspace.dragOverlayHint', {
-                  defaultValue: 'Tip: drop anywhere to import into the selected folder.',
-                })}
-              </div>
+              <div className='text-18px font-semibold mb-8px'>{'Drop to import'}</div>
+              <div className='text-14px opacity-90 mb-4px'>{'Drag files or folders here to copy them into this workspace.'}</div>
+              <div className='text-12px opacity-70'>{'Tip: drop anywhere to import into the selected folder.'}</div>
             </div>
           </div>
         )}
@@ -503,9 +486,9 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
                 <FileText theme='outline' size='24' fill='rgb(var(--primary-6))' />
               </div>
               <div>
-                <div className='text-16px font-semibold mb-4px'>{t('conversation.workspace.pasteConfirm_title')}</div>
+                <div className='text-16px font-semibold mb-4px'>{'Paste files'}</div>
                 <div className='text-13px' style={{ color: 'var(--color-text-3)' }}>
-                  {modalsHook.pasteConfirm.filesToPaste.length > 1 ? t('conversation.workspace.pasteConfirm_multipleFiles', { count: modalsHook.pasteConfirm.filesToPaste.length }) : t('conversation.workspace.pasteConfirm_title')}
+                  {modalsHook.pasteConfirm.filesToPaste.length > 1 ? `${modalsHook.pasteConfirm.filesToPaste.length} files` : 'Paste files'}
                 </div>
               </div>
             </div>
@@ -516,7 +499,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
                 <FileText theme='outline' size='18' fill='var(--color-text-2)' style={{ marginTop: '2px' }} />
                 <div className='flex-1'>
                   <div className='text-13px mb-4px' style={{ color: 'var(--color-text-3)' }}>
-                    {t('conversation.workspace.pasteConfirm_fileName')}
+                    {'File name'}
                   </div>
                   <div className='text-14px font-medium break-all' style={{ color: 'var(--color-text-1)' }}>
                     {modalsHook.pasteConfirm.fileName}
@@ -527,7 +510,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
                 <FolderOpen theme='outline' size='18' fill='var(--color-text-2)' style={{ marginTop: '2px' }} />
                 <div className='flex-1'>
                   <div className='text-13px mb-4px' style={{ color: 'var(--color-text-3)' }}>
-                    {t('conversation.workspace.pasteConfirm_targetFolder')}
+                    {'Target folder'}
                   </div>
                   <div className='text-14px font-medium font-mono break-all' style={{ color: 'rgb(var(--primary-6))' }}>
                     {targetFolderPathForModal.fullPath}
@@ -540,7 +523,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
             <div className='mb-20px'>
               <Checkbox checked={modalsHook.pasteConfirm.doNotAsk} onChange={(v) => modalsHook.setPasteConfirm((prev) => ({ ...prev, doNotAsk: v }))}>
                 <span className='text-13px' style={{ color: 'var(--color-text-2)' }}>
-                  {t('conversation.workspace.pasteConfirm_noAsk')}
+                  {'Do not ask me again'}
                 </span>
               </Checkbox>
             </div>
@@ -564,7 +547,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
                   modalsHook.closePasteConfirm();
                 }}
               >
-                {t('conversation.workspace.pasteConfirm_cancel')}
+                {'Cancel'}
               </button>
               <button
                 className='px-16px py-8px rounded-6px text-14px font-medium transition-all'
@@ -583,35 +566,35 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
                   await pasteHook.handlePasteConfirm();
                 }}
               >
-                {t('conversation.workspace.pasteConfirm_paste')}
+                {'Paste'}
               </button>
             </div>
           </div>
         </Modal>
 
         {/* Rename Modal */}
-        <Modal visible={modalsHook.renameModal.visible} title={t('conversation.workspace.contextMenu.renameTitle')} onCancel={modalsHook.closeRenameModal} onOk={fileOpsHook.handleRenameConfirm} okText={t('common.confirm')} cancelText={t('common.cancel')} confirmLoading={modalsHook.renameLoading} style={{ borderRadius: '12px' }} alignCenter getPopupContainer={() => document.body}>
-          <Input autoFocus value={modalsHook.renameModal.value} onChange={(value) => modalsHook.setRenameModal((prev) => ({ ...prev, value }))} onPressEnter={fileOpsHook.handleRenameConfirm} placeholder={t('conversation.workspace.contextMenu.renamePlaceholder')} />
+        <Modal visible={modalsHook.renameModal.visible} title={'Rename'} onCancel={modalsHook.closeRenameModal} onOk={fileOpsHook.handleRenameConfirm} okText={'Confirm'} cancelText={'Cancel'} confirmLoading={modalsHook.renameLoading} style={{ borderRadius: '12px' }} alignCenter getPopupContainer={() => document.body}>
+          <Input autoFocus value={modalsHook.renameModal.value} onChange={(value) => modalsHook.setRenameModal((prev) => ({ ...prev, value }))} onPressEnter={fileOpsHook.handleRenameConfirm} placeholder={'Enter new name'} />
         </Modal>
 
         {/* Delete Modal */}
-        <Modal visible={modalsHook.deleteModal.visible} title={t('conversation.workspace.contextMenu.deleteTitle')} onCancel={modalsHook.closeDeleteModal} onOk={fileOpsHook.handleDeleteConfirm} okText={t('common.confirm')} cancelText={t('common.cancel')} confirmLoading={modalsHook.deleteModal.loading} style={{ borderRadius: '12px' }} alignCenter getPopupContainer={() => document.body}>
-          <div className='text-14px text-t-secondary'>{t('conversation.workspace.contextMenu.deleteConfirm')}</div>
+        <Modal visible={modalsHook.deleteModal.visible} title={'Delete file'} onCancel={modalsHook.closeDeleteModal} onOk={fileOpsHook.handleDeleteConfirm} okText={'Confirm'} cancelText={'Cancel'} confirmLoading={modalsHook.deleteModal.loading} style={{ borderRadius: '12px' }} alignCenter getPopupContainer={() => document.body}>
+          <div className='text-14px text-t-secondary'>{'This will delete the file from your system. Continue?'}</div>
         </Modal>
 
         {/* Workspace Migration Modal */}
-        <Modal visible={showMigrationModal} title={t('conversation.workspace.migration.title')} onCancel={handleCloseMigrationModal} footer={null} style={{ borderRadius: '12px' }} className='workspace-migration-modal' alignCenter getPopupContainer={() => document.body}>
+        <Modal visible={showMigrationModal} title={'Change Workspace'} onCancel={handleCloseMigrationModal} footer={null} style={{ borderRadius: '12px' }} className='workspace-migration-modal' alignCenter getPopupContainer={() => document.body}>
           <div className='py-8px'>
             {/* Current workspace info */}
             <div className='text-14px mb-16px' style={{ color: 'var(--color-text-3)' }}>
-              {t('conversation.workspace.migration.currentWorkspaceLabel')}
+              {'Current temporary workspace: '}
               <span className='font-mono'>/{workspace.split('/').pop()}</span>
             </div>
 
             {/* Target folder selection card */}
             <div className='mb-16px p-16px rounded-12px' style={{ backgroundColor: 'var(--color-fill-1)' }}>
               <div className='text-14px mb-8px' style={{ color: 'var(--color-text-1)' }}>
-                {t('conversation.workspace.migration.moveToNewFolder')}
+                {'Move to new folder (Workspace)'}
               </div>
               <div
                 className='flex items-center justify-between px-12px py-10px rounded-8px cursor-pointer transition-colors hover:bg-[var(--color-fill-2)]'
@@ -622,7 +605,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
                 onClick={handleSelectFolder}
               >
                 <span className='text-14px' style={{ color: selectedTargetPath ? 'var(--color-text-1)' : 'var(--color-text-3)' }}>
-                  {selectedTargetPath || t('conversation.workspace.migration.selectFolder')}
+                  {selectedTargetPath || 'Select folder'}
                 </span>
                 <FolderOpen theme='outline' size='18' fill='var(--color-text-3)' />
               </div>
@@ -631,7 +614,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
             {/* Hint */}
             <div className='flex items-center gap-8px mb-20px text-14px' style={{ color: 'var(--color-text-3)' }}>
               <span>💡</span>
-              <span>{t('conversation.workspace.migration.hint')}</span>
+              <span>{'Files will be moved to the new folder, chat history will not be lost'}</span>
             </div>
 
             {/* Button area */}
@@ -652,7 +635,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
                 onClick={handleCloseMigrationModal}
                 disabled={migrationLoading}
               >
-                {t('common.cancel')}
+                {'Cancel'}
               </button>
               <button
                 className='px-24px py-8px rounded-20px text-14px font-medium transition-all'
@@ -675,7 +658,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
                 onClick={handleMigrationConfirm}
                 disabled={migrationLoading || !selectedTargetPath}
               >
-                {migrationLoading ? t('conversation.workspace.migration.migrating') : t('common.confirm')}
+                {migrationLoading ? 'Migrating...' : 'Confirm'}
               </button>
             </div>
           </div>
@@ -691,7 +674,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
               <Input
                 className='w-full'
                 ref={searchInputRef}
-                placeholder={t('conversation.workspace.searchPlaceholder')}
+                placeholder={'Search files...'}
                 value={searchText}
                 onChange={(value) => {
                   setSearchText(value);
@@ -717,13 +700,13 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
             </div>
             <div className='flex items-center gap-8px flex-shrink-0'>
               {isTemporaryWorkspace && (
-                <Tooltip content={t('conversation.workspace.changeWorkspace')}>
+                <Tooltip content={'Change Workspace'}>
                   <span>
                     <ChangeWorkspaceIcon className='line-height-0 cursor-pointer w-24px h-24px flex-shrink-0' onClick={handleOpenMigrationModal} />
                   </span>
                 </Tooltip>
               )}
-              <Tooltip content={t('conversation.workspace.refresh')}>
+              <Tooltip content={'Refresh'}>
                 <span>
                   <Refresh className={treeHook.loading ? 'loading lh-[1] flex cursor-pointer' : 'flex cursor-pointer'} theme='outline' size='16' fill={iconColors.secondary} onClick={() => treeHook.refreshWorkspace()} />
                 </span>
@@ -754,7 +737,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
                       fileOpsHook.handleAddToChat(contextMenuNode);
                     }}
                   >
-                    {t('conversation.workspace.contextMenu.addToChat')}
+                    {'Add to chat'}
                   </button>
                   <button
                     type='button'
@@ -764,7 +747,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
                       modalsHook.closeContextMenu();
                     }}
                   >
-                    {t('conversation.workspace.contextMenu.open')}
+                    {'Open'}
                   </button>
                   {isContextMenuNodeFile && (
                     <button
@@ -775,7 +758,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
                         modalsHook.closeContextMenu();
                       }}
                     >
-                      {t('conversation.workspace.contextMenu.openLocation')}
+                      {'Show in folder'}
                     </button>
                   )}
                   {isContextMenuNodeFile && isPreviewSupported && (
@@ -786,7 +769,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
                         void fileOpsHook.handlePreviewFile(contextMenuNode);
                       }}
                     >
-                      {t('conversation.workspace.contextMenu.preview')}
+                      {'Preview'}
                     </button>
                   )}
                   <div className='h-1px bg-3 my-2px'></div>
@@ -798,7 +781,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
                       fileOpsHook.handleDeleteNode(contextMenuNode);
                     }}
                   >
-                    {t('common.delete')}
+                    {'Delete'}
                   </button>
                   <button
                     type='button'
@@ -808,7 +791,7 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
                       fileOpsHook.openRenameModal(contextMenuNode);
                     }}
                   >
-                    {t('conversation.workspace.contextMenu.rename')}
+                    {'Rename'}
                   </button>
                 </div>
               </div>
@@ -820,8 +803,8 @@ const ChatWorkspace: React.FC<WorkspaceProps> = ({ conversation_id, workspace, e
                 <Empty
                   description={
                     <div>
-                      <span className='text-t-secondary font-bold text-14px'>{searchText ? t('conversation.workspace.search.empty') : t('conversation.workspace.empty')}</span>
-                      <div className='text-t-secondary'>{searchText ? '' : t('conversation.workspace.emptyDescription')}</div>
+                      <span className='text-t-secondary font-bold text-14px'>{searchText ? 'The search result is empty' : "It's empty"}</span>
+                      <div className='text-t-secondary'>{searchText ? '' : 'Files will appear here after uploading files or opening a folder'}</div>
                     </div>
                   }
                 />

@@ -20,8 +20,6 @@ import type { AcpBackend } from '@/types/acpTypes';
 import { Button, Tag } from '@arco-design/web-react';
 import { Plus } from '@icon-park/react';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 const useAcpSendBoxDraft = getSendBoxDraftHook('acp', {
   _type: 'acp',
   atPath: [],
@@ -207,7 +205,6 @@ const AcpSendBox: React.FC<{
 }> = ({ conversation_id, backend }) => {
   const [workspacePath, setWorkspacePath] = useState('');
   const { thought, running, acpStatus, aiProcessing, setAiProcessing, resetState } = useAcpMessage(conversation_id);
-  const { t } = useTranslation();
   const { checkAndUpdateTitle } = useAutoTitle();
   const { atPath, uploadFile, setAtPath, setUploadFile, content, setContent } = useSendBoxDraft(conversation_id);
   const { setSendBoxHandler } = usePreviewContext();
@@ -374,11 +371,7 @@ const AcpSendBox: React.FC<{
           msg_id: uuid(),
           conversation_id,
           type: 'error',
-          data: t('acp.auth.failed', {
-            backend,
-            error: errorMsg,
-            defaultValue: `${backend} authentication failed:\n\n{{error}}\n\nPlease check your local CLI tool authentication status`,
-          }),
+          data: `${backend} authentication failed:\n\n${errorMsg}\n\nPlease check your local CLI tool authentication status`,
         };
 
         // Add error message to conversation
@@ -427,7 +420,7 @@ const AcpSendBox: React.FC<{
         onChange={setContent}
         loading={running || aiProcessing}
         disabled={false}
-        placeholder={t('acp.sendbox.placeholder', { backend, defaultValue: `Send message to {{backend}}...` })}
+        placeholder={`Send message to ${backend}...`}
         onStop={handleStop}
         className='z-10'
         onFilesAdded={handleFilesAdded}

@@ -2,15 +2,12 @@ import { ipcBridge } from '@/common';
 import { useConversationTabs } from '@/renderer/pages/conversation/context/ConversationTabsContext';
 import { emitter } from '@/renderer/utils/emitter';
 import { useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-
 export const useAutoTitle = () => {
-  const { t } = useTranslation();
   const { updateTabName } = useConversationTabs();
 
   const checkAndUpdateTitle = useCallback(
     async (conversationId: string, messageContent: string) => {
-      const defaultTitle = t('conversation.welcome.newConversation');
+      const defaultTitle = 'New Chat';
       try {
         const conversation = await ipcBridge.conversation.get.invoke({ id: conversationId });
         // Only update if current name matches the default "New Chat" name
@@ -31,7 +28,7 @@ export const useAutoTitle = () => {
         console.error('Failed to auto-update conversation title:', error);
       }
     },
-    [t, updateTabName]
+    [updateTabName]
   );
 
   return { checkAndUpdateTitle };

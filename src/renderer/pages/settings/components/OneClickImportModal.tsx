@@ -6,8 +6,6 @@ import { iconColors } from '@/renderer/theme/colors';
 import { Button, Select, Spin } from '@arco-design/web-react';
 import { Check } from '@icon-park/react';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 interface OneClickImportModalProps {
   visible: boolean;
   onCancel: () => void;
@@ -15,7 +13,6 @@ interface OneClickImportModalProps {
 }
 
 const OneClickImportModal: React.FC<OneClickImportModalProps> = ({ visible, onCancel, onBatchImport }) => {
-  const { t } = useTranslation();
   const [detectedAgents, setDetectedAgents] = useState<Array<{ backend: string; name: string }>>([]);
   const [selectedAgent, setSelectedAgent] = useState<string>('');
   const [importableServers, setImportableServers] = useState<IMcpServer[]>([]);
@@ -145,7 +142,7 @@ const OneClickImportModal: React.FC<OneClickImportModalProps> = ({ visible, onCa
   // Render Step 1: Select Agent
   const renderStep1 = () => (
     <div className='py-4'>
-      <Select placeholder={t('settings.mcpSelectCLI')} value={selectedAgent} onChange={setSelectedAgent} className='w-full' size='large'>
+      <Select placeholder={'Select CLI'} value={selectedAgent} onChange={setSelectedAgent} className='w-full' size='large'>
         {detectedAgents.map((agent) => (
           <Select.Option key={agent.backend} value={agent.backend}>
             {agent.name}
@@ -162,14 +159,14 @@ const OneClickImportModal: React.FC<OneClickImportModalProps> = ({ visible, onCa
         <div className='py-8'>
           <div className='flex items-center gap-3 bg-fill-1 rounded-lg p-4'>
             <Spin size={20} />
-            <div className='text-t-secondary text-sm'>{t('settings.mcpLoadingTools')}</div>
+            <div className='text-t-secondary text-sm'>{'Reading CLI tool list...'}</div>
           </div>
         </div>
       ) : importableServers.length > 0 ? (
         <div>
           <div className='mb-3 flex items-center gap-2'>
             <Check theme='filled' size={20} fill={iconColors.success} />
-            <span className='text-t-primary'>{t('settings.mcpToolsLoaded', { count: importableServers.length })}</span>
+            <span className='text-t-primary'>{`Loaded ${importableServers.length} tools`}</span>
           </div>
           <div className='bg-base rounded-lg max-h-[200px] overflow-y-auto'>
             {importableServers.map((server, index) => (
@@ -181,7 +178,7 @@ const OneClickImportModal: React.FC<OneClickImportModalProps> = ({ visible, onCa
           </div>
         </div>
       ) : (
-        <div className='text-center py-8 text-t-secondary'>{t('settings.mcpNoServersFound')}</div>
+        <div className='text-center py-8 text-t-secondary'>{'No MCP servers found'}</div>
       )}
     </div>
   );
@@ -193,7 +190,7 @@ const OneClickImportModal: React.FC<OneClickImportModalProps> = ({ visible, onCa
         <div>
           <div className='mb-3 flex items-center gap-2'>
             <Check theme='filled' size={20} fill={iconColors.success} />
-            <span className='text-t-primary'>{t('settings.mcpImportedSuccess', { count: importableServers.length })}</span>
+            <span className='text-t-primary'>{`Imported ${importableServers.length} tools`}</span>
           </div>
           <div className='bg-base rounded-lg max-h-[200px] overflow-y-auto'>
             {importableServers.map((server, index) => (
@@ -205,7 +202,7 @@ const OneClickImportModal: React.FC<OneClickImportModalProps> = ({ visible, onCa
           </div>
         </div>
       ) : (
-        <div className='text-center py-8 text-t-secondary'>{t('settings.mcpNoServersFound')}</div>
+        <div className='text-center py-8 text-t-secondary'>{'No MCP servers found'}</div>
       )}
     </div>
   );
@@ -217,41 +214,41 @@ const OneClickImportModal: React.FC<OneClickImportModalProps> = ({ visible, onCa
       {currentStep === 1 && (
         <>
           <Button onClick={onCancel} className='min-w-100px' style={{ borderRadius: 8 }}>
-            {t('common.cancel')}
+            {'Cancel'}
           </Button>
           <Button type='primary' onClick={handleNextStep} disabled={!selectedAgent} className='min-w-120px' style={{ borderRadius: 8 }}>
-            {t('settings.mcpNextStep')}
+            {'Next'}
           </Button>
         </>
       )}
       {currentStep === 2 && (
         <>
           <Button onClick={handlePrevStep} className='min-w-100px' style={{ borderRadius: 8 }}>
-            {t('settings.mcpPrevStep')}
+            {'Previous'}
           </Button>
           <Button type='primary' onClick={handleNextStep} disabled={loadingImport || importableServers.length === 0} className='min-w-120px' style={{ borderRadius: 8 }}>
-            {t('settings.mcpImportButton')}
+            {'Import'}
           </Button>
         </>
       )}
       {currentStep === 3 && (
         <Button type='primary' onClick={onCancel} className='min-w-120px' style={{ borderRadius: 8 }}>
-          {t('settings.mcpConfirmButton')}
+          {'Confirm'}
         </Button>
       )}
     </div>
   );
 
   return (
-    <AionModal header={{ title: t('settings.mcpOneKeyImport'), showClose: true }} visible={visible} onCancel={onCancel} footer={{ render: renderFooter }} style={{ width: 600, height: 420 }} contentStyle={{ borderRadius: 16, padding: '24px', background: 'var(--bg-1)', overflow: 'hidden', height: 420 - 96 }}>
+    <AionModal header={{ title: 'One-Click Import', showClose: true }} visible={visible} onCancel={onCancel} footer={{ render: renderFooter }} style={{ width: 600, height: 420 }} contentStyle={{ borderRadius: 16, padding: '24px', background: 'var(--bg-1)', overflow: 'hidden', height: 420 - 96 }}>
       <div className='flex flex-col h-275px mt-20px'>
-        <div className='mb-6 text-t-secondary text-sm'>{t('settings.mcpImportDescription')}</div>
+        <div className='mb-6 text-t-secondary text-sm'>{'AionUi will automatically retrieve the MCP installed in your CLI Agent and import it with one click'}</div>
 
         <div className='mb-6'>
           <AionSteps current={currentStep} size='small'>
-            <AionSteps.Step title={t('settings.mcpStepSelectAgent')} icon={currentStep > 1 ? <Check theme='filled' size={16} fill='#165dff' /> : undefined} />
-            <AionSteps.Step title={t('settings.mcpStepFetchTools')} icon={currentStep > 2 ? <Check theme='filled' size={16} fill='#165dff' /> : undefined} />
-            <AionSteps.Step title={t('settings.mcpStepImportSuccess')} />
+            <AionSteps.Step title={'Select Agent'} icon={currentStep > 1 ? <Check theme='filled' size={16} fill='#165dff' /> : undefined} />
+            <AionSteps.Step title={'Fetch mcp'} icon={currentStep > 2 ? <Check theme='filled' size={16} fill='#165dff' /> : undefined} />
+            <AionSteps.Step title={'Import Success'} />
           </AionSteps>
         </div>
 

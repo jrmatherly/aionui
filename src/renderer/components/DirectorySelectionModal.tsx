@@ -7,8 +7,6 @@
 import { Button, Message, Modal, Spin } from '@arco-design/web-react';
 import { IconFile, IconFolder, IconUp, IconUpload } from '@arco-design/web-react/icon';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 interface DirectoryItem {
   name: string;
   path: string;
@@ -30,7 +28,6 @@ interface DirectorySelectionModalProps {
 }
 
 const DirectorySelectionModal: React.FC<DirectorySelectionModalProps> = ({ visible, isFileMode = false, onConfirm, onCancel }) => {
-  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [directoryData, setDirectoryData] = useState<DirectoryData>({ items: [], canGoUp: false });
@@ -142,7 +139,7 @@ const DirectorySelectionModal: React.FC<DirectorySelectionModalProps> = ({ visib
         setSelectedPath(uploadedPaths[uploadedPaths.length - 1]);
       }
 
-      Message.success(t('common.success', { defaultValue: `Uploaded ${uploadedPaths.length} file(s)` }));
+      Message.success(`Uploaded ${uploadedPaths.length} file(s)`);
     } catch (error) {
       console.error('Upload failed:', error);
       Message.error(error instanceof Error ? error.message : 'Upload failed');
@@ -168,7 +165,7 @@ const DirectorySelectionModal: React.FC<DirectorySelectionModalProps> = ({ visib
   return (
     <Modal
       visible={visible}
-      title={isFileMode ? '📄 ' + t('fileSelection.selectFile') : '📁 ' + t('fileSelection.selectDirectory')}
+      title={isFileMode ? '📄 ' + 'Select File' : '📁 ' + 'Select Directory'}
       onCancel={onCancel}
       onOk={handleConfirm}
       okButtonProps={{ disabled: !selectedPath }}
@@ -179,12 +176,12 @@ const DirectorySelectionModal: React.FC<DirectorySelectionModalProps> = ({ visib
       footer={
         <div className='w-full flex justify-between items-center'>
           <div className='text-t-secondary text-14px overflow-hidden text-ellipsis whitespace-nowrap max-w-[70vw]' title={selectedPath || currentPath}>
-            {selectedPath || currentPath || (isFileMode ? t('fileSelection.pleaseSelectFile') : t('fileSelection.pleaseSelectDirectory'))}
+            {selectedPath || currentPath || (isFileMode ? 'Please select a file' : 'Please select a directory')}
           </div>
           <div className='flex gap-10px'>
-            <Button onClick={onCancel}>{t('common.cancel')}</Button>
+            <Button onClick={onCancel}>{'Cancel'}</Button>
             <Button type='primary' onClick={handleConfirm} disabled={!selectedPath}>
-              {t('common.confirm')}
+              {'Confirm'}
             </Button>
           </div>
         </div>
@@ -207,7 +204,7 @@ const DirectorySelectionModal: React.FC<DirectorySelectionModalProps> = ({ visib
       {isFileMode && (
         <div className='mb-12px'>
           <Button type='outline' icon={<IconUpload />} loading={uploading} onClick={handleUploadClick} className='w-full'>
-            {uploading ? t('common.loading', { defaultValue: 'Uploading...' }) : t('fileSelection.uploadFromDevice', { defaultValue: 'Upload from your device' })}
+            {uploading ? 'Please wait...' : 'Upload from your device'}
           </Button>
         </div>
       )}
@@ -236,7 +233,7 @@ const DirectorySelectionModal: React.FC<DirectorySelectionModalProps> = ({ visib
                       handleSelect(item.path);
                     }}
                   >
-                    {t('common.select')}
+                    {'Select'}
                   </Button>
                 )}
               </div>

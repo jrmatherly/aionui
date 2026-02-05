@@ -4,7 +4,6 @@ import { useMcpAgentStatus, useMcpConnection, useMcpModal, useMcpOAuth, useMcpOp
 import { Button, Collapse, Dropdown, Menu, Modal } from '@arco-design/web-react';
 import { Down, Plus } from '@icon-park/react';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import AddMcpServerModal from '../components/AddMcpServerModal';
 import McpServerItem from './McpServerItem';
 
@@ -13,8 +12,6 @@ interface McpManagementProps {
 }
 
 const McpManagement: React.FC<McpManagementProps> = ({ message }) => {
-  const { t } = useTranslation();
-
   // Use custom hooks to manage various states and operations
   const { mcpServers, saveMcpServers } = useMcpServers();
   const { agentInstallStatus, setAgentInstallStatus, isServerLoading, checkSingleServerInstallStatus } = useMcpAgentStatus();
@@ -41,14 +38,14 @@ const McpManagement: React.FC<McpManagementProps> = ({ message }) => {
       const result = await login(server);
 
       if (result.success) {
-        message.success(`${server.name}: ${t('settings.mcpOAuthLoginSuccess') || 'Login successful'}`);
+        message.success(`${server.name}: ${'OAuth login successful'}`);
         // Re-test connection after successful login
         void handleTestMcpConnection(server);
       } else {
-        message.error(`${server.name}: ${result.error || t('settings.mcpOAuthLoginFailed') || 'Login failed'}`);
+        message.error(`${server.name}: ${result.error}`);
       }
     },
-    [login, message, t, handleTestMcpConnection]
+    [login, message, handleTestMcpConnection]
   );
 
   // Wrap add server, auto-test connection after adding
@@ -153,7 +150,7 @@ const McpManagement: React.FC<McpManagementProps> = ({ message }) => {
         className={' [&_div.arco-collapse-item-header-title]:flex-1'}
         header={
           <div className='flex items-center justify-between'>
-            {t('settings.mcpSettings')}
+            {'MCP Tools Configuration'}
             {detectedAgents.length > 0 ? (
               <Dropdown
                 trigger='click'
@@ -167,7 +164,7 @@ const McpManagement: React.FC<McpManagementProps> = ({ message }) => {
                         showAddMcpModal();
                       }}
                     >
-                      {t('settings.mcpImportFromJSON')}
+                      {'Import from JSON'}
                     </Menu.Item>
                     <Menu.Item
                       key='oneclick'
@@ -177,13 +174,13 @@ const McpManagement: React.FC<McpManagementProps> = ({ message }) => {
                         showAddMcpModal();
                       }}
                     >
-                      {t('settings.mcpOneKeyImport')}
+                      {'One-Click Import'}
                     </Menu.Item>
                   </Menu>
                 }
               >
                 <Button type='outline' icon={<Plus size={'14'} />} shape='round' onClick={(e) => e.stopPropagation()}>
-                  {t('settings.mcpAddServer')} <Down size={'12'} />
+                  {'Manual Add'} <Down size={'12'} />
                 </Button>
               </Dropdown>
             ) : (
@@ -197,23 +194,21 @@ const McpManagement: React.FC<McpManagementProps> = ({ message }) => {
                   showAddMcpModal();
                 }}
               >
-                {t('settings.mcpAddServer')}
+                {'Manual Add'}
               </Button>
             )}
           </div>
         }
         name={'mcp-servers'}
       >
-        <div>
-          {mcpServers.length === 0 ? <div className='text-center py-8 text-t-secondary'>{t('settings.mcpNoServersFound')}</div> : mcpServers.map((server) => <McpServerItem key={server.id} server={server} isCollapsed={mcpCollapseKey[server.id] || false} agentInstallStatus={agentInstallStatus} isServerLoading={isServerLoading} isTestingConnection={testingServers[server.id] || false} oauthStatus={oauthStatus[server.id]} isLoggingIn={loggingIn[server.id]} onToggleCollapse={() => toggleServerCollapse(server.id)} onTestConnection={handleTestMcpConnection} onEditServer={showEditMcpModal} onDeleteServer={showDeleteConfirm} onToggleServer={handleToggleMcpServer} onOAuthLogin={handleOAuthLogin} />)}
-        </div>
-        <div>{mcpServers.length === 0 ? <div className='text-center py-8 text-t-secondary'>{t('settings.mcpNoServersFound')}</div> : mcpServers.map((server) => <McpServerItem key={server.id} server={server} isCollapsed={mcpCollapseKey[server.id] || false} agentInstallStatus={agentInstallStatus} isServerLoading={isServerLoading} isTestingConnection={testingServers[server.id] || false} onToggleCollapse={() => toggleServerCollapse(server.id)} onTestConnection={handleTestMcpConnection} onEditServer={showEditMcpModal} onDeleteServer={showDeleteConfirm} onToggleServer={handleToggleMcpServer} />)}</div>
+        <div>{mcpServers.length === 0 ? <div className='text-center py-8 text-t-secondary'>{'No MCP servers found'}</div> : mcpServers.map((server) => <McpServerItem key={server.id} server={server} isCollapsed={mcpCollapseKey[server.id] || false} agentInstallStatus={agentInstallStatus} isServerLoading={isServerLoading} isTestingConnection={testingServers[server.id] || false} oauthStatus={oauthStatus[server.id]} isLoggingIn={loggingIn[server.id]} onToggleCollapse={() => toggleServerCollapse(server.id)} onTestConnection={handleTestMcpConnection} onEditServer={showEditMcpModal} onDeleteServer={showDeleteConfirm} onToggleServer={handleToggleMcpServer} onOAuthLogin={handleOAuthLogin} />)}</div>
+        <div>{mcpServers.length === 0 ? <div className='text-center py-8 text-t-secondary'>{'No MCP servers found'}</div> : mcpServers.map((server) => <McpServerItem key={server.id} server={server} isCollapsed={mcpCollapseKey[server.id] || false} agentInstallStatus={agentInstallStatus} isServerLoading={isServerLoading} isTestingConnection={testingServers[server.id] || false} onToggleCollapse={() => toggleServerCollapse(server.id)} onTestConnection={handleTestMcpConnection} onEditServer={showEditMcpModal} onDeleteServer={showDeleteConfirm} onToggleServer={handleToggleMcpServer} />)}</div>
       </Collapse.Item>
 
       <AddMcpServerModal visible={showMcpModal} server={editingMcpServer} onCancel={hideMcpModal} onSubmit={editingMcpServer ? (serverData) => wrappedHandleEditMcpServer(editingMcpServer, serverData) : wrappedHandleAddMcpServer} onBatchImport={wrappedHandleBatchImportMcpServers} importMode={importMode} />
 
-      <Modal title={t('settings.mcpDeleteServer')} visible={deleteConfirmVisible} onCancel={hideDeleteConfirm} onOk={handleConfirmDelete} okButtonProps={{ status: 'danger' }} okText={t('common.confirm')} cancelText={t('common.cancel')}>
-        <p>{t('settings.mcpDeleteConfirm')}</p>
+      <Modal title={'Delete'} visible={deleteConfirmVisible} onCancel={hideDeleteConfirm} onOk={handleConfirmDelete} okButtonProps={{ status: 'danger' }} okText={'Confirm'} cancelText={'Cancel'}>
+        <p>{'Are you sure you want to delete this MCP server?'}</p>
       </Modal>
     </div>
   );

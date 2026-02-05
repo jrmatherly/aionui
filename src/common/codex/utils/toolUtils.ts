@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import i18n from '../../../renderer/i18n';
 import { CodexAgentEventType, EventDataMap, McpToolInfo, OutputFormat, RendererType, ToolAvailability, ToolCapabilities, ToolCategory, ToolDefinition, ToolRenderer, type McpInvocation } from '../types';
 
 // Re-export types for backward compatibility
@@ -395,27 +394,17 @@ export class ToolRegistry {
   }
 
   /**
-   * Get localized display name for tool
+   * Get display name for tool
    */
-  getToolDisplayName(tool: ToolDefinition, fallbackParams?: Record<string, string>): string {
-    try {
-      return i18n.t(tool.displayNameKey, fallbackParams || {});
-    } catch {
-      // If translation not found, return tool name
-      return tool.name;
-    }
+  getToolDisplayName(tool: ToolDefinition, _fallbackParams?: Record<string, string>): string {
+    return tool.name;
   }
 
   /**
-   * Get localized description for tool
+   * Get description for tool
    */
-  getToolDescription(tool: ToolDefinition, fallbackParams?: Record<string, string>): string {
-    try {
-      return i18n.t(tool.descriptionKey, fallbackParams || {});
-    } catch {
-      // If translation not found, return basic description
-      return `Tool: ${tool.name}`;
-    }
+  getToolDescription(tool: ToolDefinition, _fallbackParams?: Record<string, string>): string {
+    return `Tool: ${tool.name}`;
   }
 
   /**

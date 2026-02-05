@@ -5,8 +5,6 @@ import { Alert, Button } from '@arco-design/web-react';
 import { json } from '@codemirror/lang-json';
 import CodeMirror from '@uiw/react-codemirror';
 import React, { useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 interface JsonImportModalProps {
   visible: boolean;
   server?: IMcpServer;
@@ -21,7 +19,6 @@ interface ValidationResult {
 }
 
 const JsonImportModal: React.FC<JsonImportModalProps> = ({ visible, server, onCancel, onSubmit, onBatchImport }) => {
-  const { t } = useTranslation();
   const { theme } = useThemeContext();
   const [jsonInput, setJsonInput] = useState('');
   const [copyStatus, setCopyStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -177,7 +174,7 @@ const JsonImportModal: React.FC<JsonImportModalProps> = ({ visible, server, onCa
 
     onSubmit({
       name: firstServerKey,
-      description: serverConfig.description || 'Imported from JSON',
+      description: serverConfig.description,
       enabled: true,
       transport,
       status: 'disconnected',
@@ -195,13 +192,13 @@ const JsonImportModal: React.FC<JsonImportModalProps> = ({ visible, server, onCa
       onCancel={onCancel}
       onOk={handleSubmit}
       okButtonProps={{ disabled: !validation.isValid }}
-      header={{ title: server ? t('settings.mcpEditServer') : t('settings.mcpImportFromJSON'), showClose: true }}
+      header={{ title: server ? 'Edit' : 'Import from JSON', showClose: true }}
       style={{ width: 600, height: 450 }}
       contentStyle={{ borderRadius: 16, padding: '24px', background: 'var(--bg-1)', overflow: 'auto', height: 420 - 80 }} // Keep same size as Add Model modal
     >
       <div className='space-y-12px'>
         <div>
-          <div className='mb-2 text-sm text-t-secondary'>{t('settings.mcpImportPlaceholder')}</div>
+          <div className='mb-2 text-sm text-t-secondary'>{'Copy the JSON configuration from the MCP service introduction page (preferably NPX or UVX configuration) and paste it into the input box below.'}</div>
           <div className='relative'>
             <CodeMirror
               value={jsonInput}
@@ -271,13 +268,13 @@ const JsonImportModal: React.FC<JsonImportModalProps> = ({ visible, server, onCa
                   backdropFilter: 'blur(4px)',
                 }}
               >
-                {copyStatus === 'success' ? t('common.copySuccess') : copyStatus === 'error' ? t('common.copyFailed') : t('common.copy')}
+                {copyStatus === 'success' ? 'Copied' : copyStatus === 'error' ? 'Copy failed' : 'Copy'}
               </Button>
             )}
           </div>
 
           {/* JSON format error message */}
-          {!validation.isValid && jsonInput.trim() && <div className='mt-2 text-sm text-red-600'>{t('settings.mcpJsonFormatError') || 'JSON format error'}</div>}
+          {!validation.isValid && jsonInput.trim() && <div className='mt-2 text-sm text-red-600'>{'JSON format error'}</div>}
         </div>
 
         <Alert
@@ -285,11 +282,11 @@ const JsonImportModal: React.FC<JsonImportModalProps> = ({ visible, server, onCa
           showIcon
           content={
             <div>
-              <div>{t('settings.mcpImportTips')}</div>
+              <div>{'TODO_MISSING_TRANSLATION_SETTINGS_MCPIMPORTTIPS'}</div>
               <ul className='list-disc pl-5 mt-2 space-y-1 text-sm'>
-                <li>{t('settings.mcpImportTip1')}</li>
-                <li>{t('settings.mcpImportTip2')}</li>
-                <li>{t('settings.mcpImportTip3')}</li>
+                <li>{'TODO_MISSING_TRANSLATION_SETTINGS_MCPIMPORTTIP1'}</li>
+                <li>{'TODO_MISSING_TRANSLATION_SETTINGS_MCPIMPORTTIP2'}</li>
+                <li>{'TODO_MISSING_TRANSLATION_SETTINGS_MCPIMPORTTIP3'}</li>
               </ul>
             </div>
           }

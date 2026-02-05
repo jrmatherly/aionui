@@ -5,10 +5,7 @@
 import { ipcBridge } from '@/common';
 import { Message } from '@arco-design/web-react';
 import { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-
 export const useMultiAgentDetection = () => {
-  const { t } = useTranslation();
   const [message, contextHolder] = Message.useMessage();
 
   useEffect(() => {
@@ -22,14 +19,14 @@ export const useMultiAgentDetection = () => {
             // message.success({
             //   content: (
             //     <div style={{ lineHeight: '1.5' }}>
-            //       <div style={{ fontWeight: 'bold', marginTop: '4px' }}>{t('conversation.welcome.multiAgentModeEnabled')}</div>
+            //       <div style={{ fontWeight: 'bold', marginTop: '4px' }}>{'Entering multi-agent mode'}</div>
             //     </div>
             //   ),
             //   duration: 3000,
             //   showIcon: false,
             //   className: 'multi-agent-message',
             // });
-            message.success(t('conversation.welcome.multiAgentModeEnabled'));
+            message.success('Entering multi-agent mode');
           }
         }
       } catch (error) {

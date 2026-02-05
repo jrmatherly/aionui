@@ -4,7 +4,6 @@ import { iconColors } from '@/renderer/theme/colors';
 import { Button, Dropdown, Menu, Switch, Tooltip } from '@arco-design/web-react';
 import { Check, CloseOne, CloseSmall, DeleteFour, LoadingOne, Login, Refresh, SettingOne, Write } from '@icon-park/react';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import McpAgentStatusDisplay from './McpAgentStatusDisplay';
 
 interface McpServerHeaderProps {
@@ -41,38 +40,36 @@ const getStatusIcon = (status?: IMcpServer['status'], oauthStatus?: McpOAuthStat
   return <CloseOne fill={iconColors.secondary} className='h-[24px]' />;
 };
 
-const getStatusText = (status?: IMcpServer['status'], oauthStatus?: McpOAuthStatus, t?: any) => {
+const getStatusText = (status?: IMcpServer['status'], oauthStatus?: McpOAuthStatus) => {
   // Priority 1: Testing status
   if (status === 'testing' || oauthStatus?.isChecking) {
-    return t?.('settings.mcpTesting') || 'testing';
+    return 'testing';
   }
 
   // Priority 2: Error status
   if (status === 'error') {
-    return t?.('settings.mcpError') || 'error';
+    return 'error';
   }
 
   // Priority 3: OAuth requires login
   if (oauthStatus?.needsLogin) {
-    return t?.('settings.mcpNeedsLogin') || 'disconnected · Enter to login';
+    return 'disconnected · Enter to login';
   }
 
   // Priority 4: Connected or authenticated
   if (status === 'connected' || oauthStatus?.isAuthenticated) {
-    return t?.('settings.mcpConnected') || 'connected';
+    return 'connected';
   }
 
   // Default: Disconnected
-  return t?.('settings.mcpDisconnected') || 'disconnected';
+  return 'disconnected';
 };
 
 const McpServerHeader: React.FC<McpServerHeaderProps> = ({ server, agentInstallStatus, isServerLoading, isTestingConnection, oauthStatus, isLoggingIn, onTestConnection, onEditServer, onDeleteServer, onToggleServer, onOAuthLogin }) => {
-  const { t } = useTranslation();
-
   // Check if OAuth is supported (HTTP/SSE only)
   const supportsOAuth = server.transport.type === 'http' || server.transport.type === 'sse';
   const needsLogin = supportsOAuth && oauthStatus?.needsLogin;
-  const statusText = getStatusText(server.status, oauthStatus, t);
+  const statusText = getStatusText(server.status, oauthStatus);
   const statusIcon = getStatusIcon(server.status, oauthStatus);
 
   return (
@@ -83,11 +80,11 @@ const McpServerHeader: React.FC<McpServerHeaderProps> = ({ server, agentInstallS
           <span className='flex items-center cursor-default'>{statusIcon}</span>
         </Tooltip>
         {needsLogin && onOAuthLogin && (
-          <Button size='mini' type='primary' icon={<Login size={'14'} />} title={t('settings.mcpOAuthLogin') || 'Login'} loading={isLoggingIn} onClick={() => onOAuthLogin(server)}>
-            {t('settings.mcpLogin') || 'Login'}
+          <Button size='mini' type='primary' icon={<Login size={'14'} />} title={'TODO_MISSING_TRANSLATION_SETTINGS_MCPOAUTHLOGIN'} loading={isLoggingIn} onClick={() => onOAuthLogin(server)}>
+            {'Login'}
           </Button>
         )}
-        {!needsLogin && <Button size='mini' icon={<Refresh size={'14'} />} title={t('settings.mcpTestConnection')} loading={isTestingConnection} onClick={() => onTestConnection(server)} />}
+        {!needsLogin && <Button size='mini' icon={<Refresh size={'14'} />} title={'Check MCP Availability'} loading={isTestingConnection} onClick={() => onTestConnection(server)} />}
       </div>
       <div className='flex items-center gap-2' onClick={(e) => e.stopPropagation()}>
         <div className='flex items-center gap-2 invisible group-hover:visible'>
@@ -100,13 +97,13 @@ const McpServerHeader: React.FC<McpServerHeaderProps> = ({ server, agentInstallS
                 <Menu.Item key='edit' onClick={() => onEditServer(server)}>
                   <div className='flex items-center gap-2'>
                     <Write size={'14'} />
-                    {t('settings.mcpEditServer')}
+                    {'Edit'}
                   </div>
                 </Menu.Item>
                 <Menu.Item key='delete' onClick={() => onDeleteServer(server.id)}>
                   <div className='flex items-center gap-2 text-red-500'>
                     <DeleteFour size={'14'} />
-                    {t('settings.mcpDeleteServer')}
+                    {'Delete'}
                   </div>
                 </Menu.Item>
               </Menu>

@@ -19,7 +19,6 @@ import { mapPermissionDecision } from '@/common/codex/utils';
 import { AIONUI_FILES_MARKER } from '@/common/constants';
 import type { IResponseMessage } from '@/common/ipcBridge';
 import { uuid } from '@/common/utils';
-import i18n from '@process/i18n';
 import { ProcessConfig } from '@process/initStorage';
 import { addMessage } from '@process/message';
 import { cronBusyGuard } from '@process/services/cron/CronBusyGuard';
@@ -351,26 +350,26 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
 
     switch (error.type) {
       case 'cloudflare_blocked':
-        userMessage = i18n.t('codex.network.cloudflare_blocked_title', { service: 'Codex' });
-        recoveryActions = i18n.t('codex.network.recovery_actions.cloudflare_blocked', { returnObjects: true }) as string[];
+        userMessage = '🚫 Codex service blocked by Cloudflare protection';
+        recoveryActions = ['• Use VPN or proxy service', '• Switch network environment (like mobile hotspot)', '• Wait 10-30 minutes and retry', '• Clear browser cache and cookies', '• Switch to other available services: ChatGPT, Claude, Qwen, Gemini'];
         break;
 
       case 'network_timeout':
-        userMessage = i18n.t('codex.network.network_timeout_title');
-        recoveryActions = i18n.t('codex.network.recovery_actions.network_timeout', { returnObjects: true }) as string[];
+        userMessage = '⏱️ Network connection timeout';
+        recoveryActions = ['• Check if network connection is stable', '• Retry connection operation', '• Switch to more stable network environment', '• Check firewall settings'];
         break;
 
       case 'connection_refused':
-        userMessage = i18n.t('codex.network.connection_refused_title');
-        recoveryActions = i18n.t('codex.network.recovery_actions.connection_refused', { returnObjects: true }) as string[];
+        userMessage = '❌ Service connection refused';
+        recoveryActions = ['• Check if Codex CLI is properly installed', '• Verify service configuration and API keys', '• Restart application', '• Check if local ports are occupied'];
         break;
 
       default:
-        userMessage = i18n.t('codex.network.unknown_error_title');
-        recoveryActions = i18n.t('codex.network.recovery_actions.unknown', { returnObjects: true }) as string[];
+        userMessage = '🔌 Network connection error';
+        recoveryActions = ['• Check network connection status', '• Retry current operation', '• Switch network environment', '• Contact technical support'];
     }
 
-    const detailedMessage = `${userMessage}\n\n${i18n.t('codex.network.recovery_suggestions')}\n${recoveryActions.join('\n')}\n\n${i18n.t('codex.network.technical_info')}\n- ${i18n.t('codex.network.error_type')}：${error.type}\n- ${i18n.t('codex.network.retry_count')}：${error.retryCount}\n- ${i18n.t('codex.network.error_details')}：${error.originalError.substring(0, 200)}${error.originalError.length > 200 ? '...' : ''}`;
+    const detailedMessage = `${userMessage}\n\n${'**Suggested Solutions:**'}\n${recoveryActions.join('\n')}\n\n${'**Technical Information:**'}\n- ${'Error Type'}：${error.type}\n- ${'Retry Count'}：${error.retryCount}\n- ${'Error Details'}：${error.originalError.substring(0, 200)}${error.originalError.length > 200 ? '...' : ''}`;
 
     // Emit network error message to UI
     const networkErrorMessage: IResponseMessage = {
@@ -382,7 +381,7 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
         title: userMessage,
         message: detailedMessage,
         recoveryActions: recoveryActions,
-        quickSwitchContent: i18n.t('codex.network.quick_switch_content'),
+        quickSwitchContent: "When current service encounters network restrictions, you can:\n\n1. **Switch AI Assistant Immediately**: Select other available assistants from the left panel\n2. **Check Service Status**: Availability of different AI services may vary by region\n3. **Network Optimization**: Use stable network environment to improve connection success rate\n4. **Retry Later**: Network restrictions are usually temporary\n\n**Tip**: It's recommended to configure multiple AI services as alternatives to ensure work continuity.",
       },
     };
 

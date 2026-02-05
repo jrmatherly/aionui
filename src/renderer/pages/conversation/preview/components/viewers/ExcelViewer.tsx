@@ -8,7 +8,6 @@ import { ipcBridge } from '@/common';
 import type { ExcelWorkbookData } from '@/common/types/conversion';
 import { Button, Message } from '@arco-design/web-react';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { usePreviewToolbarExtras } from '../../context/PreviewToolbarExtrasContext';
 
 interface ExcelPreviewProps {
@@ -26,7 +25,6 @@ interface ExcelPreviewProps {
  * 3. Renderer process displays data in HTML table
  */
 const ExcelPreview: React.FC<ExcelPreviewProps> = ({ filePath, hideToolbar = false }) => {
-  const { t } = useTranslation();
   const [excelData, setExcelData] = useState<ExcelWorkbookData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -37,17 +35,17 @@ const ExcelPreview: React.FC<ExcelPreviewProps> = ({ filePath, hideToolbar = fal
 
   const handleOpenInSystem = useCallback(async () => {
     if (!filePath) {
-      messageApi.error(t('preview.errors.openWithoutPath'));
+      messageApi.error('Unable to open: file path is not provided');
       return;
     }
 
     try {
       await ipcBridge.shell.openFile.invoke(filePath);
-      messageApi.success(t('preview.openInSystemSuccess'));
+      messageApi.success('Opened in system default app');
     } catch (err) {
-      messageApi.error(t('preview.openInSystemFailed'));
+      messageApi.error('Failed to open with system app');
     }
-  }, [filePath, messageApi, t]);
+  }, [filePath, messageApi]);
 
   const sheetCount = excelData?.sheets.length;
 
@@ -56,15 +54,15 @@ const ExcelPreview: React.FC<ExcelPreviewProps> = ({ filePath, hideToolbar = fal
     toolbarExtrasContext.setExtras({
       left: (
         <div className='flex items-center gap-8px'>
-          <span className='text-13px text-t-secondary'>📊 {t('preview.excel.title')}</span>
-          <span className='text-11px text-t-tertiary'>{t('preview.readOnlyLabel')}</span>
-          {typeof sheetCount === 'number' && <span className='text-12px text-t-secondary'>{t('preview.excel.sheetCount', { count: sheetCount })}</span>}
+          <span className='text-13px text-t-secondary'>📊 {'Excel Spreadsheet'}</span>
+          <span className='text-11px text-t-tertiary'>{'Read-only preview'}</span>
+          {typeof sheetCount === 'number' && <span className='text-12px text-t-secondary'>{`${sheetCount} worksheet(s)`}</span>}
         </div>
       ),
       right: null,
     });
     return () => toolbarExtrasContext.setExtras(null);
-  }, [usePortalToolbar, toolbarExtrasContext, sheetCount, t]);
+  }, [usePortalToolbar, toolbarExtrasContext, sheetCount]);
 
   /**
    * Load Excel file
@@ -72,7 +70,7 @@ const ExcelPreview: React.FC<ExcelPreviewProps> = ({ filePath, hideToolbar = fal
   useEffect(() => {
     const loadExcel = async () => {
       if (!filePath) {
-        setError(t('preview.errors.missingFilePath'));
+        setError('File path is missing');
         setLoading(false);
         return;
       }
@@ -85,7 +83,7 @@ const ExcelPreview: React.FC<ExcelPreviewProps> = ({ filePath, hideToolbar = fal
         const response = await ipcBridge.document.convert.invoke({ filePath, to: 'excel-json' });
 
         if (response.to !== 'excel-json') {
-          throw new Error(t('preview.excel.convertFailed'));
+          throw new Error('Excel conversion failed');
         }
 
         if (response.result.success && response.result.data) {
@@ -95,17 +93,17 @@ const ExcelPreview: React.FC<ExcelPreviewProps> = ({ filePath, hideToolbar = fal
             setActiveSheet(response.result.data.sheets[0].name);
           }
         } else {
-          throw new Error(response.result.error || t('preview.excel.convertFailed'));
+          throw new Error(response.result.error || 'Excel conversion failed');
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : t('preview.excel.loadFailed'));
+        setError(err instanceof Error ? err.message : 'Failed to load Excel workbook');
       } finally {
         setLoading(false);
       }
     };
 
     void loadExcel();
-  }, [filePath, t]);
+  }, [filePath]);
 
   /**
    * Render sheet data as HTML table
@@ -119,8 +117,8 @@ const ExcelPreview: React.FC<ExcelPreviewProps> = ({ filePath, hideToolbar = fal
       return (
         <div className='flex items-center justify-center h-200px'>
           <div className='text-center'>
-            <div className='text-14px text-t-secondary mb-8px'>{t('preview.excel.emptySheet')}</div>
-            <div className='text-12px text-t-tertiary'>{t('preview.excel.emptySheetHint')}</div>
+            <div className='text-14px text-t-secondary mb-8px'>{'This worksheet has no data'}</div>
+            <div className='text-12px text-t-tertiary'>{'Check whether the sheet contains data or images'}</div>
           </div>
         </div>
       );
@@ -261,7 +259,7 @@ const ExcelPreview: React.FC<ExcelPreviewProps> = ({ filePath, hideToolbar = fal
   if (loading) {
     return (
       <div className='flex items-center justify-center h-full'>
-        <div className='text-14px text-t-secondary'>{t('preview.excel.loading')}</div>
+        <div className='text-14px text-t-secondary'>{'Loading Excel workbook...'}</div>
       </div>
     );
   }
@@ -271,7 +269,7 @@ const ExcelPreview: React.FC<ExcelPreviewProps> = ({ filePath, hideToolbar = fal
       <div className='flex items-center justify-center h-full'>
         <div className='text-center'>
           <div className='text-16px text-t-error mb-8px'>❌ {error}</div>
-          <div className='text-12px text-t-secondary'>{t('preview.excel.invalid')}</div>
+          <div className='text-12px text-t-secondary'>{'Please confirm the file is a valid Excel document'}</div>
         </div>
       </div>
     );
@@ -280,7 +278,7 @@ const ExcelPreview: React.FC<ExcelPreviewProps> = ({ filePath, hideToolbar = fal
   if (!excelData || excelData.sheets.length === 0) {
     return (
       <div className='flex items-center justify-center h-full'>
-        <div className='text-14px text-t-secondary'>{t('preview.excel.noSheets')}</div>
+        <div className='text-14px text-t-secondary'>{'No worksheets found in this Excel file'}</div>
       </div>
     );
   }
@@ -293,20 +291,20 @@ const ExcelPreview: React.FC<ExcelPreviewProps> = ({ filePath, hideToolbar = fal
       {!usePortalToolbar && !hideToolbar && (
         <div className='flex items-center justify-between h-40px px-12px bg-bg-2 border-b border-border-base flex-shrink-0'>
           <div className='flex items-center gap-8px'>
-            <span className='text-13px text-t-secondary'>📊 {t('preview.excel.title')}</span>
-            <span className='text-11px text-t-tertiary'>{t('preview.readOnlyLabel')}</span>
+            <span className='text-13px text-t-secondary'>📊 {'Excel Spreadsheet'}</span>
+            <span className='text-11px text-t-tertiary'>{'Read-only preview'}</span>
           </div>
 
           <div className='flex items-center gap-8px'>
-            <span className='text-12px text-t-secondary'>{t('preview.excel.sheetCount', { count: excelData.sheets.length })}</span>
+            <span className='text-12px text-t-secondary'>{`${excelData.sheets.length} worksheet(s)`}</span>
             {filePath && (
-              <Button size='mini' type='text' onClick={handleOpenInSystem} title={t('preview.openWithApp', { app: 'Excel' })}>
+              <Button size='mini' type='text' onClick={handleOpenInSystem} title={`Open in ${'Excel'}`}>
                 <svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2'>
                   <path d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6' />
                   <polyline points='15 3 21 3 21 9' />
                   <line x1='10' y1='14' x2='21' y2='3' />
                 </svg>
-                <span>{t('preview.openWithApp', { app: 'Excel' })}</span>
+                <span>{`Open in ${'Excel'}`}</span>
               </Button>
             )}
           </div>

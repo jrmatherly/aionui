@@ -15,7 +15,6 @@ import { useGeminiGoogleAuthModels } from '@/renderer/hooks/useGeminiGoogleAuthM
 import { hasSpecificModelCapability } from '@/renderer/utils/modelCapabilities';
 import { Message } from '@arco-design/web-react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 import { useSettingsViewMode } from '../settingsViewContext';
 import ChannelItem from './channels/ChannelItem';
@@ -90,7 +89,6 @@ const useChannelModelList = () => {
  * Assistant Settings Content Component
  */
 const ChannelModalContent: React.FC = () => {
-  const { t } = useTranslation();
   const viewMode = useSettingsViewMode();
   const isPageMode = viewMode === 'page';
 
@@ -195,7 +193,7 @@ const ChannelModalContent: React.FC = () => {
       if (enabled) {
         // Check if we have a token - already saved in database
         if (!pluginStatus?.hasToken) {
-          Message.warning(t('settings.assistant.tokenRequired', 'Please enter a bot token first'));
+          Message.warning('Please enter a bot token');
           setEnableLoading(false);
           return;
         }
@@ -206,19 +204,19 @@ const ChannelModalContent: React.FC = () => {
         });
 
         if (result.success) {
-          Message.success(t('settings.assistant.pluginEnabled', 'Telegram bot enabled'));
+          Message.success('Telegram bot enabled');
           await loadPluginStatus();
         } else {
-          Message.error(result.msg || t('settings.assistant.enableFailed', 'Failed to enable plugin'));
+          Message.error(result.msg || 'Failed to enable plugin');
         }
       } else {
         const result = await channel.disablePlugin.invoke({ pluginId: 'telegram_default' });
 
         if (result.success) {
-          Message.success(t('settings.assistant.pluginDisabled', 'Telegram bot disabled'));
+          Message.success('Telegram bot disabled');
           await loadPluginStatus();
         } else {
-          Message.error(result.msg || t('settings.assistant.disableFailed', 'Failed to disable plugin'));
+          Message.error(result.msg || 'Failed to disable plugin');
         }
       }
     } catch (error: any) {
@@ -235,7 +233,7 @@ const ChannelModalContent: React.FC = () => {
       if (enabled) {
         // Check if we have credentials - already saved in database
         if (!larkPluginStatus?.hasToken) {
-          Message.warning(t('settings.lark.credentialsRequired', 'Please configure Lark credentials first'));
+          Message.warning('Please enter App ID and App Secret');
           setLarkEnableLoading(false);
           return;
         }
@@ -246,19 +244,19 @@ const ChannelModalContent: React.FC = () => {
         });
 
         if (result.success) {
-          Message.success(t('settings.lark.pluginEnabled', 'Lark bot enabled'));
+          Message.success('Lark bot enabled');
           await loadPluginStatus();
         } else {
-          Message.error(result.msg || t('settings.lark.enableFailed', 'Failed to enable Lark plugin'));
+          Message.error(result.msg || 'Failed to enable Lark plugin');
         }
       } else {
         const result = await channel.disablePlugin.invoke({ pluginId: 'lark_default' });
 
         if (result.success) {
-          Message.success(t('settings.lark.pluginDisabled', 'Lark bot disabled'));
+          Message.success('Lark bot disabled');
           await loadPluginStatus();
         } else {
-          Message.error(result.msg || t('settings.lark.disableFailed', 'Failed to disable Lark plugin'));
+          Message.error(result.msg || 'Failed to disable Lark plugin');
         }
       }
     } catch (error: any) {
@@ -272,8 +270,8 @@ const ChannelModalContent: React.FC = () => {
   const channels: ChannelConfig[] = useMemo(() => {
     const telegramChannel: ChannelConfig = {
       id: 'telegram',
-      title: t('channels.telegramTitle', 'Telegram'),
-      description: t('channels.telegramDesc', 'Chat with AionUi assistant via Telegram'),
+      title: 'Telegram',
+      description: 'Chat with AionUi assistant via Telegram',
       status: 'active',
       enabled: pluginStatus?.enabled || false,
       disabled: enableLoading,
@@ -285,8 +283,8 @@ const ChannelModalContent: React.FC = () => {
 
     const larkChannel: ChannelConfig = {
       id: 'lark',
-      title: t('channels.larkTitle', 'Lark / Feishu'),
-      description: t('channels.larkDesc', 'Chat with AionUi assistant via Lark or Feishu'),
+      title: 'Lark / Feishu',
+      description: 'Chat with AionUi assistant via Lark or Feishu',
       status: 'active',
       enabled: larkPluginStatus?.enabled || false,
       disabled: larkEnableLoading,
@@ -298,26 +296,26 @@ const ChannelModalContent: React.FC = () => {
     const comingSoonChannels: ChannelConfig[] = [
       {
         id: 'slack',
-        title: t('channels.slackTitle', 'Slack'),
-        description: t('channels.slackDesc', 'Chat with AionUi assistant via Slack'),
+        title: 'Slack',
+        description: 'Chat with AionUi assistant via Slack',
         status: 'coming_soon',
         enabled: false,
         disabled: true,
-        content: <div className='text-14px text-t-secondary py-12px'>{t('channels.comingSoonDesc', 'Support for {{channel}} is coming soon', { channel: t('channels.slackTitle', 'Slack') })}</div>,
+        content: <div className='text-14px text-t-secondary py-12px'>Support for Slack is coming soon</div>,
       },
       {
         id: 'discord',
-        title: t('channels.discordTitle', 'Discord'),
-        description: t('channels.discordDesc', 'Chat with AionUi assistant via Discord'),
+        title: 'Discord',
+        description: 'Chat with AionUi assistant via Discord',
         status: 'coming_soon',
         enabled: false,
         disabled: true,
-        content: <div className='text-14px text-t-secondary py-12px'>{t('channels.comingSoonDesc', 'Support for {{channel}} is coming soon', { channel: t('channels.discordTitle', 'Discord') })}</div>,
+        content: <div className='text-14px text-t-secondary py-12px'>Support for Discord is coming soon</div>,
       },
     ];
 
     return [telegramChannel, larkChannel, ...comingSoonChannels];
-  }, [pluginStatus, larkPluginStatus, selectedModel, larkSelectedModel, modelList, enableLoading, larkEnableLoading, t]);
+  }, [pluginStatus, larkPluginStatus, selectedModel, larkSelectedModel, modelList, enableLoading, larkEnableLoading]);
 
   // Get toggle handler for each channel
   const getToggleHandler = (channelId: string) => {

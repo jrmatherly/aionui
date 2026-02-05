@@ -4,7 +4,6 @@ import type { AcpBackendConfig } from '@/types/acpTypes';
 import { Button, Collapse, Modal } from '@arco-design/web-react';
 import { Delete, EditTwo, Plus } from '@icon-park/react';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { mutate } from 'swr';
 import CustomAcpAgentModal from './CustomAcpAgentModal';
 
@@ -13,7 +12,6 @@ interface CustomAcpAgentProps {
 }
 
 const CustomAcpAgent: React.FC<CustomAcpAgentProps> = ({ message }) => {
-  const { t } = useTranslation();
   const [customAgents, setCustomAgents] = useState<AcpBackendConfig[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editingAgent, setEditingAgent] = useState<AcpBackendConfig | null>(null);
@@ -96,15 +94,15 @@ const CustomAcpAgent: React.FC<CustomAcpAgentProps> = ({ message }) => {
         setCustomAgents(updatedAgents);
         setShowModal(false);
         setEditingAgent(null);
-        message.success(t('settings.customAcpAgentSaved') || 'Custom agent saved');
+        message.success('Custom agent saved');
 
         await refreshAgentDetection();
       } catch (error) {
         console.error('Failed to save custom agent config:', error);
-        message.error(t('settings.customAcpAgentSaveFailed') || 'Failed to save custom agent');
+        message.error('Failed to save custom agent');
       }
     },
-    [customAgents, editingAgent, message, t, refreshAgentDetection]
+    [customAgents, editingAgent, message, refreshAgentDetection]
   );
 
   /**
@@ -120,14 +118,14 @@ const CustomAcpAgent: React.FC<CustomAcpAgentProps> = ({ message }) => {
       setCustomAgents(updatedAgents);
       setDeleteConfirmVisible(false);
       setAgentToDelete(null);
-      message.success(t('settings.customAcpAgentDeleted') || 'Custom agent deleted');
+      message.success('Custom agent deleted');
 
       await refreshAgentDetection();
     } catch (error) {
       console.error('Failed to delete custom agent config:', error);
-      message.error(t('settings.customAcpAgentDeleteFailed') || 'Failed to delete custom agent');
+      message.error('Failed to delete custom agent');
     }
-  }, [agentToDelete, customAgents, message, t, refreshAgentDetection]);
+  }, [agentToDelete, customAgents, message, refreshAgentDetection]);
 
   const handleAddNew = useCallback(() => {
     setEditingAgent(null);
@@ -150,7 +148,7 @@ const CustomAcpAgent: React.FC<CustomAcpAgentProps> = ({ message }) => {
         className={' [&_div.arco-collapse-item-header-title]:flex-1'}
         header={
           <div className='flex items-center justify-between'>
-            {t('settings.customAcpAgent') || 'Custom ACP Agents'}
+            {'Custom ACP Agents'}
             <Button
               type='outline'
               icon={<Plus size={'14'} />}
@@ -160,7 +158,7 @@ const CustomAcpAgent: React.FC<CustomAcpAgentProps> = ({ message }) => {
                 handleAddNew();
               }}
             >
-              {t('settings.addCustomAgent') || 'Add'}
+              {'Add'}
             </Button>
           </div>
         }
@@ -168,13 +166,13 @@ const CustomAcpAgent: React.FC<CustomAcpAgentProps> = ({ message }) => {
       >
         <div className='py-2'>
           {customAgents.length === 0 ? (
-            <div className='text-center py-4 text-t-secondary'>{t('settings.noCustomAgentConfigured') || 'No custom agents configured'}</div>
+            <div className='text-center py-4 text-t-secondary'>{'No custom agents configured'}</div>
           ) : (
             <div className='space-y-2'>
               {customAgents.map((agent) => (
                 <div key={agent.id} className='p-4 bg-fill-2 rounded-lg'>
                   <div className='flex items-center justify-between mb-2'>
-                    <div className='font-medium'>{agent.name || 'Custom Agent'}</div>
+                    <div className='font-medium'>{agent.name}</div>
                     <div className='flex gap-2'>
                       <Button type='text' size='small' icon={<EditTwo size={'14'} />} onClick={() => handleEdit(agent)} />
                       <Button type='text' size='small' status='danger' icon={<Delete size={'14'} />} onClick={() => handleConfirmDelete(agent)} />
@@ -182,14 +180,14 @@ const CustomAcpAgent: React.FC<CustomAcpAgentProps> = ({ message }) => {
                   </div>
                   <div className='text-sm text-t-secondary'>
                     <div>
-                      <span className='font-medium'>{t('settings.cliPath') || 'CLI Path'}:</span> {agent.defaultCliPath}
+                      <span className='font-medium'>{'TODO_MISSING_TRANSLATION_SETTINGS_CLIPATH'}:</span> {agent.defaultCliPath}
                     </div>
                     {agent.env && Object.keys(agent.env).length > 0 && (
                       <div>
-                        <span className='font-medium'>{t('settings.env') || 'Env'}:</span> {Object.keys(agent.env).length} variable(s)
+                        <span className='font-medium'>{'Env'}:</span> {Object.keys(agent.env).length} variable(s)
                       </div>
                     )}
-                    {!agent.enabled && <div className='text-warning'>{t('settings.agentDisabled') || 'Disabled'}</div>}
+                    {!agent.enabled && <div className='text-warning'>{'Disabled'}</div>}
                   </div>
                 </div>
               ))}
@@ -200,9 +198,9 @@ const CustomAcpAgent: React.FC<CustomAcpAgentProps> = ({ message }) => {
 
       <CustomAcpAgentModal visible={showModal} agent={editingAgent} onCancel={() => setShowModal(false)} onSubmit={handleSaveAgent} />
 
-      <Modal title={t('settings.deleteCustomAgent') || 'Delete Custom Agent'} visible={deleteConfirmVisible} onCancel={() => setDeleteConfirmVisible(false)} onOk={handleDeleteAgent} okButtonProps={{ status: 'danger' }} okText={t('common.confirm') || 'Confirm'} cancelText={t('common.cancel') || 'Cancel'}>
+      <Modal title={'Delete Custom Agent'} visible={deleteConfirmVisible} onCancel={() => setDeleteConfirmVisible(false)} onOk={handleDeleteAgent} okButtonProps={{ status: 'danger' }} okText={'Confirm'} cancelText={'Cancel'}>
         <p>
-          {t('settings.deleteCustomAgentConfirm') || 'Are you sure you want to delete this custom agent?'}
+          {'Are you sure you want to delete this custom agent?'}
           {agentToDelete && <strong className='block mt-2'>{agentToDelete.name}</strong>}
         </p>
       </Modal>

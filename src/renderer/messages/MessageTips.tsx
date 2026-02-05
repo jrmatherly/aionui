@@ -9,7 +9,6 @@ import { Attention, CheckOne } from '@icon-park/react';
 import { theme } from '@office-ai/platform';
 import classNames from 'classnames';
 import React, { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import CollapsibleContent from '../components/CollapsibleContent';
 import MarkdownView from '../components/Markdown';
 const icon = {
@@ -35,31 +34,12 @@ const useFormatContent = (content: string) => {
 const MessageTips: React.FC<{ message: IMessageTips }> = ({ message }) => {
   const { content, type } = message.content;
   const { json, data } = useFormatContent(content);
-  const { t } = useTranslation();
-
   // Handle structured error messages with error codes
   const getDisplayContent = (content: string): string => {
     if (content.startsWith('ERROR_')) {
       const parts = content.split(': ');
-      const errorCode = parts[0].replace('ERROR_', '');
-      const originalMessage = parts[1] || '';
-
-      // Map error codes to i18n keys
-      const errorMap: Record<string, string> = {
-        CLOUDFLARE_BLOCKED: 'codex.network.cloudflare_blocked',
-        NETWORK_TIMEOUT: 'codex.network.network_timeout',
-        CONNECTION_REFUSED: 'codex.network.connection_refused',
-        SESSION_TIMEOUT: 'codex.error.session_timeout',
-        SYSTEM_INIT_FAILED: 'codex.error.system_init_failed',
-        INVALID_MESSAGE_FORMAT: 'codex.error.invalid_message_format',
-        INVALID_INPUT: 'codex.error.invalid_input',
-        PERMISSION_DENIED: 'codex.error.permission_denied',
-      };
-
-      const i18nKey = errorMap[errorCode];
-      if (i18nKey) {
-        return t(i18nKey, { defaultValue: originalMessage });
-      }
+      const originalMessage = parts[1] || content;
+      return originalMessage;
     }
     return content;
   };

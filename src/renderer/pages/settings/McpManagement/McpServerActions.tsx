@@ -2,8 +2,6 @@ import type { IMcpServer } from '@/common/storage';
 import { Button, Dropdown, Menu, Switch } from '@arco-design/web-react';
 import { DeleteFour, SettingOne, Write } from '@icon-park/react';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-
 interface McpServerActionsProps {
   server: IMcpServer;
   onEditServer: (server: IMcpServer) => void;
@@ -12,8 +10,6 @@ interface McpServerActionsProps {
 }
 
 const McpServerActions: React.FC<McpServerActionsProps> = ({ server, onEditServer, onDeleteServer, onToggleServer }) => {
-  const { t } = useTranslation();
-
   return (
     <>
       <Dropdown
@@ -23,13 +19,13 @@ const McpServerActions: React.FC<McpServerActionsProps> = ({ server, onEditServe
             <Menu.Item key='edit' onClick={() => onEditServer(server)}>
               <div className='flex items-center gap-2'>
                 <Write size={'14'} />
-                {t('settings.mcpEditServer')}
+                {'Edit'}
               </div>
             </Menu.Item>
             <Menu.Item key='delete' onClick={() => onDeleteServer(server.id)}>
               <div className='flex items-center gap-2 text-red-500'>
                 <DeleteFour size={'14'} />
-                {t('settings.mcpDeleteServer')}
+                {'Delete'}
               </div>
             </Menu.Item>
           </Menu>

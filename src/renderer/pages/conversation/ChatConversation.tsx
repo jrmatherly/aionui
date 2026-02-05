@@ -14,7 +14,6 @@ import { iconColors } from '@/renderer/theme/colors';
 import { Button, Dropdown, Menu, Tooltip, Typography } from '@arco-design/web-react';
 import { History } from '@icon-park/react';
 import React, { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import useSWR from 'swr';
 import { emitter } from '../../utils/emitter';
@@ -62,11 +61,10 @@ const _AssociatedConversation: React.FC<{ conversation_id: string }> = ({ conver
 };
 
 const _AddNewConversation: React.FC<{ conversation: TChatConversation }> = ({ conversation }) => {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   if (!conversation.extra?.workspace) return null;
   return (
-    <Tooltip content={t('conversation.workspace.createNewConversation')}>
+    <Tooltip content={'Create new chat in current workspace'}>
       <Button
         size='mini'
         icon={<img src={addChatIcon} alt='Add chat' className='w-14px h-14px block m-auto' />}
@@ -132,7 +130,6 @@ const GeminiConversationPanel: React.FC<{ conversation: GeminiConversation; slid
 const ChatConversation: React.FC<{
   conversation?: TChatConversation;
 }> = ({ conversation }) => {
-  const { t } = useTranslation();
   const workspaceEnabled = Boolean(conversation?.extra?.workspace);
 
   const isGeminiConversation = conversation?.type === 'gemini';
@@ -164,10 +161,10 @@ const ChatConversation: React.FC<{
   const sliderTitle = useMemo(() => {
     return (
       <div className='flex items-center justify-between'>
-        <span className='text-16px font-bold text-t-primary'>{t('conversation.workspace.title')}</span>
+        <span className='text-16px font-bold text-t-primary'>{'Workspace'}</span>
       </div>
     );
-  }, [t]);
+  }, []);
 
   if (conversation && conversation.type === 'gemini') {
     // Render Gemini layout with dedicated top-right model selector

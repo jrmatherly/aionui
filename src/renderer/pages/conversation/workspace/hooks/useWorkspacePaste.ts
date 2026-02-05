@@ -15,7 +15,6 @@ import { getTargetFolderPath } from '../utils/treeHelpers';
 interface UseWorkspacePasteOptions {
   workspace: string;
   messageApi: MessageApi;
-  t: (key: string) => string;
 
   // Dependencies from useWorkspaceTree
   files: IDirOrFile[];
@@ -33,7 +32,7 @@ interface UseWorkspacePasteOptions {
  * useWorkspacePaste - Handle file paste and add logic
  */
 export function useWorkspacePaste(options: UseWorkspacePasteOptions) {
-  const { workspace, messageApi, t, files, selected, selectedNodeRef, refreshWorkspace, pasteConfirm, setPasteConfirm, closePasteConfirm } = options;
+  const { workspace, messageApi, files, selected, selectedNodeRef, refreshWorkspace, pasteConfirm, setPasteConfirm, closePasteConfirm } = options;
 
   // Track paste target folder (for visual feedback)
   const [pasteTargetFolder, setPasteTargetFolder] = useState<string | null>(null);
@@ -62,7 +61,7 @@ export function useWorkspacePaste(options: UseWorkspacePasteOptions) {
             if (!result.success || failedFiles.length > 0) {
               // Surface warning when any copy operation fails
               const fallback = failedFiles.length > 0 ? 'Some files failed to copy' : result.msg;
-              messageApi.warning(fallback || t('messages.unknownError') || 'Copy failed');
+              messageApi.warning(fallback);
             }
           });
         }
@@ -70,7 +69,7 @@ export function useWorkspacePaste(options: UseWorkspacePasteOptions) {
       .catch(() => {
         // Silently ignore errors
       });
-  }, [workspace, refreshWorkspace, messageApi, t]);
+  }, [workspace, refreshWorkspace, messageApi]);
 
   /**
    * Handle files to add (from paste service)
@@ -99,17 +98,17 @@ export function useWorkspacePaste(options: UseWorkspacePasteOptions) {
           const failedFiles = res.data?.failedFiles ?? [];
 
           if (copiedFiles.length > 0) {
-            messageApi.success(t('messages.responseSentSuccessfully') || 'Pasted');
+            messageApi.success('Response sent successfully');
             setTimeout(() => refreshWorkspace(), 300);
           }
 
           if (!res.success || failedFiles.length > 0) {
             // Notify user when any paste fails
             const fallback = failedFiles.length > 0 ? 'Some files failed to copy' : res.msg;
-            messageApi.warning(fallback || t('messages.unknownError') || 'Paste failed');
+            messageApi.warning(fallback);
           }
         } catch (error) {
-          messageApi.error(t('messages.unknownError') || 'Paste failed');
+          messageApi.error('TODO_MISSING_TRANSLATION_MESSAGES_UNKNOWNERROR');
         } finally {
           // Reset paste target folder after operation completes (success or failure)
           setPasteTargetFolder(null);
@@ -126,7 +125,7 @@ export function useWorkspacePaste(options: UseWorkspacePasteOptions) {
         targetFolder: targetFolderKey,
       });
     },
-    [workspace, refreshWorkspace, t, messageApi, files, selected, selectedNodeRef, setPasteConfirm]
+    [workspace, refreshWorkspace, messageApi, files, selected, selectedNodeRef, setPasteConfirm]
   );
 
   /**
@@ -151,22 +150,22 @@ export function useWorkspacePaste(options: UseWorkspacePasteOptions) {
       const failedFiles = res.data?.failedFiles ?? [];
 
       if (copiedFiles.length > 0) {
-        messageApi.success(t('messages.responseSentSuccessfully') || 'Pasted');
+        messageApi.success('Response sent successfully');
         setTimeout(() => refreshWorkspace(), 300);
       }
 
       if (!res.success || failedFiles.length > 0) {
         const fallback = failedFiles.length > 0 ? 'Some files failed to copy' : res.msg;
-        messageApi.warning(fallback || t('messages.unknownError') || 'Paste failed');
+        messageApi.warning(fallback);
       }
 
       closePasteConfirm();
     } catch (error) {
-      messageApi.error(t('messages.unknownError') || 'Paste failed');
+      messageApi.error('TODO_MISSING_TRANSLATION_MESSAGES_UNKNOWNERROR');
     } finally {
       setPasteTargetFolder(null);
     }
-  }, [pasteConfirm, closePasteConfirm, messageApi, t, files, selected, selectedNodeRef, workspace, refreshWorkspace]);
+  }, [pasteConfirm, closePasteConfirm, messageApi, files, selected, selectedNodeRef, workspace, refreshWorkspace]);
 
   // Register paste service to catch global paste events when workspace component is focused
   const { onFocus } = usePasteService({

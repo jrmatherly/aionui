@@ -20,7 +20,6 @@ import { theme } from '@office-ai/platform';
 import classNames from 'classnames';
 import React, { useMemo, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { useTranslation } from 'react-i18next';
 import { addImportantToAll } from '../utils/customCssProcessor';
 import LocalImageView from './LocalImageView';
 
@@ -400,8 +399,6 @@ interface MarkdownViewProps {
 }
 
 const MarkdownView: React.FC<MarkdownViewProps> = ({ hiddenCodeCopyButton, codeStyle, className, onRef, children: childrenProp }) => {
-  const { t } = useTranslation();
-
   const normalizedChildren = useMemo(() => {
     if (typeof childrenProp === 'string') {
       return childrenProp.replace(/file:\/\//g, '');
@@ -463,10 +460,10 @@ const MarkdownView: React.FC<MarkdownViewProps> = ({ hiddenCodeCopyButton, codeS
                     if (!props.href) return;
                     try {
                       ipcBridge.shell.openExternal.invoke(props.href).catch((error) => {
-                        console.error(t('messages.openLinkFailed'), error);
+                        console.error('Failed to open link', error);
                       });
                     } catch (error) {
-                      console.error(t('messages.openLinkFailed'), error);
+                      console.error('Failed to open link', error);
                     }
                   }}
                 />

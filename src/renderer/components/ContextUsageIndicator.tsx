@@ -6,8 +6,6 @@
 
 import { Popover } from '@arco-design/web-react';
 import React, { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import type { TokenUsageData } from '@/common/storage';
 
 // Import default context limit from modelContextLimits
@@ -21,8 +19,6 @@ interface ContextUsageIndicatorProps {
 }
 
 const ContextUsageIndicator: React.FC<ContextUsageIndicatorProps> = ({ tokenUsage, contextLimit = DEFAULT_CONTEXT_LIMIT, className = '', size = 24 }) => {
-  const { t } = useTranslation();
-
   const { percentage, displayTotal, displayLimit, isWarning, isDanger } = useMemo(() => {
     if (!tokenUsage) {
       return {
@@ -72,7 +68,7 @@ const ContextUsageIndicator: React.FC<ContextUsageIndicatorProps> = ({ tokenUsag
   const popoverContent = (
     <div className='p-8px min-w-160px'>
       <div className='text-14px font-medium text-t-primary'>
-        {percentage.toFixed(1)}% · {displayTotal} / {displayLimit} {t('conversation.contextUsage.contextUsed', 'context used')}
+        {percentage.toFixed(1)}% · {displayTotal} / {displayLimit} {'context used'}
       </div>
     </div>
   );

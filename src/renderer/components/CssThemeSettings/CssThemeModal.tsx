@@ -15,7 +15,6 @@ import { Delete, Plus } from '@icon-park/react';
 import CodeMirror from '@uiw/react-codemirror';
 import type { CSSProperties } from 'react';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { injectBackgroundCssBlock } from './backgroundUtils';
 
 /** CodeMirror editor styles */
@@ -47,7 +46,6 @@ interface CssThemeModalProps {
  * For adding or editing CSS skin themes
  */
 const CssThemeModal: React.FC<CssThemeModalProps> = ({ visible, theme, onClose, onSave, onDelete }) => {
-  const { t } = useTranslation();
   const { theme: colorTheme } = useThemeContext();
   const [name, setName] = useState('');
   const [cover, setCover] = useState<string>('');
@@ -62,7 +60,7 @@ const CssThemeModal: React.FC<CssThemeModalProps> = ({ visible, theme, onClose, 
   useEffect(() => {
     if (theme) {
       setName(theme.name);
-      setCover(theme.cover || '');
+      setCover(theme.cover);
       setCss(theme.css);
     } else {
       setName('');
@@ -111,13 +109,13 @@ const CssThemeModal: React.FC<CssThemeModalProps> = ({ visible, theme, onClose, 
   const isEditing = !!theme;
 
   return (
-    <AionModal visible={visible} header={isEditing ? t('settings.cssTheme.editTheme') : t('settings.cssTheme.addToPreset')} onCancel={onClose} footer={null} style={{ width: 600 }} unmountOnExit>
+    <AionModal visible={visible} header={isEditing ? 'Edit Theme' : 'Add Theme'} onCancel={onClose} footer={null} style={{ width: 600 }} unmountOnExit>
       <div className='space-y-20px'>
         {/* Cover and name row */}
         <div className='flex gap-16px p-16px bg-[var(--fill-1)] rounded-12px'>
           {/* Cover upload */}
           <div className='flex-shrink-0'>
-            <div className='text-13px text-t-secondary mb-8px'>{t('settings.cssTheme.previewCover')}</div>
+            <div className='text-13px text-t-secondary mb-8px'>{'Background Image'}</div>
             <div className='w-120px h-80px rounded-8px border border-dashed border-border-2 flex flex-col items-center justify-center cursor-pointer hover:border-[var(--color-primary)] transition-colors overflow-hidden bg-[var(--fill-0)]' onClick={handleCoverUpload}>
               {cover ? (
                 <img src={cover} alt='cover' className='w-full h-full object-cover' />
@@ -134,16 +132,16 @@ const CssThemeModal: React.FC<CssThemeModalProps> = ({ visible, theme, onClose, 
           <div className='flex-1'>
             <div className='text-13px text-t-secondary mb-8px'>
               <span className='text-[var(--color-danger)]'>*</span>
-              {t('settings.cssTheme.name')}
+              {'Name'}
             </div>
-            <Input value={name} onChange={setName} placeholder={t('settings.cssTheme.namePlaceholder')} className='!bg-[var(--fill-0)]' />
+            <Input value={name} onChange={setName} placeholder={'Enter preset name'} className='!bg-[var(--fill-0)]' />
           </div>
         </div>
 
         {/* CSS code editor */}
         <div>
-          <div className='text-13px text-t-secondary mb-8px'>{t('settings.cssTheme.cssCode')}</div>
-          <CodeMirror value={css} theme={colorTheme} extensions={[cssLang()]} onChange={setCss} placeholder={`/* ${t('settings.customCssDesc') || 'Enter custom CSS styles here'} */`} basicSetup={CODE_MIRROR_BASIC_SETUP} style={{ ...CODE_MIRROR_STYLE, minHeight: '200px' }} className='[&_.cm-editor]:rounded-[6px]' height='200px' />
+          <div className='text-13px text-t-secondary mb-8px'>{'CSS Code'}</div>
+          <CodeMirror value={css} theme={colorTheme} extensions={[cssLang()]} onChange={setCss} placeholder={`/* ${'Enter custom CSS styles here to modify the interface appearance. The system will automatically add !important to ensure highest priority. Changes will take effect immediately.'} */`} basicSetup={CODE_MIRROR_BASIC_SETUP} style={{ ...CODE_MIRROR_STYLE, minHeight: '200px' }} className='[&_.cm-editor]:rounded-[6px]' height='200px' />
         </div>
 
         {/* Footer action buttons */}
@@ -151,14 +149,14 @@ const CssThemeModal: React.FC<CssThemeModalProps> = ({ visible, theme, onClose, 
           <div>
             {onDelete && (
               <Button type='text' icon={<Delete theme='outline' size='14' />} onClick={onDelete}>
-                {t('common.delete')}
+                {'Delete'}
               </Button>
             )}
           </div>
           <div className='flex gap-10px'>
-            <Button onClick={onClose}>{t('common.cancel')}</Button>
+            <Button onClick={onClose}>{'Cancel'}</Button>
             <Button type='primary' onClick={handleSave} disabled={!name.trim()}>
-              {t('common.save')}
+              {'Save'}
             </Button>
           </div>
         </div>

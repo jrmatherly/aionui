@@ -1,14 +1,11 @@
 import type { GeminiModelSelection } from '@/renderer/pages/conversation/gemini/useGeminiModelSelection';
 import { Button, Dropdown, Menu, Tooltip } from '@arco-design/web-react';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-
 // Unified model dropdown rendered in the chat header
 const GeminiModelSelector: React.FC<{ selection: GeminiModelSelection }> = ({ selection }) => {
-  const { t } = useTranslation();
   const { currentModel, providers, geminiModeLookup, getAvailableModels, handleSelectModel, formatModelLabel } = selection;
 
-  const label = currentModel ? formatModelLabel(currentModel, currentModel.useModel) : t('conversation.welcome.selectModel');
+  const label = currentModel ? formatModelLabel(currentModel, currentModel.useModel) : 'Select Model';
 
   return (
     <Dropdown

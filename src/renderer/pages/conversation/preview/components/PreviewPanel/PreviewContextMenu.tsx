@@ -6,7 +6,6 @@
 
 import type React from 'react';
 import { useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import type { PreviewTab } from './PreviewTabs';
 
 /**
@@ -85,7 +84,6 @@ interface PreviewContextMenuProps {
  * Provides functions to close left/right/other/all tabs
  */
 const PreviewContextMenu: React.FC<PreviewContextMenuProps> = ({ contextMenu, tabs, currentTheme, onClose, onCloseLeft, onCloseRight, onCloseOthers, onCloseAll }) => {
-  const { t } = useTranslation();
   const contextMenuRef = useRef<HTMLDivElement>(null);
 
   // Close context menu when clicking outside
@@ -132,17 +130,17 @@ const PreviewContextMenu: React.FC<PreviewContextMenuProps> = ({ contextMenu, ta
     >
       {/* Close tabs to the left */}
       <div className={`px-12px py-8px text-12px transition-colors ${hasLeftTabs ? 'cursor-pointer text-t-primary hover:bg-bg-3' : 'opacity-50 cursor-not-allowed text-t-tertiary'}`} onClick={() => hasLeftTabs && onCloseLeft(contextMenu.tabId!)}>
-        {t('preview.closeLeft')}
+        {'Close Left'}
       </div>
 
       {/* Close tabs to the right */}
       <div className={`px-12px py-8px text-12px transition-colors ${hasRightTabs ? 'cursor-pointer text-t-primary hover:bg-bg-3' : 'opacity-50 cursor-not-allowed text-t-tertiary'}`} onClick={() => hasRightTabs && onCloseRight(contextMenu.tabId!)}>
-        {t('preview.closeRight')}
+        {'Close Right'}
       </div>
 
       {/* Close other tabs */}
       <div className={`px-12px py-8px text-12px transition-colors ${hasOtherTabs ? 'cursor-pointer text-t-primary hover:bg-bg-3' : 'opacity-50 cursor-not-allowed text-t-tertiary'}`} onClick={() => hasOtherTabs && onCloseOthers(contextMenu.tabId!)}>
-        {t('preview.closeOthers')}
+        {'Close Others'}
       </div>
 
       {/* Divider */}
@@ -150,7 +148,7 @@ const PreviewContextMenu: React.FC<PreviewContextMenuProps> = ({ contextMenu, ta
 
       {/* Close all tabs */}
       <div className='px-12px py-8px text-12px text-t-primary cursor-pointer hover:bg-bg-3 transition-colors' onClick={onCloseAll}>
-        {t('preview.closeAll')}
+        {'Close All'}
       </div>
     </div>
   );

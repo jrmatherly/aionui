@@ -12,8 +12,6 @@ import { hasSpecificModelCapability } from '@/renderer/utils/modelCapabilities';
 import { Button, Dropdown, Empty, Input, Menu, Message, Spin, Tooltip } from '@arco-design/web-react';
 import { CheckOne, CloseOne, Copy, Delete, Down, Refresh } from '@icon-park/react';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 /**
  * Get available primary models for a provider (supports function calling)
  */
@@ -74,8 +72,6 @@ interface LarkConfigFormProps {
 }
 
 const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList, selectedModel, onStatusChange, onModelChange }) => {
-  const { t } = useTranslation();
-
   // Lark credentials
   const [appId, setAppId] = useState('');
   const [appSecret, setAppSecret] = useState('');
@@ -161,7 +157,7 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
     setTouched({ appId: true, appSecret: true });
 
     if (!appId.trim() || !appSecret.trim()) {
-      Message.warning(t('settings.lark.credentialsRequired', 'Please enter App ID and App Secret'));
+      Message.warning('Please enter App ID and App Secret');
       return;
     }
 
@@ -179,17 +175,17 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
 
       if (result.success && result.data?.success) {
         setCredentialsTested(true);
-        Message.success(t('settings.lark.connectionSuccess', 'Connected to Lark API!'));
+        Message.success('Connected to Lark API!');
 
         // Auto-enable bot after successful test
         await handleAutoEnable();
       } else {
         setCredentialsTested(false);
-        Message.error(result.data?.error || t('settings.lark.connectionFailed', 'Connection failed'));
+        Message.error(result.data?.error || 'Connection failed');
       }
     } catch (error: any) {
       setCredentialsTested(false);
-      Message.error(error.message || t('settings.lark.connectionFailed', 'Connection failed'));
+      Message.error(error.message || 'Connection failed');
     } finally {
       setTestLoading(false);
     }
@@ -212,7 +208,7 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
       console.log('[LarkConfig] enablePlugin result:', result);
 
       if (result.success) {
-        Message.success(t('settings.lark.pluginEnabled', 'Lark bot enabled'));
+        Message.success('Lark bot enabled');
         const statusResult = await channel.getPluginStatus.invoke();
         console.log('[LarkConfig] getPluginStatus result:', statusResult);
         if (statusResult.success && statusResult.data) {
@@ -223,11 +219,11 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
       } else {
         // Show error to user when enable fails
         console.error('[LarkConfig] enablePlugin failed:', result.msg);
-        Message.error(result.msg || t('settings.lark.enableFailed', 'Failed to enable Lark plugin'));
+        Message.error(result.msg || 'Failed to enable Lark plugin');
       }
     } catch (error: any) {
       console.error('[LarkConfig] Auto-enable failed:', error);
-      Message.error(error.message || t('settings.lark.enableFailed', 'Failed to enable Lark plugin'));
+      Message.error(error.message || 'Failed to enable Lark plugin');
     }
   };
 
@@ -245,10 +241,10 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
         id: provider.id,
         useModel: modelName,
       });
-      Message.success(t('settings.assistant.modelSaved', 'Model saved'));
+      Message.success('Model saved');
     } catch (error) {
       console.error('[LarkConfig] Failed to save model:', error);
-      Message.error(t('settings.assistant.modelSaveFailed', 'Failed to save model'));
+      Message.error('Failed to save model');
     }
   };
 
@@ -257,11 +253,11 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
     try {
       const result = await channel.approvePairing.invoke({ code });
       if (result.success) {
-        Message.success(t('settings.assistant.pairingApproved', 'Pairing approved'));
+        Message.success('Pairing approved');
         await loadPendingPairings();
         await loadAuthorizedUsers();
       } else {
-        Message.error(result.msg || t('settings.assistant.approveFailed', 'Failed to approve pairing'));
+        Message.error(result.msg || 'Failed to approve pairing');
       }
     } catch (error: any) {
       Message.error(error.message);
@@ -273,10 +269,10 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
     try {
       const result = await channel.rejectPairing.invoke({ code });
       if (result.success) {
-        Message.info(t('settings.assistant.pairingRejected', 'Pairing rejected'));
+        Message.info('Pairing rejected');
         await loadPendingPairings();
       } else {
-        Message.error(result.msg || t('settings.assistant.rejectFailed', 'Failed to reject pairing'));
+        Message.error(result.msg || 'Failed to reject pairing');
       }
     } catch (error: any) {
       Message.error(error.message);
@@ -288,10 +284,10 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
     try {
       const result = await channel.revokeUser.invoke({ userId });
       if (result.success) {
-        Message.success(t('settings.assistant.userRevoked', 'User access revoked'));
+        Message.success('User access revoked');
         await loadAuthorizedUsers();
       } else {
-        Message.error(result.msg || t('settings.assistant.revokeFailed', 'Failed to revoke user'));
+        Message.error(result.msg || 'Failed to revoke user');
       }
     } catch (error: any) {
       Message.error(error.message);
@@ -301,7 +297,7 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
   // Copy to clipboard
   const copyToClipboard = (text: string) => {
     void navigator.clipboard.writeText(text);
-    Message.success(t('common.copied', 'Copied to clipboard'));
+    Message.success('Copied to clipboard');
   };
 
   // Format timestamp
@@ -320,7 +316,7 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
   return (
     <div className='flex flex-col gap-24px'>
       {/* App ID */}
-      <PreferenceRow label={t('settings.lark.appId', 'App ID')} description={t('settings.lark.appIdDesc', 'Open Feishu Developer Console to get your App ID')} required>
+      <PreferenceRow label={'App ID'} description={'Open Feishu Developer Console to get your App ID'} required>
         <Input
           value={appId}
           onChange={(value) => {
@@ -336,7 +332,7 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
       </PreferenceRow>
 
       {/* App Secret */}
-      <PreferenceRow label={t('settings.lark.appSecret', 'App Secret')} description={t('settings.lark.appSecretDesc', 'App Secret from Feishu Developer Console')} required>
+      <PreferenceRow label={'App Secret'} description={'App Secret from Feishu Developer Console'} required>
         <Input.Password
           value={appSecret}
           onChange={(value) => {
@@ -353,14 +349,14 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
       </PreferenceRow>
 
       {/* Encrypt Key (Optional) */}
-      <PreferenceRow label={t('settings.lark.encryptKey', 'Encrypt Key')} description={t('settings.lark.encryptKeyDesc', 'Optional: For event encryption (from Event Subscription settings)')}>
+      <PreferenceRow label={'Encrypt Key'} description={'Optional: For event encryption (from Event Subscription settings)'}>
         <Input.Password
           value={encryptKey}
           onChange={(value) => {
             setEncryptKey(value);
             handleCredentialsChange();
           }}
-          placeholder={t('settings.lark.optional', 'Optional')}
+          placeholder={'Optional'}
           style={{ width: 240 }}
           visibilityToggle
           disabled={hasExistingUsers}
@@ -368,14 +364,14 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
       </PreferenceRow>
 
       {/* Verification Token (Optional) */}
-      <PreferenceRow label={t('settings.lark.verificationToken', 'Verification Token')} description={t('settings.lark.verificationTokenDesc', 'Optional: For event verification (from Event Subscription settings)')}>
+      <PreferenceRow label={'Verification Token'} description={'Optional: For event verification (from Event Subscription settings)'}>
         <Input.Password
           value={verificationToken}
           onChange={(value) => {
             setVerificationToken(value);
             handleCredentialsChange();
           }}
-          placeholder={t('settings.lark.optional', 'Optional')}
+          placeholder={'Optional'}
           style={{ width: 240 }}
           visibilityToggle
           disabled={hasExistingUsers}
@@ -387,16 +383,16 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
         <div className='flex justify-end'>
           {pluginStatus?.hasToken && !appId.trim() && !appSecret.trim() ? (
             // Credentials already saved but not entered in UI - show info message
-            <span className='text-12px text-t-tertiary mr-12px self-center'>{t('settings.lark.credentialsSaved', 'Credentials already configured. Enter new values to update.')}</span>
+            <span className='text-12px text-t-tertiary mr-12px self-center'>{'Credentials already configured. Enter new values to update.'}</span>
           ) : null}
           <Button type='primary' loading={testLoading} onClick={handleTestConnection} disabled={pluginStatus?.hasToken && !appId.trim() && !appSecret.trim()}>
-            {t('settings.lark.testAndConnect', 'Test & Connect')}
+            {'Test & Connect'}
           </Button>
         </div>
       )}
 
       {/* Default Model Selection */}
-      <PreferenceRow label={t('settings.assistant.defaultModel', 'Default Model')} description={t('settings.lark.defaultModelDesc', 'Model used for Lark conversations')}>
+      <PreferenceRow label={'Default Model'} description={'Model used for Lark conversations'}>
         <Dropdown
           trigger='click'
           position='br'
@@ -404,7 +400,7 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
             <Menu selectedKeys={selectedModel ? [selectedModel.id + selectedModel.useModel] : []}>
               {!modelList || modelList.length === 0 ? (
                 <Menu.Item key='no-models' className='px-12px py-12px text-t-secondary text-14px text-center' disabled>
-                  {t('settings.assistant.noAvailableModels', 'No Gemini models configured')}
+                  {'No available models configured'}
                 </Menu.Item>
               ) : (
                 modelList.map((provider) => {
@@ -433,7 +429,7 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
           }
         >
           <Button type='secondary' className='min-w-160px flex items-center justify-between gap-8px'>
-            <span className='truncate'>{selectedModel?.useModel || t('settings.assistant.selectModel', 'Select Model')}</span>
+            <span className='truncate'>{selectedModel?.useModel || 'Select Model'}</span>
             <Down theme='outline' size={14} />
           </Button>
         </Dropdown>
@@ -442,26 +438,26 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
       {/* Connection Status - show when bot is enabled */}
       {pluginStatus?.enabled && authorizedUsers.length === 0 && (
         <div className={`rd-12px p-16px border ${pluginStatus?.connected ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800' : pluginStatus?.error ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800' : 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800'}`}>
-          <SectionHeader title={t('settings.lark.connectionStatus', 'Connection Status')} action={<span className={`text-12px px-8px py-2px rd-4px ${pluginStatus?.connected ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : pluginStatus?.error ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'}`}>{pluginStatus?.connected ? t('settings.lark.statusConnected', '✅ Connected') : pluginStatus?.error ? t('settings.lark.statusError', '❌ Error') : t('settings.lark.statusConnecting', '⏳ Connecting...')}</span>} />
+          <SectionHeader title={'Connection Status'} action={<span className={`text-12px px-8px py-2px rd-4px ${pluginStatus?.connected ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : pluginStatus?.error ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300' : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'}`}>{pluginStatus?.connected ? '✅ Connected' : pluginStatus?.error ? '❌ Error' : '⏳ Connecting...'}</span>} />
           {pluginStatus?.error && <div className='text-14px text-red-600 dark:text-red-400 mb-12px'>{pluginStatus.error}</div>}
           {pluginStatus?.connected && (
             <div className='text-14px text-t-secondary space-y-8px'>
-              <p className='m-0 font-500'>{t('settings.assistant.nextSteps', 'Next Steps')}:</p>
+              <p className='m-0 font-500'>{'Next Steps'}:</p>
               <p className='m-0'>
-                <strong>1.</strong> {t('settings.lark.step1', 'Open Feishu/Lark and find your bot application')}
+                <strong>1.</strong> {'Open Feishu/Lark and find your bot application'}
               </p>
               <p className='m-0'>
-                <strong>2.</strong> {t('settings.lark.step2', 'Send any message to initiate pairing')}
+                <strong>2.</strong> {'Send any message to initiate pairing'}
               </p>
               <p className='m-0'>
-                <strong>3.</strong> {t('settings.lark.step3', 'A pairing request will appear below. Click "Approve" to authorize the user.')}
+                <strong>3.</strong> A pairing request will appear below. Click &quot;Approve&quot; to authorize the user.
               </p>
               <p className='m-0'>
-                <strong>4.</strong> {t('settings.lark.step4', 'Once approved, you can start chatting with the AI assistant through Lark!')}
+                <strong>4.</strong> {'Once approved, you can start chatting with the AI assistant through Lark!'}
               </p>
             </div>
           )}
-          {!pluginStatus?.connected && !pluginStatus?.error && <div className='text-14px text-t-secondary'>{t('settings.lark.waitingConnection', 'WebSocket connection is being established. Please wait...')}</div>}
+          {!pluginStatus?.connected && !pluginStatus?.error && <div className='text-14px text-t-secondary'>{'WebSocket connection is being established. Please wait...'}</div>}
         </div>
       )}
 
@@ -469,10 +465,10 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
       {pluginStatus?.enabled && authorizedUsers.length === 0 && (
         <div className='bg-fill-1 rd-12px pt-16px pr-16px pb-16px pl-0'>
           <SectionHeader
-            title={t('settings.assistant.pendingPairings', 'Pending Pairing Requests')}
+            title={'Pending Pairing Requests'}
             action={
               <Button size='mini' type='text' icon={<Refresh size={14} />} loading={pairingLoading} onClick={loadPendingPairings}>
-                {t('common.refresh', 'Refresh')}
+                {'Refresh'}
               </Button>
             }
           />
@@ -482,7 +478,7 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
               <Spin />
             </div>
           ) : pendingPairings.length === 0 ? (
-            <Empty description={t('settings.assistant.noPendingPairings', 'No pending pairing requests')} />
+            <Empty description={'No pending pairing requests'} />
           ) : (
             <div className='flex flex-col gap-12px'>
               {pendingPairings.map((pairing) => (
@@ -490,24 +486,24 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
                   <div className='flex-1'>
                     <div className='flex items-center gap-8px'>
                       <span className='text-14px font-500 text-t-primary'>{pairing.displayName || 'Unknown User'}</span>
-                      <Tooltip content={t('settings.assistant.copyCode', 'Copy pairing code')}>
+                      <Tooltip content={'Copy pairing code'}>
                         <button className='p-4px bg-transparent border-none text-t-tertiary hover:text-t-primary cursor-pointer' onClick={() => copyToClipboard(pairing.code)}>
                           <Copy size={14} />
                         </button>
                       </Tooltip>
                     </div>
                     <div className='text-12px text-t-tertiary mt-4px'>
-                      {t('settings.assistant.pairingCode', 'Code')}: <code className='bg-fill-3 px-4px rd-2px'>{pairing.code}</code>
+                      {'Code'}: <code className='bg-fill-3 px-4px rd-2px'>{pairing.code}</code>
                       <span className='mx-8px'>|</span>
-                      {t('settings.assistant.expiresIn', 'Expires in')}: {getRemainingTime(pairing.expiresAt)}
+                      {'Expires in'}: {getRemainingTime(pairing.expiresAt)}
                     </div>
                   </div>
                   <div className='flex items-center gap-8px'>
                     <Button type='primary' size='small' icon={<CheckOne size={14} />} onClick={() => handleApprovePairing(pairing.code)}>
-                      {t('settings.assistant.approve', 'Approve')}
+                      {'Approve'}
                     </Button>
                     <Button type='secondary' size='small' status='danger' icon={<CloseOne size={14} />} onClick={() => handleRejectPairing(pairing.code)}>
-                      {t('settings.assistant.reject', 'Reject')}
+                      {'Reject'}
                     </Button>
                   </div>
                 </div>
@@ -521,10 +517,10 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
       {authorizedUsers.length > 0 && (
         <div className='bg-fill-1 rd-12px pt-16px pr-16px pb-16px pl-0'>
           <SectionHeader
-            title={t('settings.assistant.authorizedUsers', 'Authorized Users')}
+            title={'Authorized Users'}
             action={
               <Button size='mini' type='text' icon={<Refresh size={14} />} loading={usersLoading} onClick={loadAuthorizedUsers}>
-                {t('common.refresh', 'Refresh')}
+                {'Refresh'}
               </Button>
             }
           />
@@ -534,7 +530,7 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
               <Spin />
             </div>
           ) : authorizedUsers.length === 0 ? (
-            <Empty description={t('settings.assistant.noAuthorizedUsers', 'No authorized users yet')} />
+            <Empty description={'No authorized users yet'} />
           ) : (
             <div className='flex flex-col gap-12px'>
               {authorizedUsers.map((user) => (
@@ -542,12 +538,12 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
                   <div className='flex-1'>
                     <div className='text-14px font-500 text-t-primary'>{user.displayName || 'Unknown User'}</div>
                     <div className='text-12px text-t-tertiary mt-4px'>
-                      {t('settings.assistant.platform', 'Platform')}: Lark
+                      {'Platform'}: Lark
                       <span className='mx-8px'>|</span>
-                      {t('settings.assistant.authorizedAt', 'Authorized')}: {formatTime(user.authorizedAt)}
+                      {'Authorized'}: {formatTime(user.authorizedAt)}
                     </div>
                   </div>
-                  <Tooltip content={t('settings.assistant.revokeAccess', 'Revoke access')}>
+                  <Tooltip content={'Revoke access'}>
                     <Button type='text' status='danger' size='small' icon={<Delete size={16} />} onClick={() => handleRevokeUser(user.id)} />
                   </Tooltip>
                 </div>

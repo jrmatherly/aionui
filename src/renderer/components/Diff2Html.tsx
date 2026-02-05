@@ -15,13 +15,11 @@ import { html } from 'diff2html';
 import 'diff2html/bundles/css/diff2html.min.css';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { useTranslation } from 'react-i18next';
 import { usePreviewLauncher } from '../hooks/usePreviewLauncher';
 import CollapsibleContent from './CollapsibleContent';
 
 const Diff2Html = ({ diff, className, title, filePath }: { diff: string; className?: string; title?: string; filePath?: string }) => {
   const { theme } = useThemeContext();
-  const { t } = useTranslation();
   const { launchPreview, loading: previewLoading } = usePreviewLauncher();
   const [sideBySide, setSideBySide] = useState(false);
   const [collapse, setCollapse] = useState(false);
@@ -157,9 +155,9 @@ const Diff2Html = ({ diff, className, title, filePath }: { diff: string; classNa
                 <span className='whitespace-nowrap'>side-by-side</span>
               </Checkbox>
 
-              <Tooltip content={t('preview.openInPanelTooltip')}>
+              <Tooltip content={'View in preview panel'}>
                 <Button type='text' size='mini' onClick={handlePreviewClick as any} disabled={previewLoading} icon={<PreviewOpen theme='outline' size='14' fill={iconColors.secondary} />}>
-                  {t('preview.preview')}
+                  {'Preview'}
                 </Button>
               </Tooltip>
 

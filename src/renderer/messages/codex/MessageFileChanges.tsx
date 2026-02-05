@@ -10,7 +10,6 @@ import { usePreviewLauncher } from '@/renderer/hooks/usePreviewLauncher';
 import { extractContentFromDiff, parseFilePathFromDiff } from '@/renderer/utils/diffUtils';
 import { getFileTypeInfo } from '@/renderer/utils/fileType';
 import React, { useCallback, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import type { WriteFileResult } from '../types';
 
 type TurnDiffContent = Extract<CodexToolCallUpdate, { subtype: 'turn_diff' }>;
@@ -96,7 +95,6 @@ export const parseDiff = (diff: string, fileNameHint?: string): FileChangeInfo =
  * Display all generated/modified files in the conversation, click to preview
  */
 const MessageFileChanges: React.FC<MessageFileChangesProps> = ({ turnDiffChanges = [], writeFileChanges = [], diffsChanges = [], className }) => {
-  const { t } = useTranslation();
   const { launchPreview } = usePreviewLauncher();
 
   // Parse all file changes
@@ -147,7 +145,7 @@ const MessageFileChanges: React.FC<MessageFileChangesProps> = ({ turnDiffChanges
     return null;
   }
 
-  return <FileChangesPanel title={t('messages.fileChangesCount', { count: fileChanges.length })} files={fileChanges} onFileClick={handleFileClick} className={className} />;
+  return <FileChangesPanel title={`${fileChanges.length} File Changes`} files={fileChanges} onFileClick={handleFileClick} className={className} />;
 };
 
 export default React.memo(MessageFileChanges);

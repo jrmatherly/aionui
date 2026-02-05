@@ -8,7 +8,6 @@ import ModalHOC from '@/renderer/utils/ModalHOC';
 import { Form, Input, Message, Select } from '@arco-design/web-react';
 import { Edit, LinkCloud, Search } from '@icon-park/react';
 import React, { useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import useModeModeList from '../../../hooks/useModeModeList';
 import useProtocolDetection from '../../../hooks/useProtocolDetection';
 import ApiKeyEditorModal from './ApiKeyEditorModal';
@@ -30,13 +29,11 @@ const ProviderLogo: React.FC<{ logo: string | null; name: string; size?: number 
  * @param platform - Platform config
  * @param t - Translation function
  */
-const renderPlatformOption = (platform: PlatformConfig, t?: (key: string) => string) => {
-  // If i18nKey exists and t function is provided, use translated name; otherwise use original name
-  const displayName = platform.i18nKey && t ? t(platform.i18nKey) : platform.name;
+const renderPlatformOption = (platform: PlatformConfig) => {
   return (
     <div className='flex items-center gap-8px'>
-      <ProviderLogo logo={platform.logo} name={displayName} size={18} />
-      <span>{displayName}</span>
+      <ProviderLogo logo={platform.logo} name={platform.name} size={18} />
+      <span>{platform.name}</span>
     </div>
   );
 };
@@ -45,7 +42,6 @@ const AddPlatformModal = ModalHOC<{
   onSubmit: (platform: IProvider) => void;
 }>(({ modalProps, onSubmit, modalCtrl }) => {
   const [message, messageContext] = Message.useMessage();
-  const { t } = useTranslation();
   const [form] = Form.useForm();
   const [apiKeyEditorVisible, setApiKeyEditorVisible] = useState(false);
   // Track last detection input to avoid redundant detection
@@ -115,7 +111,7 @@ const AddPlatformModal = ModalHOC<{
       protocolDetection.reset();
       // Record current input to prevent redundant detection after switch
       setLastDetectionInput({ baseUrl: actualBaseUrl, apiKey });
-      message.success(t('settings.platformSwitched', { platform: targetPlatform.name }));
+      message.success(`Switched to ${targetPlatform.name} platform`);
     }
   };
 
@@ -139,7 +135,7 @@ const AddPlatformModal = ModalHOC<{
   useEffect(() => {
     if (modelListState.data?.fix_base_url) {
       form.setFieldValue('baseUrl', modelListState.data.fix_base_url);
-      message.info(t('settings.baseUrlAutoFix', { base_url: modelListState.data.fix_base_url }));
+      message.info(`base_url auto fix to: ${modelListState.data.fix_base_url}`);
     }
   }, [modelListState.data?.fix_base_url, form]);
 
@@ -148,7 +144,7 @@ const AddPlatformModal = ModalHOC<{
       .validate()
       .then((values) => {
         // If i18nKey exists use translated name, otherwise use platform name
-        const name = selectedPlatform?.i18nKey ? t(selectedPlatform.i18nKey) : (selectedPlatform?.name ?? values.platform);
+        const name = selectedPlatform?.name ?? values.platform;
 
         // Parse custom headers from JSON string (if provided)
         let customHeaders: Record<string, string> | undefined;
@@ -179,12 +175,12 @@ const AddPlatformModal = ModalHOC<{
   };
 
   return (
-    <AionModal visible={modalProps.visible} onCancel={modalCtrl.close} header={{ title: t('settings.addModel'), showClose: true }} style={{ maxWidth: '92vw', borderRadius: 16 }} contentStyle={{ background: 'var(--bg-1)', borderRadius: 16, padding: '20px 24px 16px', overflow: 'auto' }} onOk={handleSubmit} confirmLoading={modalProps.confirmLoading} okText={t('common.confirm')} cancelText={t('common.cancel')}>
+    <AionModal visible={modalProps.visible} onCancel={modalCtrl.close} header={{ title: 'Add Model', showClose: true }} style={{ maxWidth: '92vw', borderRadius: 16 }} contentStyle={{ background: 'var(--bg-1)', borderRadius: 16, padding: '20px 24px 16px', overflow: 'auto' }} onOk={handleSubmit} confirmLoading={modalProps.confirmLoading} okText={'Confirm'} cancelText={'Cancel'}>
       {messageContext}
       <div className='flex flex-col gap-16px py-20px'>
         <Form form={form} layout='vertical' className='space-y-0'>
           {/* Model Platform Selection (first level) */}
-          <Form.Item initialValue='gemini' label={t('settings.modelPlatform')} field={'platform'} required rules={[{ required: true }]}>
+          <Form.Item initialValue='gemini' label={'Model Platform'} field={'platform'} required rules={[{ required: true }]}>
             <Select
               showSearch
               filterOption={(inputValue, option) => {
@@ -202,19 +198,19 @@ const AddPlatformModal = ModalHOC<{
                 const optionValue = (option as { value?: string })?.value;
                 const plat = MODEL_PLATFORMS.find((p) => p.value === optionValue);
                 if (!plat) return optionValue;
-                return renderPlatformOption(plat, t);
+                return renderPlatformOption(plat);
               }}
             >
               {MODEL_PLATFORMS.map((plat) => (
                 <Select.Option key={plat.value} value={plat.value}>
-                  {renderPlatformOption(plat, t)}
+                  {renderPlatformOption(plat)}
                 </Select.Option>
               ))}
             </Select>
           </Form.Item>
 
           {/* Base URL - shown for Custom, Gemini, and gateway/proxy providers */}
-          <Form.Item hidden={!showBaseUrl} label={t('settings.baseUrl')} field={'baseUrl'} required={requiresBaseUrl} rules={[{ required: requiresBaseUrl }]}>
+          <Form.Item hidden={!showBaseUrl} label={'base url'} field={'baseUrl'} required={requiresBaseUrl} rules={[{ required: requiresBaseUrl }]}>
             <Input
               placeholder={selectedPlatform?.baseUrlPlaceholder || selectedPlatform?.baseUrl || 'https://api.example.com/v1'}
               onBlur={() => {
@@ -225,13 +221,13 @@ const AddPlatformModal = ModalHOC<{
 
           {/* API Key */}
           <Form.Item
-            label={t('settings.apiKey')}
+            label={'API Key'}
             required
             rules={[{ required: true }]}
             field={'apiKey'}
             extra={
               <div className='space-y-2px'>
-                <div className='text-11px text-t-secondary mt-2 leading-4'>{t('settings.multiApiKeyTip')}</div>
+                <div className='text-11px text-t-secondary mt-2 leading-4'>{'💡 To add multiple API Keys for auto-rotation, configure in platform edit later'}</div>
                 {/* Protocol detection status */}
                 {shouldShowDetectionResult && <ProtocolDetectionStatus isDetecting={protocolDetection.isDetecting} result={protocolDetection.result} currentPlatform={platformValue} onSwitchPlatform={handleSwitchPlatform} />}
               </div>
@@ -269,7 +265,7 @@ const AddPlatformModal = ModalHOC<{
           )}
 
           {/* Model Selection */}
-          <Form.Item label={t('settings.modelName')} field={'model'} required rules={[{ required: true }]} validateStatus={modelListState.error ? 'error' : 'success'} help={modelListState.error}>
+          <Form.Item label={'Model Name'} field={'model'} required rules={[{ required: true }]} validateStatus={modelListState.error ? 'error' : 'success'} help={modelListState.error}>
             <Select
               loading={modelListState.isLoading}
               showSearch
@@ -279,11 +275,11 @@ const AddPlatformModal = ModalHOC<{
                   onClick={(e) => {
                     e.stopPropagation();
                     if (isCustom && !baseUrl) {
-                      message.warning(t('settings.pleaseEnterBaseUrl'));
+                      message.warning('Please enter Base URL');
                       return;
                     }
                     if (!isGemini && !apiKey) {
-                      message.warning(t('settings.pleaseEnterApiKey'));
+                      message.warning('Please enter API Key');
                       return;
                     }
                     void modelListState.mutate();

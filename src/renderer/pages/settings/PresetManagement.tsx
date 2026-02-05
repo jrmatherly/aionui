@@ -8,7 +8,6 @@ import { markdown } from '@codemirror/lang-markdown';
 import { Delete, EditTwo, Lightning } from '@icon-park/react';
 import CodeMirror from '@uiw/react-codemirror';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { mutate } from 'swr';
 
 interface PresetManagementProps {
@@ -16,7 +15,6 @@ interface PresetManagementProps {
 }
 
 const PresetManagement: React.FC<PresetManagementProps> = ({ message }) => {
-  const { t } = useTranslation();
   const { theme } = useThemeContext();
   const [presets, setPresets] = useState<AcpBackendConfig[]>([]);
   const [editingPreset, setEditingAgent] = useState<AcpBackendConfig | null>(null);
@@ -66,11 +64,11 @@ const PresetManagement: React.FC<PresetManagementProps> = ({ message }) => {
       const updatedAgents = allAgents.map((a) => (a.id === editingPreset.id ? { ...a, name: editName, context: editContext } : a));
       await ConfigStorage.set('acp.customAgents', updatedAgents);
       setEditVisible(false);
-      message.success(t('common.success', { defaultValue: 'Success' }));
+      message.success('Success');
       void loadPresets();
       void refreshAgentDetection();
     } catch (error) {
-      message.error(t('common.failed', { defaultValue: 'Failed' }));
+      message.error('Failed');
     }
   };
 
@@ -81,20 +79,20 @@ const PresetManagement: React.FC<PresetManagementProps> = ({ message }) => {
       const updatedAgents = allAgents.filter((a) => a.id !== presetToDelete.id);
       await ConfigStorage.set('acp.customAgents', updatedAgents);
       setDeleteVisible(false);
-      message.success(t('common.success', { defaultValue: 'Deleted' }));
+      message.success('Success');
       void loadPresets();
       void refreshAgentDetection();
     } catch (error) {
-      message.error(t('common.failed', { defaultValue: 'Failed' }));
+      message.error('Failed');
     }
   };
 
   return (
     <div>
-      <Collapse.Item header={<div className='flex items-center justify-between'>{t('settings.preset_agents', { defaultValue: 'Custom Presets (Rules & Skills)' })}</div>} name='preset-management'>
+      <Collapse.Item header={<div className='flex items-center justify-between'>{'Custom Presets (Rules)'}</div>} name='preset-management'>
         <div className='py-2'>
           {presets.length === 0 ? (
-            <div className='text-center py-4 text-t-secondary'>{t('settings.no_presets', { defaultValue: 'No custom presets generated yet.' })}</div>
+            <div className='text-center py-4 text-t-secondary'>{'No custom presets generated yet.'}</div>
           ) : (
             <div className='space-y-2'>
               {presets.map((preset) => (
@@ -127,14 +125,14 @@ const PresetManagement: React.FC<PresetManagementProps> = ({ message }) => {
       </Collapse.Item>
 
       {/* Edit Modal */}
-      <Modal title={t('settings.edit_preset', { defaultValue: 'Edit Preset' })} visible={editVisible} onOk={handleSave} onCancel={() => setEditVisible(false)} style={{ width: 600 }}>
+      <Modal title={'Edit Preset'} visible={editVisible} onOk={handleSave} onCancel={() => setEditVisible(false)} style={{ width: 600 }}>
         <div className='space-y-4'>
           <div>
-            <Typography.Text bold>{t('settings.agent_name', { defaultValue: 'Agent Name' })}</Typography.Text>
+            <Typography.Text bold>{'Agent Name'}</Typography.Text>
             <Input className='mt-2' value={editName} onChange={setEditName} />
           </div>
           <div>
-            <Typography.Text bold>{t('settings.rule_content', { defaultValue: 'Rule Content / Instructions' })}</Typography.Text>
+            <Typography.Text bold>{'Rule Content / Instructions'}</Typography.Text>
             <div className='mt-2 border rounded overflow-hidden'>
               <CodeMirror value={editContext} height='300px' theme={theme} extensions={[markdown()]} onChange={setEditContext} />
             </div>
@@ -143,8 +141,8 @@ const PresetManagement: React.FC<PresetManagementProps> = ({ message }) => {
       </Modal>
 
       {/* Delete Confirm */}
-      <Modal title={t('common.confirm', { defaultValue: 'Confirm Delete' })} visible={deleteVisible} onOk={handleDelete} onCancel={() => setDeleteVisible(false)} okButtonProps={{ status: 'danger' }}>
-        <p>{t('settings.delete_preset_confirm', { defaultValue: 'Are you sure you want to delete this preset?' })}</p>
+      <Modal title={'Confirm'} visible={deleteVisible} onOk={handleDelete} onCancel={() => setDeleteVisible(false)} okButtonProps={{ status: 'danger' }}>
+        <p>{'Are you sure you want to delete this preset?'}</p>
         <Typography.Text bold>{presetToDelete?.name}</Typography.Text>
       </Modal>
     </div>

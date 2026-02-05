@@ -7,8 +7,6 @@
 import { Message } from '@arco-design/web-react';
 import MonacoEditor from '@monaco-editor/react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 interface HTMLPreviewProps {
   content: string;
   filePath?: string;
@@ -29,7 +27,6 @@ interface SelectedElement {
  * - Supports bidirectional positioning: preview ↔ code
  */
 const HTMLPreview: React.FC<HTMLPreviewProps> = ({ content, filePath, hideToolbar = false }) => {
-  const { t } = useTranslation();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [editMode, setEditMode] = useState(false);
   const [htmlCode, setHtmlCode] = useState(content);
@@ -234,7 +231,7 @@ const HTMLPreview: React.FC<HTMLPreviewProps> = ({ content, filePath, hideToolba
       if (event.data.type === 'element-selected') {
         const elementInfo: SelectedElement = event.data.data;
         setSelectedElement(elementInfo);
-        messageApi.info(t('preview.html.elementSelected', { path: elementInfo.path }));
+        messageApi.info(`Selected element: ${elementInfo.path}`);
       } else if (event.data.type === 'element-contextmenu') {
         const { element, x, y } = event.data.data;
 
@@ -272,10 +269,10 @@ const HTMLPreview: React.FC<HTMLPreviewProps> = ({ content, filePath, hideToolba
   const handleCopyHTML = useCallback(
     (html: string) => {
       void navigator.clipboard.writeText(html);
-      messageApi.success(t('preview.html.copySuccess'));
+      messageApi.success('Copied HTML snippet');
       setContextMenu(null);
     },
-    [messageApi, t]
+    [messageApi]
   );
 
   /**
@@ -310,7 +307,7 @@ const HTMLPreview: React.FC<HTMLPreviewProps> = ({ content, filePath, hideToolba
   const handleToggleInspector = () => {
     setInspectorMode(!inspectorMode);
     if (!inspectorMode) {
-      messageApi.info(t('preview.html.inspectorEnabled'));
+      messageApi.info('Element inspector enabled. Click items in the preview to highlight them.');
     }
   };
 
@@ -324,31 +321,31 @@ const HTMLPreview: React.FC<HTMLPreviewProps> = ({ content, filePath, hideToolba
           <div className='flex items-center gap-8px'>
             {/* Edit button */}
             <button onClick={handleToggleEdit} className={`px-12px py-4px rd-4px text-12px transition-colors ${editMode ? 'bg-primary text-white' : 'bg-bg-3 text-t-primary hover:bg-bg-4'}`}>
-              {editMode ? `💾 ${t('common.save')}` : `✏️ ${t('common.edit')}`}
+              {editMode ? `💾 ${'Save'}` : `✏️ ${'Edit'}`}
             </button>
 
             {/* Element selector button */}
-            <button onClick={handleToggleInspector} className={`px-12px py-4px rd-4px text-12px transition-colors ${inspectorMode ? 'bg-primary text-white' : 'bg-bg-3 text-t-primary hover:bg-bg-4'}`} title={t('preview.html.inspectorTooltip')}>
-              🔍 {inspectorMode ? t('preview.html.inspecting') : t('preview.html.inspectorButton')}
+            <button onClick={handleToggleInspector} className={`px-12px py-4px rd-4px text-12px transition-colors ${inspectorMode ? 'bg-primary text-white' : 'bg-bg-3 text-t-primary hover:bg-bg-4'}`} title={'Click preview elements to inspect their HTML'}>
+              🔍 {inspectorMode ? 'Inspecting...' : 'Element inspector'}
             </button>
 
             {/* Selected element path */}
             {selectedElement && (
               <div className='text-12px text-t-secondary ml-8px'>
-                {t('preview.html.selectedLabel')} <code className='bg-bg-3 px-4px rd-2px'>{selectedElement.path}</code>
+                {'Selected:'} <code className='bg-bg-3 px-4px rd-2px'>{selectedElement.path}</code>
               </div>
             )}
           </div>
 
           <div className='flex items-center gap-8px'>
             {/* Download button */}
-            <button onClick={handleDownload} className='flex items-center gap-4px px-8px py-4px rd-4px cursor-pointer hover:bg-bg-3 transition-colors' title={t('preview.html.downloadHtml')}>
+            <button onClick={handleDownload} className='flex items-center gap-4px px-8px py-4px rd-4px cursor-pointer hover:bg-bg-3 transition-colors' title={'Download HTML file'}>
               <svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' className='text-t-secondary'>
                 <path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4' />
                 <polyline points='7 10 12 15 17 10' />
                 <line x1='12' y1='15' x2='12' y2='3' />
               </svg>
-              <span className='text-12px text-t-secondary'>{t('common.download')}</span>
+              <span className='text-12px text-t-secondary'>{'Download'}</span>
             </button>
           </div>
         </div>
@@ -396,17 +393,17 @@ const HTMLPreview: React.FC<HTMLPreviewProps> = ({ content, filePath, hideToolba
           onClick={(e) => e.stopPropagation()}
         >
           <div className='px-12px py-6px text-13px text-t-primary hover:bg-bg-2 cursor-pointer transition-colors' onClick={() => handleCopyHTML(contextMenu.element.html)}>
-            📋 {t('preview.html.copyElementHtml')}
+            📋 {'Copy element HTML'}
           </div>
           <div
             className='px-12px py-6px text-13px text-t-primary hover:bg-bg-2 cursor-pointer transition-colors'
             onClick={() => {
               console.log('[HTMLPreview] Element info:', contextMenu.element);
-              messageApi.info(t('preview.html.printedToConsole'));
+              messageApi.info('Element info logged to console');
               setContextMenu(null);
             }}
           >
-            🔍 {t('preview.html.viewElementInfo')}
+            🔍 {'View element info'}
           </div>
         </div>
       )}

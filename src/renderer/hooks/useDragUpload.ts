@@ -6,7 +6,6 @@
 
 import { Message } from '@arco-design/web-react';
 import { useCallback, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import type { FileMetadata } from '../services/FileService';
 import { FileService, isSupportedFile } from '../services/FileService';
 
@@ -16,7 +15,6 @@ export interface UseDragUploadOptions {
 }
 
 export const useDragUpload = ({ supportedExts = [], onFilesAdded }: UseDragUploadOptions) => {
-  const { t } = useTranslation();
   const [isFileDragging, setIsFileDragging] = useState(false);
 
   // Drag counter to prevent state flickering
@@ -95,10 +93,10 @@ export const useDragUpload = ({ supportedExts = [], onFilesAdded }: UseDragUploa
         }
       } catch (err) {
         console.error('Failed to process dropped files:', err);
-        Message.error(t('sendbox.dropFileError', 'Failed to process dropped files'));
+        Message.error('Failed to process dropped files');
       }
     },
-    [onFilesAdded, supportedExts, t]
+    [onFilesAdded, supportedExts]
   );
 
   const dragHandlers = {

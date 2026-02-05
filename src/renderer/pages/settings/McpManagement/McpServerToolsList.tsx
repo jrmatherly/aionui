@@ -1,15 +1,11 @@
 import type { IMcpServer } from '@/common/storage';
 import { Tooltip } from '@arco-design/web-react';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-
 interface McpServerToolsListProps {
   server: IMcpServer;
 }
 
 const McpServerToolsList: React.FC<McpServerToolsListProps> = ({ server }) => {
-  const { t } = useTranslation();
-
   if (!server.tools || server.tools.length === 0) {
     return null;
   }
@@ -25,8 +21,8 @@ const McpServerToolsList: React.FC<McpServerToolsListProps> = ({ server }) => {
                   <div className='font-medium text-sm text-blue-600 break-words'>{tool.name}</div>
                 </div>
                 <div className='flex-1 min-w-0'>
-                  <Tooltip content={tool.description || t('settings.mcpNoDescription')}>
-                    <div className='text-xs text-t-secondary line-clamp-1 cursor-pointer'>{tool.description || t('settings.mcpNoDescription')}</div>
+                  <Tooltip content={tool.description || 'No description'}>
+                    <div className='text-xs text-t-secondary line-clamp-1 cursor-pointer'>{tool.description || 'No description'}</div>
                   </Tooltip>
                 </div>
               </div>

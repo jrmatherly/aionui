@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Office AI Agent - 您的桌面AI开发助手</title>
-    <meta name="description" content="Office AI Agent 是一款开源的桌面AI助手，集成了强大的Gemini模型，旨在通过智能聊天和工具调用，彻底改变您的开发工作流程。">
+    <title>Office AI Agent - Your Desktop AI Development Assistant</title>
+    <meta name="description" content="Office AI Agent is an open-source desktop AI assistant integrated with the powerful Gemini model, designed to revolutionize your development workflow through intelligent chat and tool invocation.">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,8 +16,8 @@
         <div class="container">
             <div class="logo">Office AI Agent</div>
             <nav class="main-nav">
-                <a href="#features">核心特性</a>
-                <a href="#getting-started">快速开始</a>
+                <a href="#features">Key Features</a>
+                <a href="#getting-started">Get Started</a>
                 <a href="https://github.com/your-username/office-ai-agent" target="_blank" class="nav-github">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
                     GitHub
@@ -30,13 +30,13 @@
         <section class="hero">
             <div class="container">
                 <div class="hero-content">
-                    <h1 class="hero-title">您的桌面AI伙伴，重塑开发工作流</h1>
+                    <h1 class="hero-title">Your Desktop AI Companion, Reinventing Dev Workflows</h1>
                     <p class="hero-subtitle">
-                        Office AI Agent 是一款开源的、运行在您本地的AI助手。它深度集成了强大的语言模型，通过自然的聊天交互和无缝的工具调用，帮您完成编码、调试、分析等一系列开发任务。
+                        Office AI Agent is an open-source AI assistant running locally on your machine. Deeply integrated with powerful language models, it helps you complete varied development tasks like coding, debugging, and analysis through natural chat interactions and seamless tool invocation.
                     </p>
                     <div class="hero-cta">
-                        <a href="#getting-started" class="btn btn-primary">获取桌面应用</a>
-                        <a href="https://github.com/your-username/office-ai-agent" target="_blank" class="btn btn-secondary">查看源码</a>
+                        <a href="#getting-started" class="btn btn-primary">Get Desktop App</a>
+                        <a href="https://github.com/your-username/office-ai-agent" target="_blank" class="btn btn-secondary">View Source</a>
                     </div>
                 </div>
                 <div class="hero-visual">
@@ -48,16 +48,16 @@
                             <span class="window-title">bash - Gemini Agent</span>
                         </div>
                         <div class="code-body">
-                            <pre><code><span class="prompt-user">></span> <span class="command">分析 src/renderer 目录下的代码，找出所有 .tsx 文件并总结其主要功能。</span>
+                            <pre><code><span class="prompt-user">></span> <span class="command">Analyze the code in the src/renderer directory, find all .tsx files and summarize their main functions.</span>
 
 <span class="prompt-agent">[tool_code]</span> <span class="tool-name">list_directory</span>(path=<span class="string">'./src/renderer'</span>)
 <span class="prompt-agent">[tool_code]</span> <span class="tool-name">read_many_files</span>(paths=[...])
 
-<span class="prompt-agent">></span> <span class="text-output">分析完成。`src/renderer` 目录下的 .tsx 文件构成了应用的前端UI。
-- <span class="file">layout.tsx:</span> 定义了应用主布局。
-- <span class="file">main.tsx:</span> React应用的入口文件。
-- <span class="file">GeminiChat.tsx:</span> 核心的聊天界面组件。
-- <span class="file">Diff2Html.tsx:</span> 用于渲染代码差异对比。</span></code></pre>
+<span class="prompt-agent">></span> <span class="text-output">Analysis complete. The .tsx files in the src/renderer directory constitute the frontend UI of the application.
+- <span class="file">layout.tsx:</span> Defines the main application layout.
+- <span class="file">main.tsx:</span> Entry file for the React application.
+- <span class="file">GeminiChat.tsx:</span> Core chat interface component.
+- <span class="file">Diff2Html.tsx:</span> Used for rendering code diff comparisons.</span></code></pre>
                         </div>
                     </div>
                 </div>
@@ -66,50 +66,50 @@
 
         <section id="features" class="features">
             <div class="container">
-                <h2 class="section-title">核心特性</h2>
-                <p class="section-subtitle">专为提升开发者生产力而设计。</p>
+                <h2 class="section-title">Key Features</h2>
+                <p class="section-subtitle">Designed to boost developer productivity.</p>
                 <div class="features-grid">
                     <div class="feature-card">
                         <div class="feature-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                         </div>
-                        <h3 class="feature-title">智能聊天交互</h3>
-                        <p class="feature-description">基于强大的 Gemini 模型，提供流畅、上下文感知的对话体验，准确理解您的开发意图。</p>
+                        <h3 class="feature-title">Intelligent Chat Interaction</h3>
+                        <p class="feature-description">Powered by the robust Gemini model, offering fluid, context-aware conversational experiences that accurately understand your development intent.</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
                         </div>
-                        <h3 class="feature-title">强大的工具集</h3>
-                        <p class="feature-description">能够读写文件、执行Shell命令、搜索代码库，将AI的智能与您本地的开发环境无缝结合。</p>
+                        <h3 class="feature-title">Powerful Toolset</h3>
+                        <p class="feature-description">Capable of reading/writing files, executing Shell commands, and searching codebases, seamlessly combining AI intelligence with your local development environment.</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"></path></svg>
                         </div>
-                        <h3 class="feature-title">代码理解与生成</h3>
-                        <p class="feature-description">内置代码高亮和Diff视图，无论是解释旧代码、生成新模块还是审查变更，都直观高效。</p>
+                        <h3 class="feature-title">Code Understanding & Generation</h3>
+                        <p class="feature-description">Built-in code highlighting and Diff views make explaining old code, generating new modules, or reviewing changes intuitive and efficient.</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
                         </div>
-                        <h3 class="feature-title">跨平台桌面应用</h3>
-                        <p class="feature-description">基于 Electron 和 React 构建，提供在 Windows, macOS 和 Linux 上一致的、原生的使用体验。</p>
+                        <h3 class="feature-title">Cross-Platform Desktop App</h3>
+                        <p class="feature-description">Built with Electron and React, providing a consistent, native experience across Windows, macOS, and Linux.</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.99 10.01l-1-5-5-1-4 4-1-5-5-1 4 4-5 1-1 5 4 4-1 5 1 5 4-4 5 1 5 1-4-4 1-5z"></path></svg>
                         </div>
-                        <h3 class="feature-title">灵活的进程管理</h3>
-                        <p class="feature-description">采用多进程架构，确保AI任务在独立的Worker中运行，保持UI流畅响应，不阻塞您的操作。</p>
+                        <h3 class="feature-title">Flexible Process Management</h3>
+                        <p class="feature-description">Adopts a multi-process architecture to ensure AI tasks run in independent Workers, keeping the UI fluid and responsive without blocking your operations.</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-3"></path></svg>
                         </div>
-                        <h3 class="feature-title">100% 开源</h3>
-                        <p class="feature-description">代码完全开放，由社区驱动。欢迎您贡献代码、提出建议，共同打造更强大的AI开发工具。</p>
+                        <h3 class="feature-title">100% Open Source</h3>
+                        <p class="feature-description">Code is fully open and community-driven. We welcome your code contributions, suggestions, and collaborative efforts to build a stronger AI development tool.</p>
                     </div>
                 </div>
             </div>
@@ -117,26 +117,26 @@
 
         <section id="getting-started" class="getting-started">
             <div class="container">
-                <h2 class="section-title">快速开始</h2>
-                <p class="section-subtitle">只需三步，即可拥有您的AI开发助手。</p>
+                <h2 class="section-title">Get Started</h2>
+                <p class="section-subtitle">Just three steps to own your AI development assistant.</p>
                 <div class="steps">
                     <div class="step">
                         <div class="step-number">1</div>
-                        <h3 class="step-title">下载应用</h3>
-                        <p class="step-description">访问我们的 GitHub Releases 页面，根据您的操作系统（macOS, Windows, Linux）下载最新的安装包。</p>
-                        <a href="https://github.com/your-username/office-ai-agent/releases" target="_blank" class="btn btn-small">前往 Releases</a>
+                        <h3 class="step-title">Download App</h3>
+                        <p class="step-description">Visit our GitHub Releases page to download the latest installer for your operating system (macOS, Windows, Linux).</p>
+                        <a href="https://github.com/your-username/office-ai-agent/releases" target="_blank" class="btn btn-small">Go to Releases</a>
                     </div>
                     <div class="step-arrow">→</div>
                     <div class="step">
                         <div class="step-number">2</div>
-                        <h3 class="step-title">安装与配置</h3>
-                        <p class="step-description">安装应用后，首次启动会引导您进行简单的配置，例如填入您的 Gemini API 密钥。</p>
+                        <h3 class="step-title">Install & Configure</h3>
+                        <p class="step-description">After installation, the first launch will guide you through a simple configuration, such as entering your Gemini API key.</p>
                     </div>
                     <div class="step-arrow">→</div>
                     <div class="step">
                         <div class="step-number">3</div>
-                        <h3 class="step-title">开始使用</h3>
-                        <p class="step-description">一切就绪！现在，开始与您的AI助手对话，探索全新的开发方式，提升您的工作效率。</p>
+                        <h3 class="step-title">Start Using</h3>
+                        <p class="step-description">All set! Now, start chatting with your AI assistant to explore a new way of development and boost your productivity.</p>
                     </div>
                 </div>
             </div>
@@ -144,8 +144,8 @@
 
         <section class="cta-section">
             <div class="container">
-                <h2 class="cta-title">准备好加入我们了吗？</h2>
-                <p class="cta-text">Office AI Agent 是一个开放的社区项目。无论您是提交一个Bug、贡献一段代码，还是分享一个新想法，我们都热烈欢迎您的加入。</p>
+                <h2 class="cta-title">Ready to Join Us?</h2>
+                <p class="cta-text">Office AI Agent is an open community project. Whether you are submitting a bug, contributing code, or sharing a new idea, we warmly welcome you to join us.</p>
                 <a href="https://github.com/your-username/office-ai-agent" target="_blank" class="btn btn-primary btn-large">Fork on GitHub</a>
             </div>
         </section>
@@ -153,10 +153,11 @@
 
     <footer class="main-footer">
         <div class="container">
-            <p>&copy; 2024 Office AI Agent. 本项目采用 MIT 许可证开源。</p>
-            <p>请将 <span class="highlight">your-username</span> 替换为您真实的GitHub用户名。</p>
+            <p>&copy; 2024 Office AI Agent. This project is open-sourced under the MIT License.</p>
+            <p>Please replace <span class="highlight">your-username</span> with your actual GitHub username.</p>
         </div>
     </footer>
 
 </body>
 </html>
+

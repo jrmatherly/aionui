@@ -4,13 +4,11 @@ import { useConversationContextSafe } from '@/renderer/context/ConversationConte
 import { Divider, Typography } from '@arco-design/web-react';
 import type { PropsWithChildren } from 'react';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { removeStack } from '../../../utils/common';
 
 const ConversationChatConfirm: React.FC<PropsWithChildren<{ conversation_id: string }>> = ({ conversation_id, children }) => {
   const [confirmations, setConfirmations] = useState<IConfirmation<any>[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const { t } = useTranslation();
   const conversationContext = useConversationContextSafe();
   const agentType = conversationContext?.type || 'unknown';
 
@@ -156,7 +154,7 @@ const ConversationChatConfirm: React.FC<PropsWithChildren<{ conversation_id: str
           }}
         >
           {/* 错误标题 / Error title */}
-          <div className='color-[rgba(217,45,32,1)] text-14px font-medium mb-8px'>{t('conversation.confirmationLoadError', 'Failed to load confirmation dialog')}</div>
+          <div className='color-[rgba(217,45,32,1)] text-14px font-medium mb-8px'>{'Failed to load confirmation dialog'}</div>
           {/* 错误详情 / Error details */}
           <div className='text-12px color-[rgba(134,144,156,1)] mb-12px'>{loadError}</div>
           {/* 手动重试按钮 / Manual retry button */}
@@ -170,7 +168,7 @@ const ConversationChatConfirm: React.FC<PropsWithChildren<{ conversation_id: str
             }}
             className='px-12px py-6px bg-[rgba(22,93,255,1)] text-white rd-6px text-12px cursor-pointer hover:opacity-80 transition-opacity'
           >
-            {t('common.retry', 'Retry')}
+            {'Retry'}
           </button>
         </div>
         {children}
@@ -180,7 +178,7 @@ const ConversationChatConfirm: React.FC<PropsWithChildren<{ conversation_id: str
 
   if (!confirmations.length) return <>{children}</>;
   const confirmation = confirmations[0];
-  const $t = (key: string, params?: Record<string, string>) => t(key, { ...params, defaultValue: key });
+  const $t = (key: string, _params?: Record<string, string>) => key;
   return (
     <div
       className={`relative p-16px bg-white flex flex-col overflow-hidden m-b-20px rd-20px max-w-800px max-h-[calc(100vh-200px)] w-full mx-auto box-border`}

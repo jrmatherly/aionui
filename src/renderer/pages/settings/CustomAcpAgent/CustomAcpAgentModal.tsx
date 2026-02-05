@@ -14,8 +14,6 @@ import { json } from '@codemirror/lang-json';
 import { CheckSmall } from '@icon-park/react';
 import CodeMirror from '@uiw/react-codemirror';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 // CLI Logo imports
 import AuggieLogo from '@/renderer/assets/logos/auggie.svg';
 import GooseLogo from '@/renderer/assets/logos/goose.svg';
@@ -55,7 +53,6 @@ interface DetectedAgent {
 }
 
 const CustomAcpAgentModal: React.FC<CustomAcpAgentModalProps> = ({ visible, agent, onCancel, onSubmit }) => {
-  const { t } = useTranslation();
   const { theme } = useThemeContext();
 
   // Component state
@@ -97,7 +94,7 @@ const CustomAcpAgentModal: React.FC<CustomAcpAgentModalProps> = ({ visible, agen
    */
   const generateJsonConfig = useCallback((selected: DetectedAgent) => {
     const config = {
-      defaultCliPath: selected.cliPath || '',
+      defaultCliPath: selected.cliPath,
       enabled: true,
       env: {},
       acpArgs: selected.acpArgs,
@@ -135,9 +132,9 @@ const CustomAcpAgentModal: React.FC<CustomAcpAgentModalProps> = ({ visible, agen
       if (agent) {
         // 编辑模式：显示高级配置，name 从显示名称输入框获取
         setShowAdvanced(true);
-        setAgentName(agent.name || 'Custom Agent');
+        setAgentName(agent.name);
         const config = {
-          defaultCliPath: agent.defaultCliPath || '',
+          defaultCliPath: agent.defaultCliPath,
           enabled: agent.enabled ?? true,
           env: agent.env || {},
           acpArgs: agent.acpArgs,
@@ -190,7 +187,7 @@ const CustomAcpAgentModal: React.FC<CustomAcpAgentModalProps> = ({ visible, agen
       const parsed = JSON.parse(jsonInput);
       const customAgent: AcpBackendConfig = {
         id: agent?.id || parsed.id || uuid(),
-        name: agentName || 'Custom Agent', // name always from input field
+        name: agentName, // name always from input field
         defaultCliPath: parsed.defaultCliPath,
         enabled: parsed.enabled ?? true,
         env: parsed.env || {},
@@ -204,7 +201,7 @@ const CustomAcpAgentModal: React.FC<CustomAcpAgentModalProps> = ({ visible, agen
       const customAgent: AcpBackendConfig = {
         id: uuid(),
         name: agentName || selected.name,
-        defaultCliPath: selected.cliPath || '',
+        defaultCliPath: selected.cliPath,
         enabled: true,
         env: {},
         acpArgs: selected.acpArgs,
@@ -229,7 +226,7 @@ const CustomAcpAgentModal: React.FC<CustomAcpAgentModalProps> = ({ visible, agen
       onOk={handleSubmit}
       okButtonProps={{ disabled: isSubmitDisabled() }}
       header={{
-        title: agent ? t('settings.editCustomAgent') || 'Edit Custom Agent' : t('settings.configureCustomAgent') || 'Add Custom Agent',
+        title: agent ? 'Edit Custom Agent' : 'Configure',
         showClose: true,
       }}
       style={{ width: 520, height: 'auto', maxHeight: '80vh' }}
@@ -244,20 +241,20 @@ const CustomAcpAgentModal: React.FC<CustomAcpAgentModalProps> = ({ visible, agen
         {/* CLI selection cards (only shown in add mode) */}
         {!agent && (
           <div>
-            <div className='mb-8px text-sm font-medium text-t-primary'>{t('settings.selectCli') || 'Select CLI'}</div>
+            <div className='mb-8px text-sm font-medium text-t-primary'>{'Select CLI'}</div>
             {loadingAgents ? (
               <div className='flex items-center justify-center py-16px'>
                 <Spin />
               </div>
             ) : detectedAgents.length === 0 ? (
-              <Alert type='warning' content={t('settings.noCliDetected') || 'No CLI tools detected. Please install an ACP-compatible CLI first.'} />
+              <Alert type='warning' content={'No CLI tools detected. Please install an ACP-compatible CLI first.'} />
             ) : (
               <div className='grid grid-cols-2 gap-8px'>
                 {detectedAgents.map((detectedAgent) => {
                   const logo = BACKEND_LOGO_MAP[detectedAgent.backend];
                   const isSelected = selectedCli === detectedAgent.cliPath;
                   return (
-                    <div key={detectedAgent.cliPath} className={`p-10px rounded-lg cursor-pointer transition-all flex items-center gap-8px relative border ${isSelected ? 'bg-[var(--color-fill-2)] border-primary' : 'bg-[var(--bg-2)] border-transparent hover:bg-[var(--color-fill-2)] hover:border-[var(--color-border-2)]'}`} onClick={() => handleSelectCli(detectedAgent.cliPath || '')}>
+                    <div key={detectedAgent.cliPath} className={`p-10px rounded-lg cursor-pointer transition-all flex items-center gap-8px relative border ${isSelected ? 'bg-[var(--color-fill-2)] border-primary' : 'bg-[var(--bg-2)] border-transparent hover:bg-[var(--color-fill-2)] hover:border-[var(--color-border-2)]'}`} onClick={() => handleSelectCli(detectedAgent.cliPath)}>
                       {logo && <img src={logo} alt={`${detectedAgent.name} logo`} className='w-24px h-24px object-contain flex-shrink-0' />}
                       <div className='min-w-0 flex-1'>
                         <div className='font-medium text-sm text-t-primary'>{detectedAgent.name}</div>
@@ -274,8 +271,8 @@ const CustomAcpAgentModal: React.FC<CustomAcpAgentModalProps> = ({ visible, agen
         {/* Display name input (shown when CLI selected or in edit mode) */}
         {(selectedCli || agent) && (
           <div>
-            <div className='mb-8px text-sm font-medium text-t-primary'>{t('settings.agentDisplayName') || 'Display Name'}</div>
-            <Input value={agentName} onChange={(v) => setAgentName(v)} placeholder={t('settings.agentNamePlaceholder') || 'Enter a name for this agent'} />
+            <div className='mb-8px text-sm font-medium text-t-primary'>{'Display Name'}</div>
+            <Input value={agentName} onChange={(v) => setAgentName(v)} placeholder={'Enter a name for this agent'} />
           </div>
         )}
 
@@ -288,7 +285,7 @@ const CustomAcpAgentModal: React.FC<CustomAcpAgentModalProps> = ({ visible, agen
             bordered={false}
             style={{ background: 'transparent' }}
           >
-            <Collapse.Item name='advanced' header={<span className='text-sm text-t-secondary'>{t('settings.advancedMode') || 'Advanced Configuration'}</span>}>
+            <Collapse.Item name='advanced' header={<span className='text-sm text-t-secondary'>{'Advanced (JSON)'}</span>}>
               <div className='pt-8px'>
                 <CodeMirror
                   value={jsonInput}

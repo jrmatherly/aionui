@@ -9,7 +9,6 @@ import { emitter } from '@/renderer/utils/emitter';
 import { Button, Popover, Tooltip } from '@arco-design/web-react';
 import { AlarmClock } from '@icon-park/react';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useCronJobs } from '../hooks/useCronJobs';
 import { getJobStatusFlags } from '../utils/cronUtils';
 import CronJobDrawer from './CronJobDrawer';
@@ -23,14 +22,13 @@ interface CronJobManagerProps {
  * Shows a single job per conversation with drawer for editing
  */
 const CronJobManager: React.FC<CronJobManagerProps> = ({ conversationId }) => {
-  const { t } = useTranslation();
   const { jobs, loading, hasJobs, deleteJob, updateJob } = useCronJobs(conversationId);
   const [drawerVisible, setDrawerVisible] = useState(false);
 
   // Handle unconfigured state (no jobs)
   if (!hasJobs && !loading) {
     const handleCreateClick = () => {
-      emitter.emit('sendbox.fill', t('cron.status.defaultPrompt'));
+      emitter.emit('sendbox.fill', 'Every day at 10am, search for the latest AI news, summarize and output an insight report.');
     };
 
     return (
@@ -39,9 +37,9 @@ const CronJobManager: React.FC<CronJobManagerProps> = ({ conversationId }) => {
         position='bottom'
         content={
           <div className='flex flex-col gap-8px p-4px max-w-240px'>
-            <div className='text-13px text-t-secondary'>{t('cron.status.unconfiguredHint')}</div>
+            <div className='text-13px text-t-secondary'>{'No scheduled task yet. Create one with your Agent!'}</div>
             <Button type='primary' size='mini' onClick={handleCreateClick}>
-              {t('cron.status.createNow')}
+              {'Create Now'}
             </Button>
           </div>
         }
@@ -73,7 +71,7 @@ const CronJobManager: React.FC<CronJobManagerProps> = ({ conversationId }) => {
 
   const { hasError, isPaused } = getJobStatusFlags(job);
 
-  const tooltipContent = isPaused ? t('cron.status.paused') : hasError ? t('cron.status.error') : job.name;
+  const tooltipContent = isPaused ? 'Paused' : hasError ? 'Error' : job.name;
 
   const handleSave = async (updates: { message: string; enabled: boolean }) => {
     await updateJob(job.id, {

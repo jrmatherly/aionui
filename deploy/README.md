@@ -74,7 +74,7 @@ services:
       - AIONUI_PORT=25808
       - AIONUI_ALLOW_REMOTE=true
       - JWT_SECRET=your-secret-here-change-in-production
-      
+
       # OIDC Configuration
       - OIDC_ENABLED=true
       - OIDC_ISSUER=https://login.microsoftonline.com/{tenant-id}/v2.0
@@ -88,7 +88,7 @@ services:
       - aionui_data:/data
       - ./group-mappings.json:/config/group-mappings.json:ro
     ports:
-      - "25808:25808"
+      - '25808:25808'
 ```
 
 **Step 2: Create Group Mappings File**
@@ -104,6 +104,7 @@ Create `group-mappings.json` in the same directory as your `docker-compose.yml`:
 ```
 
 Map your organization's AD/LDAP groups to AionUI roles:
+
 - **admin**: Full system access, user management, configuration
 - **user**: Create conversations, manage own workspace
 - **viewer**: Read-only access to assigned conversations
@@ -132,33 +133,33 @@ docker-compose -f deploy/docker/docker-compose.yml up -d
 
 #### Initial Admin User Behavior
 
-| Scenario | Result |
-|----------|--------|
-| **OIDC disabled** | Local `admin` user created on first startup |
-| **OIDC enabled, no group mappings** | First OIDC user to log in becomes admin |
-| **OIDC enabled, with group mappings** | Roles assigned based on group membership |
-| **Both OIDC and local enabled** | Local `admin` available as fallback |
+| Scenario                              | Result                                      |
+| ------------------------------------- | ------------------------------------------- |
+| **OIDC disabled**                     | Local `admin` user created on first startup |
+| **OIDC enabled, no group mappings**   | First OIDC user to log in becomes admin     |
+| **OIDC enabled, with group mappings** | Roles assigned based on group membership    |
+| **Both OIDC and local enabled**       | Local `admin` available as fallback         |
 
 ### Configuration
 
 Environment variables can be set in `docker-compose.yml` or via `.env` file:
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `AIONUI_PORT` | `25808` | WebUI server port |
-| `AIONUI_ALLOW_REMOTE` | `true` | Enable network access |
-| `JWT_SECRET` | (auto) | JWT signing key (set for production) |
-| `AIONUI_HTTPS` | `false` | Enable HTTPS mode (use with reverse proxy) |
-| `NODE_ENV` | `production` | Environment mode |
-| `OIDC_ENABLED` | `false` | Enable OIDC/SSO authentication |
-| `OIDC_ISSUER` | - | Identity provider issuer URL (e.g., `https://login.microsoftonline.com/{tenant}/v2.0`) |
-| `OIDC_CLIENT_ID` | - | OAuth client ID from your IdP |
-| `OIDC_CLIENT_SECRET` | - | OAuth client secret from your IdP |
-| `OIDC_REDIRECT_URI` | - | OAuth callback URL (e.g., `http://your-domain:25808/api/auth/oidc/callback`) |
-| `OIDC_SCOPES` | `openid profile email` | Space-separated OAuth scopes |
-| `OIDC_GROUPS_CLAIM` | `groups` | JWT claim containing user groups |
-| `GROUP_MAPPINGS_FILE` | - | Path to group-mappings.json file (inside container) |
-| `GROUP_MAPPINGS_JSON` | - | Inline JSON string for group-to-role mapping |
+| Variable              | Default                | Description                                                                            |
+| --------------------- | ---------------------- | -------------------------------------------------------------------------------------- |
+| `AIONUI_PORT`         | `25808`                | WebUI server port                                                                      |
+| `AIONUI_ALLOW_REMOTE` | `true`                 | Enable network access                                                                  |
+| `JWT_SECRET`          | (auto)                 | JWT signing key (set for production)                                                   |
+| `AIONUI_HTTPS`        | `false`                | Enable HTTPS mode (use with reverse proxy)                                             |
+| `NODE_ENV`            | `production`           | Environment mode                                                                       |
+| `OIDC_ENABLED`        | `false`                | Enable OIDC/SSO authentication                                                         |
+| `OIDC_ISSUER`         | -                      | Identity provider issuer URL (e.g., `https://login.microsoftonline.com/{tenant}/v2.0`) |
+| `OIDC_CLIENT_ID`      | -                      | OAuth client ID from your IdP                                                          |
+| `OIDC_CLIENT_SECRET`  | -                      | OAuth client secret from your IdP                                                      |
+| `OIDC_REDIRECT_URI`   | -                      | OAuth callback URL (e.g., `http://your-domain:25808/api/auth/oidc/callback`)           |
+| `OIDC_SCOPES`         | `openid profile email` | Space-separated OAuth scopes                                                           |
+| `OIDC_GROUPS_CLAIM`   | `groups`               | JWT claim containing user groups                                                       |
+| `GROUP_MAPPINGS_FILE` | -                      | Path to group-mappings.json file (inside container)                                    |
+| `GROUP_MAPPINGS_JSON` | -                      | Inline JSON string for group-to-role mapping                                           |
 
 ### Data Persistence
 
@@ -185,9 +186,11 @@ docker run --rm -v aionui_data:/data -v $(pwd):/backup \
 #### Security
 
 1. **Set JWT_SECRET** - Use a strong, random secret for consistent auth tokens
+
    ```bash
    JWT_SECRET=$(openssl rand -hex 32)
    ```
+
    - Store securely (use Docker secrets or encrypted environment files)
    - Never commit to version control
    - Rotating this secret invalidates all active sessions
@@ -276,7 +279,7 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        
+
         # WebSocket support
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;

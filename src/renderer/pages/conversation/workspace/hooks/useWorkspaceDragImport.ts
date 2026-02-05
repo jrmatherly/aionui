@@ -6,7 +6,6 @@
 
 import { ipcBridge } from '@/common';
 import { FileService } from '@/renderer/services/FileService';
-import type { TFunction } from 'i18next';
 import type { DragEvent } from 'react';
 import { useCallback, useRef, useState } from 'react';
 import type { MessageApi } from '../types';
@@ -14,7 +13,6 @@ import type { MessageApi } from '../types';
 interface UseWorkspaceDragImportOptions {
   onFilesDropped: (files: Array<{ path: string; name: string }>) => Promise<void> | void;
   messageApi: MessageApi;
-  t: TFunction<'translation'>;
 }
 
 interface DroppedItem {
@@ -38,7 +36,7 @@ const dedupeItems = (items: DroppedItem[]): DroppedItem[] => {
   return Array.from(map.values());
 };
 
-export function useWorkspaceDragImport({ onFilesDropped, messageApi, t }: UseWorkspaceDragImportOptions) {
+export function useWorkspaceDragImport({ onFilesDropped, messageApi }: UseWorkspaceDragImportOptions) {
   const [isDragging, setIsDragging] = useState(false);
   const dragCounterRef = useRef(0);
 
@@ -169,11 +167,7 @@ export function useWorkspaceDragImport({ onFilesDropped, messageApi, t }: UseWor
       const targets = dedupedWithPath.length > 0 ? await resolveDroppedItems(dedupedWithPath) : tempItems;
 
       if (targets.length === 0) {
-        messageApi.warning(
-          t('conversation.workspace.dragNoFiles', {
-            defaultValue: 'No valid files detected. Please drag from Finder/Explorer.',
-          })
-        );
+        messageApi.warning('No valid files detected. Please drag from Finder/Explorer.');
         return;
       }
 
@@ -181,14 +175,10 @@ export function useWorkspaceDragImport({ onFilesDropped, messageApi, t }: UseWor
         await onFilesDropped(targets.map(({ path, name }) => ({ path, name })));
       } catch (error) {
         console.error('Failed to import dropped files:', error);
-        messageApi.error(
-          t('conversation.workspace.dragFailed', {
-            defaultValue: 'Failed to import dropped files.',
-          })
-        );
+        messageApi.error('Failed to import dropped files.');
       }
     },
-    [resolveDroppedItems, createTempItemsFromFiles, messageApi, onFilesDropped, resetDragState, t]
+    [resolveDroppedItems, createTempItemsFromFiles, messageApi, onFilesDropped, resetDragState]
   );
 
   const dragHandlers = {

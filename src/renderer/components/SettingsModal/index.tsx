@@ -12,7 +12,6 @@ import { Tabs } from '@arco-design/web-react';
 import { Computer, Earth, Gemini, Info, LinkCloud, Toolkit } from '@icon-park/react';
 import classNames from 'classnames';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import AboutModalContent from './contents/AboutModalContent';
 import AgentModalContent from './contents/AgentModalContent';
 import GeminiModalContent from './contents/GeminiModalContent';
@@ -116,7 +115,6 @@ export const SubModal: React.FC<SubModalProps> = ({ visible, onCancel, title, ch
  * ```
  */
 const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onCancel, defaultTab = 'gemini' }) => {
-  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<SettingTab>(defaultTab);
   const [isMobile, setIsMobile] = useState(false);
   const resizeTimerRef = useRef<number | undefined>(undefined);
@@ -159,17 +157,17 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onCancel, defaul
     const items: Array<{ key: SettingTab; label: string; icon: React.ReactNode }> = [
       {
         key: 'gemini',
-        label: t('settings.gemini'),
+        label: 'Gemini',
         icon: <Gemini theme='outline' size='20' fill={iconColors.secondary} />,
       },
       {
         key: 'model',
-        label: t('settings.model'),
+        label: 'Model',
         icon: <LinkCloud theme='outline' size='20' fill={iconColors.secondary} />,
       },
       {
         key: 'tools',
-        label: t('settings.tools'),
+        label: 'Tools',
         icon: <Toolkit theme='outline' size='20' fill={iconColors.secondary} />,
       },
     ];
@@ -178,7 +176,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onCancel, defaul
     if (isDesktop) {
       items.push({
         key: 'webui',
-        label: t('settings.webui'),
+        label: 'WebUI',
         icon: <Earth theme='outline' size='20' fill={iconColors.secondary} />,
       });
     }
@@ -186,18 +184,18 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onCancel, defaul
     items.push(
       {
         key: 'system',
-        label: t('settings.system'),
+        label: 'System',
         icon: <Computer theme='outline' size='20' fill={iconColors.secondary} />,
       },
       {
         key: 'about',
-        label: t('settings.about'),
+        label: 'About',
         icon: <Info theme='outline' size='20' fill={iconColors.secondary} />,
       }
     );
 
     return items;
-  }, [t, isDesktop]);
+  }, [isDesktop]);
 
   console.log('%c [  ]-211', 'font-size:13px; background:pink; color:#bf2c9f;', isDesktop, menuItems);
 
@@ -277,7 +275,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onCancel, defaul
           borderRadius: '16px',
         }}
         contentStyle={{ padding: isMobile ? '16px' : '24px 24px 32px' }}
-        title={t('settings.title')}
+        title={'Settings'}
       >
         <div
           className={classNames('overflow-hidden gap-0', isMobile ? 'flex flex-col min-h-0' : 'flex mt-20px')}

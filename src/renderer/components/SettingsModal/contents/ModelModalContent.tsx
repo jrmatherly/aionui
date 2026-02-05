@@ -14,7 +14,6 @@ import EditModeModal from '@/renderer/pages/settings/components/EditModeModal';
 import { Button, Collapse, Divider, Message, Popconfirm } from '@arco-design/web-react';
 import { DeleteFour, Info, Minus, Plus, Write } from '@icon-park/react';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 import { useSettingsViewMode } from '../settingsViewContext';
 
@@ -25,7 +24,6 @@ const getApiKeyCount = (apiKey: string): number => {
 };
 
 const ModelModalContent: React.FC = () => {
-  const { t } = useTranslation();
   const branding = useBranding();
   const viewMode = useSettingsViewMode();
   const isPageMode = viewMode === 'page';
@@ -52,7 +50,7 @@ const ModelModalContent: React.FC = () => {
       })
       .catch((error) => {
         console.error('Failed to save model config:', error);
-        message.error(t('settings.saveModelConfigFailed'));
+        message.error('Failed to save model configuration');
       });
   };
 
@@ -101,9 +99,9 @@ const ModelModalContent: React.FC = () => {
 
       {/* Header with Add Button */}
       <div className='flex-shrink-0 border-b flex items-center justify-between mb-20px'>
-        <div className='text-14px text-t-primary'>{t('settings.model')}</div>
+        <div className='text-14px text-t-primary'>{'Model'}</div>
         <Button type='outline' shape='round' icon={<Plus size='16' />} onClick={() => addPlatformModalCtrl.open()} className='rd-100px border-1 border-t-secondary'>
-          {t('settings.addModel')}
+          {'Add Model'}
         </Button>
       </div>
 
@@ -112,13 +110,13 @@ const ModelModalContent: React.FC = () => {
         {!data || data.length === 0 ? (
           <div className='flex flex-col items-center justify-center py-40px'>
             <Info theme='outline' size='48' className='text-t-secondary mb-16px' />
-            <h3 className='text-16px font-500 text-t-primary mb-8px'>{t('settings.noConfiguredModels')}</h3>
+            <h3 className='text-16px font-500 text-t-primary mb-8px'>{'No configured models'}</h3>
             <p className='text-14px text-t-secondary text-center max-w-400px'>
-              {t('settings.needHelpConfigGuide')}
+              {'Need help? Check out the detailed'}
               <a href={branding.docs.llmConfig} target='_blank' rel='noopener noreferrer' className='text-[rgb(var(--primary-6))] hover:text-[rgb(var(--primary-5))] underline ml-4px'>
-                {t('settings.configGuide')}
+                {'configuration guide'}
               </a>
-              {t('settings.configGuideSuffix')}
+              {'.'}
             </p>
           </div>
         ) : (
@@ -150,15 +148,15 @@ const ModelModalContent: React.FC = () => {
                                 setCollapseKey((prev) => ({ ...prev, [platform.id]: !isExpanded }));
                               }}
                             >
-                              {t('settings.modelCount')}（{platform.model.length}）
+                              {'Model'}（{platform.model.length}）
                             </span>
                             |{' '}
                             <span className='cursor-pointer hover:text-t-primary' onClick={() => editModalCtrl.open({ data: platform })}>
-                              {t('settings.apiKeyCount')}（{getApiKeyCount(platform.apiKey)}）
+                              {'API Key'}（{getApiKeyCount(platform.apiKey)}）
                             </span>
                           </span>
                           <Button size='mini' icon={<Plus size='14' />} onClick={() => addModelModalCtrl.open({ data: platform })} />
-                          <Popconfirm title={t('settings.deleteAllModelConfirm')} onOk={() => removePlatform(platform.id)}>
+                          <Popconfirm title={'Are you sure you want to delete all models?'} onOk={() => removePlatform(platform.id)}>
                             <Button size='mini' icon={<Minus size='14' />} />
                           </Popconfirm>
                           <Button size='mini' icon={<Write size='14' />} onClick={() => editModalCtrl.open({ data: platform })} />
@@ -171,7 +169,7 @@ const ModelModalContent: React.FC = () => {
                         <div className='flex items-center justify-between py-4px'>
                           <span className='text-14px text-t-primary'>{model}</span>
                           <Popconfirm
-                            title={t('settings.deleteModelConfirm')}
+                            title={'Are you sure you want to delete this model?'}
                             onOk={() => {
                               const newModels = platform.model.filter((item) => item !== model);
                               updatePlatform({ ...platform, model: newModels }, () => {

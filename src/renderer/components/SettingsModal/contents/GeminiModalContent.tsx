@@ -11,7 +11,6 @@ import { useThemeContext } from '@/renderer/context/ThemeContext';
 import { Button, Divider, Form, Input, Message, Switch } from '@arco-design/web-react';
 import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useBranding } from '@/renderer/hooks/useBranding';
 import { useSettingsViewMode } from '../settingsViewContext';
 
@@ -21,7 +20,6 @@ interface GeminiModalContentProps {
 }
 
 const GeminiModalContent: React.FC<GeminiModalContentProps> = ({ onRequestClose }) => {
-  const { t } = useTranslation();
   const { theme: _theme } = useThemeContext();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -106,7 +104,7 @@ const GeminiModalContent: React.FC<GeminiModalContentProps> = ({ onRequestClose 
       await ConfigStorage.set('gemini.config', geminiConfig);
       await ConfigStorage.set('customCss', customCss || '');
 
-      message.success(t('common.saveSuccess'));
+      message.success('Saved successfully');
       onRequestClose?.();
 
       window.dispatchEvent(
@@ -115,7 +113,7 @@ const GeminiModalContent: React.FC<GeminiModalContentProps> = ({ onRequestClose 
         })
       );
     } catch (error: unknown) {
-      message.error((error as Error)?.message || t('common.saveFailed'));
+      message.error((error as Error)?.message || 'Failed to save');
     } finally {
       setLoading(false);
     }
@@ -151,7 +149,7 @@ const GeminiModalContent: React.FC<GeminiModalContentProps> = ({ onRequestClose 
         <div className='space-y-16px'>
           <div className='px-[12px] py-[24px] md:px-[32px] bg-2 rd-12px md:rd-16px border border-border-2'>
             <Form form={form} layout='horizontal' labelCol={{ flex: '140px' }} labelAlign='left' wrapperCol={{ flex: '1' }}>
-              <Form.Item label={t('settings.personalAuth')} field='googleAccount' layout='horizontal'>
+              <Form.Item label={'Google Account'} field='googleAccount' layout='horizontal'>
                 {(props) => (
                   <div
                     className={classNames('flex flex-wrap items-center justify-end gap-12px', {
@@ -178,7 +176,7 @@ const GeminiModalContent: React.FC<GeminiModalContentProps> = ({ onRequestClose 
                               });
                           }}
                         >
-                          {t('settings.googleLogout')}
+                          {'Logout'}
                         </Button>
                       </>
                     ) : (
@@ -194,17 +192,17 @@ const GeminiModalContent: React.FC<GeminiModalContentProps> = ({ onRequestClose 
                               if (result.success) {
                                 loadGoogleAuthStatus(form.getFieldValue('proxy'));
                                 if (result.data?.account) {
-                                  message.success(t('settings.googleLoginSuccess', { defaultValue: 'Successfully logged in' }));
+                                  message.success('Successfully logged in');
                                 }
                               } else {
                                 // Login failed, show error message
-                                const errorMsg = result.msg || t('settings.googleLoginFailed', { defaultValue: 'Login failed. Please try again.' });
+                                const errorMsg = result.msg || 'Login failed. Please try again.';
                                 message.error(errorMsg);
                                 console.error('[GoogleAuth] Login failed:', result.msg);
                               }
                             })
                             .catch((error) => {
-                              message.error(t('settings.googleLoginFailed', { defaultValue: 'Login failed. Please try again.' }));
+                              message.error('Login failed. Please try again.');
                               console.error('Failed to login to Google:', error);
                             })
                             .finally(() => {
@@ -212,7 +210,7 @@ const GeminiModalContent: React.FC<GeminiModalContentProps> = ({ onRequestClose 
                             });
                         }}
                       >
-                        {t('settings.googleLogin')}
+                        {'Login with Google'}
                       </Button>
                     )}
                   </div>
@@ -220,18 +218,18 @@ const GeminiModalContent: React.FC<GeminiModalContentProps> = ({ onRequestClose 
               </Form.Item>
               <Divider className='mt-0px mb-20px' />
 
-              <Form.Item label={t('settings.proxyConfig')} field='proxy' layout='vertical' rules={[{ match: /^https?:\/\/.+$/, message: t('settings.proxyHttpOnly') }]}>
-                <Input className='aion-input' placeholder={t('settings.proxyHttpOnly')} />
+              <Form.Item label={'Proxy'} field='proxy' layout='vertical' rules={[{ match: /^https?:\/\/.+$/, message: 'Only support http/https protocol' }]}>
+                <Input className='aion-input' placeholder={'Only support http/https protocol'} />
               </Form.Item>
               <Divider className='mt-0px mb-20px' />
 
               <Form.Item label='GOOGLE_CLOUD_PROJECT' field='GOOGLE_CLOUD_PROJECT' layout='vertical'>
-                <Input className='aion-input' placeholder={t('settings.googleCloudProjectPlaceholder')} />
+                <Input className='aion-input' placeholder={'Enter your Google Cloud Project ID'} />
               </Form.Item>
 
               {/* YOLO toggle — only visible when ALLOW_GEMINI_YOLO=true */}
               {branding.features?.allowGeminiYolo && (
-                <Form.Item label={t('settings.yoloMode')} field='yoloMode' layout='horizontal'>
+                <Form.Item label={'YOLO (Auto Allow)'} field='yoloMode' layout='horizontal'>
                   {(value, form) => (
                     <div
                       className={classNames('flex justify-end', {
@@ -251,10 +249,10 @@ const GeminiModalContent: React.FC<GeminiModalContentProps> = ({ onRequestClose 
       {/* Footer with Buttons */}
       <div className={classNames('flex-shrink-0 flex gap-10px border-t border-border-2 pl-24px py-16px', isPageMode ? 'border-none pl-0 pr-0 pt-10px flex-col md:flex-row md:justify-end' : 'justify-end')}>
         <Button className={classNames('rd-100px', isPageMode && 'w-full md:w-auto')} onClick={handleCancel}>
-          {t('common.cancel')}
+          {'Cancel'}
         </Button>
         <Button type='primary' loading={loading} onClick={onSubmit} className={classNames('rd-100px', isPageMode && 'w-full md:w-auto')}>
-          {t('common.save')}
+          {'Save'}
         </Button>
       </div>
     </div>

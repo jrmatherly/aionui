@@ -1,7 +1,6 @@
 import { ConfigStorage } from '@/common/storage';
 import loginLogo from '@renderer/assets/logos/app.png';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import AppLoader from '../../components/AppLoader';
 import { useAuth } from '../../context/AuthContext';
@@ -35,7 +34,6 @@ const deobfuscate = (text: string): string => {
 const isDesktopRuntime = typeof window !== 'undefined' && Boolean((window as any).electronAPI);
 
 const LoginPage: React.FC = () => {
-  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { status, login } = useAuth();
 
@@ -78,12 +76,12 @@ const LoginPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    document.title = t('login.pageTitle');
-  }, [t]);
+    document.title = 'AionUi - Sign In';
+  }, []);
 
   useEffect(() => {
-    document.documentElement.lang = i18n.language;
-  }, [i18n.language]);
+    document.documentElement.lang = 'en-US';
+  }, []);
 
   useEffect(() => {
     const isRememberMe = localStorage.getItem(REMEMBER_ME_KEY) === 'true';
@@ -130,30 +128,7 @@ const LoginPage: React.FC = () => {
     [clearMessageLater]
   );
 
-  const supportedLanguages = useMemo<{ code: string; label: string }[]>(
-    () => [
-      { code: 'zh-CN', label: '简体中文' },
-      { code: 'zh-TW', label: '繁體中文' },
-      { code: 'ja-JP', label: '日本語' },
-      { code: 'ko-KR', label: '한국어' },
-      { code: 'tr-TR', label: 'Türkçe' },
-      { code: 'en-US', label: 'English' },
-    ],
-    []
-  );
-
-  const handleLanguageChange = useCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) => {
-      const nextLanguage = event.target.value;
-      i18n.changeLanguage(nextLanguage).catch((error: Error) => {
-        console.error('Failed to change language:', error);
-      });
-      ConfigStorage.set('language', nextLanguage).catch((error: Error) => {
-        console.error('Failed to persist language preference:', error);
-      });
-    },
-    [i18n]
-  );
+  // Language selector removed - English only
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent) => {
@@ -161,7 +136,7 @@ const LoginPage: React.FC = () => {
       const trimmedUsername = username.trim();
 
       if (!trimmedUsername || !password) {
-        showMessage({ type: 'error', text: t('login.errors.empty') });
+        showMessage({ type: 'error', text: 'Please enter username and password' });
         return;
       }
 
@@ -181,7 +156,7 @@ const LoginPage: React.FC = () => {
           localStorage.removeItem(REMEMBERED_PASSWORD_KEY);
         }
 
-        const successText = t('login.success');
+        const successText = 'Login successful! Redirecting...';
         showMessage({ type: 'success', text: successText });
 
         window.setTimeout(() => {
@@ -191,16 +166,16 @@ const LoginPage: React.FC = () => {
         const errorText = (() => {
           switch (result.code) {
             case 'invalidCredentials':
-              return t('login.errors.invalidCredentials');
+              return 'Invalid username or password';
             case 'tooManyAttempts':
-              return t('login.errors.tooManyAttempts');
+              return 'Too many attempts, please try again later';
             case 'networkError':
-              return t('login.errors.networkError');
+              return 'Connection failed, please try again';
             case 'serverError':
-              return t('login.errors.serverError');
+              return 'Server error, please try again later';
             case 'unknown':
             default:
-              return result.message ?? t('login.errors.unknown');
+              return result.message ?? 'Sign-in failed, please try again';
           }
         })();
 
@@ -209,7 +184,7 @@ const LoginPage: React.FC = () => {
 
       setLoading(false);
     },
-    [login, navigate, password, rememberMe, showMessage, t, username]
+    [login, navigate, password, rememberMe, showMessage, username]
   );
 
   if (status === 'checking') {
@@ -239,10 +214,10 @@ const LoginPage: React.FC = () => {
 
         <div className='login-page__header'>
           <div className='login-page__logo'>
-            <img src={loginLogo} alt={t('login.brand')} />
+            <img src={loginLogo} alt={'AionUi'} />
           </div>
-          <h1 className='login-page__title'>{t('login.brand')}</h1>
-          <p className='login-page__subtitle'>{t('login.subtitle')}</p>
+          <h1 className='login-page__title'>{'AionUi'}</h1>
+          <p className='login-page__subtitle'>{'Welcome back, please sign in to your account'}</p>
         </div>
 
         <div className='login-page__form-container'>
@@ -264,7 +239,7 @@ const LoginPage: React.FC = () => {
                   <rect x='11' y='1' width='9' height='9' fill='#7fba00' />
                   <rect x='11' y='11' width='9' height='9' fill='#ffb900' />
                 </svg>
-                {t('login.signInWithMicrosoft', 'Sign in with Microsoft')}
+                {'Sign in with Microsoft'}
               </button>
 
               {/* Toggle for local admin login */}
@@ -279,7 +254,7 @@ const LoginPage: React.FC = () => {
                   }
                 }}
               >
-                <span>{showLocalLogin ? t('login.hideLocalLogin', 'Hide admin login') : t('login.showLocalLogin', 'Sign in with admin account')}</span>
+                <span>{showLocalLogin ? 'Hide admin login' : 'Sign in with admin account'}</span>
                 <svg className={`login-page__local-toggle-chevron ${showLocalLogin ? 'login-page__local-toggle-chevron--open' : ''}`} viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' aria-hidden='true'>
                   <polyline points='6 9 12 15 18 9' />
                 </svg>
@@ -291,34 +266,34 @@ const LoginPage: React.FC = () => {
           <form className={`login-page__form ${oidcEnabled && !showLocalLogin ? 'login-page__form--hidden' : ''}`} onSubmit={handleSubmit} aria-hidden={oidcEnabled && !showLocalLogin}>
             {oidcEnabled && showLocalLogin && (
               <div className='login-page__divider'>
-                <span>{t('login.adminLogin', 'Admin Login')}</span>
+                <span>{'Admin Login'}</span>
               </div>
             )}
 
             <div className='login-page__form-item'>
               <label className='login-page__label' htmlFor='username'>
-                {t('login.username')}
+                {'Username'}
               </label>
               <div className='login-page__input-wrapper'>
                 <svg className='login-page__input-icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' aria-hidden='true'>
                   <path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2' />
                   <circle cx='12' cy='7' r='4' />
                 </svg>
-                <input ref={usernameRef} id='username' name='username' className='login-page__input' placeholder={t('login.usernamePlaceholder')} autoComplete='username' value={username} onChange={(event) => setUsername(event.target.value)} aria-required='true' tabIndex={oidcEnabled && !showLocalLogin ? -1 : 0} />
+                <input ref={usernameRef} id='username' name='username' className='login-page__input' placeholder={'Enter your username'} autoComplete='username' value={username} onChange={(event) => setUsername(event.target.value)} aria-required='true' tabIndex={oidcEnabled && !showLocalLogin ? -1 : 0} />
               </div>
             </div>
 
             <div className='login-page__form-item'>
               <label className='login-page__label' htmlFor='password'>
-                {t('login.password')}
+                {'Password'}
               </label>
               <div className='login-page__input-wrapper'>
                 <svg className='login-page__input-icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' aria-hidden='true'>
                   <rect x='3' y='11' width='18' height='11' rx='2' ry='2' />
                   <path d='M7 11V7a5 5 0 0 1 10 0v4' />
                 </svg>
-                <input ref={passwordRef} id='password' name='password' type={passwordVisible ? 'text' : 'password'} className='login-page__input' placeholder={t('login.passwordPlaceholder')} autoComplete='current-password' value={password} onChange={(event) => setPassword(event.target.value)} aria-required='true' tabIndex={oidcEnabled && !showLocalLogin ? -1 : 0} />
-                <button type='button' className='login-page__toggle-password' onClick={() => setPasswordVisible((prev) => !prev)} aria-label={passwordVisible ? t('login.hidePassword') : t('login.showPassword')} tabIndex={oidcEnabled && !showLocalLogin ? -1 : 0}>
+                <input ref={passwordRef} id='password' name='password' type={passwordVisible ? 'text' : 'password'} className='login-page__input' placeholder={'Enter your password'} autoComplete='current-password' value={password} onChange={(event) => setPassword(event.target.value)} aria-required='true' tabIndex={oidcEnabled && !showLocalLogin ? -1 : 0} />
+                <button type='button' className='login-page__toggle-password' onClick={() => setPasswordVisible((prev) => !prev)} aria-label={passwordVisible ? 'Hide password' : 'Show password'} tabIndex={oidcEnabled && !showLocalLogin ? -1 : 0}>
                   <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2'>
                     {passwordVisible ? (
                       <>
@@ -338,7 +313,7 @@ const LoginPage: React.FC = () => {
 
             <div className='login-page__checkbox'>
               <input type='checkbox' id='remember-me' checked={rememberMe} onChange={(event) => setRememberMe(event.target.checked)} tabIndex={oidcEnabled && !showLocalLogin ? -1 : 0} />
-              <label htmlFor='remember-me'>{t('login.rememberMe')}</label>
+              <label htmlFor='remember-me'>{'Remember me'}</label>
             </div>
 
             <button type='submit' className='login-page__submit' disabled={loading} tabIndex={oidcEnabled && !showLocalLogin ? -1 : 0}>
@@ -347,7 +322,7 @@ const LoginPage: React.FC = () => {
                   <circle cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='3' fill='none' strokeDasharray='50' strokeDashoffset='25' strokeLinecap='round' />
                 </svg>
               )}
-              <span>{loading ? t('login.submitting') : t('login.submit')}</span>
+              <span>{loading ? 'Signing in...' : 'Sign In'}</span>
             </button>
 
             <div role='alert' aria-live='polite' className={`login-page__message ${message ? 'login-page__message--visible' : ''} ${message ? (message.type === 'success' ? 'login-page__message--success' : 'login-page__message--error') : ''}`} hidden={!message}>
@@ -358,9 +333,9 @@ const LoginPage: React.FC = () => {
 
         <div className='login-page__footer'>
           <div className='login-page__footer-content'>
-            <span>{t('login.footerPrimary')}</span>
+            <span>{'Enterprise AI, beautifully managed'}</span>
             <span className='login-page__footer-divider'>•</span>
-            <span>{t('login.footerSecondary')}</span>
+            <span>{'© 2026 AionUi'}</span>
           </div>
         </div>
       </div>

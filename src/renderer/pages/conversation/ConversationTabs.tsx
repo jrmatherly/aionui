@@ -12,7 +12,6 @@ import { emitter } from '@/renderer/utils/emitter';
 import { Dropdown, Menu, Tooltip } from '@arco-design/web-react';
 import { Close, Plus } from '@icon-park/react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useConversationTabs } from './context/ConversationTabsContext';
 
@@ -31,7 +30,6 @@ interface TabFadeState {
 const ConversationTabs: React.FC = () => {
   const { openTabs, activeTabId, switchTab, closeTab, closeAllTabs, closeTabsToLeft, closeTabsToRight, closeOtherTabs, openTab } = useConversationTabs();
   const navigate = useNavigate();
-  const { t } = useTranslation();
   const tabsContainerRef = useRef<HTMLDivElement>(null);
   const [tabFadeState, setTabFadeState] = useState<TabFadeState>({ left: false, right: false });
 
@@ -129,7 +127,7 @@ const ConversationTabs: React.FC = () => {
         const newConversation = {
           ...currentConversation,
           id: newId,
-          name: t('conversation.welcome.newConversation'), // Default title for new session
+          name: 'New Chat', // Default title for new session
           createTime: Date.now(),
           modifyTime: Date.now(),
         };
@@ -186,19 +184,19 @@ const ConversationTabs: React.FC = () => {
           }}
         >
           <Menu.Item key='close-others' disabled={!hasOtherTabs}>
-            {t('conversation.tabs.closeOthers')}
+            {'Close Others'}
           </Menu.Item>
           <Menu.Item key='close-left' disabled={!hasLeftTabs}>
-            {t('conversation.tabs.closeLeft')}
+            {'Close to the Left'}
           </Menu.Item>
           <Menu.Item key='close-right' disabled={!hasRightTabs}>
-            {t('conversation.tabs.closeRight')}
+            {'Close to the Right'}
           </Menu.Item>
-          <Menu.Item key='close-all'>{t('conversation.tabs.closeAll')}</Menu.Item>
+          <Menu.Item key='close-all'>{'Close All'}</Menu.Item>
         </Menu>
       );
     },
-    [openTabs, closeAllTabs, closeTabsToLeft, closeTabsToRight, closeOtherTabs, navigate, t]
+    [openTabs, closeAllTabs, closeTabsToLeft, closeTabsToRight, closeOtherTabs, navigate]
   );
 
   const { left: showLeftFade, right: showRightFade } = tabFadeState;
@@ -238,7 +236,7 @@ const ConversationTabs: React.FC = () => {
         </div>
 
         {/* New conversation button */}
-        <div className='flex items-center justify-center w-40px h-40px shrink-0 cursor-pointer transition-colors duration-200 hover:bg-[var(--fill-2)] ' style={{ borderLeft: '1px solid var(--border-base)' }} onClick={handleNewConversation} title={t('conversation.workspace.createNewConversation')}>
+        <div className='flex items-center justify-center w-40px h-40px shrink-0 cursor-pointer transition-colors duration-200 hover:bg-[var(--fill-2)] ' style={{ borderLeft: '1px solid var(--border-base)' }} onClick={handleNewConversation} title={'Create new chat in current workspace'}>
           <Plus theme='outline' size='16' fill={iconColors.primary} strokeWidth={3} />
         </div>
 

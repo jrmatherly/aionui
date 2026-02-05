@@ -6,8 +6,6 @@
 
 import { Left, Loading, Refresh, Right } from '@icon-park/react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 interface URLViewerProps {
   /** URL to display */
   url: string;
@@ -25,7 +23,6 @@ interface URLViewerProps {
  * - Intercept all link clicks, navigate internally
  */
 const URLViewer: React.FC<URLViewerProps> = ({ url }) => {
-  const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const webviewRef = useRef<Electron.WebviewTag | null>(null);
@@ -327,17 +324,17 @@ const URLViewer: React.FC<URLViewerProps> = ({ url }) => {
       {/* Navigation bar */}
       <div className='flex items-center gap-4px h-36px px-8px bg-bg-2 border-b border-border-1 flex-shrink-0'>
         {/* Back button */}
-        <button onClick={handleGoBack} disabled={!canGoBack} className={`flex items-center justify-center w-28px h-28px transition-colors ${canGoBack ? 'hover:bg-bg-3 cursor-pointer text-t-secondary' : 'cursor-not-allowed text-t-quaternary'}`} title={t('common.back', { defaultValue: 'Back' })}>
+        <button onClick={handleGoBack} disabled={!canGoBack} className={`flex items-center justify-center w-28px h-28px transition-colors ${canGoBack ? 'hover:bg-bg-3 cursor-pointer text-t-secondary' : 'cursor-not-allowed text-t-quaternary'}`} title={'Back to Chat'}>
           <Left theme='outline' size={16} />
         </button>
 
         {/* Forward button */}
-        <button onClick={handleGoForward} disabled={!canGoForward} className={`flex items-center justify-center w-28px h-28px transition-colors ${canGoForward ? 'hover:bg-bg-3 cursor-pointer text-t-secondary' : 'cursor-not-allowed text-t-quaternary'}`} title={t('common.forward', { defaultValue: 'Forward' })}>
+        <button onClick={handleGoForward} disabled={!canGoForward} className={`flex items-center justify-center w-28px h-28px transition-colors ${canGoForward ? 'hover:bg-bg-3 cursor-pointer text-t-secondary' : 'cursor-not-allowed text-t-quaternary'}`} title={'Forward'}>
           <Right theme='outline' size={16} />
         </button>
 
         {/* Refresh button */}
-        <button onClick={handleRefresh} className='flex items-center justify-center w-28px h-28px hover:bg-bg-3 transition-colors cursor-pointer text-t-secondary' title={t('common.refresh', { defaultValue: 'Refresh' })}>
+        <button onClick={handleRefresh} className='flex items-center justify-center w-28px h-28px hover:bg-bg-3 transition-colors cursor-pointer text-t-secondary' title={'Refresh'}>
           {isLoading ? <Loading theme='outline' size={16} className='animate-spin' /> : <Refresh theme='outline' size={16} />}
         </button>
 

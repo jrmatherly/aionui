@@ -7,8 +7,6 @@
 import { ipcBridge } from '@/common';
 import { Image } from '@arco-design/web-react';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 interface ImagePreviewProps {
   filePath?: string;
   content?: string;
@@ -16,7 +14,6 @@ interface ImagePreviewProps {
 }
 
 const ImagePreview: React.FC<ImagePreviewProps> = ({ filePath, content, fileName }) => {
-  const { t } = useTranslation();
   const [imageSrc, setImageSrc] = useState<string>(content || '');
   const [loading, setLoading] = useState<boolean>(!!filePath && !content);
   const [error, setError] = useState<string | null>(null);
@@ -47,7 +44,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ filePath, content, fileName
       } catch (err) {
         if (!isMounted) return;
         console.error('[ImagePreview] Failed to load image:', err);
-        setError(t('messages.imageLoadFailed', { defaultValue: 'Failed to load image' }));
+        setError('Failed to load image');
       } finally {
         if (isMounted) {
           setLoading(false);
@@ -60,11 +57,11 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ filePath, content, fileName
     return () => {
       isMounted = false;
     };
-  }, [content, filePath, t]);
+  }, [content, filePath]);
 
   const renderStatus = () => {
     if (loading) {
-      return <div className='text-14px text-t-secondary'>{t('common.loading', { defaultValue: 'Loading...' })}</div>;
+      return <div className='text-14px text-t-secondary'>{'Please wait...'}</div>;
     }
 
     if (error) {
