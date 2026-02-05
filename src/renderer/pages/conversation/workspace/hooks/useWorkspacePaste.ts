@@ -108,7 +108,7 @@ export function useWorkspacePaste(options: UseWorkspacePasteOptions) {
             messageApi.warning(fallback);
           }
         } catch (error) {
-          messageApi.error('TODO_MISSING_TRANSLATION_MESSAGES_UNKNOWNERROR');
+          messageApi.error('An unknown error occurred');
         } finally {
           // Reset paste target folder after operation completes (success or failure)
           setPasteTargetFolder(null);
@@ -161,7 +161,7 @@ export function useWorkspacePaste(options: UseWorkspacePasteOptions) {
 
       closePasteConfirm();
     } catch (error) {
-      messageApi.error('TODO_MISSING_TRANSLATION_MESSAGES_UNKNOWNERROR');
+      messageApi.error('An unknown error occurred');
     } finally {
       setPasteTargetFolder(null);
     }

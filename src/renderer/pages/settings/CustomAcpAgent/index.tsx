@@ -180,7 +180,7 @@ const CustomAcpAgent: React.FC<CustomAcpAgentProps> = ({ message }) => {
                   </div>
                   <div className='text-sm text-t-secondary'>
                     <div>
-                      <span className='font-medium'>{'TODO_MISSING_TRANSLATION_SETTINGS_CLIPATH'}:</span> {agent.defaultCliPath}
+                      <span className='font-medium'>{'CLI Path'}:</span> {agent.defaultCliPath}
                     </div>
                     {agent.env && Object.keys(agent.env).length > 0 && (
                       <div>

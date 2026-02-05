@@ -282,11 +282,11 @@ const JsonImportModal: React.FC<JsonImportModalProps> = ({ visible, server, onCa
           showIcon
           content={
             <div>
-              <div>{'TODO_MISSING_TRANSLATION_SETTINGS_MCPIMPORTTIPS'}</div>
+              <div>{'Import Tips'}</div>
               <ul className='list-disc pl-5 mt-2 space-y-1 text-sm'>
-                <li>{'TODO_MISSING_TRANSLATION_SETTINGS_MCPIMPORTTIP1'}</li>
-                <li>{'TODO_MISSING_TRANSLATION_SETTINGS_MCPIMPORTTIP2'}</li>
-                <li>{'TODO_MISSING_TRANSLATION_SETTINGS_MCPIMPORTTIP3'}</li>
+                <li>{'Supports mcpServers object format from Claude Desktop config'}</li>
+                <li>{'Multiple servers can be imported at once'}</li>
+                <li>{'Server names must be unique'}</li>
               </ul>
             </div>
           }
