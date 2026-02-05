@@ -73,6 +73,11 @@ sort_commits = "oldest"
 # Match version tags like v1.8.2, v2.0.0
 tag_pattern = "v[0-9].*"
 
+# Skip ALL tags up to and including v1.8.2 — that tag marks the upstream
+# fork point.  Every tag at or before it belongs to the original upstream
+# project and should not appear in this fork's changelog.
+skip_tags = "v(0|1\\.[0-8]\\.|1\\.8\\.[0-2](-|$))"
+
 # Commit parsers — evaluated in order, first match wins
 # HTML comments control group display order (stripped by striptags in template)
 # NOTE: chore(deps) and chore(renovate) skip rules must precede the ^chore catch-all
