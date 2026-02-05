@@ -50,7 +50,7 @@ const CronJobManager: React.FC<CronJobManagerProps> = ({ conversationId }) => {
           className='cron-job-manager-button'
           style={{ marginRight: 16 }}
           icon={
-            <span className='inline-flex items-center gap-2px rounded-full px-8px py-2px bg-2'>
+            <span className='inline-flex items-center gap-2px rounded-full px-8px py-2px bg-2 transition-shadow duration-200 hover:shadow-[0_0_12px_rgba(99,102,241,0.4)]'>
               <AlarmClock theme='outline' size={16} fill={iconColors.secondary} />
               <span className='ml-4px w-8px h-8px rounded-full bg-[#a1a5ad]' />
             </span>
@@ -94,7 +94,7 @@ const CronJobManager: React.FC<CronJobManagerProps> = ({ conversationId }) => {
           style={{ marginRight: 16 }}
           onClick={() => setDrawerVisible(true)}
           icon={
-            <span className='inline-flex items-center gap-2px rounded-full px-8px py-2px  bg-2'>
+            <span className='inline-flex items-center gap-2px rounded-full px-8px py-2px bg-2 transition-shadow duration-200 hover:shadow-[0_0_12px_rgba(99,102,241,0.4)]'>
               <AlarmClock theme='outline' size={16} fill={iconColors.primary} />
               <span className={`ml-4px w-8px h-8px rounded-full ${hasError ? 'bg-[#f53f3f]' : isPaused ? 'bg-[#ff7d00]' : 'bg-[#00b42a]'}`} />
             </span>

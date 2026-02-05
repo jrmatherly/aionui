@@ -398,7 +398,7 @@ const ChatLayout: React.FC<{
                 {/* headerExtra renders at top-right for items like model switchers */}
                 {props.headerExtra}
                 {(backend || agentLogo) && (
-                  <div className='ml-16px flex items-center gap-2 bg-2 w-fit rounded-full px-[8px] py-[2px]'>
+                  <div className='ml-16px flex items-center gap-2 bg-2 w-fit rounded-full px-[8px] py-[2px] transition-shadow duration-200 hover:shadow-[0_0_12px_rgba(99,102,241,0.4)]'>
                     {agentLogo ? agentLogoIsEmoji ? <span className='text-sm'>{agentLogo}</span> : <img src={agentLogo} alt={`${agentName || 'agent'} logo`} width={16} height={16} style={{ objectFit: 'contain' }} /> : AGENT_LOGO_MAP[backend as AcpBackend] ? <img src={AGENT_LOGO_MAP[backend as AcpBackend]} alt={`${backend} logo`} width={16} height={16} style={{ objectFit: 'contain' }} /> : <Robot theme='outline' size={16} fill={iconColors.primary} />}
                     <span className='text-sm'>{displayName}</span>
                   </div>
