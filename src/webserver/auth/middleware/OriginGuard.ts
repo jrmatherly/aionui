@@ -6,6 +6,7 @@
 
 import type { NextFunction, Request, Response } from 'express';
 import { SERVER_CONFIG } from '@/webserver/config/constants';
+import { httpLogger as log } from '@/common/logger';
 
 /**
  * Sanitize a string for safe logging (prevents log injection attacks).
@@ -91,7 +92,14 @@ export function originGuard(req: Request, res: Response, next: NextFunction): vo
       next();
       return;
     }
-    console.warn(`[OriginGuard] Blocked request from origin: ${sanitizeForLog(origin)} to ${sanitizeForLog(req.method)} ${sanitizeForLog(req.path)}`);
+    log.warn(
+      {
+        origin: sanitizeForLog(origin),
+        method: sanitizeForLog(req.method),
+        path: sanitizeForLog(req.path),
+      },
+      'Blocked request from origin'
+    );
     res.status(403).json({ success: false, error: 'Forbidden: cross-origin request blocked' });
     return;
   }
@@ -107,7 +115,14 @@ export function originGuard(req: Request, res: Response, next: NextFunction): vo
     } catch {
       /* invalid referer */
     }
-    console.warn(`[OriginGuard] Blocked request from referer: ${sanitizeForLog(referer)} to ${sanitizeForLog(req.method)} ${sanitizeForLog(req.path)}`);
+    log.warn(
+      {
+        referer: sanitizeForLog(referer),
+        method: sanitizeForLog(req.method),
+        path: sanitizeForLog(req.path),
+      },
+      'Blocked request from referer'
+    );
     res.status(403).json({ success: false, error: 'Forbidden: cross-origin request blocked' });
     return;
   }

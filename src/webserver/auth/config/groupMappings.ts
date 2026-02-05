@@ -6,6 +6,7 @@
 
 import type { UserRole } from '@process/database/types';
 import fs from 'fs';
+import { oidcLogger as log } from '@/common/logger';
 
 /**
  * Maps an EntraID group object-ID to an application role.
@@ -30,12 +31,12 @@ export function loadGroupMappings(): IGroupRoleMapping[] {
   try {
     const content = fs.readFileSync(configPath, 'utf-8');
     const mappings = JSON.parse(content) as IGroupRoleMapping[];
-    console.log(`[OIDC] Loaded ${mappings.length} group mapping(s) from ${configPath}`);
+    log.info({ count: mappings.length, configPath }, 'Loaded group mappings from file');
     return mappings;
   } catch (error) {
     // File doesn't exist or isn't readable — fall through to env var check
     if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
-      console.error(`[OIDC] Failed to load group mappings from ${configPath}:`, error);
+      log.error({ err: error, configPath }, 'Failed to load group mappings from file');
     }
   }
 
@@ -43,10 +44,10 @@ export function loadGroupMappings(): IGroupRoleMapping[] {
   if (process.env.GROUP_MAPPINGS_JSON) {
     try {
       const mappings = JSON.parse(process.env.GROUP_MAPPINGS_JSON) as IGroupRoleMapping[];
-      console.log(`[OIDC] Loaded ${mappings.length} group mapping(s) from GROUP_MAPPINGS_JSON`);
+      log.info({ count: mappings.length }, 'Loaded group mappings from GROUP_MAPPINGS_JSON');
       return mappings;
     } catch (error) {
-      console.error('[OIDC] Failed to parse GROUP_MAPPINGS_JSON:', error);
+      log.error({ err: error }, 'Failed to parse GROUP_MAPPINGS_JSON');
     }
   }
 

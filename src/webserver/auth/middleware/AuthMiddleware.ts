@@ -8,6 +8,7 @@ import type { NextFunction, Request, Response } from 'express';
 import { SECURITY_CONFIG } from '../../config/constants';
 import { AuthService } from '../service/AuthService';
 import { createAuthMiddleware } from './TokenMiddleware';
+import { httpLogger as log } from '@/common/logger';
 
 // Express Request type extension is defined in src/types/express.d.ts
 
@@ -96,12 +97,12 @@ export class AuthMiddleware {
     const url = sanitizeForLog(req.url);
     const ip = sanitizeForLog(req.ip || req.connection.remoteAddress || 'unknown');
 
-    console.log(`[${new Date().toISOString()}] ${method} ${url} - ${ip}`);
+    log.info({ method, url, ip }, 'Request started');
 
     // Log response time
     res.on('finish', () => {
       const duration = Date.now() - start;
-      console.log(`[${new Date().toISOString()}] ${method} ${url} - ${res.statusCode} - ${duration}ms`);
+      log.info({ method, url, statusCode: res.statusCode, duration }, 'Request completed');
     });
 
     next();
