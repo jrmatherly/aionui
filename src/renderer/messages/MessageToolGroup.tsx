@@ -404,8 +404,8 @@ const MessageToolGroup: React.FC<IMessageToolGroupProps> = ({ message }) => {
                     callId: callId,
                     conversation_id: message.conversation_id,
                   })
-                  .then((res) => {
-                    console.log('------onConfirm.res>:', res);
+                  .then(() => {
+                    // confirmed
                   })
                   .catch((error) => {
                     console.error('Failed to confirm message:', error);
