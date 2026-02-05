@@ -9,14 +9,12 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 export const rendererConfig: Configuration = {
   mode: isDevelopment ? 'development' : 'production',
   devtool: isDevelopment ? 'source-map' : false,
-  // Persistent filesystem cache for incremental rebuilds (same as main process).
-  cache: {
-    type: 'filesystem',
-    cacheDirectory: path.resolve(__dirname, '../../.webpack-cache/renderer'),
-    buildDependencies: {
-      config: [__filename, path.resolve(__dirname, 'webpack.plugins.ts'), path.resolve(__dirname, 'webpack.rules.ts')],
-    },
-  },
+  // NOTE: Do NOT enable webpack filesystem cache for the renderer.
+  // UnoCSS generates utility classes by scanning source files at build time.
+  // Webpack's filesystem cache skips re-running this scan on cached modules,
+  // producing incomplete CSS with missing utility classes (broken styling).
+  // See: https://github.com/unocss/unocss/issues/419
+  // The main process config CAN use filesystem cache (no UnoCSS there).
   module: {
     rules,
   },
