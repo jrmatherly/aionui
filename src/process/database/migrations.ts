@@ -8,6 +8,7 @@ import type Database from 'better-sqlite3';
 import { migrate_v14_add_user_api_keys } from './migrations/v14_add_user_api_keys';
 import { migrate_v15_add_organizations_and_user_directories, rollback_v15 } from './migrations/v15_add_organizations_and_user_directories';
 import { migrate_v16_add_global_models } from './migrations/v16_add_global_models';
+import { migrate_v17_add_logging_config } from './migrations/v17_add_logging_config';
 
 /**
  * Migration script definition
@@ -608,9 +609,27 @@ const migration_v16: IMigration = {
 };
 
 /**
+ * Migration v16 -> v17: Add logging_config table
+ * Centralized logging configuration for runtime control
+ */
+const migration_v17: IMigration = {
+  version: 17,
+  name: 'Add logging_config table',
+  up: (db) => {
+    migrate_v17_add_logging_config(db);
+  },
+  down: (db) => {
+    db.exec(`
+      DROP TABLE IF EXISTS logging_config;
+    `);
+    console.log('[Migration v17] Rolled back: Removed logging_config table');
+  },
+};
+
+/**
  * All migrations in order
  */
-export const ALL_MIGRATIONS: IMigration[] = [migration_v1, migration_v2, migration_v3, migration_v4, migration_v5, migration_v6, migration_v7, migration_v8, migration_v9, migration_v10, migration_v11, migration_v12, migration_v13, migration_v14, migration_v15, migration_v16];
+export const ALL_MIGRATIONS: IMigration[] = [migration_v1, migration_v2, migration_v3, migration_v4, migration_v5, migration_v6, migration_v7, migration_v8, migration_v9, migration_v10, migration_v11, migration_v12, migration_v13, migration_v14, migration_v15, migration_v16, migration_v17];
 
 /**
  * Get migrations needed to upgrade from one version to another

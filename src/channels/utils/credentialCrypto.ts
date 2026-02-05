@@ -4,6 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { createLogger } from '@/common/logger';
+
+const log = createLogger('CredentialStorage');
+
 /**
  * Credential storage utilities
  * Uses Base64 encoding for basic obfuscation when storing in database.
@@ -30,7 +34,7 @@ export function encryptString(plaintext: string): string {
     const encoded = Buffer.from(plaintext, 'utf-8').toString('base64');
     return `b64:${encoded}`;
   } catch (error) {
-    console.error('[CredentialStorage] Encoding failed:', error);
+    log.error({ err: error }, 'Encoding failed');
     // Fallback to plain storage with prefix
     return `plain:${plaintext}`;
   }
@@ -54,7 +58,7 @@ export function decryptString(encoded: string): string {
     try {
       return Buffer.from(encoded.slice(4), 'base64').toString('utf-8');
     } catch (error) {
-      console.error('[CredentialStorage] Decoding failed:', error);
+      log.error({ err: error }, 'Decoding failed');
       return '';
     }
   }
@@ -62,18 +66,18 @@ export function decryptString(encoded: string): string {
   // Handle enc: prefix (legacy format from safeStorage)
   // Try to decode as base64 for backward compatibility
   if (encoded.startsWith('enc:')) {
-    console.warn('[CredentialStorage] Found legacy enc: format, attempting base64 decode');
+    log.warn('Found legacy enc: format, attempting base64 decode');
     try {
       return Buffer.from(encoded.slice(4), 'base64').toString('utf-8');
     } catch {
-      console.error('[CredentialStorage] Cannot decode legacy enc: format');
+      log.error('Cannot decode legacy enc: format');
       return '';
     }
   }
 
   // Legacy: no prefix means it was stored before encoding was added
   // Return as-is for backward compatibility
-  console.warn('[CredentialStorage] Found legacy unencoded value, returning as-is');
+  log.warn('Found legacy unencoded value, returning as-is');
   return encoded;
 }
 

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { pluginLogger } from '@/common/logger';
 import type { IChannelPluginConfig, IUnifiedIncomingMessage, IUnifiedOutgoingMessage, PluginStatus, PluginType } from '../types';
 
 /**
@@ -87,7 +88,7 @@ export abstract class BasePlugin {
     const oldStatus = this._status;
     this._status = status;
     this.errorMessage = error ?? null;
-    console.log(`[${this.type}Plugin] Status: ${oldStatus} → ${status}${error ? ` (${error})` : ''}`);
+    pluginLogger.info({ pluginType: this.type, oldStatus, newStatus: status, error }, 'Status transition');
   }
 
   /**
@@ -96,7 +97,7 @@ export abstract class BasePlugin {
    */
   protected setError(error: string): void {
     this.errorMessage = error;
-    console.warn(`[${this.type}Plugin] Error: ${error}`);
+    pluginLogger.warn({ pluginType: this.type, error }, 'Plugin error');
   }
 
   /**
@@ -160,7 +161,7 @@ export abstract class BasePlugin {
    */
   onMessage(handler: PluginMessageHandler): void {
     this.messageHandler = handler;
-    console.log(`[${this.type}Plugin] Message handler registered`);
+    pluginLogger.debug({ pluginType: this.type }, 'Message handler registered');
   }
 
   /**
@@ -169,7 +170,7 @@ export abstract class BasePlugin {
    */
   onConfirm(handler: PluginConfirmHandler): void {
     this.confirmHandler = handler;
-    console.log(`[${this.type}Plugin] Confirm handler registered`);
+    pluginLogger.debug({ pluginType: this.type }, 'Confirm handler registered');
   }
 
   /**
@@ -180,7 +181,7 @@ export abstract class BasePlugin {
     if (this.messageHandler) {
       await this.messageHandler(message);
     } else {
-      console.warn(`[${this.type}Plugin] No message handler registered, dropping message`);
+      pluginLogger.warn({ pluginType: this.type }, 'No message handler registered, dropping message');
     }
   }
 

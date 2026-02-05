@@ -5,9 +5,12 @@
  */
 
 import { channel as channelBridge } from '@/common/ipcBridge';
+import { createLogger } from '@/common/logger';
 import { getDatabase } from '@/process/database';
 import * as crypto from 'crypto';
 import type { IChannelPairingRequest, IChannelUser, PluginType } from '../types';
+
+const log = createLogger('PairingService');
 
 /**
  * Pairing code configuration
@@ -80,7 +83,7 @@ export class PairingService {
     // Emit event for Settings UI
     channelBridge.pairingRequested.emit(request);
 
-    console.log(`[PairingService] Generated code ${code} for ${platformType}:${platformUserId}`);
+    log.info({ code, platformType, platformUserId }, 'Generated pairing code');
 
     return { code, expiresAt };
   }
@@ -188,7 +191,7 @@ export class PairingService {
     // Emit user authorized event
     channelBridge.userAuthorized.emit(user);
 
-    console.log(`[PairingService] Approved pairing for ${request.platformType}:${request.platformUserId}`);
+    log.info({ platformType: request.platformType, platformUserId: request.platformUserId }, 'Approved pairing');
     return { success: true, user };
   }
 
@@ -207,7 +210,7 @@ export class PairingService {
     // Update status
     db.updatePairingRequestStatus(code, 'rejected');
 
-    console.log(`[PairingService] Rejected pairing code ${code}`);
+    log.info({ code }, 'Rejected pairing code');
     return { success: true };
   }
 
@@ -292,7 +295,7 @@ export class PairingService {
     this.cleanupInterval = setInterval(() => {
       const cleaned = this.cleanupExpired();
       if (cleaned > 0) {
-        console.log(`[PairingService] Cleaned up ${cleaned} expired pairing requests`);
+        log.info({ count: cleaned }, 'Cleaned up expired pairing requests');
       }
     }, PAIRING_CONFIG.CLEANUP_INTERVAL_MS);
   }
