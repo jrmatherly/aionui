@@ -4,795 +4,396 @@ This document describes the Inter-Process Communication (IPC) API used between t
 
 ## Overview
 
-AionUI uses Electron's `contextBridge` to securely expose IPC methods to the renderer process. All IPC communication goes through the `window.electron` API.
+AionUI uses `@office-ai/platform` bridge for IPC communication. In Electron mode, this goes through `contextBridge`. In web mode, it communicates via WebSocket to the backend server.
 
-## Base API
+All IPC methods are defined in `src/common/ipcBridge.ts` using:
+- `bridge.buildProvider<Response, Request>(channel)` — Request/response pattern
+- `bridge.buildEmitter<Event>(channel)` — Event emission pattern
 
-### `window.electron.emit(name, data)`
+## Namespaces
 
-Send a message to the main process.
+### `shell`
 
-**Parameters:**
-
-- `name: string` - Event name (e.g., `conversation.sendMessage`)
-- `data: any` - Event payload
-
-**Returns:** `void`
-
-### `window.electron.on(name, callback)`
-
-Listen for events from the main process.
-
-**Parameters:**
-
-- `name: string` - Event name to listen for
-- `callback: (data: any) => void` - Handler function
-
-**Returns:** Cleanup function
-
-### `window.electron.getPathForFile(file)`
-
-Get the file system path for a File object.
-
-**Parameters:**
-
-- `file: File` - File object from input or drag-drop
-
-**Returns:** `string` - File path
-
-## WebUI Methods
-
-### `window.electron.webuiGetStatus()`
-
-Get current WebUI server status.
-
-**Returns:**
+System shell operations for opening files and URLs.
 
 ```typescript
-{
-  running: boolean;
-  port: number;
-  allowRemote: boolean;
-}
+shell.openFile.invoke(path: string): Promise<void>
+shell.showItemInFolder.invoke(path: string): Promise<void>
+shell.openExternal.invoke(url: string): Promise<void>
 ```
 
-### `window.electron.webuiChangePassword(newPassword)`
+### `application`
 
-Change the WebUI admin password.
-
-**Parameters:**
-
-- `newPassword: string` - New password
-
-**Returns:** `{ success: boolean; message?: string }`
-
-### `window.electron.webuiGenerateQRToken()`
-
-Generate a QR code token for mobile login.
-
-**Returns:**
+Application-level operations.
 
 ```typescript
-{
+application.restart.invoke(): Promise<void>
+application.openDevTools.invoke(): Promise<void>
+application.systemInfo.invoke(): Promise<{
+  cacheDir: string;
+  workDir: string;
+  platform: string;
+  arch: string;
+}>
+application.updateSystemInfo.invoke(data: { cacheDir: string; workDir: string }): Promise<IBridgeResponse>
+application.getZoomFactor.invoke(): Promise<number>
+application.setZoomFactor.invoke({ factor: number }): Promise<number>
+```
+
+### `branding`
+
+Application branding configuration (supports env var overrides).
+
+```typescript
+branding.getConfig.invoke(): Promise<BrandingConfig>
+// Returns: { appName, logoUrl, faviconUrl }
+```
+
+### `update`
+
+Manual update management via GitHub releases.
+
+```typescript
+update.open.emit({ source?: 'menu' | 'about' })  // Request UI to show update dialog
+update.check.invoke(request: UpdateCheckRequest): Promise<IBridgeResponse<UpdateCheckResult>>
+update.download.invoke(request: UpdateDownloadRequest): Promise<IBridgeResponse<UpdateDownloadResult>>
+update.downloadProgress.on(callback: (event: UpdateDownloadProgressEvent) => void)
+```
+
+### `dialog`
+
+Native dialog operations.
+
+```typescript
+dialog.showOpen.invoke(options: OpenDialogOptions): Promise<string[] | undefined>
+dialog.showSave.invoke(options: SaveDialogOptions): Promise<string | undefined>
+```
+
+### `fs`
+
+File system operations.
+
+```typescript
+fs.list.invoke({ path }): Promise<IDirOrFile[]>
+fs.read.invoke({ path, encoding }): Promise<string>
+fs.write.invoke({ path, content, encoding }): Promise<void>
+fs.mkdir.invoke({ path }): Promise<void>
+fs.remove.invoke({ path }): Promise<void>
+fs.rename.invoke({ oldPath, newPath }): Promise<void>
+fs.copy.invoke({ source, destination }): Promise<void>
+fs.stat.invoke({ path }): Promise<IFileStat>
+fs.exists.invoke({ path }): Promise<boolean>
+```
+
+### `conversation`
+
+Core conversation management (unified across agent types).
+
+```typescript
+// Conversation CRUD
+conversation.create.invoke(params: ICreateConversationParams): Promise<TChatConversation>
+conversation.createWithConversation.invoke({ conversation, sourceConversationId }): Promise<TChatConversation>
+conversation.get.invoke({ id }): Promise<TChatConversation>
+conversation.getAssociateConversation.invoke({ conversation_id }): Promise<TChatConversation[]>
+conversation.remove.invoke({ id }): Promise<boolean>
+conversation.update.invoke({ id, updates, mergeExtra? }): Promise<boolean>
+conversation.reset.invoke(params: IResetConversationParams): Promise<void>
+
+// Messaging
+conversation.sendMessage.invoke(params: ISendMessageParams): Promise<IBridgeResponse>
+conversation.stop.invoke({ conversation_id }): Promise<IBridgeResponse>
+conversation.responseStream.on(callback: (message: IResponseMessage) => void)
+
+// Workspace
+conversation.getWorkspace.invoke({ conversation_id, workspace, path, search? }): Promise<IDirOrFile[]>
+conversation.reloadContext.invoke({ conversation_id }): Promise<IBridgeResponse>
+
+// Confirmations
+conversation.confirmation.add.on(callback)
+conversation.confirmation.update.on(callback)
+conversation.confirmation.confirm.invoke({ conversation_id, msg_id, data, callId }): Promise<IBridgeResponse>
+conversation.confirmation.list.invoke({ conversation_id }): Promise<IConfirmation[]>
+conversation.confirmation.remove.on(callback)
+
+// Approval memory
+conversation.approval.check.invoke({ conversation_id, action, commandType? }): Promise<boolean>
+```
+
+### `acpConversation`
+
+ACP (Agent Control Protocol) specific operations.
+
+```typescript
+acpConversation.sendMessage.invoke(params): Promise<IBridgeResponse>
+acpConversation.responseStream.on(callback)
+acpConversation.confirmMessage.invoke(params): Promise<IBridgeResponse>
+acpConversation.startAgent.invoke({ conversation_id, agent, sessionId? }): Promise<IBridgeResponse>
+acpConversation.stopAgent.invoke({ conversation_id }): Promise<IBridgeResponse>
+acpConversation.getAvailableAgents.invoke(): Promise<IBridgeResponse<AcpBackend[]>>
+acpConversation.getAgentAuthStatus.invoke({ agent }): Promise<IBridgeResponse<{ authenticated: boolean }>>
+acpConversation.statusChange.on(callback)
+```
+
+### `codexConversation`
+
+Codex CLI agent operations.
+
+```typescript
+codexConversation.sendMessage.invoke(params): Promise<IBridgeResponse>
+codexConversation.responseStream.on(callback)
+codexConversation.statusChange.on(callback)
+```
+
+### `geminiConversation`
+
+Gemini-specific operations.
+
+```typescript
+geminiConversation.sendMessage  // Alias for conversation.sendMessage
+geminiConversation.confirmMessage.invoke(params): Promise<IBridgeResponse>
+geminiConversation.responseStream  // Alias for conversation.responseStream
+```
+
+### `mcpService`
+
+MCP (Model Context Protocol) server management.
+
+```typescript
+mcpService.testMcpConnection.invoke({ name, command, args?, env?, transport? }): Promise<IBridgeResponse>
+mcpService.syncMcpToAgents.invoke({ configs }): Promise<IBridgeResponse>
+mcpService.removeMcpFromAgents.invoke({ mcpId }): Promise<IBridgeResponse>
+mcpService.getAgentMcpConfigs.invoke({ agentType }): Promise<IBridgeResponse<McpConfig[]>>
+mcpService.loginMcpOAuth.invoke({ mcpId, serverId }): Promise<IBridgeResponse>
+mcpService.logoutMcpOAuth.invoke({ mcpId }): Promise<IBridgeResponse>
+mcpService.checkOAuthStatus.invoke({ mcpId }): Promise<IBridgeResponse>
+mcpService.getAuthenticatedServers.invoke(): Promise<IBridgeResponse<string[]>>
+```
+
+### `cron`
+
+Scheduled job management.
+
+```typescript
+cron.list.invoke(): Promise<CronJob[]>
+cron.add.invoke(job: Omit<CronJob, 'id'>): Promise<CronJob>
+cron.update.invoke({ id, ...updates }): Promise<CronJob>
+cron.remove.invoke({ id }): Promise<boolean>
+cron.execute.invoke({ id }): Promise<IBridgeResponse>
+```
+
+### `channel`
+
+External channel plugins (Telegram, Lark, etc.).
+
+```typescript
+channel.enable.invoke({ type, config }): Promise<IBridgeResponse>
+channel.disable.invoke({ type }): Promise<IBridgeResponse>
+channel.test.invoke({ type, config }): Promise<IBridgeResponse>
+channel.pair.invoke({ channelType, userId }): Promise<{ pairingCode, expiresAt }>
+channel.status.invoke({ type }): Promise<IBridgeResponse>
+channel.listPairedUsers.invoke({ type }): Promise<IBridgeResponse>
+channel.unpairUser.invoke({ type, pairId }): Promise<IBridgeResponse>
+```
+
+### `webui`
+
+WebUI server management.
+
+```typescript
+webui.getStatus.invoke(): Promise<{ running, port, allowRemote }>
+webui.changePassword.invoke(newPassword): Promise<IBridgeResponse>
+webui.generateQRToken.invoke(): Promise<{ success, token?, expiresAt? }>
+webui.resetPassword.invoke(): Promise<{ success, newPassword? }>
+```
+
+### `userApiKeys`
+
+Per-user API key management.
+
+```typescript
+userApiKeys.get.invoke({ userId, provider }): Promise<string | null>
+userApiKeys.set.invoke({ userId, provider, apiKey }): Promise<void>
+userApiKeys.delete.invoke({ userId, provider }): Promise<void>
+userApiKeys.list.invoke({ userId }): Promise<{ provider: string; hasKey: boolean }[]>
+```
+
+### `mode`
+
+Model/mode configuration management.
+
+```typescript
+mode.list.invoke(): Promise<IProvider[]>
+mode.get.invoke({ id }): Promise<IProvider | null>
+mode.add.invoke(provider: Omit<IProvider, 'id'>): Promise<IProvider>
+mode.update.invoke({ id, ...updates }): Promise<IProvider>
+mode.remove.invoke({ id }): Promise<boolean>
+mode.setDefault.invoke({ id }): Promise<void>
+mode.testConnection.invoke({ provider }): Promise<IBridgeResponse>
+mode.detectProtocol.invoke(request: ProtocolDetectionRequest): Promise<ProtocolDetectionResponse>
+```
+
+### `googleAuth`
+
+Google OAuth for Gemini API.
+
+```typescript
+googleAuth.getAuth.invoke(): Promise<GoogleAuth | null>
+googleAuth.signIn.invoke(): Promise<GoogleAuth>
+googleAuth.signOut.invoke(): Promise<void>
+googleAuth.refresh.invoke(): Promise<GoogleAuth>
+googleAuth.authChange.on(callback)
+```
+
+### `gemini`
+
+Gemini model operations.
+
+```typescript
+gemini.listModels.invoke({ useAuth?, useVertexAi? }): Promise<GeminiModel[]>
+gemini.generateContent.invoke(params): Promise<GenerateContentResponse>
+```
+
+### `preview`
+
+File preview operations.
+
+```typescript
+preview.getSnapshot.invoke({ conversationId, path }): Promise<PreviewSnapshotInfo>
+preview.saveSnapshot.invoke({ conversationId, path, content }): Promise<void>
+```
+
+### `previewHistory`
+
+Preview version history.
+
+```typescript
+previewHistory.list.invoke({ conversationId }): Promise<PreviewHistoryTarget[]>
+previewHistory.get.invoke({ conversationId, path, version? }): Promise<string>
+previewHistory.revert.invoke({ conversationId, path, version }): Promise<void>
+```
+
+### `document`
+
+Document parsing and export.
+
+```typescript
+document.parse.invoke({ path }): Promise<ParsedDocument>
+document.export.invoke({ content, format, outputPath }): Promise<void>
+```
+
+### `windowControls`
+
+Window management (Electron only).
+
+```typescript
+windowControls.minimize.invoke(): Promise<void>
+windowControls.maximize.invoke(): Promise<void>
+windowControls.close.invoke(): Promise<void>
+windowControls.isMaximized.invoke(): Promise<boolean>
+```
+
+### `database`
+
+Direct database operations (for admin/debugging).
+
+```typescript
+database.query.invoke({ sql, params? }): Promise<any[]>
+database.execute.invoke({ sql, params? }): Promise<{ changes: number }>
+```
+
+## Response Types
+
+### `IBridgeResponse<T>`
+
+Standard response wrapper:
+
+```typescript
+interface IBridgeResponse<T = void> {
   success: boolean;
-  token?: string;
-  expiresAt?: number;
-}
-```
-
-### `window.electron.webuiResetPassword()`
-
-Reset the WebUI admin password.
-
-**Returns:** `{ success: boolean; newPassword?: string }`
-
-## Conversation API
-
-### `conversation.create`
-
-Create a new conversation.
-
-**Request:**
-
-```typescript
-{
-  type: 'gemini' | 'codex' | 'acp';
-  workspace?: string;
-  title?: string;
-}
-```
-
-**Response:**
-
-```typescript
-{
-  id: string;
-  type: string;
-  workspace: string;
-  title: string;
-  createdAt: number;
-}
-```
-
-### `conversation.sendMessage`
-
-Send a message to the AI agent.
-
-**Request:**
-
-```typescript
-{
-  conversationId: string;
-  content: string;
-  attachments?: string[];  // File paths
-}
-```
-
-**Response:** Stream events via `conversation.${id}.stream`
-
-### `conversation.stop`
-
-Stop the current message generation.
-
-**Request:**
-
-```typescript
-{
-  conversationId: string;
-}
-```
-
-### `conversation.get`
-
-Get conversation details.
-
-**Request:**
-
-```typescript
-{
-  id: string;
-}
-```
-
-**Response:**
-
-```typescript
-{
-  id: string;
-  type: string;
-  workspace: string;
-  title: string;
-  createdAt: number;
-  messages: TMessage[];
-}
-```
-
-### `conversation.update`
-
-Update conversation metadata.
-
-**Request:**
-
-```typescript
-{
-  id: string;
-  title?: string;
-  workspace?: string;
-}
-```
-
-### `conversation.remove`
-
-Delete a conversation.
-
-**Request:**
-
-```typescript
-{
-  id: string;
-}
-```
-
-### `conversation.reset`
-
-Clear conversation history.
-
-**Request:**
-
-```typescript
-{
-  id: string;
-}
-```
-
-### `conversation.confirmation.confirm`
-
-Respond to a confirmation request.
-
-**Request:**
-
-```typescript
-{
-  conversationId: string;
-  confirmationId: string;
-  approved: boolean;
-}
-```
-
-### `conversation.confirmation.list`
-
-List pending confirmations.
-
-**Request:**
-
-```typescript
-{
-  conversationId: string;
-}
-```
-
-**Response:**
-
-```typescript
-{
-  confirmations: IConfirmation[];
-}
-```
-
-## MCP Service API
-
-### `mcpService.testMcpConnection`
-
-Test connection to an MCP server.
-
-**Request:**
-
-```typescript
-{
-  name: string;
-  command: string;
-  args?: string[];
-  env?: Record<string, string>;
-}
-```
-
-**Response:**
-
-```typescript
-{
-  success: boolean;
-  error?: string;
-  tools?: ToolDefinition[];
-}
-```
-
-### `mcpService.syncMcpToAgents`
-
-Sync MCP configuration to agents.
-
-**Request:**
-
-```typescript
-{
-  configs: McpConfig[];
-}
-```
-
-### `mcpService.removeMcpFromAgents`
-
-Remove an MCP server from agents.
-
-**Request:**
-
-```typescript
-{
-  mcpId: string;
-}
-```
-
-### `mcpService.getAgentMcpConfigs`
-
-Get MCP configurations for an agent.
-
-**Request:**
-
-```typescript
-{
-  agentType: string;
-}
-```
-
-**Response:**
-
-```typescript
-{
-  configs: McpConfig[];
-}
-```
-
-### `mcpService.loginMcpOAuth`
-
-Initiate OAuth login for an MCP server.
-
-**Request:**
-
-```typescript
-{
-  mcpId: string;
-  serverId: string;
-}
-```
-
-### `mcpService.logoutMcpOAuth`
-
-Logout from an MCP OAuth session.
-
-**Request:**
-
-```typescript
-{
-  mcpId: string;
-}
-```
-
-### `mcpService.checkOAuthStatus`
-
-Check OAuth status for an MCP server.
-
-**Request:**
-
-```typescript
-{
-  mcpId: string;
-}
-```
-
-**Response:**
-
-```typescript
-{
-  authenticated: boolean;
-  expiresAt?: number;
-}
-```
-
-### `mcpService.getAuthenticatedServers`
-
-Get list of authenticated MCP servers.
-
-**Response:**
-
-```typescript
-{
-  servers: string[];
-}
-```
-
-## Cron API
-
-### `cron.list`
-
-List all cron jobs.
-
-**Response:**
-
-```typescript
-{
-  jobs: CronJob[];
-}
-```
-
-### `cron.add`
-
-Create a new cron job.
-
-**Request:**
-
-```typescript
-{
-  name: string;
-  schedule: string;  // Cron expression
-  conversationId: string;
-  conversationTitle: string;
-  message: string;
-  agentType: string;
-}
-```
-
-**Response:**
-
-```typescript
-{
-  id: string;
-  ...CronJob;
-}
-```
-
-### `cron.update`
-
-Update a cron job.
-
-**Request:**
-
-```typescript
-{
-  id: string;
-  name?: string;
-  schedule?: string;
-  message?: string;
-  enabled?: boolean;
-}
-```
-
-### `cron.remove`
-
-Delete a cron job.
-
-**Request:**
-
-```typescript
-{
-  id: string;
-}
-```
-
-### `cron.execute`
-
-Manually execute a cron job.
-
-**Request:**
-
-```typescript
-{
-  id: string;
-}
-```
-
-## Channel API
-
-### `channel.enable`
-
-Enable a channel plugin.
-
-**Request:**
-
-```typescript
-{
-  type: 'telegram';
-  config: ChannelConfig;
-}
-```
-
-### `channel.disable`
-
-Disable a channel plugin.
-
-**Request:**
-
-```typescript
-{
-  type: string;
-}
-```
-
-### `channel.test`
-
-Test channel connection.
-
-**Request:**
-
-```typescript
-{
-  type: string;
-  config: ChannelConfig;
-}
-```
-
-**Response:**
-
-```typescript
-{
-  success: boolean;
+  data?: T;
+  msg?: string;
   error?: string;
 }
 ```
 
-### `channel.pair`
+### `IResponseMessage`
 
-Start device pairing.
-
-**Request:**
+Streaming message from AI agent:
 
 ```typescript
-{
-  channelType: string;
-  userId: string;
-}
-```
-
-**Response:**
-
-```typescript
-{
-  pairingCode: string;
-  expiresAt: number;
-}
-```
-
-## Application API
-
-### `application.openDevTools`
-
-Open Chrome DevTools.
-
-### `application.getVersion`
-
-Get application version.
-
-**Response:** `string`
-
-### `application.checkUpdate`
-
-Check for application updates.
-
-**Response:**
-
-```typescript
-{
-  hasUpdate: boolean;
-  version?: string;
-  releaseNotes?: string;
-}
-```
-
-### `application.installUpdate`
-
-Install available update.
-
-## File System API
-
-### `fs.readDir`
-
-Read directory contents.
-
-**Request:**
-
-```typescript
-{
-  path: string;
-}
-```
-
-**Response:**
-
-```typescript
-{
-  entries: {
-    name: string;
-    type: 'file' | 'directory';
-    size: number;
-    modified: number;
-  }[];
-}
-```
-
-### `fs.readFile`
-
-Read file contents.
-
-**Request:**
-
-```typescript
-{
-  path: string;
-  encoding?: 'utf8' | 'base64';
-}
-```
-
-**Response:**
-
-```typescript
-{
-  content: string;
-}
-```
-
-### `fs.writeFile`
-
-Write file contents.
-
-**Request:**
-
-```typescript
-{
-  path: string;
-  content: string;
-  encoding?: 'utf8' | 'base64';
-}
-```
-
-## Dialog API
-
-### `dialog.showOpenDialog`
-
-Show file/folder open dialog.
-
-**Request:**
-
-```typescript
-{
-  title?: string;
-  defaultPath?: string;
-  filters?: { name: string; extensions: string[] }[];
-  properties?: ('openFile' | 'openDirectory' | 'multiSelections')[];
-}
-```
-
-**Response:**
-
-```typescript
-{
-  canceled: boolean;
-  filePaths: string[];
-}
-```
-
-### `dialog.showSaveDialog`
-
-Show file save dialog.
-
-**Request:**
-
-```typescript
-{
-  title?: string;
-  defaultPath?: string;
-  filters?: { name: string; extensions: string[] }[];
-}
-```
-
-**Response:**
-
-```typescript
-{
-  canceled: boolean;
-  filePath?: string;
-}
-```
-
-## Stream Events
-
-### `conversation.${id}.stream`
-
-Streaming response events from AI agent.
-
-**Event Types:**
-
-```typescript
-// Text chunk
-{
-  type: 'text';
-  content: string;
-  msgId: string;
-}
-
-// Tool call start
-{
-  type: 'tool_call_start';
-  toolCallId: string;
-  toolName: string;
-}
-
-// Tool call update
-{
-  type: 'tool_call_update';
-  toolCallId: string;
-  content: string;
-}
-
-// Tool call end
-{
-  type: 'tool_call_end';
-  toolCallId: string;
-  result: any;
-}
-
-// Error
-{
-  type: 'error';
-  error: string;
-  code?: string;
-}
-
-// Done
-{
-  type: 'done';
-  msgId: string;
-}
-
-// Permission request
-{
-  type: 'permission_request';
-  id: string;
-  action: string;
-  description: string;
-}
-```
-
-## Type Definitions
-
-### `TMessage`
-
-```typescript
-type TMessage =
-  | IMessageText
-  | IMessageToolCall
-  | IMessageToolGroup
-  | IMessagePlan
-  | IMessageTips
-  | IMessageAgentStatus
-  | IMessageCodexToolCall
-  | IMessageCodexPermission
-  | IMessageAcpToolCall
-  | IMessageAcpPermission;
-```
-
-### `IMessage`
-
-```typescript
-interface IMessage {
+interface IResponseMessage {
   id: string;
   msg_id: string;
   conversation_id: string;
   type: TMessageType;
-  content: any;
-  status: string;
-  position: number;
-  createdAt?: number;
+  content?: any;
+  data?: any;
+  status?: string;
 }
 ```
 
-### `IConfirmation`
+### Message Types
 
 ```typescript
-interface IConfirmation {
-  id: string;
-  callId: string;
-  title: string;
-  description: string;
-  action: string;
-  options?: string[];
-}
+type TMessageType =
+  | 'text'           // Text content
+  | 'tool_call'      // Tool invocation
+  | 'tool_result'    // Tool response
+  | 'plan'           // Execution plan
+  | 'tips'           // System tips/errors
+  | 'agent_status'   // Agent status change
+  | 'permission'     // Permission request
+  | 'error'          // Error message
+  | 'done';          // Stream complete
 ```
 
-### `CronJob`
+## Stream Events
+
+For streaming responses, listen to the `responseStream` emitter:
 
 ```typescript
-interface CronJob {
-  id: string;
-  name: string;
-  schedule: string;
-  conversationId: string;
-  conversationTitle: string;
-  message: string;
-  agentType: string;
-  enabled: boolean;
-  lastRun?: number;
-  nextRun?: number;
-  createdAt: number;
-  createdBy: string;
-}
+conversation.responseStream.on((message: IResponseMessage) => {
+  switch (message.type) {
+    case 'text':
+      // Append text to UI
+      break;
+    case 'tool_call':
+      // Show tool invocation
+      break;
+    case 'done':
+      // Stream complete
+      break;
+    case 'error':
+      // Handle error
+      break;
+  }
+});
 ```
 
-### `McpConfig`
+## Error Handling
+
+All `invoke()` calls may throw or return `{ success: false, error: string }`. Best practice:
 
 ```typescript
-interface McpConfig {
-  id: string;
-  name: string;
-  command: string;
-  args?: string[];
-  env?: Record<string, string>;
-  enabled: boolean;
+try {
+  const response = await ipcBridge.conversation.sendMessage.invoke(params);
+  if (!response.success) {
+    console.error('Send failed:', response.error || response.msg);
+    return;
+  }
+  // Handle success
+} catch (error) {
+  console.error('IPC error:', error);
 }
 ```
+
+## Web Mode vs Electron Mode
+
+In **Electron mode**, IPC goes through Electron's contextBridge to the main process.
+
+In **Web mode** (Docker/browser), IPC is bridged via WebSocket to the Express backend:
+- WebSocket connection established at app startup
+- Messages serialized as JSON
+- Same API surface, different transport
+
+The `@office-ai/platform` bridge abstracts this difference — application code doesn't need to know which mode is active.

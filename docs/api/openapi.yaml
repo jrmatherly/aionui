@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: AionUI WebUI API
-  version: 1.8.1
+  version: 1.8.2
   description: |
     REST API for AionUI WebUI server providing authentication, conversation management,
     and AI agent interaction capabilities.
@@ -24,14 +24,21 @@ info:
     - **user**: Standard access to conversations and AI features
     - **viewer**: Read-only access
 
+    ## User Scoping
+    All `/api/*` routes support user data isolation:
+    - `req.scopedUserId` determines whose data to access
+    - Admins can override via `?userId=` query parameter
+    - Regular users can only access their own data
+
     ## Rate Limiting
     - Login endpoints: 5 requests per minute
     - API endpoints: 100 requests per minute
+    - File operations: 30 requests per minute
     - Authenticated actions: 30 requests per minute
 
   contact:
     name: Jason Matherly
-    email: jason@mathrly.net
+    email: jason@matherly.net
   license:
     name: Apache-2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
@@ -53,11 +60,14 @@ tags:
   - name: Admin
     description: Administrative user and system management (requires admin role)
   - name: Directory
-    description: File system directory operations
+    description: File system directory operations (user-scoped)
+  - name: Branding
+    description: Application branding configuration
   - name: WebSocket
     description: Real-time communication endpoints
 
 paths:
+  # ===== Authentication =====
   /login:
     post:
       tags: [Authentication]
@@ -77,7 +87,7 @@ paths:
             Set-Cookie:
               schema:
                 type: string
-              description: Session cookie (aion_session)
+              description: Session cookies (aion_session, aionui-refresh)
           content:
             application/json:
               schema:
@@ -119,7 +129,7 @@ paths:
     get:
       tags: [Authentication]
       summary: Get authentication status
-      description: Check if system needs initial setup and user count
+      description: Check if system needs initial setup and OIDC availability
       operationId: getAuthStatus
       responses:
         "200":
@@ -154,7 +164,7 @@ paths:
     post:
       tags: [Authentication]
       summary: Change password
-      description: Change the current user's password
+      description: Change the current user's password (local auth only)
       operationId: changePassword
       security:
         - cookieAuth: []
@@ -299,6 +309,40 @@ paths:
         "401":
           $ref: "#/components/responses/Unauthorized"
 
+  /qr-login:
+    get:
+      tags: [Authentication]
+      summary: QR login page
+      description: Static HTML page for QR code login flow
+      operationId: qrLoginPage
+      responses:
+        "200":
+          description: QR login HTML page
+          content:
+            text/html:
+              schema:
+                type: string
+
+  # ===== Branding =====
+  /api/branding:
+    get:
+      tags: [Branding]
+      summary: Get branding configuration
+      description: |
+        Public endpoint (no auth required). Returns branding configuration
+        from environment variables. Used by login page and pre-auth UI.
+      operationId: getBranding
+      responses:
+        "200":
+          description: Branding configuration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BrandingConfig"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  # ===== WebSocket =====
   /api/ws-token:
     get:
       tags: [WebSocket]
@@ -326,6 +370,7 @@ paths:
         "401":
           $ref: "#/components/responses/Unauthorized"
 
+  # ===== Admin =====
   /api/admin/users:
     get:
       tags: [Admin]
@@ -350,6 +395,8 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/AdminUserResponse"
+                  total:
+                    type: integer
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -430,7 +477,7 @@ paths:
       summary: Update user role
       description: |
         Change a user's role. Includes self-demotion guard to prevent admins
-        from demoting themselves if they are the last admin. Requires admin role.
+        from demoting themselves. Requires admin role.
       operationId: updateUserRole
       security:
         - adminAuth: []
@@ -457,8 +504,8 @@ paths:
                 properties:
                   success:
                     type: boolean
-                  user:
-                    $ref: "#/components/schemas/AdminUserResponse"
+                  message:
+                    type: string
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -497,12 +544,15 @@ paths:
         "403":
           $ref: "#/components/responses/Forbidden"
 
-  /api/directory:
+  # ===== Directory =====
+  /api/directory/browse:
     get:
       tags: [Directory]
-      summary: List directory contents
-      description: List files and directories at specified path
-      operationId: listDirectory
+      summary: Browse directory contents
+      description: |
+        List files and directories at specified path. Results are scoped
+        to the user's workspace directory for security.
+      operationId: browseDirectory
       security:
         - cookieAuth: []
         - bearerAuth: []
@@ -512,7 +562,7 @@ paths:
           required: true
           schema:
             type: string
-          description: Directory path to list
+          description: Directory path to browse (relative to user workspace)
       responses:
         "200":
           description: Directory listing
@@ -525,19 +575,117 @@ paths:
         "404":
           description: Directory not found
 
-  /qr-login:
-    get:
-      tags: [Authentication]
-      summary: QR login page
-      description: Static HTML page for QR code login flow
-      operationId: qrLoginPage
+  /api/directory/validate:
+    post:
+      tags: [Directory]
+      summary: Validate path
+      description: Check if a path exists and is accessible within user's workspace
+      operationId: validatePath
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [path]
+              properties:
+                path:
+                  type: string
+                  description: Path to validate
       responses:
         "200":
-          description: QR login HTML page
+          description: Validation result
           content:
-            text/html:
+            application/json:
               schema:
-                type: string
+                type: object
+                properties:
+                  valid:
+                    type: boolean
+                  exists:
+                    type: boolean
+                  isDirectory:
+                    type: boolean
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/directory/shortcuts:
+    get:
+      tags: [Directory]
+      summary: Get directory shortcuts
+      description: Get common directory shortcuts (workspace, cache, etc.)
+      operationId: getShortcuts
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Directory shortcuts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  workspace:
+                    type: string
+                  cache:
+                    type: string
+                  home:
+                    type: string
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/directory/upload:
+    post:
+      tags: [Directory]
+      summary: Upload file
+      description: |
+        Upload a file to the user's workspace. Files are sent as base64-encoded
+        JSON (max 75MB request body, ~50MB file after encoding).
+      operationId: uploadFile
+      security:
+        - cookieAuth: []
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [filename, content, targetPath]
+              properties:
+                filename:
+                  type: string
+                  description: Name of the file to create
+                content:
+                  type: string
+                  format: byte
+                  description: Base64-encoded file content
+                targetPath:
+                  type: string
+                  description: Target directory path within workspace
+      responses:
+        "200":
+          description: Upload successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  path:
+                    type: string
+                    description: Full path to uploaded file
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "413":
+          description: Request entity too large (>75MB)
 
 components:
   securitySchemes:
@@ -582,7 +730,7 @@ components:
           $ref: "#/components/schemas/User"
         token:
           type: string
-          description: JWT token
+          description: JWT access token
 
     User:
       type: object
@@ -654,9 +802,18 @@ components:
           type: string
           format: email
           nullable: true
+        groups:
+          type: array
+          items:
+            type: string
+          description: OIDC groups (if applicable)
         createdAt:
           type: string
           format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
         lastLogin:
           type: string
           format: date-time
@@ -710,6 +867,23 @@ components:
           format: password
           minLength: 8
           description: Must meet security requirements
+
+    BrandingConfig:
+      type: object
+      description: Application branding configuration from environment variables
+      properties:
+        appName:
+          type: string
+          default: AionUi
+          description: Application display name
+        logoUrl:
+          type: string
+          nullable: true
+          description: URL to custom logo image
+        faviconUrl:
+          type: string
+          nullable: true
+          description: URL to custom favicon
 
     DirectoryListing:
       type: object
