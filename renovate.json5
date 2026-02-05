@@ -8,9 +8,12 @@
     "config:recommended",       // Sensible defaults (grouping, scheduling, labels)
     "group:allNonMajor",        // Group all minor+patch into one PR
     ":separateMajorReleases",   // Major versions get their own PR
-    "group:definitelyTyped",    // Group all @types/* together
-    ":pinVersions"              // Pin exact versions in devDependencies
+    "group:definitelyTyped"     // Group all @types/* together
+    // Note: Removed :pinVersions — keep ^ranges for auto patch/minor updates
   ],
+
+  // Range strategy: keep existing ranges (^, ~) and update within them
+  "rangeStrategy": "replace",
 
   // Schedule: run on weekends to avoid mid-week disruption
   "schedule": ["after 8am and before 6pm on saturday and sunday"],
@@ -61,6 +64,7 @@
       // Group AI/LLM SDK packages
       "matchPackageNames": [
         "@anthropic-ai/sdk",
+        "@google/generative-ai",
         "openai"
       ],
       "groupName": "AI SDKs",
