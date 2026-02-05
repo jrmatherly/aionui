@@ -12,6 +12,9 @@ import React, { useCallback, useEffect, useState } from 'react';
 import CssThemeModal from './CssThemeModal';
 import { BACKGROUND_BLOCK_START, injectBackgroundCssBlock } from './backgroundUtils';
 import { DEFAULT_THEME_ID, PRESET_THEMES } from './presets';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('CssThemeSettings');
 
 const ensureBackgroundCss = <T extends { id?: string; cover?: string; css: string }>(theme: T): T => {
   // Skip Default theme, do not inject background CSS
@@ -72,7 +75,7 @@ const CssThemeSettings: React.FC = () => {
         // Default to default-theme if no saved theme ID
         setActiveThemeId(activeId || DEFAULT_THEME_ID);
       } catch (error) {
-        console.error('Failed to load CSS themes:', error);
+        log.error({ err: error }, 'Failed to load CSS themes');
       }
     };
     void loadThemes();
@@ -84,7 +87,7 @@ const CssThemeSettings: React.FC = () => {
   const applyThemeCss = useCallback((css: string) => {
     // Update customCss storage and dispatch event
     void ConfigStorage.set('customCss', css).catch((err) => {
-      console.error('Failed to save custom CSS:', err);
+      log.error({ err }, 'Failed to save custom CSS');
     });
     window.dispatchEvent(
       new CustomEvent('custom-css-updated', {
@@ -104,7 +107,7 @@ const CssThemeSettings: React.FC = () => {
         applyThemeCss(theme.css);
         Message.success(`Applied theme: ${theme.name}`);
       } catch (error) {
-        console.error('Failed to apply theme:', error);
+        log.error({ err: error }, 'Failed to apply theme');
         Message.error('Failed to apply theme');
       }
     },
@@ -162,7 +165,7 @@ const CssThemeSettings: React.FC = () => {
         setEditingTheme(null);
         Message.success('Saved successfully');
       } catch (error) {
-        console.error('Failed to save theme:', error);
+        log.error({ err: error }, 'Failed to save theme');
         Message.error('Failed to save');
       }
     },
@@ -196,7 +199,7 @@ const CssThemeSettings: React.FC = () => {
             setEditingTheme(null);
             Message.success('Deleted successfully');
           } catch (error) {
-            console.error('Failed to delete theme:', error);
+            log.error({ err: error }, 'Failed to delete theme');
             Message.error('Failed to delete');
           }
         },
