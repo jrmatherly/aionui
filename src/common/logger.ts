@@ -71,6 +71,26 @@ function resolveFormat(): 'json' | 'pretty' {
 // ============================================================
 
 /**
+ * Resolve a transport module to its absolute path.
+ *
+ * Pino transports run in worker threads via thread-stream. The worker does
+ * `require(target)` where target is the transport name. When running inside
+ * an Electron asar archive or a webpack-bundled context, short module names
+ * like 'pino-roll' may not resolve because the worker's module search paths
+ * differ from the main process. Using require.resolve() in the main process
+ * (where node_modules ARE accessible) converts to an absolute path that the
+ * worker thread can always load.
+ */
+function resolveTransport(name: string): string {
+  try {
+    return require.resolve(name);
+  } catch {
+    // Fallback to bare name (works when node_modules is on the search path)
+    return name;
+  }
+}
+
+/**
  * Build Pino transport targets.
  *
  * In production: JSON to stdout (Docker/k8s log drivers handle the rest)
@@ -87,7 +107,7 @@ function buildTransport(): pino.TransportMultiOptions | pino.TransportSingleOpti
 
   if (format === 'pretty') {
     targets.push({
-      target: 'pino-pretty',
+      target: resolveTransport('pino-pretty'),
       options: {
         colorize: true,
         translateTime: 'SYS:HH:MM:ss.l',
@@ -108,7 +128,7 @@ function buildTransport(): pino.TransportMultiOptions | pino.TransportSingleOpti
     const retentionDays = parseInt(process.env.LOG_RETENTION_DAYS || '30', 10);
 
     targets.push({
-      target: 'pino-roll',
+      target: resolveTransport('pino-roll'),
       options: {
         file: logFile,
         // Rotate by size (MB)
@@ -132,7 +152,7 @@ function buildTransport(): pino.TransportMultiOptions | pino.TransportSingleOpti
     const syslogFacility = parseInt(process.env.SYSLOG_FACILITY || '16', 10); // local0 = 16
 
     targets.push({
-      target: 'pino-syslog',
+      target: resolveTransport('pino-syslog'),
       options: {
         host: syslogHost,
         port: syslogPort,
