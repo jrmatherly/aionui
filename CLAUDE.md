@@ -105,7 +105,8 @@ src/
 
 deploy/                      # Deployment configurations
 └── docker/                  # Docker containerization
-    ├── Dockerfile           # Multi-stage build
+    ├── Dockerfile           # Full multi-stage build (local dev)
+    ├── Dockerfile.package   # Packaging-only build (CI, pre-compiled)
     ├── docker-compose.yml   # Container orchestration
     └── docker-entrypoint.sh # Startup script
 ```
@@ -325,6 +326,29 @@ The following require special handling during build:
 - `web-tree-sitter` - Code parsing (WASM)
 
 These are configured as externals in Webpack and unpacked from asar.
+
+### Pino Logging (Externalized)
+
+Pino and all transport modules (`pino-pretty`, `pino-roll`, `pino-syslog`, `thread-stream`, etc.)
+are webpack externals. Pino's `package.json` has a `"browser"` field that points to a console.log
+wrapper — webpack would silently break file logging, transports, and worker threads by loading the
+browser build. Externalization ensures Node.js `require()` loads the real pino with full transport
+support. The renderer process correctly uses pino's browser build via its separate webpack config.
+
+### Webpack Filesystem Cache
+
+Both main and renderer webpack configs use `cache: { type: 'filesystem' }` with cache stored in
+`.webpack-cache/` (gitignored). This enables incremental rebuilds — only changed modules recompile.
+
+### CI Build Pipeline
+
+The CI workflow (`build-and-release.yml`) uses a 3-job pipeline:
+
+1. **quality** — TypeScript, ESLint, Prettier checks
+2. **compile** — Runs on CI runner (NOT Docker) with cached node_modules + webpack cache
+3. **docker** — Uses `Dockerfile.package` (packaging only, no compilation)
+
+This architecture mirrors local dev speed: cached deps + incremental webpack.
 
 ## AI Context Tools
 
