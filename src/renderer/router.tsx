@@ -2,6 +2,7 @@ import React from 'react';
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import AppLoader from './components/AppLoader';
 import { useAuth } from './context/AuthContext';
+import GlobalModels from './pages/admin/GlobalModels';
 import GroupMappings from './pages/admin/GroupMappings';
 import UserManagement from './pages/admin/UserManagement';
 import Conversation from './pages/conversation';
@@ -77,6 +78,14 @@ const PanelRoute: React.FC<{ layout: React.ReactElement }> = ({ layout }) => {
             element={
               <AdminGuard>
                 <GroupMappings />
+              </AdminGuard>
+            }
+          />
+          <Route
+            path='/admin/models'
+            element={
+              <AdminGuard>
+                <GlobalModels />
               </AdminGuard>
             }
           />
