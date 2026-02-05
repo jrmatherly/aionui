@@ -76,6 +76,8 @@ services:
       - LANGFUSE_HOST=${LANGFUSE_HOST:-}
       - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY:-}
       - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY:-}
+      # Global Models - passed through via env_file (JSON value breaks docker-compose interpolation)
+      # Set GLOBAL_MODELS in .env file, not here
       # Security (set in .env for production)
       - JWT_SECRET=${JWT_SECRET}
       - AIONUI_ADMIN_PASSWORD=${AIONUI_ADMIN_PASSWORD:-}
