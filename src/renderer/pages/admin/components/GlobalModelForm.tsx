@@ -5,37 +5,17 @@
  *
  * Form component for creating/editing global models.
  * Features:
- * - Alphabetically sorted platform list
- * - Auto-fetch available models after API key entry
+ * - Shared PlatformSelect with provider logos (alphabetically sorted)
+ * - Shared useModeModeList hook for model fetching (SWR-based)
+ * - Admin-specific fields: enabled toggle, priority
  */
 
-import { ipcBridge } from '@/common';
-import { MODEL_PLATFORMS, getPlatformByValue, type PlatformConfig } from '@/renderer/config/modelPlatforms';
+import PlatformSelect from '@/renderer/components/shared/PlatformSelect';
+import { getPlatformByValue } from '@/renderer/config/modelPlatforms';
+import useModeModeList from '@/renderer/hooks/useModeModeList';
 import { Button, Form, Input, InputNumber, Message, Select, Space, Switch } from '@arco-design/web-react';
-import { LinkCloud, Refresh, Search } from '@icon-park/react';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-
-/**
- * Provider Logo Component - displays platform logo with fallback icon
- */
-const ProviderLogo: React.FC<{ logo: string | null; name: string; size?: number }> = ({ logo, name, size = 20 }) => {
-  if (logo) {
-    return <img src={logo} alt={name} className='object-contain shrink-0' style={{ width: size, height: size }} />;
-  }
-  return <LinkCloud theme='outline' size={size} className='text-t-secondary flex shrink-0' />;
-};
-
-/**
- * Platform dropdown option renderer with logo
- */
-const renderPlatformOption = (platform: PlatformConfig) => {
-  return (
-    <div className='flex items-center gap-8px'>
-      <ProviderLogo logo={platform.logo} name={platform.name} size={18} />
-      <span>{platform.name}</span>
-    </div>
-  );
-};
+import { Refresh, Search } from '@icon-park/react';
+import React, { useEffect, useMemo } from 'react';
 
 const FormItem = Form.Item;
 
@@ -66,18 +46,7 @@ interface GlobalModelFormProps {
 
 const GlobalModelForm: React.FC<GlobalModelFormProps> = ({ initialData, onSubmit, onCancel }) => {
   const [form] = Form.useForm<GlobalModelFormData>();
-  const [message, messageContext] = Message.useMessage();
   const isEdit = !!initialData;
-
-  // Model fetching state
-  const [availableModels, setAvailableModels] = useState<{ label: string; value: string }[]>([]);
-  const [isLoadingModels, setIsLoadingModels] = useState(false);
-  const [modelFetchError, setModelFetchError] = useState<string | null>(null);
-
-  // Platform options from MODEL_PLATFORMS config - sorted alphabetically
-  const sortedPlatforms = useMemo(() => {
-    return [...MODEL_PLATFORMS].sort((a, b) => a.name.localeCompare(b.name));
-  }, []);
 
   // Watch form fields for model fetching
   const selectedPlatformValue = Form.useWatch('platform', form);
@@ -97,61 +66,38 @@ const GlobalModelForm: React.FC<GlobalModelFormProps> = ({ initialData, onSubmit
   const baseUrlPlatforms = ['litellm', 'azureopenai', 'azureaifoundry', 'portkey', 'kong', 'agentgateway', 'envoy', 'custom'];
   const showBaseUrl = baseUrlPlatforms.some((p) => selectedPlatformValue?.toLowerCase().includes(p.toLowerCase())) || selectedPlatform?.requiresBaseUrl;
 
-  // Fetch available models from the API
-  const fetchModels = useCallback(async () => {
-    if (!apiKey && !actualBaseUrl) {
-      setAvailableModels([]);
-      return;
-    }
+  // Model fetching via shared SWR hook
+  const modelListState = useModeModeList(selectedPlatform?.platform || 'custom', actualBaseUrl, apiKey, true);
 
-    setIsLoadingModels(true);
-    setModelFetchError(null);
+  // Merge fetched models with initial models (for edit mode where API key isn't sent back)
+  const availableModels = useMemo(() => {
+    const fetched = modelListState.data?.models || [];
+    if (!initialData?.models?.length) return fetched;
 
-    try {
-      const res = await ipcBridge.mode.fetchModelList.invoke({
-        base_url: actualBaseUrl,
-        api_key: apiKey || '',
-        platform: selectedPlatform?.platform || 'custom',
-        try_fix: true,
-      });
+    // In edit mode, seed with existing models and merge any fetched results
+    const initialOptions = initialData.models.map((m) => ({ label: m, value: m }));
+    if (fetched.length === 0) return initialOptions;
 
-      if (res.success && res.data?.mode) {
-        const models = res.data.mode.map((m) => ({ label: m, value: m }));
-        // Sort models alphabetically
-        models.sort((a, b) => a.label.localeCompare(b.label));
-        setAvailableModels(models);
+    // Merge: fetched models + any initial models not in fetched list
+    const fetchedValues = new Set(fetched.map((f) => f.value));
+    const extras = initialOptions.filter((m) => !fetchedValues.has(m.value));
+    return [...fetched, ...extras];
+  }, [modelListState.data?.models, initialData?.models]);
 
-        // Auto-fix base URL if returned
-        if (res.data.fix_base_url) {
-          form.setFieldValue('base_url', res.data.fix_base_url);
-          message.info(`Base URL auto-corrected to: ${res.data.fix_base_url}`);
-        }
-      } else {
-        setModelFetchError(res.msg || 'Failed to fetch models');
-        setAvailableModels([]);
-      }
-    } catch (error) {
-      console.error('Failed to fetch models:', error);
-      setModelFetchError('Failed to connect to API');
-      setAvailableModels([]);
-    } finally {
-      setIsLoadingModels(false);
-    }
-  }, [apiKey, actualBaseUrl, selectedPlatform, form, message]);
-
-  // Clear models when platform changes
+  // Handle auto-fixed base URL from API
   useEffect(() => {
-    setAvailableModels([]);
-    setModelFetchError(null);
-    form.setFieldValue('models', []);
-  }, [selectedPlatformValue, form]);
-
-  // Pre-populate models for edit mode
-  useEffect(() => {
-    if (initialData?.models && initialData.models.length > 0) {
-      setAvailableModels(initialData.models.map((m) => ({ label: m, value: m })));
+    if (modelListState.data?.fix_base_url) {
+      form.setFieldValue('base_url', modelListState.data.fix_base_url);
+      Message.info(`Base URL auto-corrected to: ${modelListState.data.fix_base_url}`);
     }
-  }, [initialData]);
+  }, [modelListState.data?.fix_base_url, form]);
+
+  // Clear model selection when platform changes
+  useEffect(() => {
+    if (!initialData) {
+      form.setFieldValue('models', []);
+    }
+  }, [selectedPlatformValue, form, initialData]);
 
   const handleSubmit = () => {
     void form.validate().then((values) => {
@@ -184,30 +130,12 @@ const GlobalModelForm: React.FC<GlobalModelFormProps> = ({ initialData, onSubmit
             }
       }
     >
-      {messageContext}
-
       <FormItem label='Platform' field='platform' rules={[{ required: true, message: 'Please select a platform' }]}>
-        <Select
-          placeholder='Select platform'
-          showSearch
-          filterOption={(inputValue, option) => {
-            const optionValue = (option as React.ReactElement<{ value?: string }>)?.props?.value;
-            const plat = sortedPlatforms.find((p) => p.value === optionValue);
-            return plat?.name.toLowerCase().includes(inputValue.toLowerCase()) ?? false;
+        <PlatformSelect
+          onChange={(value) => {
+            form.setFieldValue('platform', value);
           }}
-          renderFormat={(option) => {
-            const optionValue = (option as { value?: string })?.value;
-            const plat = sortedPlatforms.find((p) => p.value === optionValue);
-            if (!plat) return optionValue;
-            return renderPlatformOption(plat);
-          }}
-        >
-          {sortedPlatforms.map((plat) => (
-            <Select.Option key={plat.value} value={plat.value}>
-              {renderPlatformOption(plat)}
-            </Select.Option>
-          ))}
-        </Select>
+        />
       </FormItem>
 
       <FormItem label='Name' field='name' rules={[{ required: true, message: 'Please enter a name' }]}>
@@ -226,7 +154,7 @@ const GlobalModelForm: React.FC<GlobalModelFormProps> = ({ initialData, onSubmit
             },
           ]}
         >
-          <Input placeholder={selectedPlatform?.baseUrlPlaceholder || selectedPlatform?.baseUrl || 'https://your-gateway.example.com/v1'} onBlur={() => apiKey && void fetchModels()} />
+          <Input placeholder={selectedPlatform?.baseUrlPlaceholder || selectedPlatform?.baseUrl || 'https://your-gateway.example.com/v1'} onBlur={() => apiKey && void modelListState.mutate()} />
         </FormItem>
       )}
 
@@ -241,21 +169,21 @@ const GlobalModelForm: React.FC<GlobalModelFormProps> = ({ initialData, onSubmit
           </div>
         }
       >
-        <Input.Password placeholder='sk-...' visibilityToggle onBlur={() => void fetchModels()} />
+        <Input.Password placeholder='sk-...' visibilityToggle onBlur={() => void modelListState.mutate()} />
       </FormItem>
 
-      <FormItem label='Models' field='models' rules={[{ required: true, message: 'Please select at least one model' }]} validateStatus={modelFetchError ? 'warning' : undefined} help={modelFetchError} extra={!modelFetchError && <span className='text-11px text-t-tertiary'>{availableModels.length > 0 ? `${availableModels.length} models available` : 'Enter API key above to load available models'}</span>}>
+      <FormItem label='Models' field='models' rules={[{ required: true, message: 'Please select at least one model' }]} validateStatus={modelListState.error ? 'warning' : undefined} help={modelListState.error ? String(modelListState.error) : undefined} extra={!modelListState.error && <span className='text-11px text-t-tertiary'>{availableModels.length > 0 ? `${availableModels.length} models available` : 'Enter API key above to load available models'}</span>}>
         <Select
           mode='multiple'
-          placeholder={isLoadingModels ? 'Loading models...' : availableModels.length > 0 ? 'Select models...' : 'Enter API key to load models'}
-          loading={isLoadingModels}
+          placeholder={modelListState.isLoading ? 'Loading models...' : availableModels.length > 0 ? 'Select models...' : 'Enter API key to load models'}
+          loading={modelListState.isLoading}
           allowCreate
           showSearch
           options={availableModels}
           filterOption={(inputValue, option) => (option as { label?: string })?.label?.toLowerCase().includes(inputValue.toLowerCase()) ?? false}
           suffixIcon={
             <div className='flex items-center gap-4px'>
-              {isLoadingModels ? (
+              {modelListState.isLoading ? (
                 <Refresh className='animate-spin text-t-secondary' size={14} />
               ) : (
                 <Search
@@ -267,7 +195,7 @@ const GlobalModelForm: React.FC<GlobalModelFormProps> = ({ initialData, onSubmit
                       Message.warning('Please enter an API key first');
                       return;
                     }
-                    void fetchModels();
+                    void modelListState.mutate();
                   }}
                 />
               )}

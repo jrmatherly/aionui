@@ -1,82 +1,9 @@
 import type { IProvider } from '@/common/storage';
 import AionModal from '@/renderer/components/base/AionModal';
+import { ProviderLogo, getProviderLogo } from '@/renderer/components/shared/ProviderLogo';
 import ModalHOC from '@/renderer/utils/ModalHOC';
 import { Form, Input } from '@arco-design/web-react';
-import { LinkCloud } from '@icon-park/react';
 import React, { useEffect, useMemo } from 'react';
-// Provider Logo imports
-import AgentGatewayLogo from '@/renderer/assets/logos/agentgateway.svg';
-import AnthropicLogo from '@/renderer/assets/logos/anthropic.svg';
-import AzureLogo from '@/renderer/assets/logos/azure.svg';
-import EnvoyLogo from '@/renderer/assets/logos/envoy.svg';
-import GeminiLogo from '@/renderer/assets/logos/gemini.svg';
-import KongLogo from '@/renderer/assets/logos/kong.svg';
-import LiteLLMLogo from '@/renderer/assets/logos/litellm.svg';
-import OpenAILogo from '@/renderer/assets/logos/openai.svg';
-import OpenRouterLogo from '@/renderer/assets/logos/openrouter.svg';
-import PortkeyLogo from '@/renderer/assets/logos/portkey.svg';
-import XaiLogo from '@/renderer/assets/logos/xai.svg';
-
-/**
- * Provider config for logo resolution (includes name, URL, logo).
- * Alphabetical order; hidden providers commented out for easy re-enablement.
- */
-const PROVIDER_CONFIGS = [
-  // Gateway/Proxy providers
-  { name: 'AgentGateway', url: '', logo: AgentGatewayLogo },
-  { name: 'Azure OpenAI', url: '', logo: AzureLogo, platform: 'azure' },
-  { name: 'Azure AI Foundry', url: '', logo: AzureLogo, platform: 'azure-ai-foundry' },
-  { name: 'Envoy AI Gateway', url: '', logo: EnvoyLogo },
-  { name: 'Kong AI Gateway', url: '', logo: KongLogo },
-  { name: 'LiteLLM', url: '', logo: LiteLLMLogo },
-  { name: 'Portkey', url: 'https://api.portkey.ai/v1', logo: PortkeyLogo },
-  // Standard providers
-  { name: 'Anthropic', url: 'https://api.anthropic.com/v1', logo: AnthropicLogo },
-  { name: 'Gemini', url: '', logo: GeminiLogo, platform: 'gemini' },
-  { name: 'Gemini (Vertex AI)', url: '', logo: GeminiLogo, platform: 'gemini-vertex-ai' },
-  { name: 'OpenAI', url: 'https://api.openai.com/v1', logo: OpenAILogo },
-  { name: 'OpenRouter', url: 'https://openrouter.ai/api/v1', logo: OpenRouterLogo },
-  { name: 'xAI', url: 'https://api.x.ai/v1', logo: XaiLogo },
-];
-
-/**
- * Get provider logo by name or URL
- */
-const getProviderLogo = (name?: string, baseUrl?: string, platform?: string): string | null => {
-  if (!name && !baseUrl && !platform) return null;
-
-  // Prioritize matching by platform (Gemini series)
-  if (platform) {
-    const byPlatform = PROVIDER_CONFIGS.find((p) => p.platform === platform);
-    if (byPlatform) return byPlatform.logo;
-  }
-
-  // Match by exact name
-  const byName = PROVIDER_CONFIGS.find((p) => p.name === name);
-  if (byName) return byName.logo;
-
-  // Match by name case-insensitively
-  const byNameLower = PROVIDER_CONFIGS.find((p) => p.name.toLowerCase() === name?.toLowerCase());
-  if (byNameLower) return byNameLower.logo;
-
-  // Match by URL
-  if (baseUrl) {
-    const byUrl = PROVIDER_CONFIGS.find((p) => p.url && baseUrl.includes(p.url.replace('https://', '').split('/')[0]));
-    if (byUrl) return byUrl.logo;
-  }
-
-  return null;
-};
-
-/**
- * Provider Logo Component
- */
-const ProviderLogo: React.FC<{ logo: string | null; name: string; size?: number }> = ({ logo, name, size = 20 }) => {
-  if (logo) {
-    return <img src={logo} alt={name} className='object-contain shrink-0' style={{ width: size, height: size }} />;
-  }
-  return <LinkCloud theme='outline' size={size} className='text-t-secondary flex shrink-0' />;
-};
 
 const EditModeModal = ModalHOC<{ data?: IProvider; onChange(data: IProvider): void }>(({ modalProps, modalCtrl, ...props }) => {
   const { data } = props;

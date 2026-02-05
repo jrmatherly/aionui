@@ -3,40 +3,16 @@ import type { IProvider } from '@/common/storage';
 import { uuid } from '@/common/utils';
 import { isGoogleApisHost } from '@/common/utils/urlValidation';
 import AionModal from '@/renderer/components/base/AionModal';
-import { MODEL_PLATFORMS, getPlatformByValue, isCustomOption, isGeminiPlatform, type PlatformConfig } from '@/renderer/config/modelPlatforms';
+import { renderPlatformOption } from '@/renderer/components/shared/ProviderLogo';
+import { MODEL_PLATFORMS, getPlatformByValue, isCustomOption, isGeminiPlatform } from '@/renderer/config/modelPlatforms';
 import ModalHOC from '@/renderer/utils/ModalHOC';
 import { Form, Input, Message, Select } from '@arco-design/web-react';
-import { Edit, LinkCloud, Search } from '@icon-park/react';
+import { Edit, Search } from '@icon-park/react';
 import React, { useEffect, useMemo, useState } from 'react';
 import useModeModeList from '../../../hooks/useModeModeList';
 import useProtocolDetection from '../../../hooks/useProtocolDetection';
 import ApiKeyEditorModal from './ApiKeyEditorModal';
 import ProtocolDetectionStatus from './ProtocolDetectionStatus';
-
-/**
- * Provider Logo Component
- */
-const ProviderLogo: React.FC<{ logo: string | null; name: string; size?: number }> = ({ logo, name, size = 20 }) => {
-  if (logo) {
-    return <img src={logo} alt={name} className='object-contain shrink-0' style={{ width: size, height: size }} />;
-  }
-  return <LinkCloud theme='outline' size={size} className='text-t-secondary flex shrink-0' />;
-};
-
-/**
- * Platform dropdown option renderer (first level)
- *
- * @param platform - Platform config
- * @param t - Translation function
- */
-const renderPlatformOption = (platform: PlatformConfig) => {
-  return (
-    <div className='flex items-center gap-8px'>
-      <ProviderLogo logo={platform.logo} name={platform.name} size={18} />
-      <span>{platform.name}</span>
-    </div>
-  );
-};
 
 const AddPlatformModal = ModalHOC<{
   onSubmit: (platform: IProvider) => void;
