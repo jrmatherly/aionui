@@ -61,8 +61,8 @@ filter_unconventional = true
 # Never skip breaking changes, even if their type would be skipped
 protect_breaking_commits = true
 
-# Include all matched commits (don't require parser match)
-filter_commits = false
+# Only include commits that match a commit_parser rule
+filter_commits = true
 
 # Don't split multi-line commit messages into separate entries
 split_commits = false
@@ -78,7 +78,7 @@ tag_pattern = "v[0-9].*"
 # NOTE: chore(deps) and chore(renovate) skip rules must precede the ^chore catch-all
 commit_parsers = [
   { message = "^feat",              group = "<!-- 0 -->Features" },
-  { message = "^fix",               group = "<!-- 1 -->Bug Fixes" },
+  { message = "^[Ff]ix",             group = "<!-- 1 -->Bug Fixes" },
   { message = "^perf",              group = "<!-- 2 -->Performance" },
   { message = "^refactor",          group = "<!-- 3 -->Refactor" },
   { message = "^docs",              group = "<!-- 4 -->Documentation" },
