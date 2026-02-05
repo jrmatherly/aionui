@@ -115,10 +115,11 @@ RUN echo "📦 Installing Multi-Agent CLI tools..." && \
 FROM debian:bookworm-slim AS runtime
 
 # OCI Image Labels
+ARG APP_VERSION=0.0.0
 LABEL org.opencontainers.image.source="https://github.com/jrmatherly/aionui" \
     org.opencontainers.image.title="AionUI" \
     org.opencontainers.image.description="AionUI WebUI Server - Transform CLI AI agents into a modern chat interface" \
-    org.opencontainers.image.version="1.8.2" \
+    org.opencontainers.image.version="${APP_VERSION}" \
     org.opencontainers.image.licenses="Apache-2.0"
 
 # Install Electron runtime dependencies and Xvfb for headless operation

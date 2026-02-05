@@ -132,6 +132,7 @@ jobs:
           build-args: |
             NODE_VERSION=${{ steps.versions.outputs.node }}
             NPM_VERSION=${{ steps.versions.outputs.npm }}
+            APP_VERSION=${{ steps.app.outputs.version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64
