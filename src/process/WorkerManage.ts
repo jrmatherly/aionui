@@ -12,6 +12,7 @@ import { getDatabase } from './database/export';
 import { ProcessChat } from './initStorage';
 import type AgentBaseTask from './task/BaseAgentManager';
 import { GeminiAgentManager } from './task/GeminiAgentManager';
+import { sessionLogger as log } from '@/common/logger';
 
 const taskList: {
   id: string;
