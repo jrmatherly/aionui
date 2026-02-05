@@ -96,7 +96,6 @@
     "patch-package": "^8.0.1",
     "postcss-loader": "^8.2.0",
     "prettier": "^3.8.1",
-    "style-loader": "^3.3.4",
     "ts-jest": "^29.4.6",
     "ts-loader": "^9.5.4",
     "ts-node": "^10.9.2",
@@ -107,12 +106,12 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.71.2",
+    "@anthropic-ai/sdk": "^0.72.1",
     "@arco-design/web-react": "^2.66.10",
     "@codemirror/lang-css": "^6.3.1",
     "@codemirror/lang-json": "^6.0.2",
     "@codemirror/lang-markdown": "^6.5.0",
-    "@floating-ui/react": "^0.27.16",
+    "@floating-ui/react": "^0.27.17",
     "@google/genai": "^1.40.0",
     "@grammyjs/transformer-throttler": "^1.2.1",
     "@icon-park/react": "^1.4.2",
@@ -143,7 +142,7 @@
     "html-to-text": "^9.0.5",
     "jsonrepair": "^3.13.2",
     "jsonwebtoken": "^9.0.3",
-    "katex": "^0.16.22",
+    "katex": "^0.16.28",
     "mammoth": "^1.11.0",
     "openai": "^6.17.0",
     "openid-client": "^5.7.1",
@@ -163,17 +162,17 @@
     "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
     "semver": "^7.7.3",
-    "sharp": "^0.34.3",
+    "sharp": "^0.34.5",
     "stream-browserify": "^3.0.0",
-    "streamdown": "^1.5.1",
+    "streamdown": "^2.1.0",
     "swr": "^2.4.0",
     "tiny-csrf": "^1.1.6",
     "turndown": "^7.2.2",
     "turndown-plugin-gfm": "^1.0.2",
-    "web-tree-sitter": "^0.25.10",
+    "web-tree-sitter": "^0.26.5",
     "ws": "^8.19.0",
     "xlsx-republish": "^0.20.3",
-    "zod": "^3.25.76"
+    "zod": "^4.3.6"
   },
   "optionalDependencies": {
     "electron-winstaller": "^5.4.0"

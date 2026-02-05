@@ -76,13 +76,16 @@ export const CloseDiffResponseSchema = z
       const innerSchema = z.object({ content: z.string().optional() });
       const validationResult = innerSchema.safeParse(parsed);
       if (!validationResult.success) {
-        validationResult.error.issues.forEach((issue) => ctx.addIssue(issue));
+        for (const issue of validationResult.error.issues) {
+          ctx.addIssue(issue as Parameters<typeof ctx.addIssue>[0]);
+        }
         return z.NEVER;
       }
       return validationResult.data;
     } catch (_) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: 'custom',
+        input: val,
         message: 'Invalid JSON in text content',
       });
       return z.NEVER;

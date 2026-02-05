@@ -58,13 +58,13 @@
       "groupName": "React"
     },
     {
-      // Group i18n packages
+      // Group AI/LLM SDK packages
       "matchPackageNames": [
-        "i18next",
-        "react-i18next",
-        "i18next-browser-languagedetector"
+        "@anthropic-ai/sdk",
+        "openai"
       ],
-      "groupName": "i18n"
+      "groupName": "AI SDKs",
+      "matchUpdateTypes": ["minor", "patch"]
     },
     {
       // Group GitHub Actions in workflows
@@ -93,16 +93,13 @@
       "automerge": false
     },
     {
-      // Major i18n upgrades need coordinated testing (v23→v25 spans 2 majors)
-      // See: docs/guides/MAJOR_DEPENDENCY_UPGRADE_ANALYSIS.md
-      "matchPackageNames": [
-        "i18next",
-        "react-i18next",
-        "i18next-browser-languagedetector"
-      ],
+      // openid-client v6 is a complete API rewrite — pin to v5.x
+      // v6 removes Issuer/Client/TokenSet classes entirely (ESM-only, new function-based API)
+      // v5 continues to receive security updates
+      // See: docs/guides/DEPENDENCY_UPGRADE_ANALYSIS.md
+      "matchPackageNames": ["openid-client"],
       "matchUpdateTypes": ["major"],
-      "labels": ["dependencies", "breaking-change"],
-      "automerge": false
+      "enabled": false
     }
   ],
 
