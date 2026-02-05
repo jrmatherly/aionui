@@ -1,0 +1,153 @@
+# =============================================================================
+# AionUI Docker Image — Packaging Only
+#
+# This Dockerfile assumes the application is ALREADY compiled.
+# It receives pre-built artifacts (out/linux-unpacked/) and assembles
+# the final runtime image.
+#
+# Used by CI where compilation happens in the GitHub Actions runner
+# (with cached node_modules + webpack filesystem cache) for much
+# faster builds than compiling inside Docker.
+#
+# The full-build Dockerfile (./Dockerfile) is still available for
+# local builds where everything happens in one step.
+#
+# Usage (CI):
+#   1. CI compiles: npm ci && electron-forge package && electron-builder
+#   2. CI invokes: docker build -f deploy/docker/Dockerfile.package \
+#        --build-arg NODE_VERSION=24.13.0 -t aionui .
+#
+# Usage (local, if needed):
+#   docker build -f deploy/docker/Dockerfile -t aionui .
+# =============================================================================
+
+# Node version must match the CI runner that compiled the app.
+ARG NODE_VERSION=24.13.0
+
+# -----------------------------------------------------------------------------
+# Stage 1: CLI Installer (Multi-Agent Mode)
+# Installs ALL CLI tools for multi-agent orchestration.
+# Builds in parallel and is cached independently of source changes.
+# Only a Node version or CLI version change invalidates this stage.
+# -----------------------------------------------------------------------------
+FROM node:${NODE_VERSION}-bookworm-slim AS cli-installer
+
+ARG NPM_VERSION=11.9.0
+RUN npm install -g npm@${NPM_VERSION}
+
+# Install ALL CLI tools globally (no conditionals - always baked in)
+# Combined into a single RUN to minimize layers and maximize cache hits.
+# Mount npm cache so repeated builds don't re-download packages.
+RUN --mount=type=cache,target=/root/.npm,sharing=locked \
+    echo "📦 Installing Multi-Agent CLI tools..." && \
+    npm install -g @anthropic-ai/claude-code && \
+    npm install -g @qwen-code/qwen-code && \
+    npm install -g @openai/codex && \
+    npm install -g @iflow-ai/iflow-cli && \
+    npm install -g @augmentcode/auggie && \
+    npm install -g @github/copilot && \
+    npm install -g @qoder-ai/qodercli && \
+    npm install -g opencode-ai && \
+    echo "✅ All CLI tools installed"
+
+# -----------------------------------------------------------------------------
+# Stage 2: Runtime
+# Minimal image with only runtime dependencies + pre-built app
+# -----------------------------------------------------------------------------
+FROM debian:bookworm-slim AS runtime
+
+# OCI Image Labels
+ARG APP_VERSION=0.0.0
+LABEL org.opencontainers.image.source="https://github.com/jrmatherly/aionui" \
+    org.opencontainers.image.title="AionUI" \
+    org.opencontainers.image.description="AionUI WebUI Server - Transform CLI AI agents into a modern chat interface" \
+    org.opencontainers.image.version="${APP_VERSION}" \
+    org.opencontainers.image.licenses="Apache-2.0"
+
+# Install Electron runtime dependencies and Xvfb for headless operation
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    # Electron/Chromium dependencies
+    libgtk-3-0 \
+    libnss3 \
+    libasound2 \
+    libgbm1 \
+    libxss1 \
+    libxtst6 \
+    libx11-xcb1 \
+    libxcb-dri3-0 \
+    libdrm2 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libpango-1.0-0 \
+    libcairo2 \
+    libxkbcommon0 \
+    libatspi2.0-0 \
+    # Virtual display for headless Electron
+    xvfb \
+    dbus-x11 \
+    # Process management
+    tini \
+    # Utilities
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Copy Node.js binary and global npm packages from cli-installer
+COPY --from=cli-installer /usr/local/bin/node /usr/local/bin/node
+COPY --from=cli-installer /usr/local/lib/node_modules /usr/local/lib/node_modules
+
+# Create symlinks for npm, npx, and all CLI tools
+RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && \
+    ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx && \
+    ln -sf /usr/local/lib/node_modules/@anthropic-ai/claude-code/cli.js /usr/local/bin/claude && \
+    ln -sf /usr/local/lib/node_modules/@qwen-code/qwen-code/cli.js /usr/local/bin/qwen && \
+    ln -sf /usr/local/lib/node_modules/@openai/codex/bin/codex.js /usr/local/bin/codex && \
+    ln -sf /usr/local/lib/node_modules/@iflow-ai/iflow-cli/bundle/entry.js /usr/local/bin/iflow && \
+    ln -sf /usr/local/lib/node_modules/@augmentcode/auggie/augment.mjs /usr/local/bin/auggie && \
+    ln -sf /usr/local/lib/node_modules/@github/copilot/npm-loader.js /usr/local/bin/copilot && \
+    ln -sf /usr/local/lib/node_modules/@qoder-ai/qodercli/bin/qodercli /usr/local/bin/qodercli && \
+    ln -sf /usr/local/lib/node_modules/opencode-ai/bin/opencode /usr/local/bin/opencode && \
+    echo "✅ Node.js, npm, npx, and all CLI tools installed"
+
+ENV PATH="/usr/local/lib/node_modules/.bin:${PATH}"
+
+# Create non-root user
+RUN useradd --create-home --shell /bin/bash --uid 1000 aionui
+
+WORKDIR /app
+
+# Copy PRE-BUILT application from CI artifact.
+# The build context must include out/linux-unpacked/ from electron-builder.
+COPY out/linux-unpacked /app
+
+# Copy entrypoint script
+COPY deploy/docker/docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Create data directory, X11 socket dir, D-Bus dir, and log dir
+RUN mkdir -p /home/aionui/.config/AionUi /tmp/.X11-unix /run/dbus /var/log/aionui \
+    && chmod 1777 /tmp/.X11-unix \
+    && chown -R aionui:aionui /home/aionui /app /var/log/aionui
+
+USER aionui
+
+ENV DISPLAY=:99 \
+    AIONUI_PORT=25808 \
+    AIONUI_ALLOW_REMOTE=true \
+    NODE_ENV=production \
+    ELECTRON_DISABLE_SANDBOX=1
+
+EXPOSE 25808
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -sf http://localhost:${AIONUI_PORT}/ || exit 1
+
+VOLUME ["/home/aionui/.config/AionUi"]
+
+ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/docker-entrypoint.sh"]
+CMD []

@@ -1,0 +1,56 @@
+# =============================================================================
+# Docker Ignore for Dockerfile.package (packaging-only build)
+#
+# Minimal exclusions — out/linux-unpacked/ must NOT be excluded since it
+# contains the pre-compiled application from the CI compile step.
+# =============================================================================
+
+# Source code (not needed — app is pre-compiled in out/linux-unpacked/)
+src/
+config/
+.webpack/
+.webpack-cache/
+node_modules/
+
+# Git and development
+.git/
+.github/
+.vscode/
+.idea/
+tests/
+coverage/
+docs/
+.local_docs/
+.scratchpad/
+.husky/
+*.md
+!README.md
+
+# Environment and secrets
+.env
+.env.*
+*.local
+
+# macOS / Windows
+.DS_Store
+Thumbs.db
+*.dmg
+*.icns
+*.exe
+*.msi
+
+# Tooling configs
+.serena/
+.drift/
+.specify/
+.aionui/
+.claude/
+.gemini/
+.ruby-lsp/
+homebrew/
+
+# Temp files
+tmp/
+temp/
+.cache/
+*.log

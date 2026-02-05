@@ -111,7 +111,10 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  # Code quality gate — must pass before building
+  # =========================================================================
+  # Job 1: Code Quality Gate
+  # Must pass before compilation starts.
+  # =========================================================================
   quality:
     name: Code Quality
     runs-on: ubuntu-latest
@@ -145,12 +148,25 @@ jobs:
       - name: Prettier
         run: npm run format:check
 
-  # Docker build + optional push to GHCR
-  build:
-    name: Docker Build
+  # =========================================================================
+  # Job 2: Compile (Runs on CI runner, NOT inside Docker)
+  #
+  # This is the key optimization: compilation happens in the CI runner where
+  # node_modules and webpack caches persist between runs. Only changed
+  # modules are recompiled (webpack 5 filesystem cache).
+  #
+  # Docker is reduced to a thin packaging layer (Dockerfile.package).
+  # =========================================================================
+  compile:
+    name: Compile
     runs-on: ubuntu-latest
     needs: quality
-    timeout-minutes: 30
+    timeout-minutes: 20
+    outputs:
+      node_version: ${{ steps.versions.outputs.node }}
+      npm_version: ${{ steps.versions.outputs.npm }}
+      app_version: ${{ steps.app.outputs.version }}
+      sha_short: ${{ steps.app.outputs.sha_short }}
 
     steps:
       - name: Checkout code
@@ -159,13 +175,19 @@ jobs:
       - name: Extract tool versions
         id: versions
         run: |
-          # Node version from mise.lock (pinned)
           NODE_VERSION=$(grep -A1 'tools.node' mise.lock | grep version | head -1 | sed 's/.*= "//' | sed 's/"//')
-          # npm version from Dockerfile default (not in mise.lock — installed via postinstall hook)
           NPM_VERSION=$(grep 'ARG NPM_VERSION=' deploy/docker/Dockerfile | head -1 | sed 's/ARG NPM_VERSION=//')
           echo "node=${NODE_VERSION}" >> $GITHUB_OUTPUT
           echo "npm=${NPM_VERSION}" >> $GITHUB_OUTPUT
           echo "Node.js: ${NODE_VERSION}, npm: ${NPM_VERSION}"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ steps.versions.outputs.node }}
+
+      - name: Upgrade npm
+        run: npm install -g npm@${{ steps.versions.outputs.npm }}
 
       - name: Get app version
         id: app
@@ -174,6 +196,115 @@ jobs:
           SHA_SHORT=$(echo "${{ github.sha }}" | cut -c1-7)
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "sha_short=${SHA_SHORT}" >> $GITHUB_OUTPUT
+
+      # ---------------------------------------------------------------
+      # Cache: node_modules (keyed on package-lock.json)
+      # Restores full node_modules from previous runs. npm ci with a
+      # warm cache only verifies integrity (~10s vs ~60s cold install).
+      # ---------------------------------------------------------------
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: node-modules-linux-x64-${{ steps.versions.outputs.node }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci
+
+      # ---------------------------------------------------------------
+      # Cache: Webpack filesystem cache (incremental rebuilds)
+      # Keyed on source hash with fallback to any previous cache.
+      # Webpack only recompiles modules that changed since last build.
+      # ---------------------------------------------------------------
+      - name: Cache webpack
+        uses: actions/cache@v4
+        with:
+          path: .webpack-cache
+          key: webpack-${{ hashFiles('src/**', 'config/webpack/**') }}
+          restore-keys: webpack-
+
+      # ---------------------------------------------------------------
+      # Cache: Electron binary download (~100-250MB)
+      # ---------------------------------------------------------------
+      - name: Cache Electron binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/electron
+          key: electron-${{ hashFiles('node_modules/electron/package.json') }}
+          restore-keys: electron-
+
+      # ---------------------------------------------------------------
+      # Build: Forge (webpack) + electron-builder (packaging)
+      # ---------------------------------------------------------------
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends python3 g++ make
+
+      - name: Rebuild native modules for Electron
+        run: npm exec electron-rebuild
+
+      - name: Compile with Electron Forge
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096"
+        run: npm exec electron-forge -- package --platform=linux --arch=x64
+
+      - name: Normalize webpack output
+        run: |
+          if [ -d ".webpack/x64/main" ] && [ ! -d ".webpack/main" ]; then
+            cp -r ".webpack/x64/main" ".webpack/main"
+            cp -r ".webpack/x64/renderer" ".webpack/renderer"
+          fi
+
+      - name: Package with electron-builder
+        run: npx electron-builder --linux dir --x64 --publish=never
+
+      - name: Verify build output
+        run: |
+          echo "=== Build verification ==="
+          ls -la out/linux-unpacked/resources/
+          echo "--- app.asar.unpacked ---"
+          ls -la out/linux-unpacked/resources/app.asar.unpacked/node_modules/ 2>/dev/null || echo "WARNING: no app.asar.unpacked"
+          echo "--- native modules ---"
+          find out/linux-unpacked/resources/app.asar.unpacked -name "*.node" 2>/dev/null | head -20
+          echo "=== Verification complete ==="
+
+      # ---------------------------------------------------------------
+      # Upload: Pre-built app for Docker packaging step
+      # ---------------------------------------------------------------
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-unpacked
+          path: out/linux-unpacked/
+          retention-days: 1
+          compression-level: 1  # Already compressed (asar), fast upload
+
+  # =========================================================================
+  # Job 3: Docker Build (Packaging Only)
+  #
+  # Uses Dockerfile.package which only assembles the runtime image from
+  # pre-built artifacts. No compilation happens here — just COPY + apt-get.
+  # The cli-installer stage (8 CLI tools) runs in parallel and is cached
+  # by Docker layer cache.
+  # =========================================================================
+  docker:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    needs: compile
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-unpacked
+          path: out/linux-unpacked/
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -193,23 +324,23 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
-            type=raw,value=${{ steps.app.outputs.version }}
+            type=raw,value=${{ needs.compile.outputs.app_version }}
             type=sha,prefix=
 
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: deploy/docker/Dockerfile
+          file: deploy/docker/Dockerfile.package
           push: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.push_image) }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            NODE_VERSION=${{ steps.versions.outputs.node }}
-            NPM_VERSION=${{ steps.versions.outputs.npm }}
-            APP_VERSION=${{ steps.app.outputs.version }}
-          cache-from: type=gha,scope=docker-amd64
-          cache-to: type=gha,mode=max,scope=docker-amd64
+            NODE_VERSION=${{ needs.compile.outputs.node_version }}
+            NPM_VERSION=${{ needs.compile.outputs.npm_version }}
+            APP_VERSION=${{ needs.compile.outputs.app_version }}
+          cache-from: type=gha,scope=docker-package
+          cache-to: type=gha,mode=max,scope=docker-package
           platforms: linux/amd64
 
       - name: Build summary
@@ -218,11 +349,12 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
           echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
-          echo "| **App Version** | \`${{ steps.app.outputs.version }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Node.js** | \`${{ steps.versions.outputs.node }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| **npm** | \`${{ steps.versions.outputs.npm }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Commit** | \`${{ steps.app.outputs.sha_short }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **App Version** | \`${{ needs.compile.outputs.app_version }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Node.js** | \`${{ needs.compile.outputs.node_version }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **npm** | \`${{ needs.compile.outputs.npm_version }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit** | \`${{ needs.compile.outputs.sha_short }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Platforms** | \`linux/amd64\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Dockerfile** | \`Dockerfile.package\` (pre-compiled) |" >> $GITHUB_STEP_SUMMARY
           echo "| **CLI Tools** | All included (Claude, Qwen, Codex, iFlow, Auggie, Copilot, Qoder, OpenCode) |" >> $GITHUB_STEP_SUMMARY
           if [[ "${{ github.event_name }}" == "push" ]]; then
             echo "| **Pushed to** | \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\` |" >> $GITHUB_STEP_SUMMARY
