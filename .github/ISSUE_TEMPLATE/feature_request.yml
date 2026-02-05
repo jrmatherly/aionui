@@ -37,9 +37,12 @@ body:
       description: Which category does this feature belong to?
       options:
         - UI/UX Improvement
-        - AI Model Integration
-        - File Management
+        - AI Model / Provider Integration
+        - Authentication / RBAC
+        - File Management / Workspace
         - Multi-Agent Support
+        - Docker / Deployment
+        - MCP Tools / Plugins
         - Performance
         - Other
     validations:

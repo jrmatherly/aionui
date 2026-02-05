@@ -3,7 +3,7 @@ name: "✅ PR Checks"
 on:
   pull_request:
     types: [opened, reopened, edited, synchronize]
-    branches: [main, dev]
+    branches: [main]
 
 concurrency:
   group: pr-checks-${{ github.event.pull_request.number }}

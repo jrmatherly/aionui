@@ -19,7 +19,9 @@ body:
       description: What type of question is this?
       options:
         - Installation & Setup
+        - Docker Deployment
         - Configuration
+        - Authentication / SSO
         - Usage & Features
         - Troubleshooting
         - Development
@@ -40,6 +42,7 @@ body:
       label: Platform
       description: Which platform are you using?
       options:
+        - Docker (Web UI)
         - macOS (Apple Silicon)
         - macOS (Intel)
         - Windows

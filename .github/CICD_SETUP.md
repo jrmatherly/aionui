@@ -2,187 +2,151 @@
 
 ## Overview
 
-This project is configured with a complete GitHub Actions CI/CD pipeline, supporting automated building, testing, and publishing to multiple platforms.
+AionUI uses a Docker-focused CI/CD pipeline via GitHub Actions. The primary deployment target is Docker containers (web mode via headless Electron + Xvfb), with native desktop builds available but disabled by default.
 
-## Workflow Description
+## Workflows
 
-### 1. `build-and-release.yml` - Main Build and Release Flow
+### 1. `build-and-release.yml` — Docker Build & Release
 
-- **Trigger**: Only on pushes to the `main` branch
+- **Trigger**: Push to `main` (excluding docs/config), PR to `main`, or manual dispatch
 - **Features**:
-  - Code quality checks (ESLint, Prettier, TypeScript)
-  - Multi-platform builds (macOS Intel/Apple Silicon, Windows, Linux)
-  - Automatic version tag creation
-  - Create Draft Release (requires manual approval and publishing)
+  - Code quality gate (TypeScript, ESLint, Prettier via mise)
+  - Docker build for `linux/amd64`
+  - Automatic push to GHCR on main branch pushes
+  - Version tagging from `package.json`
 - **Process**:
-  1. Code quality checks
-  2. Parallel builds for three platforms
-  3. Automatic tag creation based on package.json version
-  4. Wait for environment approval
-  5. Create Draft Release (requires manual editing and publishing)
+  1. Code quality checks (TypeScript, ESLint, Prettier)
+  2. Extract tool versions from `mise.lock`
+  3. Build Docker image with all CLI tools baked in
+  4. Push to `ghcr.io/jrmatherly/aionui` (on main pushes only)
 
-## Required GitHub Secrets Configuration
+### 2. `pr-checks.yml` — Pull Request Validation
 
-Configure the following Secrets in GitHub repository Settings → Secrets and variables → Actions:
+- **Trigger**: PRs opened/edited/synchronized against `main`
+- **Features**:
+  - Issue link enforcement (PRs must reference an issue)
+  - Code quality checks (same as build workflow)
+  - Automated PR summary with file stats
 
-### macOS App Signing (Optional, for publishing to Mac App Store)
+### 3. `codeql.yml` — Security Analysis
 
-```text
-APPLE_ID=your_apple_developer_account_email
-APPLE_ID_PASSWORD=app_specific_password
-TEAM_ID=apple_developer_team_id
-IDENTITY=signing_certificate_name
+- **Trigger**: Push/PR to `main`, weekly schedule (Monday 8 AM ET)
+- **Features**:
+  - JavaScript/TypeScript analysis with `security-extended` queries
+  - Free for public repositories
+
+### 4. `build-and-release.yml.disabled` — Native Desktop Build (Archived)
+
+The original multi-platform native Electron build workflow. Disabled in favor of Docker-only builds. Preserved for reference if native desktop distribution is needed in the future.
+
+## Required GitHub Configuration
+
+### Repository Secrets
+
+Configure in **Settings → Secrets and variables → Actions**:
+
+| Secret         | Required      | Description                   |
+| -------------- | ------------- | ----------------------------- |
+| `GITHUB_TOKEN` | Auto-provided | Used for GHCR push (built-in) |
+
+> **Note**: The `GITHUB_TOKEN` is automatically provided by GitHub Actions with the permissions defined in the workflow. No manual PAT setup is needed for Docker builds.
+
+### Optional: Native Desktop Signing (if re-enabling native builds)
+
+These are only needed if the `.disabled` workflow is re-enabled:
+
+| Secret              | Description                                     |
+| ------------------- | ----------------------------------------------- |
+| `GH_TOKEN`          | PAT with `contents: write` for release creation |
+| `APPLE_ID`          | Apple Developer account email                   |
+| `APPLE_ID_PASSWORD` | App-specific password                           |
+| `TEAM_ID`           | Apple Developer Team ID                         |
+| `IDENTITY`          | Code signing certificate name                   |
+
+## Tool Versions
+
+Tool versions are managed via **mise-en-place** (`mise.toml` + `mise.lock`):
+
+- **Node.js**: Locked in `mise.lock` (currently 22.x)
+- **npm**: Locked in `mise.lock` (currently 11.x)
+
+The CI workflow extracts these versions from `mise.lock` to ensure Docker builds use identical versions to development.
+
+## Docker Build Details
+
+### Image Registry
+
+```
+ghcr.io/jrmatherly/aionui
 ```
 
-### GitHub Token
+### Tags
 
-```text
-GH_TOKEN=your_personal_access_token (starts with github_pat_)
-```
+| Tag      | Description               |
+| -------- | ------------------------- |
+| `latest` | Latest main branch build  |
+| `1.8.2`  | Version from package.json |
+| `<sha>`  | Git commit SHA            |
 
-**Note**: Must be configured manually as it requires `contents: write` permission to create releases.
+### Build Arguments
 
-### Environment Secrets
+| Arg            | Source      | Description                    |
+| -------------- | ----------- | ------------------------------ |
+| `NODE_VERSION` | `mise.lock` | Node.js version for base image |
+| `NPM_VERSION`  | `mise.lock` | npm version installed in image |
 
-Also configure in Settings → Environments → release:
+### CLI Tools
 
-```text
-GH_TOKEN=same_personal_access_token
-```
+All 8 CLI tools are baked into every image:
 
-## How to Obtain Apple Signing Configuration
+- Claude, Qwen, Codex, iFlow, Auggie, Copilot, QoderCLI, OpenCode
 
-### 1. Apple ID App-Specific Password
+Use `DISABLE_CLI_*` environment variables at runtime to control availability (no rebuild needed).
 
-1. Visit [appleid.apple.com](https://appleid.apple.com)
-2. Sign in with your Apple ID
-3. Click "App-Specific Passwords" in the "Sign-In and Security" section
-4. Generate a new app-specific password
-5. Copy the generated password as `APPLE_ID_PASSWORD`
+## Version Management
 
-### 2. Team ID
+Update the version in `package.json`, commit, and push to `main`. The workflow automatically:
 
-1. Visit [Apple Developer Portal](https://developer.apple.com/account/)
-2. Find the Team ID in "Membership Details"
-3. Copy the Team ID as `TEAM_ID`
+1. Reads the version from `package.json`
+2. Tags the Docker image with that version
+3. Pushes to GHCR
 
-### 3. Signing Certificate Identity
+### Semantic Versioning
 
-1. Open Xcode or Keychain Access
-2. View installed developer certificates
-3. Certificate name looks like: "Developer ID Application: Your Name (TEAM_ID)"
-4. Copy the full certificate name as `IDENTITY`
-
-## Usage
-
-### Recommended Release Process (using release.sh)
-
-1. Ensure code quality meets requirements
-2. Use the release script to upgrade version:
-
-   ```bash
-   # Patch version
-   ./scripts/release.sh patch
-
-   # Feature version
-   ./scripts/release.sh minor
-
-   # Major version
-   ./scripts/release.sh major
-
-   # Pre-release version
-   ./scripts/release.sh prerelease
-   ```
-
-3. The script will automatically:
-   - Run code quality checks
-   - Upgrade version number
-   - Create git tag
-   - Push to main branch
-4. GitHub Actions automatically triggers build
-5. Approve release on Deployments page
-6. Edit Draft Release content
-7. Manually publish to users
-
-### Direct Push Release
-
-1. Manually modify version in `package.json`
-2. Commit and push to `main` branch
-3. GitHub Actions will automatically build and create Draft Release
-
-### Version Management Guidelines
-
-- `patch`: Bug fixes (1.0.0 → 1.0.1)
-- `minor`: New features (1.0.0 → 1.1.0)
-- `major`: Major updates (1.0.0 → 2.0.0)
-- `prerelease`: Pre-release versions (1.0.0 → 1.0.1-beta.0)
-
-## Build Artifacts
-
-After successful build, the following files are generated:
-
-### macOS
-
-- `.dmg` files (Intel and Apple Silicon versions)
-- Application bundle
-
-### Windows
-
-- `.exe` NSIS installer (x64/arm64)
-- `.zip` portable application (x64/arm64)
-
-### Linux
-
-- `.deb` package (x64/arm64/armv7l)
-- `.AppImage` portable application (x64/arm64/armv7l)
+- `patch`: Bug fixes (1.8.2 → 1.8.3)
+- `minor`: New features (1.8.2 → 1.9.0)
+- `major`: Breaking changes (1.8.2 → 2.0.0)
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **Release creation failed (403 error)**
-   - Check if GH_TOKEN is correctly configured
-   - Confirm token format starts with `github_pat_`
-   - Verify GH_TOKEN exists in both repository and environment
+1. **Docker build timeout**
+   - Default timeout: 30 minutes
+   - Native module compilation (better-sqlite3, node-pty) can take ~10 min
+   - Check if `npm ci` is hitting network issues
 
-2. **macOS signing failed**
-   - Check if Apple ID and password are correct
-   - Confirm Team ID and certificate name are accurate
-   - Verify Apple Developer account status
+2. **GHCR push fails (403)**
+   - Verify the `packages: write` permission is set in workflow
+   - Check repository visibility (GHCR requires package to match repo visibility)
 
-3. **Build timeout (Windows)**
-   - Windows builds are typically slowest (may take 40+ minutes)
-   - Consider disabling MSI target to speed up builds
+3. **mise-action cache miss**
+   - Cache is keyed on `mise.lock` — version changes invalidate cache
+   - First run after version bump will be slower
 
-4. **Duplicate tag error**
-   - CI/CD will check and skip existing tags
-   - If tag was manually created, CI/CD won't recreate it
+4. **TypeScript check fails in CI but not locally**
+   - Run `npx tsc --noEmit` locally to reproduce
+   - Check for platform-specific type differences
 
-### Debugging Methods
+### Debugging
 
-1. Check GitHub Actions logs
-2. Run the same build commands locally for testing
-3. Check build scripts in package.json
+1. Check GitHub Actions logs (each step is expandable)
+2. Use `workflow_dispatch` to trigger manual builds with `push_image: false` for dry runs
+3. Compare `mise.lock` versions between local and CI
 
-## Security Recommendations
+## Security
 
-1. Regularly update GitHub Actions versions
-2. Configure Secrets using least privilege principle
-3. Regularly review and clean up unused Secrets
-4. Monitor build logs to avoid sensitive information leaks
-
-## Advanced Configuration
-
-### Auto-Update Checking
-
-You can integrate in-app auto-update functionality using GitHub Releases API to implement automatic update notifications.
-
-### Multi-Environment Deployment
-
-The workflow can be extended to support separate deployments for development, testing, and production environments.
-
-### Performance Optimization
-
-- Use build cache to speed up builds
-- Parallel builds for different platforms
-- Optimize dependency installation speed
+- **Dependency scanning**: Renovate for automated dependency updates (weekends)
+- **Code scanning**: CodeQL weekly + on every push/PR
+- **Vulnerability alerts**: Renovate creates immediate PRs for security advisories
+- **Pinned packages**: `@vercel/webpack-asset-relocator-loader` at 1.7.3, `openid-client` at 5.x

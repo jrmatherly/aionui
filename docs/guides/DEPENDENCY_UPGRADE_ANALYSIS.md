@@ -23,6 +23,7 @@
 | `web-tree-sitter` | ^0.25.10 | ^0.26.5 | ✅ **Safe to upgrade** | 🟢 **LOW** |
 
 **Actions Taken:**
+
 - ❌ `openid-client` pinned to v5.x in `renovate.json5` (v6 is a complete API rewrite)
 - 🗑️ `style-loader` removed from devDependencies (unused — we use MiniCssExtractPlugin)
 - ⚠️ `zod` v4: `ctx.addIssue()` call updated with `input` property in `ideContext.ts`
