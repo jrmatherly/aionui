@@ -28,6 +28,52 @@ files:
   # tree-sitter WASM dependencies
   - node_modules/web-tree-sitter/**/*
   - node_modules/tree-sitter-bash/**/*
+  # Pino logging (externalized from webpack — loaded via require() at runtime)
+  # Pino uses thread-stream worker threads for transports; workers need real node_modules
+  - node_modules/pino/**/*
+  - node_modules/pino-pretty/**/*
+  - node_modules/pino-roll/**/*
+  - node_modules/pino-syslog/**/*
+  - node_modules/pino-abstract-transport/**/*
+  - node_modules/pino-std-serializers/**/*
+  - node_modules/thread-stream/**/*
+  - node_modules/real-require/**/*
+  - node_modules/sonic-boom/**/*
+  - node_modules/on-exit-leak-free/**/*
+  - node_modules/@pinojs/**/*
+  - node_modules/safe-stable-stringify/**/*
+  - node_modules/atomic-sleep/**/*
+  - node_modules/process-warning/**/*
+  - node_modules/quick-format-unescaped/**/*
+  # pino-pretty dependencies
+  - node_modules/colorette/**/*
+  - node_modules/dateformat/**/*
+  - node_modules/fast-copy/**/*
+  - node_modules/fast-safe-stringify/**/*
+  - node_modules/help-me/**/*
+  - node_modules/joycon/**/*
+  - node_modules/minimist/**/*
+  - node_modules/pump/**/*
+  - node_modules/secure-json-parse/**/*
+  - node_modules/strip-json-comments/**/*
+  # pino-syslog dependencies
+  - node_modules/fast-json-parse/**/*
+  - node_modules/luxon/**/*
+  - node_modules/nopt/**/*
+  - node_modules/split2/**/*
+  - node_modules/through2/**/*
+  # pino-roll dependencies
+  - node_modules/date-fns/**/*
+  # Transitive dependencies (through2→readable-stream, pump→end-of-stream/once, nopt→abbrev)
+  - node_modules/readable-stream/**/*
+  - node_modules/end-of-stream/**/*
+  - node_modules/once/**/*
+  - node_modules/abbrev/**/*
+  - node_modules/wrappy/**/*
+  - node_modules/inherits/**/*
+  - node_modules/string_decoder/**/*
+  - node_modules/safe-buffer/**/*
+  - node_modules/util-deprecate/**/*
   # CRITICAL: Exclude ALL tree-sitter native binaries to prevent signing issues
   - '!**/node_modules/tree-sitter-*/prebuilds/**'
   - '!**/node_modules/tree-sitter-*/build/**'

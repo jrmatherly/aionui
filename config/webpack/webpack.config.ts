@@ -50,5 +50,25 @@ export const mainConfig: Configuration = {
     // Handle ?binary WASM imports from aioncli-core - let them fail so fallback can work
     'web-tree-sitter/tree-sitter.wasm?binary': 'commonjs web-tree-sitter/tree-sitter.wasm',
     'tree-sitter-bash/tree-sitter-bash.wasm?binary': 'commonjs tree-sitter-bash/tree-sitter-bash.wasm',
+    // Pino logging: MUST be external. Pino's package.json has a "browser" field that
+    // points to a console.log wrapper with NO transport/file/worker support. Webpack
+    // resolves the browser build by default, silently breaking file logging, pino-roll,
+    // pino-pretty, and pino-syslog. Externalizing ensures Node.js require() loads the
+    // real pino with full transport support via thread-stream worker threads.
+    'pino': 'commonjs pino',
+    'pino-pretty': 'commonjs pino-pretty',
+    'pino-roll': 'commonjs pino-roll',
+    'pino-syslog': 'commonjs pino-syslog',
+    'pino-abstract-transport': 'commonjs pino-abstract-transport',
+    'pino-std-serializers': 'commonjs pino-std-serializers',
+    'thread-stream': 'commonjs thread-stream',
+    'real-require': 'commonjs real-require',
+    'sonic-boom': 'commonjs sonic-boom',
+    'on-exit-leak-free': 'commonjs on-exit-leak-free',
+    '@pinojs/redact': 'commonjs @pinojs/redact',
+    'safe-stable-stringify': 'commonjs safe-stable-stringify',
+    'atomic-sleep': 'commonjs atomic-sleep',
+    'process-warning': 'commonjs process-warning',
+    'quick-format-unescaped': 'commonjs quick-format-unescaped',
   },
 };
