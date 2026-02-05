@@ -9,9 +9,12 @@ import { ipcBridge } from '@/common';
 import { isWebMode } from '@/renderer/utils/platform';
 import { useEffect, useState } from 'react';
 
+// Build-time brand name from webpack DefinePlugin (falls back to 'AionUi' if not set)
+const BUILD_TIME_BRAND = process.env.AIONUI_BRAND_NAME || 'AionUi';
+
 // Defaults for initial render (before IPC/API resolves)
 const DEFAULTS: BrandingConfig = {
-  brandName: 'AionUi',
+  brandName: BUILD_TIME_BRAND,
   githubRepo: 'jrmatherly/aionui',
   websiteUrl: 'https://github.com/jrmatherly/aionui',
   contactUrl: 'https://github.com/jrmatherly',
