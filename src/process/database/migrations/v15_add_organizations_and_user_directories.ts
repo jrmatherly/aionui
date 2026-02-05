@@ -12,9 +12,10 @@
  */
 
 import type Database from 'better-sqlite3';
+import { dbLogger as log } from '@/common/logger';
 
 export function migrate_v15_add_organizations_and_user_directories(db: Database.Database): void {
-  console.log('[Migration v15] Adding organizations, teams, and user_directories tables...');
+  log.info('Migration v15: Adding organizations, teams, and user_directories tables...');
 
   // Organizations table - top-level tenant container
   db.exec(`
@@ -30,7 +31,7 @@ export function migrate_v15_add_organizations_and_user_directories(db: Database.
 
     CREATE INDEX IF NOT EXISTS idx_organizations_slug ON organizations(slug);
   `);
-  console.log('[Migration v15] organizations table created');
+  log.info('Migration v15: organizations table created');
 
   // Teams table - groups within an organization
   db.exec(`
@@ -50,7 +51,7 @@ export function migrate_v15_add_organizations_and_user_directories(db: Database.
     CREATE INDEX IF NOT EXISTS idx_teams_org_id ON teams(org_id);
     CREATE INDEX IF NOT EXISTS idx_teams_slug ON teams(org_id, slug);
   `);
-  console.log('[Migration v15] teams table created');
+  log.info('Migration v15: teams table created');
 
   // Team members - user membership in teams with roles
   db.exec(`
@@ -68,7 +69,7 @@ export function migrate_v15_add_organizations_and_user_directories(db: Database.
     CREATE INDEX IF NOT EXISTS idx_team_members_team_id ON team_members(team_id);
     CREATE INDEX IF NOT EXISTS idx_team_members_user_id ON team_members(user_id);
   `);
-  console.log('[Migration v15] team_members table created');
+  log.info('Migration v15: team_members table created');
 
   // Organization members - user membership in organizations (separate from teams)
   db.exec(`
@@ -86,7 +87,7 @@ export function migrate_v15_add_organizations_and_user_directories(db: Database.
     CREATE INDEX IF NOT EXISTS idx_org_members_org_id ON org_members(org_id);
     CREATE INDEX IF NOT EXISTS idx_org_members_user_id ON org_members(user_id);
   `);
-  console.log('[Migration v15] org_members table created');
+  log.info('Migration v15: org_members table created');
 
   // User directories - per-user isolated directory paths
   db.exec(`
@@ -105,7 +106,7 @@ export function migrate_v15_add_organizations_and_user_directories(db: Database.
 
     CREATE UNIQUE INDEX IF NOT EXISTS idx_user_directories_user_id ON user_directories(user_id);
   `);
-  console.log('[Migration v15] user_directories table created');
+  log.info('Migration v15: user_directories table created');
 
   // Team directories - shared directories for team resources
   db.exec(`
@@ -123,7 +124,7 @@ export function migrate_v15_add_organizations_and_user_directories(db: Database.
 
     CREATE UNIQUE INDEX IF NOT EXISTS idx_team_directories_team_id ON team_directories(team_id);
   `);
-  console.log('[Migration v15] team_directories table created');
+  log.info('Migration v15: team_directories table created');
 
   // Organization directories - org-wide shared directories
   db.exec(`
@@ -140,13 +141,13 @@ export function migrate_v15_add_organizations_and_user_directories(db: Database.
 
     CREATE UNIQUE INDEX IF NOT EXISTS idx_org_directories_org_id ON org_directories(org_id);
   `);
-  console.log('[Migration v15] org_directories table created');
+  log.info('Migration v15: org_directories table created');
 
-  console.log('[Migration v15] All tables created successfully');
+  log.info('Migration v15: All tables created successfully');
 }
 
 export function rollback_v15(db: Database.Database): void {
-  console.log('[Migration v15] Rolling back...');
+  log.info('Migration v15: Rolling back...');
 
   db.exec(`
     DROP INDEX IF EXISTS idx_org_directories_org_id;
@@ -174,5 +175,5 @@ export function rollback_v15(db: Database.Database): void {
     DROP TABLE IF EXISTS organizations;
   `);
 
-  console.log('[Migration v15] Rollback complete');
+  log.info('Migration v15: Rollback complete');
 }

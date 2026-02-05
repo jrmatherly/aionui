@@ -5,9 +5,10 @@
  */
 
 import type Database from 'better-sqlite3';
+import { dbLogger as log } from '@/common/logger';
 
 export function migrate_v14_add_user_api_keys(db: Database.Database): void {
-  console.log('[Migration v14] Adding user_api_keys table...');
+  log.info('Migration v14: Adding user_api_keys table');
 
   db.exec(`
     CREATE TABLE IF NOT EXISTS user_api_keys (
@@ -25,5 +26,5 @@ export function migrate_v14_add_user_api_keys(db: Database.Database): void {
     CREATE INDEX IF NOT EXISTS idx_user_api_keys_user_id ON user_api_keys(user_id);
   `);
 
-  console.log('[Migration v14] user_api_keys table created');
+  log.info('Migration v14: user_api_keys table created');
 }

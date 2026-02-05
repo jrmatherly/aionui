@@ -11,9 +11,10 @@
  */
 
 import type Database from 'better-sqlite3';
+import { dbLogger as log } from '@/common/logger';
 
 export function migrate_v16_add_global_models(db: Database.Database): void {
-  console.log('[Migration v16] Adding global_models and user_model_overrides tables...');
+  log.info('Migration v16: Adding global_models and user_model_overrides tables...');
 
   db.exec(`
     -- Admin-managed global model configurations
@@ -66,5 +67,5 @@ export function migrate_v16_add_global_models(db: Database.Database): void {
     CREATE INDEX IF NOT EXISTS idx_user_model_overrides_global_model ON user_model_overrides(global_model_id);
   `);
 
-  console.log('[Migration v16] Global models tables created');
+  log.info('Migration v16: Global models tables created');
 }

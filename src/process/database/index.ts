@@ -18,6 +18,7 @@ import type { IConversationRow, IMessageRow, IOrgDirectories, IOrgMember, IOrgan
 import { conversationToRow, messageToRow, rowToConversation, rowToMessage } from './types';
 import { uuid } from '@/common/utils';
 import { randomUUID } from 'crypto';
+import { dbLogger as log } from '@/common/logger';
 
 /**
  * Main database class for AionUi
@@ -30,7 +31,7 @@ export class AionUIDatabase {
 
   constructor() {
     const finalPath = path.join(getDataPath(), 'aionui.db');
-    console.log(`[Database] Initializing database at: ${finalPath}`);
+    log.info({ path: finalPath }, 'Initializing database');
 
     const dir = path.dirname(finalPath);
     ensureDirectory(dir);
@@ -39,7 +40,7 @@ export class AionUIDatabase {
       this.db = new BetterSqlite3(finalPath);
       this.initialize();
     } catch (error) {
-      console.error('[Database] Failed to initialize, attempting recovery...', error);
+      log.error({ err: error }, 'Failed to initialize, attempting recovery');
       // Try to recover by closing and recreating database
       try {
         if (this.db) {
@@ -54,15 +55,15 @@ export class AionUIDatabase {
         const backupPath = `${finalPath}.backup.${Date.now()}`;
         try {
           fs.renameSync(finalPath, backupPath);
-          console.log(`[Database] Backed up corrupted database to: ${backupPath}`);
+          log.info({ backupPath }, 'Backed up corrupted database');
         } catch (e) {
-          console.error('[Database] Failed to backup corrupted database:', e);
+          log.error({ err: e }, 'Failed to backup corrupted database');
           // If backup fails, try to delete instead
           try {
             fs.unlinkSync(finalPath);
-            console.log(`[Database] Deleted corrupted database file`);
+            log.info('Deleted corrupted database file');
           } catch (e2) {
-            console.error('[Database] Failed to delete corrupted database:', e2);
+            log.error({ err: e2 }, 'Failed to delete corrupted database');
             throw new Error('Database is corrupted and cannot be recovered. Please manually delete: ' + finalPath);
           }
         }

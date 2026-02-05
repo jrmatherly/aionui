@@ -5,6 +5,7 @@
  */
 
 import type Database from 'better-sqlite3';
+import { dbLogger as log } from '@/common/logger';
 
 /**
  * Initialize database schema with all tables and indexes
@@ -16,7 +17,7 @@ export function initSchema(db: Database.Database): void {
   try {
     db.pragma('journal_mode = WAL');
   } catch (error) {
-    console.warn('[Database] Failed to enable WAL mode, using default journal mode:', error);
+    log.warn({ err: error }, 'Failed to enable WAL mode, using default journal mode');
     // Continue with default journal mode if WAL fails
   }
 
@@ -80,7 +81,7 @@ export function initSchema(db: Database.Database): void {
     CREATE INDEX IF NOT EXISTS idx_messages_conversation_created ON messages(conversation_id, created_at);
   `);
 
-  console.log('[Database] Schema initialized successfully');
+  log.info('Schema initialized successfully');
 }
 
 /**

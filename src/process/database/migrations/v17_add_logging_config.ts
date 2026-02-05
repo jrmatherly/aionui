@@ -15,9 +15,10 @@
  */
 
 import type Database from 'better-sqlite3';
+import { dbLogger as log } from '@/common/logger';
 
 export function migrate_v17_add_logging_config(db: Database.Database): void {
-  console.log('[Migration v17] Adding logging_config table...');
+  log.info('Migration v17: Adding logging_config table...');
 
   db.exec(`
     -- Centralized logging configuration
@@ -64,5 +65,5 @@ export function migrate_v17_add_logging_config(db: Database.Database): void {
     VALUES ('default', strftime('%s', 'now'));
   `);
 
-  console.log('[Migration v17] Logging configuration table created');
+  log.info('Migration v17: Logging configuration table created');
 }
