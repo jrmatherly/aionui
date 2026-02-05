@@ -5,6 +5,7 @@
  */
 
 import type { ICreateConversationParams } from '@/common/ipcBridge';
+import { conversationLogger as log } from '@/common/logger';
 import type { ConversationSource, TChatConversation, TProviderWithModel } from '@/common/storage';
 import { getDatabase } from '@process/database';
 import path from 'path';
@@ -94,15 +95,15 @@ export class ConversationService {
       const db = getDatabase();
       const result = db.createConversation(conversation);
       if (!result.success) {
-        console.error('[ConversationService] Failed to create conversation in database:', result.error);
+        log.error({ err: result.error, conversationId: conversation.id }, 'Failed to create conversation in database');
         return { success: false, error: result.error };
       }
 
-      console.log(`[ConversationService] Created conversation ${conversation.id} with source=${params.source || 'aionui'}`);
+      log.info({ conversationId: conversation.id, source: params.source || 'aionui' }, 'Created conversation');
       return { success: true, conversation };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      console.error('[ConversationService] Failed to create Gemini conversation:', error);
+      log.error({ err: error }, 'Failed to create Gemini conversation');
       return { success: false, error: errorMessage };
     }
   }
@@ -165,23 +166,26 @@ export class ConversationService {
       const db = getDatabase();
       const result = db.createConversation(conversation);
       if (!result.success) {
-        console.error('[ConversationService] Failed to create conversation in database:', result.error);
+        log.error({ err: result.error, conversationId: conversation.id }, 'Failed to create conversation in database');
         return { success: false, error: result.error };
       }
 
-      console.log(`[ConversationService] Created ${type} conversation ${conversation.id} with source=${source || 'aionui'}`);
+      log.info({ conversationId: conversation.id, type, source: source || 'aionui' }, 'Created conversation');
       return { success: true, conversation };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       const errorStack = error instanceof Error ? error.stack : undefined;
-      console.error('[ConversationService] Failed to create conversation:', error);
-      console.error('[ConversationService] Error details:', {
-        type: params.type,
-        hasModel: !!params.model,
-        hasWorkspace: !!params.extra?.workspace,
-        error: errorMessage,
-        stack: errorStack,
-      });
+      log.error(
+        {
+          err: error,
+          type: params.type,
+          hasModel: !!params.model,
+          hasWorkspace: !!params.extra?.workspace,
+          errorMessage,
+          stack: errorStack,
+        },
+        'Failed to create conversation'
+      );
       return { success: false, error: `Failed to create ${params.type} conversation: ${errorMessage}` };
     }
   }
@@ -197,7 +201,7 @@ export class ConversationService {
     // Try to find existing telegram conversation
     const latestTelegramConv = db.getLatestConversationBySource('telegram');
     if (latestTelegramConv.success && latestTelegramConv.data) {
-      console.log(`[ConversationService] Reusing existing telegram conversation: ${latestTelegramConv.data.id}`);
+      log.info({ conversationId: latestTelegramConv.data.id }, 'Reusing existing telegram conversation');
       return { success: true, conversation: latestTelegramConv.data };
     }
 
