@@ -13,6 +13,7 @@ import { existsSync } from 'fs';
 import fs from 'fs/promises';
 import path from 'path';
 import { getBuiltinSkillsDir, getSkillsDir } from '../initStorage';
+import { acpLogger as log } from '@/common/logger';
 
 /**
  * Skill definition (compatible with aioncli-core)
@@ -132,7 +133,7 @@ export class AcpSkillManager {
 
     const builtinDir = this.builtinSkillsDir;
     if (!existsSync(builtinDir)) {
-      console.log(`[AcpSkillManager] Builtin skills directory not found: ${builtinDir}`);
+      log.info({ builtinDir }, 'Builtin skills directory not found');
       this.builtinInitialized = true;
       return;
     }
@@ -160,13 +161,13 @@ export class AcpSkillManager {
 
           this.builtinSkills.set(skillName, skillDef);
         } catch (error) {
-          console.warn(`[AcpSkillManager] Failed to load builtin skill ${skillName}:`, error);
+          log.warn({ skillName, err: error }, 'Failed to load builtin skill');
         }
       }
 
-      console.log(`[AcpSkillManager] Discovered ${this.builtinSkills.size} builtin skills`);
+      log.info({ count: this.builtinSkills.size }, 'Discovered builtin skills');
     } catch (error) {
-      console.error(`[AcpSkillManager] Failed to discover builtin skills:`, error);
+      log.error({ err: error }, 'Failed to discover builtin skills');
     }
 
     this.builtinInitialized = true;
@@ -183,7 +184,7 @@ export class AcpSkillManager {
 
     const skillsDir = this.skillsDir;
     if (!existsSync(skillsDir)) {
-      console.warn(`[AcpSkillManager] Skills directory not found: ${skillsDir}`);
+      log.warn({ skillsDir }, 'Skills directory not found');
       this.initialized = true;
       return;
     }
@@ -220,13 +221,13 @@ export class AcpSkillManager {
 
           this.skills.set(skillName, skillDef);
         } catch (error) {
-          console.warn(`[AcpSkillManager] Failed to load skill ${skillName}:`, error);
+          log.warn({ skillName, err: error }, 'Failed to load skill');
         }
       }
 
-      console.log(`[AcpSkillManager] Discovered ${this.skills.size} optional skills`);
+      log.info({ count: this.skills.size }, 'Discovered optional skills');
     } catch (error) {
-      console.error(`[AcpSkillManager] Failed to discover skills:`, error);
+      log.error({ err: error }, 'Failed to discover skills');
     }
 
     this.initialized = true;
@@ -295,7 +296,7 @@ export class AcpSkillManager {
         const content = await fs.readFile(skill.location, 'utf-8');
         skill.body = extractBody(content);
       } catch (error) {
-        console.warn(`[AcpSkillManager] Failed to load skill body for ${name}:`, error);
+        log.warn({ skillName: name, err: error }, 'Failed to load skill body');
         skill.body = '';
       }
     }

@@ -15,6 +15,7 @@ import BaseAgentManager from './BaseAgentManager';
 import { hasCronCommands } from './CronCommandDetector';
 import { extractTextFromMessage, processCronInMessage } from './MessageMiddleware';
 import { prepareFirstMessageWithSkillsIndex } from './agentUtils';
+import { acpLogger as log } from '@/common/logger';
 
 interface AcpAgentManagerData {
   workspace?: string;
@@ -96,7 +97,7 @@ class AcpAgentManager extends BaseAgentManager<AcpAgentManagerData, AcpPermissio
         }
       } else {
         // backend === 'custom' but no customAgentId - this is an invalid state
-        console.warn('[AcpAgentManager] Custom backend specified but customAgentId is missing');
+        log.warn({ backend: data.backend }, 'Custom backend specified but customAgentId is missing');
       }
 
       this.agent = new AcpAgent({

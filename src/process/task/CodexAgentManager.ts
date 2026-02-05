@@ -23,6 +23,9 @@ import { ProcessConfig } from '@process/initStorage';
 import { addMessage } from '@process/message';
 import { cronBusyGuard } from '@process/services/cron/CronBusyGuard';
 import BaseAgentManager from '@process/task/BaseAgentManager';
+import { createLogger } from '@/common/logger';
+
+const log = createLogger('Codex');
 import { prepareFirstMessageWithSkillsIndex } from '@process/task/agentUtils';
 import { handlePreviewOpenEvent } from '@process/utils/previewUtils';
 import { getConfiguredAppClientName, getConfiguredAppClientVersion, getConfiguredCodexMcpProtocolVersion, setAppConfig } from '../../common/utils/appConfig';
@@ -428,7 +431,7 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
 
     // Stop agent
     this.agent?.stop?.().catch((error) => {
-      console.error('Failed to stop Codex agent during cleanup:', error);
+      log.error({ err: error }, 'Failed to stop Codex agent during cleanup');
     });
 
     // Cleanup completed
@@ -443,7 +446,7 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
   kill() {
     try {
       this.agent?.stop?.().catch((error) => {
-        console.error('Failed to stop Codex agent during kill:', error);
+        log.error({ err: error }, 'Failed to stop Codex agent during kill');
       });
     } finally {
       super.kill();
