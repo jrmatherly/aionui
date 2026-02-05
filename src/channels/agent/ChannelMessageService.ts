@@ -9,6 +9,9 @@ import type BaseAgentManager from '@/process/task/BaseAgentManager';
 import { composeMessage, transformMessage, type TMessage } from '../../common/chatLib';
 import { uuid } from '../../common/utils';
 import { channelEventBus, type IAgentMessageEvent } from './ChannelEventBus';
+import { createLogger } from '@/common/logger';
+
+const log = createLogger('ChannelMessageService');
 
 /**
  * Streaming callback for progress updates
@@ -68,7 +71,7 @@ export class ChannelMessageService {
     });
 
     this.initialized = true;
-    console.log('[ChannelMessageService] Initialized with global event listener');
+    log.info('Initialized with global event listener');
   }
 
   /**
@@ -89,20 +92,31 @@ export class ChannelMessageService {
       return;
     }
 
-    console.log('[ChannelMessageService] Incoming message:', message.msg_id, message.type, 'content preview:', message.type === 'text' ? message.content.content?.slice(0, 30) : 'non-text');
+    log.info(
+      {
+        msg_id: message.msg_id,
+        type: message.type,
+        contentPreview: message.type === 'text' ? message.content.content?.slice(0, 30) : 'non-text',
+      },
+      'Incoming message'
+    );
 
     let messageList = this.messageListMap.get(conversationId);
     if (!messageList) {
       messageList = [];
-      console.log('[ChannelMessageService] New conversation, empty messageList');
+      log.info('New conversation, empty messageList');
     } else {
-      console.log('[ChannelMessageService] Existing conversation, messageList has', messageList.length, 'messages, last msg_id:', messageList[messageList.length - 1]?.msg_id);
+      log.info(
+        {
+          messageCount: messageList.length,
+          lastMsgId: messageList[messageList.length - 1]?.msg_id,
+        },
+        'Existing conversation'
+      );
     }
 
     messageList = composeMessage(message, messageList, (type, msg: TMessage) => {
       // insert: true means new message, false means update existing message
-
-      console.log('%c [  ]-130', 'font-size:13px; background:pink; color:#bf2c9f;', type, msg);
       const isInsert = type === 'insert';
       stream.callback(msg, isInsert);
     });
@@ -131,7 +145,7 @@ export class ChannelMessageService {
       task = await WorkerManage.getTaskByIdRollbackBuild(conversationId);
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : 'Failed to get conversation task';
-      console.error(`[ChannelMessageService] Failed to get task:`, errorMsg);
+      log.error({ err: error }, 'Failed to get task');
       onStream(
         {
           type: 'tips',
@@ -165,7 +179,7 @@ export class ChannelMessageService {
         })
         .catch((error: Error) => {
           const errorMessage = `Error: ${error.message || 'Failed to send message'}`;
-          console.error(`[ChannelMessageService] Send error:`, error);
+          log.error({ err: error }, 'Send error');
           onStream({ type: 'tips', id: uuid(), conversation_id: conversationId, content: { type: 'error', content: errorMessage } }, true);
           this.activeStreams.delete(conversationId);
           reject(error);
@@ -178,7 +192,7 @@ export class ChannelMessageService {
    * Note: Agent cleanup is handled by WorkerManage.
    */
   async clearContext(sessionId: string): Promise<void> {
-    console.log(`[ChannelMessageService] clearContext called for session ${sessionId}`);
+    log.info({ sessionId }, 'clearContext called');
   }
 
   /**
@@ -188,7 +202,7 @@ export class ChannelMessageService {
     const stream = this.activeStreams.get(conversationId);
     if (stream) {
       this.activeStreams.delete(conversationId);
-      console.log(`[ChannelMessageService] Cleared stream for conversation ${conversationId}`);
+      log.info({ conversationId }, 'Cleared stream for conversation');
     }
   }
 
@@ -202,7 +216,7 @@ export class ChannelMessageService {
         await task.stop();
       }
     } catch (error) {
-      console.warn(`[ChannelMessageService] Failed to stop streaming:`, error);
+      log.warn({ err: error }, 'Failed to stop streaming');
     }
     this.clearStreamByConversationId(conversationId);
   }
@@ -223,9 +237,9 @@ export class ChannelMessageService {
 
       // Call agent's confirm method
       task.confirm(conversationId, callId, value);
-      console.log(`[ChannelMessageService] Confirmed tool call ${callId} with value ${value}`);
+      log.info({ callId, value }, 'Confirmed tool call');
     } catch (error) {
-      console.error(`[ChannelMessageService] Failed to confirm tool call:`, error);
+      log.error({ err: error }, 'Failed to confirm tool call');
       throw error;
     }
   }
@@ -248,7 +262,7 @@ export class ChannelMessageService {
     }
 
     this.initialized = false;
-    console.log('[ChannelMessageService] Shutdown complete');
+    log.info('Shutdown complete');
   }
 }
 
