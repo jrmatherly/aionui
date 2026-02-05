@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { httpLogger as log } from '@/common/logger';
 import { generateQRLoginUrlDirect } from '@/process/bridge/webuiBridge';
 import { OIDC_CONFIG } from '@/webserver/auth/config/oidcConfig';
 import { UserRepository } from '@/webserver/auth/repository/UserRepository';
@@ -170,7 +171,7 @@ async function initializeDefaultAdmin(): Promise<{ username: string; password: s
     initialAdminPassword = password; // Store initial password
     return { username, password };
   } catch (error) {
-    console.error('❌ Failed to initialize default admin account:', error);
+    log.error({ err: error }, 'Failed to initialize default admin account');
     return null;
   }
 }
@@ -250,9 +251,9 @@ export async function startWebServerWithInstance(port: number, allowRemote = fal
   if (OIDC_CONFIG.enabled) {
     try {
       await OidcService.initialize();
-      console.log('[WebUI] OIDC authentication enabled');
+      log.info('OIDC authentication enabled');
     } catch (error) {
-      console.error('[WebUI] Failed to initialize OIDC — only local admin login available:', error);
+      log.warn({ err: error }, 'Failed to initialize OIDC — only local admin login available');
     }
   }
 
@@ -303,9 +304,9 @@ export async function startWebServerWithInstance(port: number, allowRemote = fal
 
     server.on('error', (err: NodeJS.ErrnoException) => {
       if (err.code === 'EADDRINUSE') {
-        console.error(`❌ Port ${port} is already in use`);
+        log.error({ port }, 'Port already in use');
       } else {
-        console.error('❌ Server error:', err);
+        log.error({ err }, 'Server error');
       }
       reject(err);
     });

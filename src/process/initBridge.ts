@@ -5,6 +5,7 @@
  */
 
 import { initUserApiKeyService } from '@/common/UserApiKeyService';
+import { initLogger } from '@/common/logger';
 import { logger } from '@office-ai/platform';
 import { getDatabase } from '@process/database';
 import { cronService } from '@process/services/cron/CronService';
@@ -12,6 +13,7 @@ import { GlobalModelService } from '@process/services/GlobalModelService';
 import { AuthService } from '@/webserver/auth/service/AuthService';
 import { initAllBridges } from './bridge';
 
+const log = initLogger;
 logger.config({ print: true });
 
 // Initialize all IPC bridges
@@ -24,16 +26,16 @@ try {
 
   // Initialize per-user API key storage
   initUserApiKeyService(db.getRawDb(), jwtSecret);
-  console.log('[initBridge] UserApiKeyService initialized');
+  log.info('UserApiKeyService initialized');
 
   // Initialize global model service (admin-managed shared models)
   GlobalModelService.initialize(db.getRawDb(), jwtSecret);
-  console.log('[initBridge] GlobalModelService initialized');
+  log.info('GlobalModelService initialized');
 } catch (error) {
-  console.error('[initBridge] Failed to initialize services:', error);
+  log.error({ err: error }, 'Failed to initialize services');
 }
 
 // Initialize cron service (load jobs from database and start timers)
 void cronService.init().catch((error) => {
-  console.error('[initBridge] Failed to initialize CronService:', error);
+  log.error({ err: error }, 'Failed to initialize CronService');
 });

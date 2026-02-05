@@ -9,6 +9,7 @@
  * All endpoints require admin role.
  */
 
+import { adminLogger as log } from '@/common/logger';
 import { GROUP_MAPPINGS } from '@/webserver/auth/config/groupMappings';
 import { AuthMiddleware } from '@/webserver/auth/middleware/AuthMiddleware';
 import { requireAdmin } from '@/webserver/auth/middleware/RoleMiddleware';
@@ -51,7 +52,7 @@ export function registerAdminRoutes(app: Express): void {
       const users = UserRepository.listUsers().map(sanitizeUser);
       res.json({ success: true, users, total: users.length });
     } catch (error) {
-      console.error('[Admin] List users error:', error);
+      log.error({ err: error }, 'List users failed');
       res.status(500).json({ success: false, error: 'Failed to list users' });
     }
   });
@@ -68,7 +69,7 @@ export function registerAdminRoutes(app: Express): void {
       }
       res.json({ success: true, user: sanitizeUser(user) });
     } catch (error) {
-      console.error('[Admin] Get user error:', error);
+      log.error({ err: error }, 'Get user failed');
       res.status(500).json({ success: false, error: 'Failed to get user' });
     }
   });
@@ -100,7 +101,7 @@ export function registerAdminRoutes(app: Express): void {
       UserRepository.updateRole(user.id, role as UserRole);
       res.json({ success: true, message: `User role updated to ${role}` });
     } catch (error) {
-      console.error('[Admin] Update role error:', error);
+      log.error({ err: error }, 'Update role failed');
       res.status(500).json({ success: false, error: 'Failed to update role' });
     }
   });
@@ -128,7 +129,7 @@ export function registerAdminRoutes(app: Express): void {
       UserRepository.updateRole(userId, 'viewer');
       res.json({ success: true, message: 'User deactivated (role set to viewer)' });
     } catch (error) {
-      console.error('[Admin] Delete user error:', error);
+      log.error({ err: error }, 'Delete user failed');
       res.status(500).json({ success: false, error: 'Failed to deactivate user' });
     }
   });
@@ -161,7 +162,7 @@ export function registerAdminRoutes(app: Express): void {
 
       res.json({ success: true, models: modelsWithHints, total: modelsWithHints.length });
     } catch (error) {
-      console.error('[Admin] List global models error:', error);
+      log.error({ err: error }, 'List global models failed');
       res.status(500).json({ success: false, error: 'Failed to list global models' });
     }
   });
@@ -185,7 +186,7 @@ export function registerAdminRoutes(app: Express): void {
         },
       });
     } catch (error) {
-      console.error('[Admin] Get global model error:', error);
+      log.error({ err: error }, 'Get global model failed');
       res.status(500).json({ success: false, error: 'Failed to get global model' });
     }
   });
@@ -214,7 +215,7 @@ export function registerAdminRoutes(app: Express): void {
         },
       });
     } catch (error) {
-      console.error('[Admin] Create global model error:', error);
+      log.error({ err: error }, 'Create global model failed');
       res.status(500).json({ success: false, error: 'Failed to create global model' });
     }
   });
@@ -241,7 +242,7 @@ export function registerAdminRoutes(app: Express): void {
         },
       });
     } catch (error) {
-      console.error('[Admin] Update global model error:', error);
+      log.error({ err: error }, 'Update global model failed');
       res.status(500).json({ success: false, error: 'Failed to update global model' });
     }
   });
@@ -261,7 +262,7 @@ export function registerAdminRoutes(app: Express): void {
 
       res.json({ success: true, message: 'Global model deleted' });
     } catch (error) {
-      console.error('[Admin] Delete global model error:', error);
+      log.error({ err: error }, 'Delete global model failed');
       res.status(500).json({ success: false, error: 'Failed to delete global model' });
     }
   });
@@ -293,7 +294,7 @@ export function registerAdminRoutes(app: Express): void {
         },
       });
     } catch (error) {
-      console.error('[Admin] Toggle global model error:', error);
+      log.error({ err: error }, 'Toggle global model failed');
       res.status(500).json({ success: false, error: 'Failed to toggle global model' });
     }
   });
@@ -319,7 +320,7 @@ export function registerAdminRoutes(app: Express): void {
       const models = service.listGlobalModels(true);
       res.json({ success: true, models });
     } catch (error) {
-      console.error('[Admin] Reorder global models error:', error);
+      log.error({ err: error }, 'Reorder global models failed');
       res.status(500).json({ success: false, error: 'Failed to reorder global models' });
     }
   });

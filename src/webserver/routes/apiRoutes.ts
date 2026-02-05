@@ -5,6 +5,7 @@
  */
 
 import { getBrandingConfig } from '@/common/branding';
+import { httpLogger as log } from '@/common/logger';
 import { GlobalModelService } from '@process/services/GlobalModelService';
 import { scopeToUser } from '@/webserver/auth/middleware/DataScopeMiddleware';
 import { TokenMiddleware } from '@/webserver/auth/middleware/TokenMiddleware';
@@ -35,7 +36,7 @@ export function registerApiRoutes(app: Express): void {
       const config = getBrandingConfig();
       res.json(config);
     } catch (error) {
-      console.error('[API] Branding error:', error);
+      log.error({ err: error }, 'Branding failed');
       res.status(500).json({ error: 'Failed to get branding config' });
     }
   });
@@ -63,7 +64,7 @@ export function registerApiRoutes(app: Express): void {
       const models = service.getVisibleGlobalModels(userId);
       res.json({ success: true, models });
     } catch (error) {
-      console.error('[API] Get global models error:', error);
+      log.error({ err: error }, 'Get global models failed');
       res.status(500).json({ success: false, error: 'Failed to get global models' });
     }
   });
@@ -81,7 +82,7 @@ export function registerApiRoutes(app: Express): void {
       const models = service.getHiddenGlobalModels(userId);
       res.json({ success: true, models });
     } catch (error) {
-      console.error('[API] Get hidden global models error:', error);
+      log.error({ err: error }, 'Get hidden global models failed');
       res.status(500).json({ success: false, error: 'Failed to get hidden global models' });
     }
   });
@@ -102,7 +103,7 @@ export function registerApiRoutes(app: Express): void {
       }
       res.json({ success: true, model });
     } catch (error) {
-      console.error('[API] Get global model detail error:', error);
+      log.error({ err: error }, 'Get global model detail failed');
       res.status(500).json({ success: false, error: 'Failed to get global model details' });
     }
   });
@@ -127,7 +128,7 @@ export function registerApiRoutes(app: Express): void {
       service.hideGlobalModel(userId, globalModelId);
       res.json({ success: true, message: 'Global model hidden' });
     } catch (error) {
-      console.error('[API] Hide global model error:', error);
+      log.error({ err: error }, 'Hide global model failed');
       res.status(500).json({ success: false, error: 'Failed to hide global model' });
     }
   });
@@ -144,7 +145,7 @@ export function registerApiRoutes(app: Express): void {
       service.unhideGlobalModel(userId, globalModelId);
       res.json({ success: true, message: 'Global model unhidden' });
     } catch (error) {
-      console.error('[API] Unhide global model error:', error);
+      log.error({ err: error }, 'Unhide global model failed');
       res.status(500).json({ success: false, error: 'Failed to unhide global model' });
     }
   });

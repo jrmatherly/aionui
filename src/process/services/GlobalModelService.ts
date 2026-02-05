@@ -12,6 +12,7 @@
  * - User hide/unhide operations
  */
 
+import { modelLogger as log } from '@/common/logger';
 import type { IProvider, ModelCapability } from '@/common/storage';
 import crypto from 'crypto';
 import type Database from 'better-sqlite3';
@@ -178,7 +179,7 @@ export class GlobalModelService {
 
     stmt.run(id, dto.platform, dto.name, dto.base_url || '', dto.api_key ? this.encrypt(dto.api_key) : null, JSON.stringify(dto.models || []), dto.capabilities ? JSON.stringify(dto.capabilities) : null, dto.context_limit ?? null, dto.custom_headers ? JSON.stringify(dto.custom_headers) : null, dto.enabled !== false ? 1 : 0, dto.priority ?? 0, adminId, now, now);
 
-    console.log(`[GlobalModelService] Created global model: ${dto.name} (${id})`);
+    log.info({ modelId: id, name: dto.name }, 'Global model created');
     return this.getGlobalModel(id)!;
   }
 
@@ -238,7 +239,7 @@ export class GlobalModelService {
     const stmt = this.db.prepare(`UPDATE global_models SET ${updates.join(', ')} WHERE id = ?`);
     stmt.run(...values);
 
-    console.log(`[GlobalModelService] Updated global model: ${id}`);
+    log.info({ modelId: id }, 'Global model updated');
     return this.getGlobalModel(id);
   }
 
@@ -249,7 +250,7 @@ export class GlobalModelService {
     // Also delete any user overrides for this model
     this.db.prepare('DELETE FROM user_model_overrides WHERE global_model_id = ?').run(id);
     const result = this.db.prepare('DELETE FROM global_models WHERE id = ?').run(id);
-    console.log(`[GlobalModelService] Deleted global model: ${id}`);
+    log.info({ modelId: id }, 'Global model deleted');
     return result.changes > 0;
   }
 
@@ -320,7 +321,7 @@ export class GlobalModelService {
         updated_at = excluded.updated_at
     `);
     stmt.run(id, userId, globalModelId, now, now);
-    console.log(`[GlobalModelService] User ${userId} hid global model ${globalModelId}`);
+    log.info({ userId, globalModelId }, 'User hid global model');
   }
 
   /**
@@ -329,7 +330,7 @@ export class GlobalModelService {
   unhideGlobalModel(userId: string, globalModelId: string): void {
     const stmt = this.db.prepare('DELETE FROM user_model_overrides WHERE user_id = ? AND global_model_id = ?');
     stmt.run(userId, globalModelId);
-    console.log(`[GlobalModelService] User ${userId} unhid global model ${globalModelId}`);
+    log.info({ userId, globalModelId }, 'User unhid global model');
   }
 
   /**
@@ -348,7 +349,7 @@ export class GlobalModelService {
         updated_at = excluded.updated_at
     `);
     stmt.run(id, userId, globalModelId, localProviderId, now, now);
-    console.log(`[GlobalModelService] User ${userId} modified global model ${globalModelId} -> ${localProviderId}`);
+    log.info({ userId, globalModelId, localProviderId }, 'User modified global model');
   }
 
   // ========================================
