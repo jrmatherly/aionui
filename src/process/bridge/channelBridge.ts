@@ -8,6 +8,7 @@ import { getChannelManager } from '@/channels/core/ChannelManager';
 import { getPairingService } from '@/channels/pairing/PairingService';
 import type { IChannelPluginStatus } from '@/channels/types';
 import { channel } from '@/common/ipcBridge';
+import { channelLogger as log } from '@/common/logger';
 import { getDatabase } from '@/process/database';
 
 /**
@@ -15,7 +16,7 @@ import { getDatabase } from '@/process/database';
  * Handles communication between renderer (Settings UI) and main process (Channel system)
  */
 export function initChannelBridge(): void {
-  console.log('[ChannelBridge] Initializing...');
+  log.info('Initializing...');
 
   // ==================== Plugin Management ====================
 
@@ -55,7 +56,7 @@ export function initChannelBridge(): void {
 
       return { success: true, data: statuses };
     } catch (error: any) {
-      console.error('[ChannelBridge] getPluginStatus error:', error);
+      log.error({ err: error }, 'getPluginStatus error');
       return { success: false, msg: error.message };
     }
   });
@@ -74,7 +75,7 @@ export function initChannelBridge(): void {
 
       return { success: true };
     } catch (error: any) {
-      console.error('[ChannelBridge] enablePlugin error:', error);
+      log.error({ err: error, pluginId }, 'enablePlugin error');
       return { success: false, msg: error.message };
     }
   });
@@ -93,7 +94,7 @@ export function initChannelBridge(): void {
 
       return { success: true };
     } catch (error: any) {
-      console.error('[ChannelBridge] disablePlugin error:', error);
+      log.error({ err: error, pluginId }, 'disablePlugin error');
       return { success: false, msg: error.message };
     }
   });
@@ -107,7 +108,7 @@ export function initChannelBridge(): void {
       const result = await manager.testPlugin(pluginId, token, extraConfig);
       return { success: true, data: result };
     } catch (error: any) {
-      console.error('[ChannelBridge] testPlugin error:', error);
+      log.error({ err: error, pluginId }, 'testPlugin error');
       return { success: false, data: { success: false, error: error.message } };
     }
   });
@@ -128,7 +129,7 @@ export function initChannelBridge(): void {
 
       return { success: true, data: result.data };
     } catch (error: any) {
-      console.error('[ChannelBridge] getPendingPairings error:', error);
+      log.error({ err: error }, 'getPendingPairings error');
       return { success: false, msg: error.message };
     }
   });
@@ -146,10 +147,10 @@ export function initChannelBridge(): void {
         return { success: false, msg: result.error };
       }
 
-      console.log(`[ChannelBridge] Approved pairing for code ${code}`);
+      log.info({ code }, 'Approved pairing');
       return { success: true };
     } catch (error: any) {
-      console.error('[ChannelBridge] approvePairing error:', error);
+      log.error({ err: error, code }, 'approvePairing error');
       return { success: false, msg: error.message };
     }
   });
@@ -167,10 +168,10 @@ export function initChannelBridge(): void {
         return { success: false, msg: result.error };
       }
 
-      console.log(`[ChannelBridge] Rejected pairing code ${code}`);
+      log.info({ code }, 'Rejected pairing');
       return { success: true };
     } catch (error: any) {
-      console.error('[ChannelBridge] rejectPairing error:', error);
+      log.error({ err: error, code }, 'rejectPairing error');
       return { success: false, msg: error.message };
     }
   });
@@ -191,7 +192,7 @@ export function initChannelBridge(): void {
 
       return { success: true, data: result.data };
     } catch (error: any) {
-      console.error('[ChannelBridge] getAuthorizedUsers error:', error);
+      log.error({ err: error }, 'getAuthorizedUsers error');
       return { success: false, msg: error.message };
     }
   });
@@ -210,10 +211,10 @@ export function initChannelBridge(): void {
         return { success: false, msg: result.error };
       }
 
-      console.log(`[ChannelBridge] Revoked user ${userId}`);
+      log.info({ userId }, 'Revoked user');
       return { success: true };
     } catch (error: any) {
-      console.error('[ChannelBridge] revokeUser error:', error);
+      log.error({ err: error, userId }, 'revokeUser error');
       return { success: false, msg: error.message };
     }
   });
@@ -234,10 +235,10 @@ export function initChannelBridge(): void {
 
       return { success: true, data: result.data };
     } catch (error: any) {
-      console.error('[ChannelBridge] getActiveSessions error:', error);
+      log.error({ err: error }, 'getActiveSessions error');
       return { success: false, msg: error.message };
     }
   });
 
-  console.log('[ChannelBridge] Initialized');
+  log.info('Initialized');
 }
