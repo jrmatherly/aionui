@@ -47,8 +47,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -131,8 +131,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -333,7 +333,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 17,
+          "line": 50,
           "column": 16,
           "isOutlier": false,
           "confidence": 0.77
@@ -362,8 +362,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -621,22 +621,22 @@
         "consistency": 0.9,
         "age": 0,
         "spread": 1,
-        "score": 0.7949999999999999,
-        "level": "medium"
+        "score": 0.95,
+        "level": "high"
       },
       "locations": [
         {
-          "file": ".github/CICD_SETUP.md",
-          "line": 59,
-          "column": 65,
+          "file": ".github/workflows/release.yml",
+          "line": 26,
+          "column": 41,
           "isOutlier": false,
-          "confidence": 0.7949999999999999
+          "confidence": 0.97
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T18:38:36.325Z",
+        "lastSeen": "2026-02-05T18:38:36.325Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -1019,14 +1019,14 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 133,
+          "line": 206,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 133,
+          "line": 206,
           "column": 42,
           "isOutlier": false,
           "confidence": 0.97
@@ -1034,8 +1034,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -1096,21 +1096,21 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 45,
+          "line": 111,
           "column": 3,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 120,
+          "line": 193,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 120,
+          "line": 193,
           "column": 47,
           "isOutlier": false,
           "confidence": 0.97
@@ -1118,8 +1118,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -1256,6 +1256,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-05T06:52:10.025Z",
-  "checksum": "66ad55c996504cf2"
+  "lastUpdated": "2026-02-05T18:38:48.033Z",
+  "checksum": "c51b805eebf9079c"
 }

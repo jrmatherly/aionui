@@ -3,6 +3,106 @@
   "category": "testing",
   "patterns": [
     {
+      "id": "6bfafad74b807938",
+      "subcategory": "test-file-naming",
+      "name": "Test File Naming Detector",
+      "description": "Learns test file naming patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "testing/test-file-naming",
+          "patternId": "testing/test-file-naming/function_call"
+        }
+      },
+      "confidence": {
+        "frequency": 0.04,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 42,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 87,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.97
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:47.972Z",
+        "source": "auto-detected",
+        "tags": [
+          "testing",
+          "test-file-naming"
+        ],
+        "approvedAt": "2026-02-05T18:38:47.972Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "3257529be6c277f0",
+      "subcategory": "test-co-location",
+      "name": "Test Co-Location Detector",
+      "description": "Learns test co-location patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "testing/test-co-location",
+          "patternId": "testing/test-co-location/function_call"
+        }
+      },
+      "confidence": {
+        "frequency": 0.08,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.95,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 42,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 87,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.97
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:48.012Z",
+        "source": "auto-detected",
+        "tags": [
+          "testing",
+          "test-co-location"
+        ],
+        "approvedAt": "2026-02-05T18:38:48.012Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
       "id": "1723c67b0524101d",
       "subcategory": "test-file-naming",
       "name": "Test File Naming Detector",
@@ -33,8 +133,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -75,8 +175,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -117,8 +217,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -362,8 +462,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -558,8 +658,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -966,17 +1066,19 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 57,
+          "line": 123,
           "column": 15,
-          "isOutlier": false,
-          "confidence": 0.77
+          "isOutlier": true,
+          "confidence": 0.595,
+          "outlierReason": "Low confidence outlier"
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 106,
+          "line": 179,
           "column": 22,
-          "isOutlier": false,
-          "confidence": 0.77
+          "isOutlier": true,
+          "confidence": 0.595,
+          "outlierReason": "Low confidence outlier"
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -989,8 +1091,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -1115,8 +1217,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -1381,8 +1483,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -1436,14 +1538,14 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 57,
+          "line": 123,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 106,
+          "line": 179,
           "column": 22,
           "isOutlier": false,
           "confidence": 0.77
@@ -1458,8 +1560,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -1780,8 +1882,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.006Z",
-        "lastSeen": "2026-02-05T06:52:10.006Z",
+        "firstSeen": "2026-02-05T18:38:36.325Z",
+        "lastSeen": "2026-02-05T18:38:36.325Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -1822,8 +1924,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -1846,54 +1948,33 @@
         }
       },
       "confidence": {
-        "frequency": 0.05,
+        "frequency": 0.02,
         "consistency": 0.9,
         "age": 0,
-        "spread": 2,
-        "score": 0.89,
-        "level": "high"
+        "spread": 1,
+        "score": 0.7949999999999999,
+        "level": "medium"
       },
       "locations": [
         {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 205,
-          "column": 90,
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 42,
+          "column": 9,
           "isOutlier": false,
-          "confidence": 0.7790909090909091
+          "confidence": 0.7949999999999999
         },
         {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 205,
-          "column": 138,
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 87,
+          "column": 9,
           "isOutlier": false,
-          "confidence": 0.7790909090909091
-        },
-        {
-          "file": ".github/workflows/project-automation.yml",
-          "line": 101,
-          "column": 21,
-          "isOutlier": false,
-          "confidence": 0.89
-        },
-        {
-          "file": ".github/workflows/project-automation.yml",
-          "line": 160,
-          "column": 21,
-          "isOutlier": false,
-          "confidence": 0.89
-        },
-        {
-          "file": ".github/workflows/project-automation.yml",
-          "line": 274,
-          "column": 21,
-          "isOutlier": false,
-          "confidence": 0.89
+          "confidence": 0.7949999999999999
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.012Z",
-        "lastSeen": "2026-02-04T05:34:32.012Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -1916,54 +1997,33 @@
         }
       },
       "confidence": {
-        "frequency": 0.1,
+        "frequency": 0.04,
         "consistency": 0.9,
         "age": 0,
-        "spread": 2,
-        "score": 0.89,
+        "spread": 1,
+        "score": 0.95,
         "level": "high"
       },
       "locations": [
         {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 205,
-          "column": 90,
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 42,
+          "column": 9,
           "isOutlier": false,
-          "confidence": 0.7815384615384615
+          "confidence": 0.97
         },
         {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 205,
-          "column": 138,
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 87,
+          "column": 9,
           "isOutlier": false,
-          "confidence": 0.7815384615384615
-        },
-        {
-          "file": ".github/workflows/project-automation.yml",
-          "line": 101,
-          "column": 21,
-          "isOutlier": false,
-          "confidence": 0.89
-        },
-        {
-          "file": ".github/workflows/project-automation.yml",
-          "line": 160,
-          "column": 21,
-          "isOutlier": false,
-          "confidence": 0.89
-        },
-        {
-          "file": ".github/workflows/project-automation.yml",
-          "line": 274,
-          "column": 21,
-          "isOutlier": false,
-          "confidence": 0.89
+          "confidence": 0.97
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.012Z",
-        "lastSeen": "2026-02-04T05:34:32.012Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2004,8 +2064,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.006Z",
-        "lastSeen": "2026-02-05T06:52:10.006Z",
+        "firstSeen": "2026-02-05T18:38:36.325Z",
+        "lastSeen": "2026-02-05T18:38:36.325Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2046,8 +2106,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.006Z",
-        "lastSeen": "2026-02-05T06:52:10.006Z",
+        "firstSeen": "2026-02-05T18:38:36.325Z",
+        "lastSeen": "2026-02-05T18:38:36.325Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2095,8 +2155,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.006Z",
-        "lastSeen": "2026-02-05T06:52:10.006Z",
+        "firstSeen": "2026-02-05T18:38:36.325Z",
+        "lastSeen": "2026-02-05T18:38:36.325Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2592,8 +2652,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.006Z",
-        "lastSeen": "2026-02-05T06:52:10.006Z",
+        "firstSeen": "2026-02-05T18:38:36.325Z",
+        "lastSeen": "2026-02-05T18:38:36.325Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2641,8 +2701,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.006Z",
-        "lastSeen": "2026-02-05T06:52:10.006Z",
+        "firstSeen": "2026-02-05T18:38:36.325Z",
+        "lastSeen": "2026-02-05T18:38:36.325Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2683,8 +2743,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2732,8 +2792,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2942,8 +3002,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.006Z",
-        "lastSeen": "2026-02-05T06:52:10.006Z",
+        "firstSeen": "2026-02-05T18:38:36.325Z",
+        "lastSeen": "2026-02-05T18:38:36.325Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2984,8 +3044,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.006Z",
-        "lastSeen": "2026-02-05T06:52:10.006Z",
+        "firstSeen": "2026-02-05T18:38:36.325Z",
+        "lastSeen": "2026-02-05T18:38:36.325Z",
         "source": "auto-detected",
         "tags": [
           "testing",
@@ -2996,6 +3056,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-05T06:52:10.020Z",
-  "checksum": "9954162c62df721f"
+  "lastUpdated": "2026-02-05T18:38:48.026Z",
+  "checksum": "86055b5bd6013a36"
 }

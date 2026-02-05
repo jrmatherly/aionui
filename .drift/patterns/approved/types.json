@@ -522,7 +522,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 66,
+          "line": 139,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.6824999999999999
@@ -538,8 +538,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -1223,10 +1223,10 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 66,
+          "line": 139,
           "column": 15,
           "isOutlier": false,
-          "confidence": 0.72
+          "confidence": 0.6109090909090908
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -1238,8 +1238,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -1692,7 +1692,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 66,
+          "line": 139,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.72
@@ -1707,8 +1707,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -1734,7 +1734,7 @@
         "frequency": 1,
         "consistency": 0.9,
         "age": 0,
-        "spread": 13,
+        "spread": 14,
         "score": 0.77,
         "level": "medium"
       },
@@ -2442,8 +2442,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -2561,8 +2561,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -2603,8 +2603,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -2973,7 +2973,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 122,
+          "line": 195,
           "column": 44,
           "isOutlier": false,
           "confidence": 0.77
@@ -3044,8 +3044,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -3156,8 +3156,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -3240,8 +3240,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -3334,10 +3334,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.32,
+        "frequency": 0.34,
         "consistency": 0.9,
         "age": 0,
-        "spread": 4,
+        "spread": 5,
         "score": 0.8553448275862069,
         "level": "high"
       },
@@ -3560,6 +3560,20 @@
           "confidence": 0.8553448275862069
         },
         {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 42,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.7914285714285714
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 87,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.7914285714285714
+        },
+        {
           "file": ".github/workflows/pr-checks.yml",
           "line": 49,
           "column": 27,
@@ -3570,8 +3584,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -3828,17 +3842,17 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 91,
+          "line": 164,
           "column": 17,
           "isOutlier": false,
-          "confidence": 0.8029545454545455
+          "confidence": 0.7914285714285714
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 91,
+          "line": 164,
           "column": 79,
           "isOutlier": false,
-          "confidence": 0.8029545454545455
+          "confidence": 0.7914285714285714
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -3864,8 +3878,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -3906,8 +3920,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -3969,8 +3983,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -4069,8 +4083,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -4093,10 +4107,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.09,
+        "frequency": 0.11,
         "consistency": 0.9,
         "age": 0,
-        "spread": 3,
+        "spread": 4,
         "score": 0.8662962962962963,
         "level": "high"
       },
@@ -4151,26 +4165,38 @@
           "confidence": 0.8533333333333333
         },
         {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 43,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.8109090909090909
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 88,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.8109090909090909
+        },
+        {
           "file": ".github/workflows/pr-checks.yml",
           "line": 65,
           "column": 29,
-          "isOutlier": true,
-          "confidence": 0.7949999999999999,
-          "outlierReason": "Value below IQR lower bound"
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
         },
         {
           "file": ".github/workflows/pr-checks.yml",
           "line": 208,
           "column": 29,
-          "isOutlier": true,
-          "confidence": 0.7949999999999999,
-          "outlierReason": "Value below IQR lower bound"
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -4232,8 +4258,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -4332,8 +4358,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -4507,8 +4533,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -4577,8 +4603,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -4626,8 +4652,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -4650,10 +4676,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.06,
+        "frequency": 0.08,
         "consistency": 0.9,
         "age": 0,
-        "spread": 3,
+        "spread": 4,
         "score": 0.9381818181818182,
         "level": "high"
       },
@@ -4699,12 +4725,26 @@
           "column": 27,
           "isOutlier": false,
           "confidence": 0.9381818181818182
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 11,
+          "column": 22,
+          "isOutlier": false,
+          "confidence": 0.8109090909090909
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 56,
+          "column": 22,
+          "isOutlier": false,
+          "confidence": 0.8109090909090909
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -4773,8 +4813,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -4822,8 +4862,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -5357,17 +5397,17 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 153,
+          "line": 226,
           "column": 25,
           "isOutlier": false,
-          "confidence": 0.8029545454545455
+          "confidence": 0.7914285714285714
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 154,
+          "line": 227,
           "column": 58,
           "isOutlier": false,
-          "confidence": 0.8029545454545455
+          "confidence": 0.7914285714285714
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -5434,8 +5474,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -5651,8 +5691,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -5675,10 +5715,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.76,
+        "frequency": 0.79,
         "consistency": 0.9,
         "age": 0,
-        "spread": 9,
+        "spread": 10,
         "score": 0.9341025641025641,
         "level": "high"
       },
@@ -5765,9 +5805,8 @@
           "file": ".github/CICD_SETUP.md",
           "line": 125,
           "column": 14,
-          "isOutlier": true,
-          "confidence": 0.8553448275862069,
-          "outlierReason": "Value above IQR upper bound"
+          "isOutlier": false,
+          "confidence": 0.8553448275862069
         },
         {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -6079,152 +6118,171 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 32,
+          "line": 98,
           "column": 9,
           "isOutlier": false,
-          "confidence": 0.8029545454545455
+          "confidence": 0.7914285714285714
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 121,
+          "line": 194,
           "column": 11,
           "isOutlier": false,
-          "confidence": 0.8029545454545455
+          "confidence": 0.7914285714285714
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 122,
+          "line": 195,
           "column": 13,
           "isOutlier": false,
-          "confidence": 0.8029545454545455
+          "confidence": 0.7914285714285714
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 123,
+          "line": 196,
           "column": 13,
           "isOutlier": false,
-          "confidence": 0.8029545454545455
+          "confidence": 0.7914285714285714
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 124,
+          "line": 197,
           "column": 13,
           "isOutlier": false,
-          "confidence": 0.8029545454545455
+          "confidence": 0.7914285714285714
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 132,
+          "line": 205,
           "column": 11,
           "isOutlier": false,
-          "confidence": 0.8029545454545455
+          "confidence": 0.7914285714285714
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 132,
+          "line": 205,
           "column": 40,
           "isOutlier": false,
-          "confidence": 0.8029545454545455
+          "confidence": 0.7914285714285714
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 138,
+          "line": 211,
           "column": 23,
           "isOutlier": false,
-          "confidence": 0.8029545454545455
+          "confidence": 0.7914285714285714
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 139,
+          "line": 212,
           "column": 17,
           "isOutlier": false,
-          "confidence": 0.8029545454545455
+          "confidence": 0.7914285714285714
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 139,
+          "line": 212,
           "column": 21,
           "isOutlier": false,
-          "confidence": 0.8029545454545455
+          "confidence": 0.7914285714285714
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 100,
+          "line": 133,
           "column": 11,
           "isOutlier": false,
-          "confidence": 0.8029545454545455
+          "confidence": 0.7914285714285714
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 100,
+          "line": 134,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.7914285714285714
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 173,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.7914285714285714
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 173,
           "column": 56,
           "isOutlier": false,
-          "confidence": 0.8029545454545455
+          "confidence": 0.7914285714285714
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 102,
+          "line": 175,
           "column": 17,
           "isOutlier": false,
-          "confidence": 0.8029545454545455
+          "confidence": 0.7914285714285714
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 102,
+          "line": 175,
           "column": 27,
           "isOutlier": false,
-          "confidence": 0.8029545454545455
+          "confidence": 0.7914285714285714
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 122,
+          "line": 195,
           "column": 22,
           "isOutlier": false,
-          "confidence": 0.8029545454545455
+          "confidence": 0.7914285714285714
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 123,
+          "line": 196,
           "column": 22,
           "isOutlier": false,
-          "confidence": 0.8029545454545455
+          "confidence": 0.7914285714285714
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 123,
+          "line": 196,
           "column": 50,
           "isOutlier": false,
-          "confidence": 0.8029545454545455
+          "confidence": 0.7914285714285714
         },
         {
           "file": ".github/workflows/pr-checks.yml",
           "line": 5,
           "column": 5,
-          "isOutlier": true,
-          "confidence": 0.7680769230769231,
-          "outlierReason": "Value below IQR lower bound"
+          "isOutlier": false,
+          "confidence": 0.7680769230769231
         },
         {
           "file": ".github/workflows/pr-checks.yml",
           "line": 65,
           "column": 29,
-          "isOutlier": true,
-          "confidence": 0.7680769230769231,
-          "outlierReason": "Value below IQR lower bound"
+          "isOutlier": false,
+          "confidence": 0.7680769230769231
         },
         {
           "file": ".github/workflows/pr-checks.yml",
           "line": 208,
           "column": 29,
+          "isOutlier": false,
+          "confidence": 0.7680769230769231
+        },
+        {
+          "file": ".github/workflows/release.yml",
+          "line": 5,
+          "column": 5,
           "isOutlier": true,
-          "confidence": 0.7680769230769231,
-          "outlierReason": "Value below IQR lower bound"
+          "confidence": 0.9116666666666666,
+          "outlierReason": "High confidence outlier"
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -6300,8 +6358,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -6440,8 +6498,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -6614,42 +6672,42 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 32,
+          "line": 98,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.8825
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 122,
+          "line": 195,
           "column": 13,
           "isOutlier": false,
           "confidence": 0.8825
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 123,
+          "line": 196,
           "column": 13,
           "isOutlier": false,
           "confidence": 0.8825
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 124,
+          "line": 197,
           "column": 13,
           "isOutlier": false,
           "confidence": 0.8825
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 138,
+          "line": 211,
           "column": 23,
           "isOutlier": false,
           "confidence": 0.8825
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 139,
+          "line": 212,
           "column": 21,
           "isOutlier": false,
           "confidence": 0.8825
@@ -6665,8 +6723,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -6888,59 +6946,58 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 32,
+          "line": 98,
           "column": 9,
           "isOutlier": false,
-          "confidence": 0.9199999999999999
+          "confidence": 0.8109090909090909
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 122,
+          "line": 195,
           "column": 13,
           "isOutlier": false,
-          "confidence": 0.9199999999999999
+          "confidence": 0.8109090909090909
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 123,
+          "line": 196,
           "column": 13,
           "isOutlier": false,
-          "confidence": 0.9199999999999999
+          "confidence": 0.8109090909090909
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 124,
+          "line": 197,
           "column": 13,
           "isOutlier": false,
-          "confidence": 0.9199999999999999
+          "confidence": 0.8109090909090909
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 138,
+          "line": 211,
           "column": 23,
           "isOutlier": false,
-          "confidence": 0.9199999999999999
+          "confidence": 0.8109090909090909
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 139,
+          "line": 212,
           "column": 21,
           "isOutlier": false,
-          "confidence": 0.9199999999999999
+          "confidence": 0.8109090909090909
         },
         {
           "file": ".github/workflows/pr-checks.yml",
           "line": 5,
           "column": 5,
-          "isOutlier": true,
-          "confidence": 0.7949999999999999,
-          "outlierReason": "Low confidence outlier"
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -7113,42 +7170,42 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 32,
+          "line": 98,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9199999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 122,
+          "line": 195,
           "column": 13,
           "isOutlier": false,
           "confidence": 0.9199999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 123,
+          "line": 196,
           "column": 13,
           "isOutlier": false,
           "confidence": 0.9199999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 124,
+          "line": 197,
           "column": 13,
           "isOutlier": false,
           "confidence": 0.9199999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 138,
+          "line": 211,
           "column": 23,
           "isOutlier": false,
           "confidence": 0.9199999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 139,
+          "line": 212,
           "column": 21,
           "isOutlier": false,
           "confidence": 0.9199999999999999
@@ -7164,8 +7221,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -7290,8 +7347,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -7416,8 +7473,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -7465,8 +7522,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -7477,6 +7534,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-05T06:52:10.024Z",
-  "checksum": "82511350d1529b94"
+  "lastUpdated": "2026-02-05T18:38:48.031Z",
+  "checksum": "27d7d26e7d275d6a"
 }

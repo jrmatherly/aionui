@@ -186,14 +186,14 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 108,
+          "line": 181,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 110,
+          "line": 183,
           "column": 22,
           "isOutlier": false,
           "confidence": 0.77
@@ -215,8 +215,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -348,8 +348,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -397,8 +397,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -648,21 +648,21 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 116,
+          "line": 189,
           "column": 22,
           "isOutlier": false,
           "confidence": 0.6699999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 118,
+          "line": 191,
           "column": 22,
           "isOutlier": false,
           "confidence": 0.6699999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 86,
+          "line": 159,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.6699999999999999
@@ -796,8 +796,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -859,8 +859,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -925,10 +925,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.7,
+        "frequency": 0.72,
         "consistency": 0.9,
         "age": 0,
-        "spread": 8,
+        "spread": 9,
         "score": 0.77,
         "level": "medium"
       },
@@ -1033,42 +1033,42 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 54,
+          "line": 120,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 55,
+          "line": 121,
           "column": 23,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 66,
+          "line": 139,
           "column": 26,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 73,
+          "line": 146,
           "column": 29,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 83,
+          "line": 156,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 84,
+          "line": 157,
           "column": 23,
           "isOutlier": false,
           "confidence": 0.77
@@ -1177,12 +1177,19 @@
           "column": 23,
           "isOutlier": false,
           "confidence": 0.704375
+        },
+        {
+          "file": ".github/workflows/release.yml",
+          "line": 16,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.77
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1223,8 +1230,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1265,8 +1272,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1349,8 +1356,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1420,8 +1427,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1483,8 +1490,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1581,8 +1588,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1630,8 +1637,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.006Z",
-        "lastSeen": "2026-02-05T06:52:10.006Z",
+        "firstSeen": "2026-02-05T18:38:36.325Z",
+        "lastSeen": "2026-02-05T18:38:36.325Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1743,8 +1750,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1897,8 +1904,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1967,8 +1974,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.006Z",
-        "lastSeen": "2026-02-05T06:52:10.006Z",
+        "firstSeen": "2026-02-05T18:38:36.325Z",
+        "lastSeen": "2026-02-05T18:38:36.325Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -2016,8 +2023,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -2092,7 +2099,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 129,
+          "line": 202,
           "column": 11,
           "isOutlier": true,
           "confidence": 0.87,
@@ -2109,8 +2116,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.323Z",
+        "lastSeen": "2026-02-05T18:38:36.323Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -2165,8 +2172,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.005Z",
-        "lastSeen": "2026-02-05T06:52:10.005Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -2235,8 +2242,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.004Z",
-        "lastSeen": "2026-02-05T06:52:10.004Z",
+        "firstSeen": "2026-02-05T18:38:36.324Z",
+        "lastSeen": "2026-02-05T18:38:36.324Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -2389,8 +2396,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T06:52:10.006Z",
-        "lastSeen": "2026-02-05T06:52:10.006Z",
+        "firstSeen": "2026-02-05T18:38:36.325Z",
+        "lastSeen": "2026-02-05T18:38:36.325Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -2401,6 +2408,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-05T06:52:10.021Z",
-  "checksum": "da506187d1c510c3"
+  "lastUpdated": "2026-02-05T18:38:48.027Z",
+  "checksum": "c76933d43672cadb"
 }
