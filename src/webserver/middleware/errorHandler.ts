@@ -5,6 +5,7 @@
  */
 
 import type { ErrorRequestHandler, Response } from 'express';
+import { httpLogger as log } from '@/common/logger';
 
 /**
  * Application Error Class - Custom error class with status code and error code
@@ -54,7 +55,7 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
 
   // Only log unexpected errors
   if (!isAppError) {
-    console.error('[Error]', err);
+    log.error({ err }, 'Unexpected error');
   }
 
   const command = new JsonErrorCommand(statusCode, {

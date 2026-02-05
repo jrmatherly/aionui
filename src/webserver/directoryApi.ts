@@ -16,6 +16,7 @@ import fs from 'fs';
 import path from 'path';
 import { getDirectoryService } from '../process/services/DirectoryService';
 import { fileOperationLimiter } from './middleware/security';
+import { fsLogger as log } from '@/common/logger';
 
 /**
  * Get allowed directories for a user.
@@ -39,13 +40,13 @@ function getAllowedDirectoriesForUser(userId?: string): string[] {
         })
         .filter((dir, index, arr) => dir && arr.indexOf(dir) === index);
     } catch (error) {
-      console.error('[directoryApi] Failed to get user directories:', error);
+      log.error({ err: error }, 'Failed to get user directories');
     }
   }
 
   // Fallback: return empty array (no access) if user context is not available
   // This is safer than exposing system directories
-  console.warn('[directoryApi] No user context available, returning empty allowed directories');
+  log.warn('No user context available, returning empty allowed directories');
   return [];
 }
 
@@ -58,7 +59,7 @@ function getDefaultDirectoryForUser(userId?: string): string {
       const directoryService = getDirectoryService();
       return directoryService.getUserWorkDir(userId);
     } catch (error) {
-      console.error('[directoryApi] Failed to get user workspace:', error);
+      log.error({ err: error }, 'Failed to get user workspace');
     }
   }
   // Fallback to /tmp if no user context (will fail validation anyway)
@@ -243,7 +244,7 @@ router.get('/browse', fileOperationLimiter, (req: Request, res) => {
       canGoUp,
     });
   } catch (error) {
-    console.error('Directory browse error:', error);
+    log.error({ err: error }, 'Directory browse error');
     const errorMessage = error instanceof Error ? error.message : 'Failed to read directory';
     res.status(500).json({ error: errorMessage });
   }
@@ -316,7 +317,7 @@ router.post('/validate', fileOperationLimiter, (req: Request, res) => {
       name: path.basename(safeValidatedPath),
     });
   } catch (error) {
-    console.error('Path validation error:', error);
+    log.error({ err: error }, 'Path validation error');
     const errorMessage = error instanceof Error ? error.message : 'Failed to validate path';
     res.status(error instanceof Error && error.message.includes('Access denied') ? 403 : 500).json({ error: errorMessage });
   }
@@ -358,7 +359,7 @@ router.get('/shortcuts', fileOperationLimiter, (req: Request, res) => {
 
     res.json(shortcuts);
   } catch (error) {
-    console.error('Shortcuts error:', error);
+    log.error({ err: error }, 'Shortcuts error');
     res.status(500).json({ error: 'Failed to get shortcuts' });
   }
 });
@@ -429,7 +430,7 @@ router.post('/upload', express.json({ limit: '75mb' }), fileOperationLimiter, (r
       size: buffer.length,
     });
   } catch (error) {
-    console.error('File upload error:', error);
+    log.error({ err: error }, 'File upload error');
     const errorMessage = error instanceof Error ? error.message : 'Failed to upload file';
     res.status(500).json({ error: errorMessage });
   }
