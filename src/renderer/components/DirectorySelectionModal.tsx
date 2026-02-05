@@ -7,6 +7,9 @@
 import { Button, Message, Modal, Spin } from '@arco-design/web-react';
 import { IconFile, IconFolder, IconUp, IconUpload } from '@arco-design/web-react/icon';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('DirectorySelectionModal');
 interface DirectoryItem {
   name: string;
   path: string;
@@ -48,7 +51,7 @@ const DirectorySelectionModal: React.FC<DirectorySelectionModalProps> = ({ visib
         setDirectoryData(data);
         setCurrentPath(path);
       } catch (error) {
-        console.error('Failed to load directory:', error);
+        log.error({ err: error }, 'Failed to load directory');
       } finally {
         setLoading(false);
       }
@@ -59,13 +62,13 @@ const DirectorySelectionModal: React.FC<DirectorySelectionModalProps> = ({ visib
   useEffect(() => {
     if (visible) {
       setSelectedPath('');
-      loadDirectory('').catch((error) => console.error('Failed to load initial directory:', error));
+      loadDirectory('').catch((error) => log.error({ err: error }, 'Failed to load initial directory'));
     }
   }, [visible, loadDirectory]);
 
   const handleItemClick = (item: DirectoryItem) => {
     if (item.isDirectory) {
-      loadDirectory(item.path).catch((error) => console.error('Failed to load directory:', error));
+      loadDirectory(item.path).catch((error) => log.error({ err: error }, 'Failed to load directory'));
     }
   };
 
@@ -80,7 +83,7 @@ const DirectorySelectionModal: React.FC<DirectorySelectionModalProps> = ({ visib
 
   const handleGoUp = () => {
     if (directoryData.parentPath !== undefined) {
-      loadDirectory(directoryData.parentPath).catch((error) => console.error('Failed to load parent directory:', error));
+      loadDirectory(directoryData.parentPath).catch((error) => log.error({ err: error }, 'Failed to load parent directory'));
     }
   };
 
@@ -141,7 +144,7 @@ const DirectorySelectionModal: React.FC<DirectorySelectionModalProps> = ({ visib
 
       Message.success(`Uploaded ${uploadedPaths.length} file(s)`);
     } catch (error) {
-      console.error('Upload failed:', error);
+      log.error({ err: error }, 'Upload failed');
       Message.error(error instanceof Error ? error.message : 'Upload failed');
     } finally {
       setUploading(false);
@@ -195,7 +198,7 @@ const DirectorySelectionModal: React.FC<DirectorySelectionModalProps> = ({ visib
           multiple
           className='hidden'
           onChange={(e) => {
-            handleFileChange(e).catch(console.error);
+            handleFileChange(e).catch((err) => log.error({ err }, 'Failed to handle file change'));
           }}
         />
       )}
