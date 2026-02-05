@@ -5,12 +5,7 @@
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "explicit"
   },
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact"
-  ],
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
   "typescript.preferences.importModuleSpecifier": "relative",
   "typescript.suggest.autoImports": true,
   "typescript.updateImportsOnFileMove.enabled": "always",
@@ -21,16 +16,5 @@
   "emmet.includeLanguages": {
     "typescript": "html",
     "typescriptreact": "html"
-  },
-  "i18n-ally.localesPaths": [
-    "src/renderer/i18n/locales"
-  ],
-  "i18n-ally.enabledFrameworks": [
-    "i18next"
-  ],
-  "i18n-ally.keystyle": "nested",
-  "i18n-ally.sourceLanguage": "en-US",
-  "i18n-ally.displayLanguage": "en-US",
-  "i18n-ally.pathMatcher": "{locale}.json",
-  "i18n-ally.namespace": false
+  }
 }
