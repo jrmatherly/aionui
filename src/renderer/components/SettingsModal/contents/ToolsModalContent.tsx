@@ -18,6 +18,9 @@ import { Down, Help, Plus } from '@icon-park/react';
 import classNames from 'classnames';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSettingsViewMode } from '../settingsViewContext';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('ToolsModalContent');
 
 type MessageInstance = ReturnType<typeof Message.useMessage>[0];
 
@@ -113,7 +116,7 @@ const ModalMcpManagementSection: React.FC<{ message: MessageInstance; isPageMode
           setDetectedAgents(response.data.map((agent) => ({ backend: agent.backend, name: agent.name })));
         }
       } catch (error) {
-        console.error('Failed to load agents:', error);
+        log.error({ err: error }, 'Failed to load agents');
       }
     };
     void loadAgents();
@@ -249,14 +252,14 @@ const ToolsModalContent: React.FC = () => {
           setImageGenerationModel(data);
         }
       } catch (error) {
-        console.error('Failed to load image generation model config:', error);
+        log.error({ err: error }, 'Failed to load image generation model config');
       }
 
       try {
         const config = await ConfigStorage.get('acp.config');
         setClaudeYoloMode(Boolean(config?.claude?.yoloMode));
       } catch (error) {
-        console.error('Failed to load ACP config:', error);
+        log.error({ err: error }, 'Failed to load ACP config');
       }
     };
 
@@ -277,12 +280,12 @@ const ToolsModalContent: React.FC = () => {
 
       setImageGenerationModel(updatedModel);
       ConfigStorage.set('tools.imageGenerationModel', updatedModel).catch((error) => {
-        console.error('Failed to save image generation model config:', error);
+        log.error({ err: error }, 'Failed to save image generation model config');
       });
     } else if (!currentProvider) {
       setImageGenerationModel(undefined);
       ConfigStorage.remove('tools.imageGenerationModel').catch((error) => {
-        console.error('Failed to remove image generation model config:', error);
+        log.error({ err: error }, 'Failed to remove image generation model config');
       });
     }
   }, [data, imageGenerationModel?.id, imageGenerationModel?.apiKey]);
@@ -291,7 +294,7 @@ const ToolsModalContent: React.FC = () => {
     setImageGenerationModel((prev) => {
       const newImageGenerationModel = { ...prev, ...value };
       ConfigStorage.set('tools.imageGenerationModel', newImageGenerationModel).catch((error) => {
-        console.error('Failed to update image generation model config:', error);
+        log.error({ err: error }, 'Failed to update image generation model config');
       });
       return newImageGenerationModel;
     });
@@ -310,7 +313,7 @@ const ToolsModalContent: React.FC = () => {
       };
       await ConfigStorage.set('acp.config', nextConfig);
     } catch (error) {
-      console.error('Failed to update ACP config:', error);
+      log.error({ err: error }, 'Failed to update ACP config');
     }
   };
 
