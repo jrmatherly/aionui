@@ -76,6 +76,55 @@ When `INSTALL_*` build args are `true`, the Dockerfile copies Node.js from the c
 
 **`mise run docker:build` reads `INSTALL_*` flags from `deploy/docker/.env`** and passes them as `--build-arg` flags. This matches `docker compose build` behavior. Without this, all `INSTALL_*` ARGs default to `false` in the Dockerfile, and Node.js is stripped from the runtime image.
 
+## Pino Logging Externalization
+
+Pino and all transport modules are **webpack externals** — they must NOT be webpack-bundled:
+
+### Why
+
+Pino's `package.json` has `"browser": "./browser.js"` which is a console.log wrapper with NO transport support. Even with `target: 'electron-main'`, webpack can resolve this browser field, silently replacing real pino with a shim that ignores all transports.
+
+Additionally, pino transports run in worker threads via `thread-stream`. Workers do `require(target)` which can't resolve modules from inside a webpack bundle or asar archive.
+
+### Externalized packages
+
+All of these are in `config/webpack/webpack.config.ts` `externals` AND `electron-builder.yml` `files`:
+
+| Core                                                                                                                                                                                                          | Transports                          | Transport deps                                                                                                                                                                                                                                                                                        |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| pino, pino-std-serializers, thread-stream, real-require, sonic-boom, on-exit-leak-free, @pinojs/redact, safe-stable-stringify, atomic-sleep, process-warning, quick-format-unescaped, pino-abstract-transport | pino-pretty, pino-roll, pino-syslog | colorette, dateformat, fast-copy, fast-safe-stringify, help-me, joycon, minimist, pump, secure-json-parse, strip-json-comments, fast-json-parse, luxon, nopt, split2, through2, date-fns, readable-stream, end-of-stream, once, abbrev, wrappy, inherits, string_decoder, safe-buffer, util-deprecate |
+
+### Transport resolution
+
+`src/common/logger.ts` uses `require.resolve()` to convert transport names to absolute paths before passing to pino. This ensures worker threads can always load transports regardless of working directory or module resolution context.
+
+### Renderer is separate
+
+The renderer webpack config does NOT externalize pino — it correctly uses pino's browser build (`pino/browser.js`) for console-based logging in the browser context. The renderer logger is at `src/renderer/utils/logger.ts`.
+
+## CI Build Pipeline (Dockerfile.package)
+
+Two Dockerfiles exist:
+
+| File                 | Purpose                                         | When to use                                |
+| -------------------- | ----------------------------------------------- | ------------------------------------------ |
+| `Dockerfile`         | Full build (npm ci + Forge + builder + runtime) | Local dev, self-contained builds           |
+| `Dockerfile.package` | Packaging only (COPY pre-built + runtime)       | CI (pre-compiled by GitHub Actions runner) |
+
+`Dockerfile.package` expects `out/linux-unpacked/` in the build context (pre-built by `electron-forge package` + `electron-builder --linux dir` in the CI compile step).
+
+`Dockerfile.package.dockerignore` allows `out/` through (unlike root `.dockerignore` which excludes it).
+
+## Webpack Filesystem Cache
+
+Both main and renderer webpack configs use `cache: { type: 'filesystem' }`:
+
+- Cache stored in `.webpack-cache/` (gitignored)
+- Separate directories: `.webpack-cache/main/` and `.webpack-cache/renderer/`
+- `buildDependencies` tracks config files for automatic invalidation
+- In Docker: mounted as BuildKit cache (`--mount=type=cache,target=/app/.webpack-cache`)
+- In CI: persisted via `actions/cache` keyed on source hash
+
 ## docker-compose vs docker build Image Naming
 
 - **docker-compose auto-names images** as `<project>-<service>` (e.g., `docker-aionui`) when using `build:` without `image:`

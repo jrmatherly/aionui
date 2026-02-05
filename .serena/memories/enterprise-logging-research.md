@@ -106,6 +106,12 @@ Automatically instruments:
 3. HTTP request/response logging (after auth — includes userId)
 ```
 
+## Webpack Integration
+
+**Pino MUST be externalized from webpack.** See `docker-packaging-constraints.md` for full details.
+
+Summary: Pino's `"browser"` field in `package.json` causes webpack to load a console.log shim with zero transport support. All pino packages are in `config/webpack/webpack.config.ts` `externals` and `electron-builder.yml` `files`. Transport paths use `require.resolve()` for asar/worker-thread compatibility. The renderer webpack config does NOT externalize pino (it correctly uses the browser build).
+
 ## Patterns
 
 ### Creating a new component logger

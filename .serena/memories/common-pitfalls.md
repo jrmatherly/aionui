@@ -155,3 +155,17 @@ When adding a migration, bump `CURRENT_DB_VERSION` in `src/process/database/sche
 ### DATABASE_URL format varies by driver
 
 SQLAlchemy async: `postgresql+asyncpg://`, node-postgres: `postgresql://`. Don't mix.
+
+## Webpack / Electron Packaging
+
+### Pino must be externalized from webpack
+
+Pino has `"browser": "./browser.js"` in package.json — a console.log shim with NO transport/file/worker support. Webpack can resolve the browser build even with `target: 'electron-main'`, silently breaking all logging. Fix: add pino + all transport deps to `externals` in `config/webpack/webpack.config.ts` AND to `files` in `electron-builder.yml`. See `docker-packaging-constraints.md`.
+
+### Packages with browser field need verification
+
+Any npm package with a `"browser"` field may have its Node.js code replaced by a browser shim in webpack. Check with `node -e "console.log(require('<pkg>/package.json').browser)"`. Known safe: `ws` (throws error), `mammoth`/`turndown` (object maps), `@opentelemetry/*` (object maps). Known dangerous: `pino` (string redirect).
+
+### Transport modules need require.resolve()
+
+Pino transports run in worker threads via `thread-stream`. Workers use `require(target)` which can't resolve short module names from inside asar/webpack contexts. Always use `require.resolve('pino-roll')` etc. to convert to absolute paths.

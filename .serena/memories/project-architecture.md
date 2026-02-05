@@ -74,6 +74,29 @@ SQLite with schema versioning (v17) and migrations in `src/process/database/`
 - **Langfuse** LLM observability — optional integration
 - **Admin UI** (`src/renderer/pages/admin/LoggingSettings.tsx`) — runtime config via REST API
 
+## Build & CI Architecture
+
+### Webpack
+
+- Main process: `config/webpack/webpack.config.ts` (target: `electron-main` via Forge)
+- Renderer: `config/webpack/webpack.renderer.config.ts` (target: `web`)
+- Both use **filesystem cache** (`.webpack-cache/`) for incremental rebuilds
+- Pino + all transports are **externalized** from main webpack (see `docker-packaging-constraints.md`)
+
+### Docker
+
+- `deploy/docker/Dockerfile` — Full build (npm ci + Forge + builder + runtime)
+- `deploy/docker/Dockerfile.package` — Packaging only (for CI pre-compiled artifacts)
+- `Dockerfile.package.dockerignore` — Allows `out/` through for pre-built artifacts
+
+### CI Pipeline (`build-and-release.yml`)
+
+3-job pipeline: **quality** → **compile** → **docker**
+
+- **compile** runs on CI runner with cached `node_modules` + webpack + Electron
+- **docker** uses `Dockerfile.package` (COPY pre-built app, no compilation)
+- Caches: node_modules (lockfile key), .webpack-cache (source hash key), Electron binary (version key)
+
 ## IPC Communication
 
 Secure contextBridge in `src/preload.ts`:
