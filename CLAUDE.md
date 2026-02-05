@@ -244,6 +244,10 @@ Do not add `🤖 Generated with Claude` or similar signatures to commits.
 - **oidcConfig.ts**: OIDC provider settings (issuer, client credentials, scopes)
 - **groupMappings.ts**: Map OIDC groups to roles (JSON or file-based)
 - Environment variables: `OIDC_ENABLED`, `OIDC_ISSUER`, `OIDC_CLIENT_ID`, etc.
+- **GLOBAL_MODELS**: JSON array to pre-configure shared models (synced to DB on startup)
+  ```json
+  [{ "platform": "openai", "name": "GPT-4", "api_key": "sk-xxx", "models": ["gpt-4", "gpt-4o"] }]
+  ```
 
 ---
 

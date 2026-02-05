@@ -58,6 +58,45 @@ Key methods:
 - `POST /api/models/global/:id/hide` — Hide a model
 - `POST /api/models/global/:id/unhide` — Unhide a model
 
+### Environment Variable Configuration
+
+**GLOBAL_MODELS** — JSON array to pre-configure shared models without using the UI.
+
+Synced to DB on every startup (upsert by name). Does not delete existing models.
+
+```bash
+GLOBAL_MODELS='[
+  {
+    "platform": "openai",
+    "name": "OpenAI GPT-4",
+    "api_key": "sk-xxx",
+    "models": ["gpt-4", "gpt-4-turbo", "gpt-4o"],
+    "base_url": "https://api.openai.com/v1"
+  },
+  {
+    "platform": "anthropic",
+    "name": "Anthropic Claude",
+    "api_key": "sk-ant-xxx",
+    "models": ["claude-3-opus-20240229", "claude-3-sonnet-20240229"]
+  }
+]'
+```
+
+**Schema:**
+
+- `platform` (required): Provider ID (openai, anthropic, azure-openai, etc.)
+- `name` (required): Display name (used as unique key for upsert)
+- `models` (required): Array of model IDs
+- `api_key` (optional): API key (encrypted in DB)
+- `base_url` (optional): Custom API endpoint
+- `capabilities` (optional): e.g., ["vision", "function_calling"]
+- `context_limit` (optional): Token context limit
+- `custom_headers` (optional): Additional HTTP headers
+- `enabled` (optional, default: true)
+- `priority` (optional, default: 0): Sort order (higher = first)
+
+**Implementation:** `src/process/database/migrations/v16_add_global_models.ts` — `syncGlobalModelsFromEnv()`
+
 ### UI Components
 
 **Admin:**
