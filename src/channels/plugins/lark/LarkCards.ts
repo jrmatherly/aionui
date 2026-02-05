@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { getBrandName } from '@/common/branding';
 import type { ChannelAgentType } from '../../types';
 
 /**
@@ -94,7 +95,7 @@ export function createMainMenuCard(): LarkCard {
   return {
     config: { wide_screen_mode: true },
     header: {
-      title: { tag: 'plain_text', content: 'AionUi Assistant' },
+      title: { tag: 'plain_text', content: `${getBrandName()} Assistant` },
       template: 'blue',
     },
     elements: [
@@ -154,7 +155,7 @@ export function createPairingCard(pairingCode: string): LarkCard {
     elements: [
       {
         tag: 'markdown',
-        content: ['Please pair your account with AionUi:', '', `**Pairing Code:** \`${pairingCode}\``, '', '1. Open AionUi settings', '2. Go to Channels → Lark', '3. Enter this pairing code', '', 'Code expires in 10 minutes.'].join('\n'),
+        content: [`Please pair your account with ${getBrandName()}:`, '', `**Pairing Code:** \`${pairingCode}\``, '', `1. Open ${getBrandName()} settings`, '2. Go to Channels → Lark', '3. Enter this pairing code', '', 'Code expires in 10 minutes.'].join('\n'),
       },
       {
         tag: 'action',
@@ -191,7 +192,7 @@ export function createPairingStatusCard(pairingCode: string): LarkCard {
     elements: [
       {
         tag: 'markdown',
-        content: ['Your pairing request is pending approval.', '', `**Pairing Code:** \`${pairingCode}\``, '', 'Please approve in AionUi settings:', '1. Open AionUi app', '2. Go to WebUI → Channels', '3. Click "Approve" for this code'].join('\n'),
+        content: ['Your pairing request is pending approval.', '', `**Pairing Code:** \`${pairingCode}\``, '', `Please approve in ${getBrandName()} settings:`, `1. Open ${getBrandName()} app`, '2. Go to WebUI → Channels', '3. Click "Approve" for this code'].join('\n'),
       },
       {
         tag: 'action',
@@ -228,7 +229,7 @@ export function createPairingHelpCard(): LarkCard {
     elements: [
       {
         tag: 'markdown',
-        content: ['**What is pairing?**', 'Pairing links your Lark/Feishu account with the local AionUi application.', 'You need to pair before using the AI assistant.', '', '**How to pair:**', '1. Send any message to this bot', '2. You will receive a pairing code', '3. Open AionUi desktop app', '4. Go to WebUI → Channels → Lark', '5. Click "Approve" for your code', '', '**FAQ:**', '• Pairing code valid for 10 minutes', '• AionUi app must be running', '• One account can only pair once'].join('\n'),
+        content: ['**What is pairing?**', `Pairing links your Lark/Feishu account with the local ${getBrandName()} application.`, 'You need to pair before using the AI assistant.', '', '**How to pair:**', '1. Send any message to this bot', '2. You will receive a pairing code', `3. Open ${getBrandName()} desktop app`, '4. Go to WebUI → Channels → Lark', '5. Click "Approve" for your code', '', '**FAQ:**', '• Pairing code valid for 10 minutes', `• ${getBrandName()} app must be running`, '• One account can only pair once'].join('\n'),
       },
       {
         tag: 'action',
@@ -361,13 +362,13 @@ export function createHelpCard(): LarkCard {
   return {
     config: { wide_screen_mode: true },
     header: {
-      title: { tag: 'plain_text', content: '❓ AionUi Assistant Help' },
+      title: { tag: 'plain_text', content: `❓ ${getBrandName()} Assistant Help` },
       template: 'turquoise',
     },
     elements: [
       {
         tag: 'markdown',
-        content: ['A remote assistant to interact with AionUi via Lark.', '', '**Common Actions:**', '• 🆕 New Chat - Start a new session', '• 🔄 Agent - Switch AI agent', '• 📊 Status - View current session status', '• ❓ Help - Show this help message', '', 'Send a message to chat with the AI assistant.'].join('\n'),
+        content: [`A remote assistant to interact with ${getBrandName()} via Lark.`, '', '**Common Actions:**', '• 🆕 New Chat - Start a new session', '• 🔄 Agent - Switch AI agent', '• 📊 Status - View current session status', '• ❓ Help - Show this help message', '', 'Send a message to chat with the AI assistant.'].join('\n'),
       },
       {
         tag: 'action',
@@ -444,7 +445,7 @@ export function createPairingGuideCard(): LarkCard {
     elements: [
       {
         tag: 'markdown',
-        content: ['**First-time Setup:**', '1. Send any message to the bot', '2. Bot displays pairing code', '3. Approve pairing in AionUi settings', '4. Ready to use after pairing', '', '**Notes:**', '• Pairing code valid for 10 minutes', '• AionUi app must be running', '• One Lark account can only pair once'].join('\n'),
+        content: ['**First-time Setup:**', '1. Send any message to the bot', '2. Bot displays pairing code', `3. Approve pairing in ${getBrandName()} settings`, '4. Ready to use after pairing', '', '**Notes:**', '• Pairing code valid for 10 minutes', `• ${getBrandName()} app must be running`, '• One Lark account can only pair once'].join('\n'),
       },
       {
         tag: 'action',
@@ -652,7 +653,7 @@ export function createSettingsCard(): LarkCard {
     elements: [
       {
         tag: 'markdown',
-        content: ['Channel settings need to be configured in the AionUi app.', '', 'Open AionUi → WebUI → Channels'].join('\n'),
+        content: [`Channel settings need to be configured in the ${getBrandName()} app.`, '', `Open ${getBrandName()} → WebUI → Channels`].join('\n'),
       },
       {
         tag: 'action',

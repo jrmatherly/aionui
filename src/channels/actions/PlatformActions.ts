@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { getBrandName } from '@/common/branding';
 import type { IActionContext, IActionResult, IRegisteredAction, ActionHandler } from './types';
 import { PlatformActionNames, createSuccessResponse, createErrorResponse } from './types';
 import { getPairingService } from '../pairing/PairingService';
@@ -85,7 +86,7 @@ export const handlePairingShow: ActionHandler = async (context) => {
 
     return createSuccessResponse({
       type: 'text',
-      text: ['🔗 <b>Device Pairing</b>', '', 'Please approve this pairing request in the AionUi app:', '', `<code>${code}</code>`, '', `⏱ Valid for: ${expiresInMinutes} minutes`, '', '<b>Steps:</b>', '1. Open AionUi app', '2. Go to WebUI → Channels', '3. Click "Approve" in pending pairing requests'].join('\n'),
+      text: ['🔗 <b>Device Pairing</b>', '', `Please approve this pairing request in the ${getBrandName()} app:`, '', `<code>${code}</code>`, '', `⏱ Valid for: ${expiresInMinutes} minutes`, '', '<b>Steps:</b>', `1. Open ${getBrandName()} app`, '2. Go to WebUI → Channels', '3. Click "Approve" in pending pairing requests'].join('\n'),
       parseMode: 'HTML',
       replyMarkup: getPairingCodeMarkup(platform, code),
     });
@@ -119,7 +120,7 @@ export const handlePairingRefresh: ActionHandler = async (context) => {
 
     return createSuccessResponse({
       type: 'text',
-      text: ['🔄 <b>New Pairing Code</b>', '', `<code>${code}</code>`, '', `⏱ Valid for: ${expiresInMinutes} minutes`, '', 'Please approve this pairing request in AionUi settings.'].join('\n'),
+      text: ['🔄 <b>New Pairing Code</b>', '', `<code>${code}</code>`, '', `⏱ Valid for: ${expiresInMinutes} minutes`, '', `Please approve this pairing request in ${getBrandName()} settings.`].join('\n'),
       parseMode: 'HTML',
       replyMarkup: getPairingCodeMarkup(platform, code),
     });
@@ -153,7 +154,7 @@ export const handlePairingCheck: ActionHandler = async (context) => {
 
     return createSuccessResponse({
       type: 'text',
-      text: ['⏳ <b>Waiting for Approval</b>', '', `Pairing code: <code>${pendingRequest.code}</code>`, `Time remaining: ${expiresInMinutes} minutes`, '', 'Please approve the pairing request in AionUi settings.'].join('\n'),
+      text: ['⏳ <b>Waiting for Approval</b>', '', `Pairing code: <code>${pendingRequest.code}</code>`, `Time remaining: ${expiresInMinutes} minutes`, '', `Please approve the pairing request in ${getBrandName()} settings.`].join('\n'),
       parseMode: 'HTML',
       replyMarkup: getPairingStatusMarkup(platform, pendingRequest.code),
     });
@@ -172,7 +173,7 @@ export const handlePairingHelp: ActionHandler = async (context) => {
 
   return createSuccessResponse({
     type: 'text',
-    text: ['❓ <b>Pairing Help</b>', '', '<b>What is pairing?</b>', `Pairing links your ${platformName} account with the local AionUi application.`, 'You need to pair before using the AI assistant.', '', '<b>Pairing steps:</b>', '1. Get pairing code (send any message)', '2. Open AionUi app', '3. Go to WebUI → Channels', '4. Click "Approve" in pending requests', '', '<b>FAQ:</b>', '• Pairing code valid for 10 minutes, refresh if expired', '• AionUi app must be running', '• Ensure network connection is stable'].join('\n'),
+    text: ['❓ <b>Pairing Help</b>', '', '<b>What is pairing?</b>', `Pairing links your ${platformName} account with the local ${getBrandName()} application.`, 'You need to pair before using the AI assistant.', '', '<b>Pairing steps:</b>', '1. Get pairing code (send any message)', `2. Open ${getBrandName()} app`, '3. Go to WebUI → Channels', '4. Click "Approve" in pending requests', '', '<b>FAQ:</b>', '• Pairing code valid for 10 minutes, refresh if expired', `• ${getBrandName()} app must be running`, '• Ensure network connection is stable'].join('\n'),
     parseMode: 'HTML',
     replyMarkup: getPairingHelpMarkup(platform),
   });

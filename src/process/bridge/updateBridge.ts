@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { getGitHubRepo } from '@/common/branding';
+import { getBrandName, getGitHubRepo } from '@/common/branding';
 import { ipcBridge } from '@/common';
 import type { GitHubReleaseAsset, UpdateCheckResult, UpdateDownloadProgressEvent, UpdateDownloadRequest, UpdateDownloadResult, UpdateReleaseInfo } from '@/common/updateTypes';
 import { uuid } from '@/common/utils';
@@ -32,7 +32,7 @@ type GitHubReleaseApi = {
 };
 
 const DEFAULT_REPO = getGitHubRepo();
-const DEFAULT_USER_AGENT = 'AionUi';
+const DEFAULT_USER_AGENT = getBrandName();
 const ALLOWED_ASSET_EXTS = ['.exe', '.msi', '.dmg', '.zip', '.AppImage', '.deb', '.rpm'];
 const ALLOWED_DOWNLOAD_HOSTS = new Set<string>(['github.com', 'objects.githubusercontent.com', 'github-releases.githubusercontent.com', 'release-assets.githubusercontent.com']);
 const MAX_REDIRECTS = 8;
@@ -227,7 +227,7 @@ const sanitizeFileName = (name: string): string => {
   // Keep only base name and trim weird whitespace.
   const base = path.basename(name).trim();
   // Avoid empty names.
-  return base || `AionUi-update-${Date.now()}`;
+  return base || `${getBrandName()}-update-${Date.now()}`;
 };
 
 const ensureUniquePath = (target: string): string => {

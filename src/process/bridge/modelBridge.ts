@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { getBrandName } from '@/common/branding';
 import type { IProvider } from '@/common/storage';
 import { uuid } from '@/common/utils';
 import { getProtocolDisplayName, guessProtocolFromKey, guessProtocolFromUrl, maskApiKey, normalizeBaseUrl, parseApiKeys, removeApiPathSuffix, type MultiKeyTestResult, type ProtocolDetectionRequest, type ProtocolDetectionResponse, type ProtocolType } from '@/common/utils/protocolDetector';
@@ -92,7 +93,7 @@ export function initModelBridge(): void {
       apiKey: actualApiKey,
       // Use custom User-Agent to avoid some API proxies (like packyapi) blocking OpenAI SDK's default User-Agent
       defaultHeaders: {
-        'User-Agent': 'AionUI/1.0',
+        'User-Agent': `${getBrandName()}/1.0`,
         ...(custom_headers || {}),
       },
     });

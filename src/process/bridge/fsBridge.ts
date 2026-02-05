@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { getGitHubUrls } from '@/common/branding';
+import { getBrandName, getGitHubUrls } from '@/common/branding';
 import { AIONUI_TIMESTAMP_SEPARATOR } from '@/common/constants';
 import { fsLogger as log } from '@/common/logger';
 import { app } from 'electron';
@@ -228,7 +228,7 @@ export function initFsBridge(): void {
           targetUrl,
           {
             headers: {
-              'User-Agent': 'AionUI-Preview',
+              'User-Agent': `${getBrandName()}-Preview`,
               Referer: getGitHubUrls().repo,
             },
           },
