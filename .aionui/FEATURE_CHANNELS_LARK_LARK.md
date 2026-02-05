@@ -418,13 +418,15 @@ interface LarkPluginConfig {
 
 - [ ] macOS runs normally
 - [ ] Windows runs normally
-- [ ] Multi-language support
+- [ ] Linux/Docker runs normally
 
 ---
 
 ## Template Maintenance
 
 - **Creation Date**: 2026-01-30
-- **Last Update**: 2026-01-30
-- **Applicable Version**: AionUi v0.x+
+- **Last Update**: 2026-02-05
+- **Applicable Version**: AionUi v1.8.2+
 - **Maintainer**: Project Team
+
+**Note**: Application is English-only (i18n removed).

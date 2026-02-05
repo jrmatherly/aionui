@@ -944,7 +944,8 @@ src/channels/
 
 - [x] macOS runs normally
 - [x] Windows runs normally
-- [x] Multi-language support (i18n)
+- [x] Linux/Docker runs normally
+- [x] English UI (i18n removed)
 
 ---
 
@@ -967,8 +968,8 @@ src/channels/
 ## Template Maintenance
 
 - **Creation Date**: 2025-01-27
-- **Last Update**: 2026-02-03
-- **Applicable Version**: AionUi v1.7.8+
+- **Last Update**: 2026-02-05
+- **Applicable Version**: AionUi v1.8.2+
 - **Maintainer**: Project Team
 
 ---

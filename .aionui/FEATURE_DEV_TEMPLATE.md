@@ -43,21 +43,21 @@ Result: [State after feature completes]
 - **CSS**: UnoCSS atomic styles
 - **State Management**: React Context (AuthContext / ConversationContext / ThemeContext / LayoutContext)
 - **IPC Communication**: @office-ai/platform bridge system
-- **Internationalization**: i18next + react-i18next
 - **Database**: better-sqlite3
+- **Language**: English only (no i18n)
 
 ### 2.2 Naming Conventions
 
-| Type           | Convention             | Example                                         |
-| -------------- | ---------------------- | ----------------------------------------------- |
-| React Component| PascalCase             | `MessageList.tsx`, `FilePreview.tsx`            |
-| Hooks          | use prefix + PascalCase| `useAutoScroll.ts`, `useColorScheme.ts`         |
-| Bridge File    | featureName + Bridge   | `conversationBridge.ts`, `databaseBridge.ts`    |
-| Service File   | featureName + Service  | `WebuiService.ts`                               |
-| Interface Type | I prefix               | `ICreateConversationParams`, `IResponseMessage` |
-| Type Alias     | T prefix or direct     | `TChatConversation`, `PresetAgentType`          |
-| Constants      | UPPER_SNAKE_CASE       | `MAX_RETRY_COUNT`                               |
-| Utility Functions | camelCase           | `formatMessage`, `parseResponse`                |
+| Type              | Convention              | Example                                         |
+| ----------------- | ----------------------- | ----------------------------------------------- |
+| React Component   | PascalCase              | `MessageList.tsx`, `FilePreview.tsx`            |
+| Hooks             | use prefix + PascalCase | `useAutoScroll.ts`, `useColorScheme.ts`         |
+| Bridge File       | featureName + Bridge    | `conversationBridge.ts`, `databaseBridge.ts`    |
+| Service File      | featureName + Service   | `WebuiService.ts`                               |
+| Interface Type    | I prefix                | `ICreateConversationParams`, `IResponseMessage` |
+| Type Alias        | T prefix or direct      | `TChatConversation`, `PresetAgentType`          |
+| Constants         | UPPER_SNAKE_CASE        | `MAX_RETRY_COUNT`                               |
+| Utility Functions | camelCase               | `formatMessage`, `parseResponse`                |
 
 ### 2.3 File Location Guidelines
 
@@ -70,36 +70,52 @@ src/
 │   ├── codex/                    # Codex agent
 │   └── gemini/                   # Gemini agent
 │
+├── channels/                     # External channel plugins
+│   ├── core/                     # Core managers (ChannelManager, SessionManager)
+│   ├── gateway/                  # Plugin lifecycle, action routing
+│   ├── plugins/                  # Platform plugins (telegram, lark)
+│   ├── actions/                  # System/Chat/Platform actions
+│   ├── agent/                    # Channel event bus, message service
+│   ├── pairing/                  # Pairing code service
+│   └── utils/                    # Credential encryption, etc.
+│
 ├── common/                       # Cross-process shared modules
-│   ├── adapters/                 # API adapters
+│   ├── adapters/                 # API adapters (OpenAI, Anthropic, Gemini)
+│   ├── presets/                  # Assistant presets
 │   ├── types/                    # Shared type definitions
 │   └── utils/                    # Shared utility functions
 │
 ├── process/                      # Electron main process
 │   ├── bridge/                   # IPC bridge definitions (24+)
 │   ├── database/                 # SQLite database operations
+│   │   └── migrations/           # Database migrations
 │   ├── services/                 # Business logic services
-│   └── task/                     # Task management
+│   └── task/                     # Agent task management
 │
 ├── renderer/                     # React renderer process
+│   ├── assets/                   # Static assets (logos, images)
 │   ├── components/               # Reusable UI components
 │   │   └── base/                 # Base components
+│   ├── config/                   # Model platforms, capabilities
 │   ├── context/                  # React Context state
-│   ├── hooks/                    # Custom Hooks (31+)
+│   ├── hooks/                    # Custom Hooks (26+)
 │   ├── pages/                    # Page components
 │   │   ├── conversation/         # Conversation page
 │   │   │   ├── preview/          # Preview panel
 │   │   │   └── workspace/        # Workspace
 │   │   ├── settings/             # Settings pages (12+)
+│   │   ├── admin/                # Admin pages (UserManagement, GroupMappings)
 │   │   └── login/                # Login page
 │   ├── messages/                 # Message rendering components
-│   ├── i18n/locales/             # Internationalization text
 │   ├── services/                 # Frontend services
+│   ├── styles/                   # CSS themes and overrides
 │   └── utils/                    # Frontend utility functions
 │
 ├── webserver/                    # Web server (WebUI mode)
+│   ├── auth/                     # Authentication (OIDC, JWT, RBAC)
 │   ├── routes/                   # API routes
-│   └── middleware/               # Middleware
+│   ├── middleware/               # Security middleware
+│   └── websocket/                # WebSocket manager
 │
 ├── worker/                       # Web Worker
 │
@@ -110,35 +126,36 @@ src/
 
 ```json
 {
-  "semi": true,              // Use semicolons
-  "singleQuote": true,       // Use single quotes
-  "jsxSingleQuote": true,    // JSX uses single quotes
-  "trailingComma": "es5",    // ES5-compatible trailing commas
-  "tabWidth": 2,             // 2-space indentation
-  "useTabs": false,          // Don't use tabs
-  "bracketSpacing": true,    // Spaces inside brackets
-  "arrowParens": "always",   // Always use parentheses for arrow functions
-  "endOfLine": "lf"          // Unix line endings
+  "semi": true, // Use semicolons
+  "singleQuote": true, // Use single quotes
+  "jsxSingleQuote": true, // JSX uses single quotes
+  "trailingComma": "es5", // ES5-compatible trailing commas
+  "tabWidth": 2, // 2-space indentation
+  "useTabs": false, // Don't use tabs
+  "bracketSpacing": true, // Spaces inside brackets
+  "arrowParens": "always", // Always use parentheses for arrow functions
+  "endOfLine": "lf" // Unix line endings
 }
 ```
 
 ### 2.5 Quality Requirements
 
-- [ ] Complete TypeScript types, avoid using `any`
-- [ ] Use bridge system for IPC communication
-- [ ] Implement error boundary handling
-- [ ] Support internationalization (use i18next `t()` function)
-- [ ] Dark/light theme compatibility
-- [ ] Responsive layout adaptation
+- [x] Complete TypeScript types, avoid using `any`
+- [x] Use bridge system for IPC communication
+- [x] Implement error boundary handling
+- [x] Use hardcoded English strings (no i18n)
+- [x] Dark/light theme compatibility
+- [x] Responsive layout adaptation
+- [x] Support both Electron and Web (Docker) modes
 
 ### 2.6 Prohibited Practices
 
 - ❌ Direct use of `ipcMain` / `ipcRenderer`, must use bridge system
 - ❌ Direct access to Node.js API in renderer process
-- ❌ Hardcoded Chinese/English text, must use i18n keys
 - ❌ Inline styles, should use UnoCSS class names
 - ❌ Direct DOM manipulation in components, use React ref
 - ❌ Ignoring TypeScript errors (`@ts-ignore`)
+- ❌ Using `shell.openExternal` in web mode (use `window.open` instead)
 
 ---
 
@@ -151,7 +168,7 @@ src/
 │                    User Interface (UI)                   │
 │  React Components / Hooks / Context                      │
 └─────────────────────┬───────────────────────────────────┘
-                      │ IPC Bridge
+                      │ IPC Bridge (@office-ai/platform)
 ┌─────────────────────▼───────────────────────────────────┐
 │                   Main Process (Main)                    │
 │  Bridge → Service → Database / External API              │
@@ -159,7 +176,7 @@ src/
                       │
 ┌─────────────────────▼───────────────────────────────────┐
 │                    Data Layer (Data)                     │
-│  SQLite / LocalStorage / External Services               │
+│  SQLite / ConfigStorage / External Services              │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -167,27 +184,27 @@ src/
 
 **Main Process (src/process/)**
 
-| File Path | Operation           | Description |
-| --------- | ------------------- | ----------- |
-|           | [ ] Add / [ ] Modify|             |
+| File Path | Operation            | Description |
+| --------- | -------------------- | ----------- |
+|           | [ ] Add / [ ] Modify |             |
 
 **Renderer Process (src/renderer/)**
 
-| File Path | Operation           | Description |
-| --------- | ------------------- | ----------- |
-|           | [ ] Add / [ ] Modify|             |
+| File Path | Operation            | Description |
+| --------- | -------------------- | ----------- |
+|           | [ ] Add / [ ] Modify |             |
 
 **Shared Modules (src/common/)**
 
-| File Path | Operation           | Description |
-| --------- | ------------------- | ----------- |
-|           | [ ] Add / [ ] Modify|             |
+| File Path | Operation            | Description |
+| --------- | -------------------- | ----------- |
+|           | [ ] Add / [ ] Modify |             |
 
 **Type Definitions (src/types/)**
 
-| File Path | Operation           | Description |
-| --------- | ------------------- | ----------- |
-|           | [ ] Add / [ ] Modify|             |
+| File Path | Operation            | Description |
+| --------- | -------------------- | ----------- |
+|           | [ ] Add / [ ] Modify |             |
 
 ### 3.3 IPC Communication Design
 
@@ -195,7 +212,7 @@ When adding new IPC channels, follow this pattern:
 
 ```typescript
 // src/process/bridge/[feature]Bridge.ts
-import { bridge } from '@anthropic/platform';
+import { bridge } from '@office-ai/platform';
 
 export const [featureName] = {
   // Provider pattern: request-response (similar to HTTP request)
@@ -206,37 +223,16 @@ export const [featureName] = {
 };
 
 // Usage example:
-// Renderer process call: const result = await [featureName].[methodName].request(params);
+// Renderer process call: const result = await [featureName].[methodName].invoke(params);
 // Renderer process listen: [featureName].[eventName].on((data) => { ... });
 ```
 
 ### 3.4 State Management Design
 
-- [ ] Use existing Context: ____________
-- [ ] Need to add Context: ____________
+- [ ] Use existing Context: ****\_\_\_\_****
+- [ ] Need to add Context: ****\_\_\_\_****
 - [ ] Component-internal state only (useState/useReducer)
-- [ ] Requires persistent storage
-
-### 3.5 Internationalization Key Design
-
-```json
-// Add to src/renderer/i18n/locales/[lang].json
-// Key naming convention: [module].[feature].[description]
-
-{
-  "conversation.export.title": "Export Conversation",
-  "conversation.export.success": "Export Successful",
-  "conversation.export.error": "Export Failed"
-}
-```
-
-**Supported language files:**
-
-- `zh-CN.json` - Simplified Chinese (required)
-- `en-US.json` - English (required)
-- `zh-TW.json` - Traditional Chinese
-- `ja-JP.json` - Japanese
-- `ko-KR.json` - Korean
+- [ ] Requires persistent storage (ConfigStorage)
 
 ---
 
@@ -257,9 +253,10 @@ export const [featureName] = {
 
 - [ ] macOS runs normally
 - [ ] Windows runs normally
+- [ ] Linux/Docker runs normally
 - [ ] Dark mode displays correctly
 - [ ] Light mode displays correctly
-- [ ] Multi-language switching works
+- [ ] Works in both Electron and Web modes
 
 ### 4.4 Code Quality
 
@@ -349,10 +346,10 @@ Result: Save dialog appears, user selects save location and PDF file is generate
 
 ### 5.1 Similar Feature References
 
-| Feature           | File Path                                              | Description            |
-| ----------------- | ------------------------------------------------------ | ---------------------- |
-| Markdown Export   | src/renderer/hooks/useExportMarkdown.ts                | Reference export flow  |
-| PDF Preview       | src/renderer/pages/conversation/preview/PdfViewer.tsx  | Reference PDF handling |
+| Feature         | File Path                                             | Description            |
+| --------------- | ----------------------------------------------------- | ---------------------- |
+| Markdown Export | src/renderer/hooks/useExportMarkdown.ts               | Reference export flow  |
+| PDF Preview     | src/renderer/pages/conversation/preview/PdfViewer.tsx | Reference PDF handling |
 ```
 
 ---
@@ -360,7 +357,8 @@ Result: Save dialog appears, user selects save location and PDF file is generate
 ## Template Maintenance
 
 - **Created**: 2025-01-27
-- **Applicable Version**: AionUi v0.x+
-- **Maintainer**: [Project Team]
+- **Last Updated**: 2026-02-05
+- **Applicable Version**: AionUi v1.8.2+
+- **Maintainer**: Project Team
 
 If the template needs to be updated, please modify this file and notify team members.
