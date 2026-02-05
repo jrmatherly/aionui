@@ -41,7 +41,9 @@ RUN npm install -g npm@${NPM_VERSION}
 COPY package*.json ./
 
 # Install dependencies (--ignore-scripts: native modules rebuilt by Forge later)
-RUN npm ci --ignore-scripts
+# Mount npm cache for faster repeat installs across builds
+RUN --mount=type=cache,target=/root/.npm,sharing=locked \
+    npm ci --ignore-scripts
 
 # Copy source code and build configuration
 COPY . .
@@ -92,12 +94,21 @@ RUN echo "=== Build verification ===" && \
 # Stage 2: CLI Installer (Multi-Agent Mode)
 # Installs ALL CLI tools for multi-agent orchestration.
 # All tools are baked into the image; runtime env vars control which are enabled.
-# Uses the builder stage's Node.js + npm to install npm-based CLIs.
+#
+# IMPORTANT: Uses a fresh node base instead of FROM builder so this stage
+# builds in PARALLEL with the builder and is cached independently of source
+# changes. Only a package-lock.json or Node version change invalidates it.
 # -----------------------------------------------------------------------------
-FROM builder AS cli-installer
+FROM node:${NODE_VERSION}-bookworm-slim AS cli-installer
+
+ARG NPM_VERSION=11.9.0
+RUN npm install -g npm@${NPM_VERSION}
 
 # Install ALL CLI tools globally (no conditionals - always baked in)
-RUN echo "📦 Installing Multi-Agent CLI tools..." && \
+# Combined into a single RUN to minimize layers and maximize cache hits.
+# Mount npm cache so repeated builds don't re-download packages.
+RUN --mount=type=cache,target=/root/.npm,sharing=locked \
+    echo "📦 Installing Multi-Agent CLI tools..." && \
     npm install -g @anthropic-ai/claude-code && \
     npm install -g @qwen-code/qwen-code && \
     npm install -g @openai/codex && \

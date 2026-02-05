@@ -126,6 +126,13 @@ jobs:
           cache: true
           experimental: true
 
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-quality-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-quality-
+
       - name: Install dependencies
         run: npm ci
 
@@ -201,8 +208,8 @@ jobs:
             NODE_VERSION=${{ steps.versions.outputs.node }}
             NPM_VERSION=${{ steps.versions.outputs.npm }}
             APP_VERSION=${{ steps.app.outputs.version }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=docker-amd64
+          cache-to: type=gha,mode=max,scope=docker-amd64
           platforms: linux/amd64
 
       - name: Build summary
