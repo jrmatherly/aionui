@@ -218,7 +218,7 @@ export class PluginManager {
     // Emit status change event
     this.emitStatusChange(pluginId, plugin);
 
-    console.log(`[PluginManager] Plugin ${pluginId} stopped`);
+    pluginLogger.info({ pluginId }, 'Plugin stopped');
   }
 
   /**
@@ -227,7 +227,7 @@ export class PluginManager {
   async stopAll(): Promise<void> {
     const stopPromises = Array.from(this.plugins.keys()).map((id) => this.stopPlugin(id));
     await Promise.allSettled(stopPromises);
-    console.log('[PluginManager] All plugins stopped');
+    pluginLogger.info('All plugins stopped');
   }
 
   /**
@@ -315,7 +315,7 @@ export class PluginManager {
    * Routes to the appropriate action handler
    */
   private async handleIncomingMessage(message: IUnifiedIncomingMessage): Promise<void> {
-    console.log(`[PluginManager] Received message from ${message.platform}: ${message.content.type}`);
+    pluginLogger.debug({ platform: message.platform, contentType: message.content.type }, 'Received message');
 
     // Update user activity
     this.sessionManager.updateSessionActivity(message.user.id);
@@ -332,14 +332,14 @@ export class PluginManager {
   async sendMessage(pluginId: string, chatId: string, message: import('../types').IUnifiedOutgoingMessage): Promise<string | null> {
     const plugin = this.plugins.get(pluginId);
     if (!plugin) {
-      console.error(`[PluginManager] Plugin ${pluginId} not found`);
+      pluginLogger.error({ pluginId }, 'Plugin not found');
       return null;
     }
 
     try {
       return await plugin.sendMessage(chatId, message);
     } catch (error) {
-      console.error(`[PluginManager] Failed to send message through ${pluginId}:`, error);
+      pluginLogger.error({ err: error, pluginId }, 'Failed to send message through plugin');
       return null;
     }
   }
@@ -350,7 +350,7 @@ export class PluginManager {
   async editMessage(pluginId: string, chatId: string, messageId: string, message: import('../types').IUnifiedOutgoingMessage): Promise<boolean> {
     const plugin = this.plugins.get(pluginId);
     if (!plugin) {
-      console.error(`[PluginManager] Plugin ${pluginId} not found`);
+      pluginLogger.error({ pluginId }, 'Plugin not found');
       return false;
     }
 
@@ -358,7 +358,7 @@ export class PluginManager {
       await plugin.editMessage(chatId, messageId, message);
       return true;
     } catch (error) {
-      console.error(`[PluginManager] Failed to edit message through ${pluginId}:`, error);
+      pluginLogger.error({ err: error, pluginId }, 'Failed to edit message through plugin');
       return false;
     }
   }
