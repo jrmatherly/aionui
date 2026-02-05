@@ -153,6 +153,7 @@ export class GlobalModelService {
       capabilities,
       contextLimit: model.context_limit,
       customHeaders: model.custom_headers,
+      isGlobal: true,
     };
   }
 

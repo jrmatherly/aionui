@@ -212,6 +212,12 @@ export interface IProvider {
    * additional headers for routing, authentication, or observability.
    */
   customHeaders?: Record<string, string>;
+  /**
+   * Whether this provider is an admin-managed global/shared model.
+   * Global models are read-only for users — no edit, delete, or API key access.
+   * Set automatically by GlobalModelService.getEffectiveModels().
+   */
+  isGlobal?: boolean;
 }
 
 export type TProviderWithModel = Omit<IProvider, 'model'> & { useModel: string };

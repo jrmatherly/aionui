@@ -14,7 +14,7 @@ import AddPlatformModal from '@/renderer/pages/settings/components/AddPlatformMo
 import EditModeModal from '@/renderer/pages/settings/components/EditModeModal';
 import { Button, Collapse, Divider, Message, Popconfirm, Tag, Tooltip } from '@arco-design/web-react';
 import { Copy, DeleteFour, Eyes, PreviewCloseOne, Info, Minus, Planet, Plus, Write } from '@icon-park/react';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import { useSettingsViewMode } from '../settingsViewContext';
 
@@ -48,6 +48,14 @@ const ModelModalContent: React.FC = () => {
       return data;
     });
   });
+
+  // Filter out global/shared models from user's local models
+  // Global models are tagged with isGlobal=true by getEffectiveModels()
+  // They already appear under "Organization Models" — don't duplicate in "Your Models"
+  const localModels = useMemo(() => {
+    if (!data) return [];
+    return data.filter((p) => !p.isGlobal);
+  }, [data]);
 
   // Fetch visible global models (web mode only)
   const { data: globalModels } = useSWR(isWebMode() ? globalCacheKey : null, async () => {
@@ -133,7 +141,8 @@ const ModelModalContent: React.FC = () => {
   };
 
   const updatePlatform = (platform: IProvider, success: () => void) => {
-    const newData = [...(data || [])];
+    // Only operate on local models — never save global models to local storage
+    const newData = [...localModels];
     const originData = newData.find((item) => item.id === platform.id);
     if (originData) {
       Object.assign(originData, platform);
@@ -144,7 +153,8 @@ const ModelModalContent: React.FC = () => {
   };
 
   const removePlatform = (id: string) => {
-    const newData = data.filter((item) => item.id !== id);
+    // Only operate on local models — never save global models to local storage
+    const newData = localModels.filter((item) => item.id !== id);
     saveModelConfig(newData);
   };
 
@@ -186,12 +196,12 @@ const ModelModalContent: React.FC = () => {
           id: `local-${globalModel.id}-${Date.now()}`,
           platform: globalModel.platform,
           name: `${globalModel.name} (Copy)`,
-          baseUrl: fullModel.baseUrl || '',
+          baseUrl: fullModel.base_url || '',
           apiKey: '', // User must provide their own key
           model: [...globalModel.models],
         };
 
-        const newData = [...(data || []), localCopy];
+        const newData = [...localModels, localCopy];
         saveModelConfig(newData, () => {
           message.success('Model copied - please add your API key');
           // Open edit modal for the new copy
@@ -201,7 +211,7 @@ const ModelModalContent: React.FC = () => {
         message.error('Failed to copy model');
       }
     },
-    [data, message, editModalCtrl, saveModelConfig]
+    [localModels, message, editModalCtrl, saveModelConfig]
   );
 
   return (
@@ -221,12 +231,12 @@ const ModelModalContent: React.FC = () => {
 
       {/* Content Area */}
       <AionScrollArea className='flex-1 min-h-0' disableOverflow={isPageMode}>
-        {/* Your Models Section */}
-        {data && data.length > 0 && (
+        {/* Your Models Section (local only — global models shown in Organization Models) */}
+        {localModels.length > 0 && (
           <>
             {isWebMode() && (globalModels?.length || hiddenModels?.length) ? <div className='text-12px text-t-secondary font-500 mb-12px uppercase tracking-wide'>{'Your Models'}</div> : null}
             <div className='space-y-12px'>
-              {data.map((platform) => {
+              {localModels.map((platform) => {
                 const key = platform.id;
                 const isExpanded = collapseKey[platform.id] ?? false;
                 return (
@@ -297,7 +307,7 @@ const ModelModalContent: React.FC = () => {
         )}
 
         {/* Empty state for local models */}
-        {(!data || data.length === 0) && (!globalModels || globalModels.length === 0) && (
+        {localModels.length === 0 && (!globalModels || globalModels.length === 0) && (
           <div className='flex flex-col items-center justify-center py-40px'>
             <Info theme='outline' size='48' className='text-t-secondary mb-16px' />
             <h3 className='text-16px font-500 text-t-primary mb-8px'>{'No configured models'}</h3>
