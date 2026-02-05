@@ -8,7 +8,7 @@
  */
 
 import { createLogger } from '@/renderer/utils/logger';
-import { Button, Card, Divider, Form, Input, InputNumber, Message, Select, Space, Switch } from '@arco-design/web-react';
+import { Button, Card, Form, Grid, Input, InputNumber, Message, Select, Switch, Typography } from '@arco-design/web-react';
 import { Check, Refresh } from '@icon-park/react';
 import React, { useCallback, useEffect, useState } from 'react';
 
@@ -16,6 +16,8 @@ const log = createLogger('LoggingSettings');
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const Row = Grid.Row;
+const Col = Grid.Col;
 
 interface LoggingConfig {
   log_level: string;
@@ -43,14 +45,19 @@ const LOG_LEVELS = ['trace', 'debug', 'info', 'warn', 'error', 'fatal', 'silent'
 const SYSLOG_PROTOCOLS = ['udp', 'tcp', 'tls'];
 const OTEL_PROTOCOLS = ['http', 'grpc'];
 
+/** Shared gutter for all grid rows */
+const GUTTER = 20;
+
 const LoggingSettings: React.FC = () => {
   const [form] = Form.useForm<LoggingConfig>();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [testingSyslog, setTestingSyslog] = useState(false);
-  const [message, messageContext] = Message.useMessage();
 
-  // Fetch current configuration
+  // NOTE: Use static Message.error/success instead of useMessage() hook.
+  // The hook returns a new reference each render which causes infinite
+  // re-fetch loops when used in useCallback dependency arrays.
+
   const fetchConfig = useCallback(async () => {
     try {
       setLoading(true);
@@ -61,21 +68,20 @@ const LoggingSettings: React.FC = () => {
       if (data.success) {
         form.setFieldsValue(data.config);
       } else {
-        message.error(data.error || 'Failed to fetch logging configuration');
+        Message.error(data.error || 'Failed to fetch logging configuration');
       }
     } catch (error) {
       log.error({ err: error }, 'Failed to fetch logging config');
-      message.error('Failed to fetch logging configuration');
+      Message.error('Failed to fetch logging configuration');
     } finally {
       setLoading(false);
     }
-  }, [form, message]);
+  }, [form]);
 
   useEffect(() => {
     void fetchConfig();
   }, [fetchConfig]);
 
-  // Save configuration
   const handleSave = async () => {
     try {
       await form.validate();
@@ -91,20 +97,19 @@ const LoggingSettings: React.FC = () => {
 
       const data = await response.json();
       if (data.success) {
-        message.success('Logging configuration updated successfully');
-        void fetchConfig(); // Refresh to show updated values
+        Message.success('Logging configuration updated successfully');
+        void fetchConfig();
       } else {
-        message.error(data.error || 'Failed to update configuration');
+        Message.error(data.error || 'Failed to update configuration');
       }
     } catch (error) {
       log.error({ err: error }, 'Failed to save logging config');
-      message.error('Failed to save configuration');
+      Message.error('Failed to save configuration');
     } finally {
       setSaving(false);
     }
   };
 
-  // Test syslog connectivity
   const handleTestSyslog = async () => {
     try {
       await form.validate(['syslog_host', 'syslog_port', 'syslog_protocol']);
@@ -124,22 +129,38 @@ const LoggingSettings: React.FC = () => {
 
       const data = await response.json();
       if (data.success) {
-        message.success(data.message || 'Syslog connectivity test successful');
+        Message.success(data.message || 'Syslog connectivity test successful');
       } else {
-        message.error(data.error || 'Syslog connectivity test failed');
+        Message.error(data.error || 'Syslog connectivity test failed');
       }
     } catch (error) {
       log.error({ err: error }, 'Syslog test failed');
-      message.error('Syslog connectivity test failed');
+      Message.error('Syslog connectivity test failed');
     } finally {
       setTestingSyslog(false);
     }
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '900px', margin: '0 auto' }}>
-      {messageContext}
-      <h2 style={{ marginBottom: '20px' }}>Logging Settings</h2>
+    <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <div>
+          <Typography.Title heading={4} style={{ margin: 0 }}>
+            Logging Settings
+          </Typography.Title>
+          <Typography.Text type='secondary' style={{ fontSize: '13px' }}>
+            Configure log levels, distributed tracing, SIEM forwarding, and LLM observability.
+          </Typography.Text>
+        </div>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <Button onClick={fetchConfig} disabled={loading || saving} icon={<Refresh />}>
+            Reset
+          </Button>
+          <Button type='primary' onClick={handleSave} loading={saving} disabled={loading}>
+            Save Configuration
+          </Button>
+        </div>
+      </div>
 
       <Form
         form={form}
@@ -161,215 +182,181 @@ const LoggingSettings: React.FC = () => {
           langfuse_host: 'https://cloud.langfuse.com',
         }}
       >
-        {/* Core Logging Settings */}
-        <Card title='Core Logging' bordered style={{ marginBottom: '20px' }}>
-          <FormItem label='Log Level' field='log_level' rules={[{ required: true, message: 'Log level is required' }]}>
-            <Select placeholder='Select log level' disabled={loading}>
-              {LOG_LEVELS.map((level) => (
-                <Option key={level} value={level}>
-                  {level.toUpperCase()}
-                </Option>
-              ))}
-            </Select>
-          </FormItem>
+        {/* Row 1: Core Logging + OpenTelemetry */}
+        <Row gutter={GUTTER} style={{ marginBottom: '20px' }}>
+          <Col xs={24} md={12}>
+            <Card title='Core Logging' bordered style={{ height: '100%' }}>
+              <FormItem label='Log Level' field='log_level' rules={[{ required: true, message: 'Log level is required' }]}>
+                <Select placeholder='Select log level' disabled={loading}>
+                  {LOG_LEVELS.map((level) => (
+                    <Option key={level} value={level}>
+                      {level.toUpperCase()}
+                    </Option>
+                  ))}
+                </Select>
+              </FormItem>
 
-          <FormItem
-            label='Retention Days'
-            field='retention_days'
-            rules={[
-              { required: true, message: 'Retention days is required' },
-              { type: 'number', min: 1, max: 365, message: 'Must be between 1 and 365' },
-            ]}
-          >
-            <InputNumber placeholder='Days to keep logs' min={1} max={365} style={{ width: '100%' }} disabled={loading} />
-          </FormItem>
-
-          <FormItem
-            label='Max Log File Size (MB)'
-            field='max_size_mb'
-            rules={[
-              { required: true, message: 'Max size is required' },
-              { type: 'number', min: 10, max: 10000, message: 'Must be between 10 and 10000' },
-            ]}
-          >
-            <InputNumber placeholder='Max file size in MB' min={10} max={10000} style={{ width: '100%' }} disabled={loading} />
-          </FormItem>
-        </Card>
-
-        {/* OpenTelemetry Settings */}
-        <Card title='OpenTelemetry (Distributed Tracing)' bordered style={{ marginBottom: '20px' }}>
-          <FormItem label='Enable OTEL' field='otel_enabled' triggerPropName='checked'>
-            <Switch disabled={loading} />
-          </FormItem>
-
-          <Form.Item noStyle shouldUpdate={(prev, next) => prev.otel_enabled !== next.otel_enabled}>
-            {(values) => {
-              const otelEnabled = values.otel_enabled;
-              return (
-                <>
+              <Row gutter={GUTTER}>
+                <Col span={12}>
                   <FormItem
-                    label='OTLP Endpoint'
-                    field='otel_endpoint'
+                    label='Retention Days'
+                    field='retention_days'
                     rules={[
-                      {
-                        required: otelEnabled,
-                        message: 'OTLP endpoint is required when OTEL is enabled',
-                      },
+                      { required: true, message: 'Required' },
+                      { type: 'number', min: 1, max: 365, message: '1–365' },
                     ]}
                   >
-                    <Input placeholder='http://localhost:4318' disabled={loading || !otelEnabled} />
+                    <InputNumber placeholder='30' min={1} max={365} style={{ width: '100%' }} disabled={loading} />
                   </FormItem>
-
-                  <FormItem label='Protocol' field='otel_protocol'>
-                    <Select placeholder='Select protocol' disabled={loading || !otelEnabled}>
-                      {OTEL_PROTOCOLS.map((protocol) => (
-                        <Option key={protocol} value={protocol}>
-                          {protocol.toUpperCase()}
-                        </Option>
-                      ))}
-                    </Select>
-                  </FormItem>
-
-                  <FormItem label='Service Name' field='otel_service_name'>
-                    <Input placeholder='aionui' disabled={loading || !otelEnabled} />
-                  </FormItem>
-                </>
-              );
-            }}
-          </Form.Item>
-        </Card>
-
-        {/* Syslog Settings */}
-        <Card title='Syslog / SIEM Forwarding' bordered style={{ marginBottom: '20px' }}>
-          <FormItem label='Enable Syslog' field='syslog_enabled' triggerPropName='checked'>
-            <Switch disabled={loading} />
-          </FormItem>
-
-          <Form.Item noStyle shouldUpdate={(prev, next) => prev.syslog_enabled !== next.syslog_enabled}>
-            {(values) => {
-              const syslogEnabled = values.syslog_enabled;
-              return (
-                <>
+                </Col>
+                <Col span={12}>
                   <FormItem
-                    label='Syslog Host'
-                    field='syslog_host'
+                    label='Max File Size (MB)'
+                    field='max_size_mb'
                     rules={[
-                      {
-                        required: syslogEnabled,
-                        message: 'Syslog host is required when syslog is enabled',
-                      },
+                      { required: true, message: 'Required' },
+                      { type: 'number', min: 10, max: 10000, message: '10–10,000' },
                     ]}
                   >
-                    <Input placeholder='syslog.example.com' disabled={loading || !syslogEnabled} />
+                    <InputNumber placeholder='500' min={10} max={10000} style={{ width: '100%' }} disabled={loading} />
                   </FormItem>
+                </Col>
+              </Row>
+            </Card>
+          </Col>
 
-                  <FormItem
-                    label='Port'
-                    field='syslog_port'
-                    rules={[
-                      {
-                        required: syslogEnabled,
-                        message: 'Port is required when syslog is enabled',
-                      },
-                      { type: 'number', min: 1, max: 65535, message: 'Invalid port number' },
-                    ]}
-                  >
-                    <InputNumber placeholder='514' min={1} max={65535} style={{ width: '100%' }} disabled={loading || !syslogEnabled} />
-                  </FormItem>
+          <Col xs={24} md={12}>
+            <Card title='OpenTelemetry (Distributed Tracing)' bordered style={{ height: '100%' }}>
+              <FormItem label='Enable OTEL' field='otel_enabled' triggerPropName='checked'>
+                <Switch disabled={loading} />
+              </FormItem>
 
-                  <FormItem label='Protocol' field='syslog_protocol'>
-                    <Select placeholder='Select protocol' disabled={loading || !syslogEnabled}>
-                      {SYSLOG_PROTOCOLS.map((protocol) => (
-                        <Option key={protocol} value={protocol}>
-                          {protocol.toUpperCase()}
-                        </Option>
-                      ))}
-                    </Select>
-                  </FormItem>
+              <Form.Item noStyle shouldUpdate={(prev, next) => prev.otel_enabled !== next.otel_enabled}>
+                {(values) => {
+                  const otelEnabled = values.otel_enabled;
+                  return (
+                    <>
+                      <FormItem label='OTLP Endpoint' field='otel_endpoint' rules={[{ required: otelEnabled, message: 'Required when OTEL is enabled' }]}>
+                        <Input placeholder='http://localhost:4318' disabled={loading || !otelEnabled} />
+                      </FormItem>
 
-                  <FormItem label='Facility' field='syslog_facility' rules={[{ type: 'number', min: 0, max: 23, message: 'Must be between 0 and 23' }]}>
-                    <InputNumber placeholder='16 (local0)' min={0} max={23} style={{ width: '100%' }} disabled={loading || !syslogEnabled} />
-                  </FormItem>
+                      <Row gutter={GUTTER}>
+                        <Col span={12}>
+                          <FormItem label='Protocol' field='otel_protocol'>
+                            <Select placeholder='Protocol' disabled={loading || !otelEnabled}>
+                              {OTEL_PROTOCOLS.map((protocol) => (
+                                <Option key={protocol} value={protocol}>
+                                  {protocol.toUpperCase()}
+                                </Option>
+                              ))}
+                            </Select>
+                          </FormItem>
+                        </Col>
+                        <Col span={12}>
+                          <FormItem label='Service Name' field='otel_service_name'>
+                            <Input placeholder='aionui' disabled={loading || !otelEnabled} />
+                          </FormItem>
+                        </Col>
+                      </Row>
+                    </>
+                  );
+                }}
+              </Form.Item>
+            </Card>
+          </Col>
+        </Row>
 
-                  {syslogEnabled && (
-                    <FormItem>
-                      <Button type='outline' icon={testingSyslog ? <Refresh spin /> : <Check />} onClick={handleTestSyslog} loading={testingSyslog} disabled={loading}>
-                        Test Syslog Connectivity
-                      </Button>
-                    </FormItem>
-                  )}
-                </>
-              );
-            }}
-          </Form.Item>
-        </Card>
+        {/* Row 2: Syslog + Langfuse */}
+        <Row gutter={GUTTER}>
+          <Col xs={24} md={12}>
+            <Card title='Syslog / SIEM Forwarding' bordered style={{ height: '100%' }}>
+              <FormItem label='Enable Syslog' field='syslog_enabled' triggerPropName='checked'>
+                <Switch disabled={loading} />
+              </FormItem>
 
-        {/* Langfuse Settings */}
-        <Card title='Langfuse (LLM Observability)' bordered style={{ marginBottom: '20px' }}>
-          <FormItem label='Enable Langfuse' field='langfuse_enabled' triggerPropName='checked'>
-            <Switch disabled={loading} />
-          </FormItem>
+              <Form.Item noStyle shouldUpdate={(prev, next) => prev.syslog_enabled !== next.syslog_enabled}>
+                {(values) => {
+                  const syslogEnabled = values.syslog_enabled;
+                  return (
+                    <>
+                      <FormItem label='Syslog Host' field='syslog_host' rules={[{ required: syslogEnabled, message: 'Required when syslog is enabled' }]}>
+                        <Input placeholder='syslog.example.com' disabled={loading || !syslogEnabled} />
+                      </FormItem>
 
-          <Form.Item noStyle shouldUpdate={(prev, next) => prev.langfuse_enabled !== next.langfuse_enabled}>
-            {(values) => {
-              const langfuseEnabled = values.langfuse_enabled;
-              return (
-                <>
-                  <FormItem
-                    label='Langfuse Host'
-                    field='langfuse_host'
-                    rules={[
-                      {
-                        required: langfuseEnabled,
-                        message: 'Langfuse host is required when Langfuse is enabled',
-                      },
-                    ]}
-                  >
-                    <Input placeholder='https://cloud.langfuse.com' disabled={loading || !langfuseEnabled} />
-                  </FormItem>
+                      <Row gutter={GUTTER}>
+                        <Col span={8}>
+                          <FormItem
+                            label='Port'
+                            field='syslog_port'
+                            rules={[
+                              { required: syslogEnabled, message: 'Required' },
+                              { type: 'number', min: 1, max: 65535, message: 'Invalid port' },
+                            ]}
+                          >
+                            <InputNumber placeholder='514' min={1} max={65535} style={{ width: '100%' }} disabled={loading || !syslogEnabled} />
+                          </FormItem>
+                        </Col>
+                        <Col span={8}>
+                          <FormItem label='Protocol' field='syslog_protocol'>
+                            <Select placeholder='Protocol' disabled={loading || !syslogEnabled}>
+                              {SYSLOG_PROTOCOLS.map((protocol) => (
+                                <Option key={protocol} value={protocol}>
+                                  {protocol.toUpperCase()}
+                                </Option>
+                              ))}
+                            </Select>
+                          </FormItem>
+                        </Col>
+                        <Col span={8}>
+                          <FormItem label='Facility' field='syslog_facility' rules={[{ type: 'number', min: 0, max: 23, message: '0–23' }]}>
+                            <InputNumber placeholder='16' min={0} max={23} style={{ width: '100%' }} disabled={loading || !syslogEnabled} />
+                          </FormItem>
+                        </Col>
+                      </Row>
 
-                  <FormItem
-                    label='Public Key'
-                    field='langfuse_public_key'
-                    rules={[
-                      {
-                        required: langfuseEnabled,
-                        message: 'Public key is required when Langfuse is enabled',
-                      },
-                    ]}
-                  >
-                    <Input.Password placeholder='pk-...' disabled={loading || !langfuseEnabled} visibilityToggle />
-                  </FormItem>
+                      {syslogEnabled && (
+                        <FormItem>
+                          <Button type='outline' icon={testingSyslog ? <Refresh spin /> : <Check />} onClick={handleTestSyslog} loading={testingSyslog} disabled={loading} long>
+                            Test Syslog Connectivity
+                          </Button>
+                        </FormItem>
+                      )}
+                    </>
+                  );
+                }}
+              </Form.Item>
+            </Card>
+          </Col>
 
-                  <FormItem
-                    label='Secret Key'
-                    field='langfuse_secret_key'
-                    rules={[
-                      {
-                        required: langfuseEnabled,
-                        message: 'Secret key is required when Langfuse is enabled',
-                      },
-                    ]}
-                  >
-                    <Input.Password placeholder='sk-...' disabled={loading || !langfuseEnabled} visibilityToggle />
-                  </FormItem>
-                </>
-              );
-            }}
-          </Form.Item>
-        </Card>
+          <Col xs={24} md={12}>
+            <Card title='Langfuse (LLM Observability)' bordered style={{ height: '100%' }}>
+              <FormItem label='Enable Langfuse' field='langfuse_enabled' triggerPropName='checked'>
+                <Switch disabled={loading} />
+              </FormItem>
 
-        <Divider />
+              <Form.Item noStyle shouldUpdate={(prev, next) => prev.langfuse_enabled !== next.langfuse_enabled}>
+                {(values) => {
+                  const langfuseEnabled = values.langfuse_enabled;
+                  return (
+                    <>
+                      <FormItem label='Langfuse Host' field='langfuse_host' rules={[{ required: langfuseEnabled, message: 'Required when Langfuse is enabled' }]}>
+                        <Input placeholder='https://cloud.langfuse.com' disabled={loading || !langfuseEnabled} />
+                      </FormItem>
 
-        {/* Action Buttons */}
-        <Space size='medium'>
-          <Button type='primary' onClick={handleSave} loading={saving} disabled={loading}>
-            Save Configuration
-          </Button>
-          <Button onClick={fetchConfig} disabled={loading || saving}>
-            Reset
-          </Button>
-        </Space>
+                      <FormItem label='Public Key' field='langfuse_public_key' rules={[{ required: langfuseEnabled, message: 'Required when Langfuse is enabled' }]}>
+                        <Input.Password placeholder='pk-...' disabled={loading || !langfuseEnabled} visibilityToggle />
+                      </FormItem>
+
+                      <FormItem label='Secret Key' field='langfuse_secret_key' rules={[{ required: langfuseEnabled, message: 'Required when Langfuse is enabled' }]}>
+                        <Input.Password placeholder='sk-...' disabled={loading || !langfuseEnabled} visibilityToggle />
+                      </FormItem>
+                    </>
+                  );
+                }}
+              </Form.Item>
+            </Card>
+          </Col>
+        </Row>
       </Form>
     </div>
   );
