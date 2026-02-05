@@ -16,6 +16,7 @@ import { AUTH_CONFIG, getCookieOptions } from '../config/constants';
 import { createAppError } from '../middleware/errorHandler';
 import { apiRateLimiter, authRateLimiter, authenticatedActionLimiter } from '../middleware/security';
 import { originGuard } from '@/webserver/auth/middleware/OriginGuard';
+import { authLogger as log, oidcLogger } from '@/common/logger';
 
 /**
  * QR login page HTML (static, no user input embedded)
@@ -156,7 +157,7 @@ export function registerAuthRoutes(app: Express): void {
         token: accessToken,
       });
     } catch (error) {
-      console.error('Login error:', error);
+      log.error({ err: error }, 'Login error');
       res.status(500).json({ success: false, message: 'Internal server error' });
     }
   });
@@ -207,7 +208,7 @@ export function registerAuthRoutes(app: Express): void {
         oidcEnabled: OIDC_CONFIG.enabled && OidcService.isReady(),
       });
     } catch (error) {
-      console.error('Auth status error:', error);
+      log.error({ err: error }, 'Auth status error');
       res.status(500).json({
         success: false,
         error: 'Internal server error',
@@ -301,7 +302,7 @@ export function registerAuthRoutes(app: Express): void {
         message: 'Password changed successfully. Please log in again.',
       });
     } catch (error) {
-      console.error('Change password error:', error);
+      log.error({ err: error }, 'Change password error');
       res.status(500).json({
         success: false,
         error: 'Internal server error',
@@ -361,7 +362,7 @@ export function registerAuthRoutes(app: Express): void {
         token: result.accessToken,
       });
     } catch (error) {
-      console.error('Token refresh error:', error);
+      log.error({ err: error }, 'Token refresh error');
       res.status(500).json({ success: false, error: 'Internal server error' });
     }
   });
@@ -444,7 +445,7 @@ export function registerAuthRoutes(app: Express): void {
         token: result.data.sessionToken,
       });
     } catch (error) {
-      console.error('QR login error:', error);
+      log.error({ err: error }, 'QR login error');
       res.status(500).json({
         success: false,
         error: 'Internal server error',
@@ -489,7 +490,7 @@ export function registerAuthRoutes(app: Express): void {
 
       res.redirect(authUrl);
     } catch (error) {
-      console.error('[OIDC] Login initiation error:', error);
+      oidcLogger.error({ err: error }, 'Login initiation error');
       res.status(500).json({ success: false, error: 'Failed to initiate OIDC login' });
     }
   });
@@ -545,7 +546,7 @@ export function registerAuthRoutes(app: Express): void {
       const redirectTo = result.redirectTo || '/';
       res.redirect(redirectTo);
     } catch (error) {
-      console.error('[OIDC] Callback error:', error);
+      oidcLogger.error({ err: error }, 'Callback error');
       res.status(500).send('Authentication failed — please try again.');
     }
   });

@@ -12,6 +12,7 @@ import fs from 'fs';
 import path from 'path';
 import { AUTH_CONFIG } from '../config/constants';
 import { createRateLimiter } from '../middleware/security';
+import { httpLogger as log } from '@/common/logger';
 
 /**
  * Register static assets and page routes
@@ -56,7 +57,7 @@ export function registerStaticRoutes(app: Express): void {
       res.setHeader('Content-Type', 'text/html');
       res.send(htmlContent);
     } catch (error) {
-      console.error('Error serving index.html:', error);
+      log.error({ err: error }, 'Error serving index.html');
       res.status(500).send('Internal Server Error');
     }
   };
