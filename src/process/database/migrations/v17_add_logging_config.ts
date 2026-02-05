@@ -110,6 +110,8 @@ export function migrate_v17_add_logging_config(db: Database.Database): void {
       
       -- Core logging settings
       log_level TEXT NOT NULL DEFAULT 'info' CHECK(log_level IN ('trace', 'debug', 'info', 'warn', 'error', 'fatal', 'silent')),
+      log_format TEXT NOT NULL DEFAULT 'json' CHECK(log_format IN ('json', 'pretty')),
+      log_file TEXT DEFAULT NULL,
       retention_days INTEGER NOT NULL DEFAULT 30,
       max_size_mb INTEGER NOT NULL DEFAULT 500,
       
@@ -121,6 +123,7 @@ export function migrate_v17_add_logging_config(db: Database.Database): void {
       otel_endpoint TEXT DEFAULT 'http://localhost:4318',
       otel_protocol TEXT DEFAULT 'http',
       otel_service_name TEXT DEFAULT 'aionui',
+      otel_log_level TEXT NOT NULL DEFAULT 'info' CHECK(otel_log_level IN ('debug', 'info', 'warn', 'error')),
       
       -- Syslog/SIEM settings
       syslog_enabled INTEGER NOT NULL DEFAULT 0,
