@@ -12,7 +12,7 @@
  */
 
 import { withCsrfToken } from '@/webserver/middleware/csrfClient';
-import { Button, Message, Modal, Select, Table, Tag } from '@arco-design/web-react';
+import { Button, Message, Modal, Select, Table, Tag, Tooltip } from '@arco-design/web-react';
 import { IconEdit, IconRefresh } from '@arco-design/web-react/icon';
 import type { ColumnProps } from '@arco-design/web-react/es/Table';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -37,9 +37,14 @@ const ROLE_COLORS: Record<string, string> = {
   viewer: 'gray',
 };
 
-function formatTimestamp(ts?: number | null): string {
+function formatDate(ts?: number | null): string {
   if (!ts) return '—';
-  return new Date(ts).toLocaleString();
+  return new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function formatDateTime(ts?: number | null): string {
+  if (!ts) return '—';
+  return new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
 }
 
 const UserManagement: React.FC = () => {
@@ -96,29 +101,30 @@ const UserManagement: React.FC = () => {
     {
       title: 'Username',
       dataIndex: 'username',
-      width: 120,
-      render: (val: string, record: IAdminUser) => (
-        <span>
-          <strong>{val}</strong>
-          {record.displayName && (
-            <div className='text-xs color-gray-5 truncate' style={{ maxWidth: 100 }}>
-              {record.displayName}
-            </div>
-          )}
-        </span>
-      ),
+      width: 160,
+      render: (val: string, record: IAdminUser) => {
+        const content = (
+          <span style={{ whiteSpace: 'nowrap' }}>
+            <strong>{val}</strong>
+          </span>
+        );
+        // Show displayName in tooltip if different from username
+        if (record.displayName && record.displayName !== val) {
+          return <Tooltip content={record.displayName}>{content}</Tooltip>;
+        }
+        return content;
+      },
     },
     {
       title: 'Email',
       dataIndex: 'email',
-      // Flexible width - will expand to fill remaining space
       ellipsis: true,
       render: (val?: string) => val || '—',
     },
     {
       title: 'Role',
       dataIndex: 'role',
-      width: 75,
+      width: 80,
       render: (role: string) => (
         <Tag color={ROLE_COLORS[role] || 'gray'} size='small'>
           {role.toUpperCase()}
@@ -128,37 +134,42 @@ const UserManagement: React.FC = () => {
     {
       title: 'Auth',
       dataIndex: 'authMethod',
-      width: 68,
+      width: 75,
       render: (method: string) => <Tag size='small'>{method === 'oidc' ? 'EntraID' : 'Local'}</Tag>,
     },
     {
       title: 'Last Login',
       dataIndex: 'lastLogin',
-      width: 125,
-      ellipsis: true,
-      render: (ts?: number) => <span className='text-xs'>{formatTimestamp(ts)}</span>,
+      width: 120,
+      render: (ts?: number) => (
+        <span className='text-xs' style={{ whiteSpace: 'nowrap' }}>
+          {formatDateTime(ts)}
+        </span>
+      ),
     },
     {
       title: 'Created',
       dataIndex: 'createdAt',
-      width: 125,
-      ellipsis: true,
-      render: (ts: number) => <span className='text-xs'>{formatTimestamp(ts)}</span>,
+      width: 110,
+      render: (ts: number) => (
+        <span className='text-xs' style={{ whiteSpace: 'nowrap' }}>
+          {formatDate(ts)}
+        </span>
+      ),
     },
     {
       title: '',
-      width: 40,
+      width: 50,
       align: 'center',
       render: (_: unknown, record: IAdminUser) => (
         <Button
           type='text'
-          size='mini'
+          size='small'
           icon={<IconEdit />}
           onClick={() => {
             setEditingUser(record);
             setPendingRole(record.role);
           }}
-          style={{ padding: '0 4px' }}
         />
       ),
     },
@@ -173,7 +184,7 @@ const UserManagement: React.FC = () => {
         </Button>
       </div>
 
-      <Table columns={columns} data={users} loading={loading} pagination={{ pageSize: 25, simple: true }} rowKey='id' size='small' tableLayoutFixed noDataElement={<div className='py-40px text-center color-gray-5'>No users found</div>} />
+      <Table columns={columns} data={users} loading={loading} pagination={{ pageSize: 25, simple: true }} rowKey='id' size='small' noDataElement={<div className='py-40px text-center color-gray-5'>No users found</div>} />
 
       <Modal title='Edit User Role' visible={!!editingUser} onOk={() => void handleRoleUpdate()} onCancel={() => setEditingUser(null)} confirmLoading={saving} autoFocus={false} style={{ maxWidth: 400 }}>
         {editingUser && (
