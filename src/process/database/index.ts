@@ -17,6 +17,7 @@ import { CURRENT_DB_VERSION, getDatabaseVersion, initSchema, setDatabaseVersion 
 import type { IConversationRow, IMessageRow, IOrgDirectories, IOrgMember, IOrganization, IPaginatedResult, IQueryResult, ITeam, ITeamDirectories, ITeamMember, IUser, IUserDirectories, MemberRole, TChatConversation, TMessage } from './types';
 import { conversationToRow, messageToRow, rowToConversation, rowToMessage } from './types';
 import { uuid } from '@/common/utils';
+import { randomUUID } from 'crypto';
 
 /**
  * Main database class for AionUi
@@ -1138,7 +1139,7 @@ export class AionUIDatabase {
    */
   createOidcUser(params: { username: string; oidcSubject: string; displayName?: string; email?: string; role: string; groups?: string[]; avatarUrl?: string }): IQueryResult<IUser> {
     try {
-      const userId = `user_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      const userId = `user_${randomUUID()}`;
       const now = Date.now();
 
       const stmt = this.db.prepare(`

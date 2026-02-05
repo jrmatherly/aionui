@@ -40,12 +40,13 @@ async function hashPassword(password: string): Promise<string> {
   return await hashPasswordAsync(password, 10);
 }
 
-// Generate random password
+// Generate cryptographically secure random password
 function generatePassword(): string {
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let password = '';
   for (let i = 0; i < 12; i++) {
-    password += chars.charAt(Math.floor(Math.random() * chars.length));
+    // crypto.randomInt uses rejection sampling to avoid modulo bias
+    password += chars.charAt(crypto.randomInt(chars.length));
   }
   return password;
 }

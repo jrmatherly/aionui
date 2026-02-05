@@ -5,7 +5,7 @@
  */
 
 import { exec } from 'child_process';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { homedir } from 'os';
 import { join } from 'path';
 import { promisify } from 'util';
@@ -226,10 +226,6 @@ export class QwenMcpAgent extends AbstractMcpAgent {
             // All CLI commands failed, try direct config file manipulation as fallback
             const configPath = join(homedir(), '.qwen', 'client_config.json');
 
-            if (!existsSync(configPath)) {
-              return { success: true }; // Config file doesn't exist, considered already removed
-            }
-
             try {
               const config = JSON.parse(readFileSync(configPath, 'utf-8'));
               if (config.mcpServers && config.mcpServers[mcpServerName]) {
@@ -238,8 +234,12 @@ export class QwenMcpAgent extends AbstractMcpAgent {
               }
               return { success: true };
             } catch (fileError) {
-              console.warn(`Failed to update config file ${configPath}:`, fileError);
-              return { success: true }; // If config file operation fails, also consider it success
+              // File doesn't exist or can't be read — considered already removed
+              const errCode = (fileError as NodeJS.ErrnoException).code;
+              if (errCode !== 'ENOENT') {
+                console.warn(`Failed to update config file ${configPath}:`, fileError);
+              }
+              return { success: true };
             }
           }
         }

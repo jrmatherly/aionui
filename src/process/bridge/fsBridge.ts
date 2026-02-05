@@ -298,22 +298,25 @@ export function initFsBridge(): void {
       const safeFileName = fileName.replace(/[<>:"/\\|?*]/g, '_');
       let tempFilePath = path.join(tempDir, safeFileName);
 
-      // Append timestamp when duplicate exists
-      const fileExists = await fs
-        .access(tempFilePath)
-        .then(() => true)
-        .catch(() => false);
-
-      if (fileExists) {
-        const timestamp = Date.now();
-        const ext = path.extname(safeFileName);
-        const name = path.basename(safeFileName, ext);
-        const tempFileName = `${name}${AIONUI_TIMESTAMP_SEPARATOR}${timestamp}${ext}`;
-        tempFilePath = path.join(tempDir, tempFileName);
+      // Try to create file atomically; if it exists, append timestamp
+      try {
+        // O_CREAT | O_EXCL: create exclusively, fail if exists (atomic check-and-create)
+        const handle = await fs.open(tempFilePath, 'wx');
+        await handle.close();
+      } catch (err) {
+        if ((err as NodeJS.ErrnoException).code === 'EEXIST') {
+          // File exists — append timestamp for uniqueness
+          const timestamp = Date.now();
+          const ext = path.extname(safeFileName);
+          const name = path.basename(safeFileName, ext);
+          const tempFileName = `${name}${AIONUI_TIMESTAMP_SEPARATOR}${timestamp}${ext}`;
+          tempFilePath = path.join(tempDir, tempFileName);
+          // Create the new unique file
+          await fs.writeFile(tempFilePath, Buffer.alloc(0));
+        } else {
+          throw err;
+        }
       }
-
-      // Create empty placeholder file
-      await fs.writeFile(tempFilePath, Buffer.alloc(0));
 
       return tempFilePath;
     } catch (error) {
@@ -700,19 +703,20 @@ export function initFsBridge(): void {
   // Read skill info without importing
   ipcBridge.fs.readSkillInfo.provider(async ({ skillPath }) => {
     try {
-      // Verify SKILL.md file exists
+      // Read SKILL.md to get skill info (let readFile throw if not found)
       const skillMdPath = path.join(skillPath, 'SKILL.md');
+      let content: string;
       try {
-        await fs.access(skillMdPath);
-      } catch {
-        return {
-          success: false,
-          msg: 'SKILL.md file not found in the selected directory',
-        };
+        content = await fs.readFile(skillMdPath, 'utf-8');
+      } catch (err) {
+        if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
+          return {
+            success: false,
+            msg: 'SKILL.md file not found in the selected directory',
+          };
+        }
+        throw err;
       }
-
-      // Read SKILL.md to get skill info
-      const content = await fs.readFile(skillMdPath, 'utf-8');
       const frontMatterMatch = content.match(/^---\s*\n([\s\S]*?)\n---/);
       let skillName = path.basename(skillPath); // Default to directory name
       let skillDescription = '';
@@ -749,19 +753,20 @@ export function initFsBridge(): void {
   // Import skill directory
   ipcBridge.fs.importSkill.provider(async ({ skillPath }) => {
     try {
-      // Verify SKILL.md file exists
+      // Read SKILL.md to get skill name (let readFile throw if not found)
       const skillMdPath = path.join(skillPath, 'SKILL.md');
+      let content: string;
       try {
-        await fs.access(skillMdPath);
-      } catch {
-        return {
-          success: false,
-          msg: 'SKILL.md file not found in the selected directory',
-        };
+        content = await fs.readFile(skillMdPath, 'utf-8');
+      } catch (err) {
+        if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
+          return {
+            success: false,
+            msg: 'SKILL.md file not found in the selected directory',
+          };
+        }
+        throw err;
       }
-
-      // Read SKILL.md to get skill name
-      const content = await fs.readFile(skillMdPath, 'utf-8');
       const frontMatterMatch = content.match(/^---\s*\n([\s\S]*?)\n---/);
       let skillName = path.basename(skillPath); // Default to directory name
 

@@ -273,13 +273,14 @@ export class PairingService {
   }
 
   /**
-   * Generate a random 6-digit code
+   * Generate a cryptographically secure random 6-digit code
    */
   private generateRandomCode(): string {
     const chars = '0123456789';
     let code = '';
     for (let i = 0; i < PAIRING_CONFIG.CODE_LENGTH; i++) {
-      code += chars[Math.floor(Math.random() * chars.length)];
+      // crypto.randomInt uses rejection sampling to avoid modulo bias
+      code += chars[crypto.randomInt(chars.length)];
     }
     return code;
   }
