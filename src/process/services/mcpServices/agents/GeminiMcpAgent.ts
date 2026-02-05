@@ -9,6 +9,7 @@ import { promisify } from 'util';
 import type { IMcpServer } from '../../../../common/storage';
 import type { McpOperationResult } from '../McpProtocol';
 import { AbstractMcpAgent } from '../McpProtocol';
+import { mcpLogger as log } from '@/common/logger';
 
 const execAsync = promisify(exec);
 
@@ -39,9 +40,9 @@ export class GeminiMcpAgent extends AbstractMcpAgent {
       for (let attempt = 1; attempt <= maxRetries; attempt++) {
         try {
           if (attempt === 1) {
-            console.log('[GeminiMcpAgent] Starting MCP detection...');
+            log.info('Starting MCP detection...');
           } else {
-            console.log(`[GeminiMcpAgent] Retrying detection (attempt ${attempt}/${maxRetries})...`);
+            log.info(`Retrying detection (attempt ${attempt}/${maxRetries})...`);
             // If not the first attempt, add a short delay to avoid conflicts with other operations
             await new Promise((resolve) => setTimeout(resolve, 500));
           }
@@ -51,7 +52,7 @@ export class GeminiMcpAgent extends AbstractMcpAgent {
 
           // If no MCP servers are configured, return empty array
           if (result.includes('No MCP servers configured') || !result.trim()) {
-            console.log('[GeminiMcpAgent] No MCP servers configured');
+            log.info('No MCP servers configured');
             return [];
           }
 
@@ -104,7 +105,7 @@ export class GeminiMcpAgent extends AbstractMcpAgent {
                   const testResult = await this.testMcpConnection(transportObj);
                   tools = testResult.tools || [];
                 } catch (error) {
-                  console.warn(`[GeminiMcpAgent] Failed to get tools for ${name.trim()}:`, error);
+                  log.warn({ err: error }, `Failed to get tools for ${name.trim()}`);
                 }
               }
 
@@ -142,7 +143,7 @@ export class GeminiMcpAgent extends AbstractMcpAgent {
             }
           }
 
-          console.log(`[GeminiMcpAgent] Detection complete: found ${mcpServers.length} server(s)`);
+          log.info(`Detection complete: found ${mcpServers.length} server(s)`);
 
           // Validate result: if output contains "Configured MCP servers:" but no servers detected, it may be truncated
           const hasConfigHeader = result.includes('Configured MCP servers:');
@@ -156,7 +157,7 @@ export class GeminiMcpAgent extends AbstractMcpAgent {
           return mcpServers;
         } catch (error) {
           lastError = error instanceof Error ? error : new Error(String(error));
-          console.warn(`[GeminiMcpAgent] Detection attempt ${attempt} failed:`, lastError.message);
+          log.warn({ attempt, error: lastError.message }, `Detection attempt ${attempt} failed`);
 
           // If there are retry attempts remaining, continue to next attempt
           if (attempt < maxRetries) {
@@ -166,7 +167,7 @@ export class GeminiMcpAgent extends AbstractMcpAgent {
       }
 
       // All retry attempts failed
-      console.warn('[GeminiMcpAgent] All detection attempts failed. Last error:', lastError);
+      log.warn({ err: lastError }, 'All detection attempts failed. Last error');
       return [];
     };
 
@@ -196,9 +197,9 @@ export class GeminiMcpAgent extends AbstractMcpAgent {
 
             try {
               await execAsync(command, { timeout: 5000 });
-              console.log(`[GeminiMcpAgent] Added MCP server: ${server.name}`);
+              log.info(`Added MCP server: ${server.name}`);
             } catch (error) {
-              console.warn(`Failed to add MCP ${server.name} to Gemini:`, error);
+              log.warn({ err: error }, `Failed to add MCP ${server.name} to Gemini`);
               // Continue processing other servers
             }
           } else if (server.transport.type === 'sse' || server.transport.type === 'http') {
@@ -213,12 +214,12 @@ export class GeminiMcpAgent extends AbstractMcpAgent {
 
             try {
               await execAsync(command, { timeout: 5000 });
-              console.log(`[GeminiMcpAgent] Added MCP server: ${server.name}`);
+              log.info(`Added MCP server: ${server.name}`);
             } catch (error) {
-              console.warn(`Failed to add MCP ${server.name} to Gemini:`, error);
+              log.warn({ err: error }, `Failed to add MCP ${server.name} to Gemini`);
             }
           } else {
-            console.warn(`Skipping ${server.name}: Gemini CLI does not support ${server.transport.type} transport type`);
+            log.warn(`Skipping ${server.name}: Gemini CLI does not support ${server.transport.type} transport type`);
           }
         }
         return { success: true };
@@ -244,7 +245,7 @@ export class GeminiMcpAgent extends AbstractMcpAgent {
           const result = await execAsync(removeCommand, { timeout: 5000 });
 
           if (result.stdout && result.stdout.includes('removed')) {
-            console.log(`[GeminiMcpAgent] Removed MCP server: ${mcpServerName}`);
+            log.info(`Removed MCP server: ${mcpServerName}`);
             return { success: true };
           } else if (result.stdout && result.stdout.includes('not found')) {
             // Try project scope
@@ -259,7 +260,7 @@ export class GeminiMcpAgent extends AbstractMcpAgent {
             const result = await execAsync(removeCommand, { timeout: 5000 });
 
             if (result.stdout && result.stdout.includes('removed')) {
-              console.log(`[GeminiMcpAgent] Removed MCP server from project: ${mcpServerName}`);
+              log.info(`Removed MCP server from project: ${mcpServerName}`);
               return { success: true };
             } else {
               // Server doesn't exist, also consider it success

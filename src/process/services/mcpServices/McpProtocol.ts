@@ -14,6 +14,7 @@ import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/
 import { exec } from 'child_process';
 import { app } from 'electron';
 import { promisify } from 'util';
+import { mcpLogger as log } from '@/common/logger';
 
 /**
  * MCP source type - includes all ACP backends and AionUi built-in
@@ -129,7 +130,7 @@ export abstract class AbstractMcpAgent implements IMcpProtocol {
     const newOperation = currentQueue
       .then(() => operation())
       .catch((error) => {
-        console.warn(`[${this.backend} MCP] ${operationName} failed:`, error);
+        log.warn({ err: error }, `[${this.backend} MCP] ${operationName} failed`);
         // Even if the operation fails, continue executing the next operation in the queue
         throw error;
       });
@@ -259,7 +260,7 @@ export abstract class AbstractMcpAgent implements IMcpProtocol {
         try {
           await mcpClient.close();
         } catch (closeError) {
-          console.error('[Stdio] Error closing connection:', closeError);
+          log.error({ err: closeError }, 'Error closing connection');
         }
       }
     }
@@ -347,7 +348,7 @@ export abstract class AbstractMcpAgent implements IMcpProtocol {
         try {
           await mcpClient.close();
         } catch (closeError) {
-          console.error('[SSE] Error closing connection:', closeError);
+          log.error({ err: closeError }, 'Error closing connection');
         }
       }
     }
@@ -493,7 +494,7 @@ export abstract class AbstractMcpAgent implements IMcpProtocol {
         try {
           await mcpClient.close();
         } catch (closeError) {
-          console.error('[StreamableHTTP] Error closing connection:', closeError);
+          log.error({ err: closeError }, 'Error closing connection');
         }
       }
     }

@@ -9,6 +9,7 @@ import { promisify } from 'util';
 import type { IMcpServer } from '../../../../common/storage';
 import type { McpOperationResult } from '../McpProtocol';
 import { AbstractMcpAgent } from '../McpProtocol';
+import { mcpLogger as log } from '@/common/logger';
 
 const execAsync = promisify(exec);
 
@@ -89,7 +90,7 @@ export class IflowMcpAgent extends AbstractMcpAgent {
               const testResult = await this.testMcpConnection(transportObj);
               tools = testResult.tools || [];
             } catch (error) {
-              console.warn(`[IflowMcpAgent] Failed to get tools for ${name.trim()}:`, error);
+              log.warn({ err: error }, `Failed to get tools for ${name.trim()}`);
               // If getting tools fails, continue with empty array
             }
           }
@@ -128,10 +129,10 @@ export class IflowMcpAgent extends AbstractMcpAgent {
         }
       }
 
-      console.log(`[IflowMcpAgent] Detection complete: found ${mcpServers.length} server(s)`);
+      log.info(`Detection complete: found ${mcpServers.length} server(s)`);
       return mcpServers;
     } catch (error) {
-      console.warn('[IflowMcpAgent] Failed to get iFlow CLI MCP config:', error);
+      log.warn({ err: error }, 'Failed to get iFlow CLI MCP config');
       return [];
     }
   }
@@ -161,7 +162,7 @@ export class IflowMcpAgent extends AbstractMcpAgent {
           }
 
           if (server.transport.type === 'streamable_http') {
-            console.warn(`Skipping ${server.name}: iFlow CLI does not support streamable_http transport type`);
+            log.warn(`Skipping ${server.name}: iFlow CLI does not support streamable_http transport type`);
             continue;
           }
 
@@ -205,7 +206,7 @@ export class IflowMcpAgent extends AbstractMcpAgent {
             // Execute add command
             await execAsync(addCommand, { timeout: 10000 });
           } catch (error) {
-            console.warn(`Failed to add MCP server ${server.name} to iFlow:`, error);
+            log.warn({ err: error }, `Failed to add MCP server ${server.name} to iFlow`);
             // Continue processing other servers, don't stop the entire process due to one failure
           }
         }

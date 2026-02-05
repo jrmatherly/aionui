@@ -12,6 +12,7 @@ import { promisify } from 'util';
 import type { IMcpServer } from '../../../../common/storage';
 import type { McpOperationResult } from '../McpProtocol';
 import { AbstractMcpAgent } from '../McpProtocol';
+import { mcpLogger as log } from '@/common/logger';
 
 const execAsync = promisify(exec);
 
@@ -39,7 +40,7 @@ export class QwenMcpAgent extends AbstractMcpAgent {
 
         // If no MCP servers are configured, return empty array
         if (result.trim() === 'No MCP servers configured.' || !result.trim()) {
-          console.log('[QwenMcpAgent] No MCP servers configured');
+          log.info('No MCP servers configured');
           return [];
         }
 
@@ -87,7 +88,7 @@ export class QwenMcpAgent extends AbstractMcpAgent {
                 const testResult = await this.testMcpConnection(transportObj);
                 tools = testResult.tools || [];
               } catch (error) {
-                console.warn(`[QwenMcpAgent] Failed to get tools for ${name.trim()}:`, error);
+                log.warn({ err: error }, `Failed to get tools for ${name.trim()}`);
                 // If getting tools fails, continue with empty array
               }
             }
@@ -126,10 +127,10 @@ export class QwenMcpAgent extends AbstractMcpAgent {
           }
         }
 
-        console.log(`[QwenMcpAgent] Detection complete: found ${mcpServers.length} server(s)`);
+        log.info(`Detection complete: found ${mcpServers.length} server(s)`);
         return mcpServers;
       } catch (error) {
-        console.warn('[QwenMcpAgent] Failed to get Qwen Code MCP config:', error);
+        log.warn({ err: error }, 'Failed to get Qwen Code MCP config');
         return [];
       }
     };
@@ -168,10 +169,10 @@ export class QwenMcpAgent extends AbstractMcpAgent {
             try {
               await execAsync(command, { timeout: 5000 });
             } catch (error) {
-              console.warn(`Failed to add MCP ${server.name} to Qwen Code:`, error);
+              log.warn({ err: error }, `Failed to add MCP ${server.name} to Qwen Code`);
             }
           } else {
-            console.warn(`Skipping ${server.name}: Qwen CLI only supports stdio transport type`);
+            log.warn(`Skipping ${server.name}: Qwen CLI only supports stdio transport type`);
           }
         }
         return { success: true };
@@ -237,7 +238,7 @@ export class QwenMcpAgent extends AbstractMcpAgent {
               // File doesn't exist or can't be read — considered already removed
               const errCode = (fileError as NodeJS.ErrnoException).code;
               if (errCode !== 'ENOENT') {
-                console.warn(`Failed to update config file ${configPath}:`, fileError);
+                log.warn({ err: fileError }, `Failed to update config file ${configPath}`);
               }
               return { success: true };
             }

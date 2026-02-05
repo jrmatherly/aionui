@@ -9,6 +9,7 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import type { McpOperationResult } from '../McpProtocol';
 import { AbstractMcpAgent } from '../McpProtocol';
+import { mcpLogger as log } from '@/common/logger';
 
 const execAsync = promisify(exec);
 
@@ -94,7 +95,7 @@ export class CodexMcpAgent extends AbstractMcpAgent {
             });
             tools = testResult.tools || [];
           } catch (error) {
-            console.warn(`[CodexMcpAgent] Failed to get tools for ${name}:`, error);
+            log.warn({ err: error }, `Failed to get tools for ${name}`);
           }
 
           mcpServers.push({
@@ -128,10 +129,10 @@ export class CodexMcpAgent extends AbstractMcpAgent {
           });
         }
 
-        console.log(`[CodexMcpAgent] Detection complete: found ${mcpServers.length} server(s)`);
+        log.info(`Detection complete: found ${mcpServers.length} server(s)`);
         return mcpServers;
       } catch (error) {
-        console.warn('[CodexMcpAgent] Failed to get Codex MCP config:', error);
+        log.warn({ err: error }, 'Failed to get Codex MCP config');
         return [];
       }
     };
@@ -161,13 +162,13 @@ export class CodexMcpAgent extends AbstractMcpAgent {
 
             try {
               await execAsync(command, { timeout: 5000 });
-              console.log(`[CodexMcpAgent] Added MCP server: ${server.name}`);
+              log.info(`Added MCP server: ${server.name}`);
             } catch (error) {
-              console.warn(`Failed to add MCP ${server.name} to Codex:`, error);
+              log.warn({ err: error }, `Failed to add MCP ${server.name} to Codex`);
               // Continue processing other servers, don't stop for one failure
             }
           } else {
-            console.warn(`Skipping ${server.name}: Codex CLI only supports stdio transport type`);
+            log.warn(`Skipping ${server.name}: Codex CLI only supports stdio transport type`);
           }
         }
         return { success: true };
@@ -194,11 +195,11 @@ export class CodexMcpAgent extends AbstractMcpAgent {
 
           // Check output to confirm successful removal
           if (result.stdout && (result.stdout.includes('removed') || result.stdout.includes('Removed'))) {
-            console.log(`[CodexMcpAgent] Removed MCP server: ${mcpServerName}`);
+            log.info(`Removed MCP server: ${mcpServerName}`);
             return { success: true };
           } else if (result.stdout && (result.stdout.includes('not found') || result.stdout.includes('No such server'))) {
             // Server doesn't exist, also consider it success
-            console.log(`[CodexMcpAgent] MCP server '${mcpServerName}' not found, nothing to remove`);
+            log.info(`MCP server '${mcpServerName}' not found, nothing to remove`);
             return { success: true };
           } else {
             // Other cases considered success (backward compatible)

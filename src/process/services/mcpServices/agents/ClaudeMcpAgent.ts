@@ -9,6 +9,7 @@ import { promisify } from 'util';
 import type { IMcpServer } from '../../../../common/storage';
 import type { McpOperationResult } from '../McpProtocol';
 import { AbstractMcpAgent } from '../McpProtocol';
+import { mcpLogger as log } from '@/common/logger';
 
 const execAsync = promisify(exec);
 
@@ -83,7 +84,7 @@ export class ClaudeMcpAgent extends AbstractMcpAgent {
                 const testResult = await this.testMcpConnection(transportObj);
                 tools = testResult.tools || [];
               } catch (error) {
-                console.warn(`[ClaudeMcpAgent] Failed to get tools for ${name.trim()}:`, error);
+                log.warn({ err: error }, `Failed to get tools for ${name.trim()}`);
                 // If getting tools fails, continue with empty array
               }
             }
@@ -115,10 +116,10 @@ export class ClaudeMcpAgent extends AbstractMcpAgent {
           }
         }
 
-        console.log(`[ClaudeMcpAgent] Detection complete: found ${mcpServers.length} server(s)`);
+        log.info(`Detection complete: found ${mcpServers.length} server(s)`);
         return mcpServers;
       } catch (error) {
-        console.warn('[ClaudeMcpAgent] Failed to detect MCP servers:', error);
+        log.warn({ err: error }, 'Failed to detect MCP servers');
         return [];
       }
     };
@@ -165,13 +166,13 @@ export class ClaudeMcpAgent extends AbstractMcpAgent {
                 timeout: 5000,
                 env: { ...process.env, NODE_OPTIONS: '' }, // Clear debug options to avoid debugger attachment
               });
-              console.log(`[ClaudeMcpAgent] Added MCP server: ${server.name}`);
+              log.info(`Added MCP server: ${server.name}`);
             } catch (error) {
-              console.warn(`Failed to add MCP ${server.name} to Claude Code:`, error);
+              log.warn({ err: error }, `Failed to add MCP ${server.name} to Claude Code`);
               // Continue processing other servers, don't stop for one failure
             }
           } else {
-            console.warn(`Skipping ${server.name}: Claude CLI only supports stdio transport type`);
+            log.warn(`Skipping ${server.name}: Claude CLI only supports stdio transport type`);
           }
         }
         return { success: true };
@@ -205,7 +206,7 @@ export class ClaudeMcpAgent extends AbstractMcpAgent {
 
             // Check if removal was successful
             if (result.stdout && result.stdout.includes('removed')) {
-              console.log(`[ClaudeMcpAgent] Removed MCP server from ${scope} scope: ${mcpServerName}`);
+              log.info(`Removed MCP server from ${scope} scope: ${mcpServerName}`);
               return { success: true };
             }
 
@@ -220,12 +221,12 @@ export class ClaudeMcpAgent extends AbstractMcpAgent {
             }
 
             // Other errors, log but continue trying
-            console.warn(`[ClaudeMcpAgent] Failed to remove from ${scope} scope:`, errorMessage);
+            log.warn({ err: errorMessage }, `Failed to remove from ${scope} scope`);
           }
         }
 
         // If all scopes have been tried, consider removal successful (server may not have existed)
-        console.log(`[ClaudeMcpAgent] MCP server ${mcpServerName} not found in any scope (may already be removed)`);
+        log.info(`MCP server ${mcpServerName} not found in any scope (may already be removed)`);
         return { success: true };
       } catch (error) {
         return { success: false, error: error instanceof Error ? error.message : String(error) };

@@ -12,6 +12,7 @@ import WorkerManage from '../../WorkerManage';
 import { copyFilesToDirectory } from '../../utils';
 import { cronBusyGuard } from './CronBusyGuard';
 import { cronStore, type AgentType, type CronJob, type CronSchedule } from './CronStore';
+import { cronLogger as log } from '@/common/logger';
 
 /**
  * Parameters for creating a new cron job
@@ -55,7 +56,7 @@ class CronService {
 
       this.initialized = true;
     } catch (error) {
-      console.error('[CronService] Initialization failed:', error);
+      log.error({ err: error }, 'Initialization failed');
       throw error;
     }
   }
@@ -109,7 +110,7 @@ class CronService {
       const db = getDatabase();
       db.updateConversation(params.conversationId, { modifyTime: now });
     } catch (err) {
-      console.warn('[CronService] Failed to update conversation modifyTime:', err);
+      log.warn({ conversationId: params.conversationId, err }, 'Failed to update conversation modifyTime');
     }
 
     // Start timer
@@ -383,13 +384,13 @@ class CronService {
         const db = getDatabase();
         db.updateConversation(conversationId, {});
       } catch (err) {
-        console.warn('[CronService] Failed to update conversation modifyTime after execution:', err);
+        log.warn({ conversationId, err }, 'Failed to update conversation modifyTime after execution');
       }
     } catch (error) {
       // Error
       job.state.lastStatus = 'error';
       job.state.lastError = error instanceof Error ? error.message : String(error);
-      console.error(`[CronService] Job ${job.id} failed:`, error);
+      log.error({ jobId: job.id, err: error }, 'Job failed');
     }
 
     // Update next run time
