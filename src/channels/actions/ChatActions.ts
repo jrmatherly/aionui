@@ -4,10 +4,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { createLogger } from '@/common/logger';
 import { getChannelMessageService } from '../agent/ChannelMessageService';
 import { createErrorRecoveryKeyboard, createResponseActionsKeyboard } from '../plugins/telegram/TelegramKeyboards';
 import type { ActionHandler, IRegisteredAction } from './types';
 import { ChatActionNames, createErrorResponse, createSuccessResponse } from './types';
+
+const log = createLogger('ChatActions');
 
 /**
  * ChatActions - Handlers for chat/AI-related actions
@@ -87,27 +90,27 @@ export const handleCopy: ActionHandler = async (context, params) => {
  * Callback data format: confirm:{callId}:{value}
  */
 export const handleToolConfirm: ActionHandler = async (context, params) => {
-  console.log(`[ChatActions] handleToolConfirm called with params:`, params);
+  log.debug({ params }, 'handleToolConfirm called');
   const callId = params?.callId;
   const value = params?.value;
   const conversationId = context.conversationId;
 
-  console.log(`[ChatActions] Tool confirm - callId: ${callId}, value: ${value}, conversationId: ${conversationId}`);
+  log.debug({ callId, value, conversationId }, 'Tool confirm parameters');
 
   if (!callId || !value || !conversationId) {
-    console.error(`[ChatActions] Missing params - callId: ${callId}, value: ${value}, conversationId: ${conversationId}`);
+    log.error({ callId, value, conversationId }, 'Missing confirmation parameters');
     return createErrorResponse('Missing confirmation parameters');
   }
 
   try {
     // Only call confirm, don't send message - agent will continue and send updates
     await getChannelMessageService().confirm(conversationId, callId, value);
-    console.log(`[ChatActions] Tool confirmation sent successfully`);
+    log.info({ callId, conversationId }, 'Tool confirmation sent successfully');
 
     // Return success without message, agent will continue and update via stream callback
     return { success: true };
   } catch (error: any) {
-    console.error('[ChatActions] Tool confirmation failed:', error);
+    log.error({ err: error }, 'Tool confirmation failed');
     return createErrorResponse(`Confirmation failed: ${error.message}`);
   }
 };

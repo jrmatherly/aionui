@@ -12,7 +12,9 @@ import type { Express } from 'express';
 import express from 'express';
 import { networkInterfaces } from 'os';
 import csrf from 'tiny-csrf';
+import { correlationIdMiddleware } from './middleware/correlationId';
 import { errorHandler } from './middleware/errorHandler';
+import { requestLoggerMiddleware } from './middleware/requestLogger';
 import { attachCsrfToken } from './middleware/security';
 
 /**
@@ -62,6 +64,9 @@ const CSRF_SECRET = getCsrfSecret();
  * Configure basic middleware for Express app
  */
 export function setupBasicMiddleware(app: Express): void {
+  // Correlation ID (must be early for downstream middleware/logging)
+  app.use(correlationIdMiddleware);
+
   // Body parsers
   app.use(express.json({ limit: '10mb' }));
   app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -84,6 +89,9 @@ export function setupBasicMiddleware(app: Express): void {
   // Security middleware
   app.use(AuthMiddleware.securityHeadersMiddleware);
   app.use(AuthMiddleware.requestLoggingMiddleware);
+
+  // HTTP request/response logging (after auth for userId context)
+  app.use(requestLoggerMiddleware);
 }
 
 /**

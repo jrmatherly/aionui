@@ -14,6 +14,8 @@ declare global {
       scopedUserId?: string;
       cookies?: Record<string, string>;
       csrfToken?: () => string;
+      /** Correlation ID for request tracing (set by correlationIdMiddleware) */
+      id?: string;
     }
   }
 }

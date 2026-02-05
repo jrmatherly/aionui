@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { channelLogger } from '@/common/logger';
 import { getDatabase } from '@/process/database';
 import { getChannelMessageService } from '../agent/ChannelMessageService';
 import { ActionExecutor } from '../gateway/ActionExecutor';

@@ -5,10 +5,13 @@
  */
 
 import { acpDetector } from '@/agent/acp/AcpDetector';
+import { createLogger } from '@/common/logger';
 import type { TProviderWithModel } from '@/common/storage';
 import { ProcessConfig } from '@/process/initStorage';
 import { ConversationService } from '@/process/services/conversationService';
 import WorkerManage from '@/process/WorkerManage';
+
+const log = createLogger('SystemActions');
 import { getChannelMessageService } from '../agent/ChannelMessageService';
 import { getChannelManager } from '../core/ChannelManager';
 import type { AgentDisplayInfo } from '../plugins/telegram/TelegramKeyboards';
@@ -52,7 +55,7 @@ export async function getTelegramDefaultModel(): Promise<TProviderWithModel> {
       }
     }
   } catch (error) {
-    console.warn('[SystemActions] Failed to get saved model, using default:', error);
+    log.warn({ err: error }, 'Failed to get saved model, using default');
   }
 
   // Default fallback - minimal config for Gemini
@@ -100,9 +103,9 @@ export const handleSessionNew: ActionHandler = async (context) => {
     if (existingSession.conversationId) {
       try {
         WorkerManage.kill(existingSession.conversationId);
-        console.log(`[SystemActions] Killed old conversation: ${existingSession.conversationId}`);
+        log.info({ conversationId: existingSession.conversationId }, 'Killed old conversation');
       } catch (err) {
-        console.warn(`[SystemActions] Failed to kill old conversation:`, err);
+        log.warn({ err }, 'Failed to kill old conversation');
       }
     }
   }
@@ -359,9 +362,9 @@ export const handleAgentSelect: ActionHandler = async (context, params) => {
     if (existingSession.conversationId) {
       try {
         WorkerManage.kill(existingSession.conversationId);
-        console.log(`[SystemActions] Killed old conversation for agent switch: ${existingSession.conversationId}`);
+        log.info({ conversationId: existingSession.conversationId }, 'Killed old conversation for agent switch');
       } catch (err) {
-        console.warn(`[SystemActions] Failed to kill old conversation:`, err);
+        log.warn({ err }, 'Failed to kill old conversation');
       }
     }
   }
@@ -370,7 +373,7 @@ export const handleAgentSelect: ActionHandler = async (context, params) => {
   // Create new session with the selected agent type
   const session = sessionManager.createSession(context.channelUser, newAgentType);
 
-  console.log(`[SystemActions] Switched agent to ${newAgentType} for user ${context.channelUser.id}`);
+  log.info({ newAgentType, userId: context.channelUser.id }, 'Switched agent');
 
   const markup = context.platform === 'lark' ? createMainMenuCard() : createMainMenuKeyboard();
   return createSuccessResponse({

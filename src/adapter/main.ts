@@ -8,7 +8,10 @@ import type { BrowserWindow } from 'electron';
 import { ipcMain } from 'electron';
 
 import { bridge } from '@office-ai/platform';
+import { createLogger } from '@/common/logger';
 import { ADAPTER_BRIDGE_EVENT_KEY } from './constant';
+
+const log = createLogger('MainAdapter');
 
 /**
  * Bridge event data structure for IPC communication
@@ -73,7 +76,7 @@ bridge.adapter({
       try {
         broadcast(name, data);
       } catch (error) {
-        console.error('[MainAdapter] WebSocket broadcast error:', error);
+        log.error({ err: error }, 'WebSocket broadcast error');
       }
     }
   },
