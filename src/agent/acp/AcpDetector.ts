@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { acpLogger as log } from '@/common/logger';
 import { ProcessConfig } from '@/process/initStorage';
 import type { AcpBackendAll, PresetAgentType } from '@/types/acpTypes';
 import { POTENTIAL_ACP_CLIS } from '@/types/acpTypes';
@@ -60,7 +61,7 @@ class AcpDetector {
         // No custom agents configured - this is normal
         return;
       }
-      console.warn('[AcpDetector] Unexpected error loading custom agents:', error);
+      log.warn({ err: error }, 'Unexpected error loading custom agents');
     }
   }
 
@@ -70,7 +71,7 @@ class AcpDetector {
   async initialize(): Promise<void> {
     if (this.isDetected) return;
 
-    console.log('[ACP] Starting agent detection...');
+    log.info('Starting agent detection...');
     const startTime = Date.now();
 
     const isWindows = process.platform === 'win32';
@@ -150,7 +151,7 @@ class AcpDetector {
     this.isDetected = true;
 
     const elapsed = Date.now() - startTime;
-    console.log(`[ACP] Detection completed in ${elapsed}ms, found ${detected.length} agents`);
+    log.info({ elapsed, agentCount: detected.length }, 'Detection completed');
   }
 
   /**

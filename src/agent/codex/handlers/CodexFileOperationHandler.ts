@@ -7,9 +7,12 @@
 import type { ICodexMessageEmitter } from '@/agent/codex/messaging/CodexMessageEmitter';
 import { ipcBridge } from '@/common';
 import type { FileChange } from '@/common/codex/types';
+import { createLogger } from '@/common/logger';
 import { uuid } from '@/common/utils';
 import fs from 'fs/promises';
 import path from 'path';
+
+const log = createLogger('CodexFileHandler');
 
 export interface FileOperation {
   method: string;
@@ -91,7 +94,7 @@ export class CodexFileOperationHandler {
 
       ipcBridge.fileStream.contentUpdate.emit(eventData);
     } catch (error) {
-      console.error('[CodexFileOperationHandler] ❌ Failed to emit file stream update:', error);
+      log.error({ err: error }, 'Failed to emit file stream update');
     }
 
     // Send operation feedback message
@@ -145,7 +148,7 @@ export class CodexFileOperationHandler {
           operation: 'delete',
         });
       } catch (error) {
-        console.error('[CodexFileOperationHandler] Failed to emit file stream delete:', error);
+        log.error({ err: error }, 'Failed to emit file stream delete');
       }
 
       // Send operation feedback message

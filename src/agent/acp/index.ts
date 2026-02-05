@@ -8,6 +8,7 @@ import { AcpAdapter } from '@/agent/acp/AcpAdapter';
 import { extractAtPaths, parseAllAtCommands, reconstructQuery } from '@/common/atCommandParser';
 import type { TMessage } from '@/common/chatLib';
 import type { IResponseMessage } from '@/common/ipcBridge';
+import { acpLogger as log } from '@/common/logger';
 import { NavigationInterceptor } from '@/common/navigation';
 import { uuid } from '@/common/utils';
 import type { AcpBackend, AcpPermissionRequest, AcpResult, AcpSessionUpdate, ToolCallUpdate } from '@/types/acpTypes';
@@ -204,7 +205,7 @@ export class AcpAgent {
             await this.connection.setModel(configuredModel);
           } catch (error) {
             // Log warning but don't fail - fallback to default model
-            console.warn(`[ACP] Failed to set model from settings: ${error instanceof Error ? error.message : String(error)}`);
+            log.warn({ err: error }, 'Failed to set model from settings');
           }
         }
       }
@@ -366,7 +367,7 @@ export class AcpAgent {
         } catch (error) {
           // Binary files (images, etc.) cannot be read as text
           // Keep the @ reference as-is, let CLI handle it
-          console.warn(`[ACP] Skipping binary file ${atPath} (will be handled by CLI)`);
+          log.warn({ atPath }, 'Skipping binary file (will be handled by CLI)');
         }
       }
     }
@@ -853,7 +854,7 @@ export class AcpAgent {
   // Add kill method for compatibility with WorkerManage
   kill(): void {
     this.stop().catch((error) => {
-      console.error('Error stopping ACP agent:', error);
+      log.error({ err: error }, 'Error stopping ACP agent');
     });
   }
 
@@ -890,7 +891,7 @@ export class AcpAgent {
       await new Promise<void>((resolve, reject) => {
         loginProcess.on('close', (code) => {
           if (code === 0) {
-            console.log(`${backend} authentication refreshed`);
+            log.info({ backend }, 'Authentication refreshed');
             resolve();
           } else {
             reject(new Error(`${backend} login failed with code ${code}`));
@@ -900,7 +901,7 @@ export class AcpAgent {
         loginProcess.on('error', reject);
       });
     } catch (error) {
-      console.warn(`${backend} auth refresh failed, will try to connect anyway:`, error);
+      log.warn({ err: error, backend }, 'Auth refresh failed, will try to connect anyway');
       // Don't throw error, let connection attempt continue
     }
   }

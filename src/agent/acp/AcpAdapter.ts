@@ -5,6 +5,7 @@
  */
 
 import type { IMessageAcpToolCall, IMessagePlan, IMessageText, TMessage } from '@/common/chatLib';
+import { acpLogger as log } from '@/common/logger';
 import { uuid } from '@/common/utils';
 import type { AcpBackend, AcpSessionUpdate, AgentMessageChunkUpdate, AgentThoughtChunkUpdate, AvailableCommandsUpdate, PlanUpdate, ToolCallUpdate, ToolCallUpdateStatus } from '@/types/acpTypes';
 
@@ -114,7 +115,7 @@ export class AcpAdapter {
       default: {
         // Handle unexpected session update types
         const unknownUpdate = update as { sessionUpdate?: string };
-        console.warn('Unknown session update type:', unknownUpdate.sessionUpdate);
+        log.warn({ sessionUpdate: unknownUpdate.sessionUpdate }, 'Unknown session update type');
         break;
       }
     }
@@ -206,7 +207,7 @@ export class AcpAdapter {
     // Get existing message
     const existingMessage = this.activeToolCalls.get(toolCallId);
     if (!existingMessage) {
-      console.warn(`No existing tool call found for ID: ${toolCallId}`);
+      log.warn({ toolCallId }, 'No existing tool call found');
       return null;
     }
 

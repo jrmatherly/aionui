@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { acpLogger as log } from '@/common/logger';
 import type { AcpBackend, AcpIncomingMessage, AcpMessage, AcpNotification, AcpPermissionRequest, AcpRequest, AcpResponse, AcpSessionUpdate } from '@/types/acpTypes';
 import { ACP_METHODS, JSONRPC_VERSION } from '@/types/acpTypes';
 import type { ChildProcess, SpawnOptions } from 'child_process';
@@ -71,11 +72,11 @@ function loadShellEnvironment(): Record<string, string> {
     }
 
     if (cachedShellEnv.PATH) {
-      console.log('[ACP] Loaded PATH from shell:', cachedShellEnv.PATH.substring(0, 100) + '...');
+      log.debug({ pathPreview: cachedShellEnv.PATH.substring(0, 100) + '...' }, 'Loaded PATH from shell');
     }
   } catch (error) {
     // Silent fail - shell environment loading is best-effort
-    console.warn('[ACP] Failed to load shell environment:', error instanceof Error ? error.message : String(error));
+    log.warn({ err: error }, 'Failed to load shell environment');
   }
 
   return cachedShellEnv;
@@ -99,7 +100,7 @@ export function getEnhancedEnv(customEnv?: Record<string, string>, userId?: stri
       const service = getUserApiKeyService();
       userApiKeys = service.getEnvForUser(userId);
     } catch (e) {
-      console.warn('[ACP] Failed to load user API keys:', e);
+      log.warn({ err: e }, 'Failed to load user API keys');
     }
   }
 
@@ -243,7 +244,7 @@ export class AcpConnection {
   private async connectClaude(workingDir: string = process.cwd(), userId?: string): Promise<void> {
     // Use NPX to run Claude Code ACP bridge directly from npm registry
     // This eliminates dependency packaging issues and simplifies deployment
-    console.error('[ACP] Using NPX approach for Claude ACP bridge');
+    log.info('Using NPX approach for Claude ACP bridge');
 
     // Use enhanced env with shell variables and per-user API keys, then clean up Node.js debugging vars
     const cleanEnv = getEnhancedEnv(undefined, userId);
@@ -270,7 +271,7 @@ export class AcpConnection {
     let spawnError: Error | null = null;
 
     this.child.stderr?.on('data', (data) => {
-      console.error(`[ACP ${backend} STDERR]:`, data.toString());
+      log.error({ backend, stderr: data.toString() }, 'Process stderr output');
     });
 
     this.child.on('error', (error) => {
@@ -279,7 +280,7 @@ export class AcpConnection {
 
     // Exit handler for both startup and runtime phases
     this.child.on('exit', (code, signal) => {
-      console.error(`[ACP ${backend}] Process exited with code: ${code}, signal: ${signal}`);
+      log.error({ backend, code, signal }, 'Process exited');
 
       if (!this.isSetupComplete) {
         // Startup phase - set error for initial check
@@ -612,7 +613,7 @@ export class AcpConnection {
       };
     } catch (error) {
       // Handle timeout or other error cases, default to reject
-      console.error('Permission request failed:', error);
+      log.error({ err: error }, 'Permission request failed');
       return {
         outcome: {
           outcome: 'rejected',
@@ -655,7 +656,7 @@ export class AcpConnection {
         };
         ipcBridge.fileStream.contentUpdate.emit(eventData);
       } catch (emitError) {
-        console.error('[AcpConnection] ❌ Failed to emit file stream update:', emitError);
+        log.error({ err: emitError }, 'Failed to emit file stream update');
       }
 
       return null;
@@ -735,7 +736,7 @@ export class AcpConnection {
         return relative.length === 0 ? defaultPath : relative;
       }
     } catch (error) {
-      console.warn('[ACP] Failed to normalize cwd for agent, using default "."', error);
+      log.warn({ err: error }, 'Failed to normalize cwd for agent, using default "."');
     }
 
     return defaultPath;
