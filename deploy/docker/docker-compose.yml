@@ -52,6 +52,16 @@ services:
       - NODE_ENV=${NODE_ENV:-production}
       - DISPLAY_NUM=${DISPLAY_NUM:-99}
       - SCREEN_RESOLUTION=${SCREEN_RESOLUTION:-1024x768x24}
+      # Logging
+      - LOG_LEVEL=${LOG_LEVEL:-}
+      - LOG_FORMAT=${LOG_FORMAT:-}
+      - LOG_FILE=${LOG_FILE:-}
+      # OpenTelemetry (OTEL)
+      - OTEL_ENABLED=${OTEL_ENABLED:-false}
+      - OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_EXPORTER_OTLP_ENDPOINT:-}
+      - OTEL_EXPORTER_OTLP_PROTOCOL=${OTEL_EXPORTER_OTLP_PROTOCOL:-http}
+      - OTEL_SERVICE_NAME=${OTEL_SERVICE_NAME:-aionui}
+      - OTEL_LOG_LEVEL=${OTEL_LOG_LEVEL:-}
       # Security (set in .env for production)
       - JWT_SECRET=${JWT_SECRET}
       - AIONUI_ADMIN_PASSWORD=${AIONUI_ADMIN_PASSWORD:-}

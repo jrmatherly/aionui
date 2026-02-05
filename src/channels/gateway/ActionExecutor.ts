@@ -5,8 +5,11 @@
  */
 
 import type { TMessage } from '@/common/chatLib';
+import { createLogger } from '@/common/logger';
 import { getDatabase } from '@/process/database';
 import { ConversationService } from '@/process/services/conversationService';
+
+const log = createLogger('ActionExecutor');
 import { buildChatErrorResponse, chatActions } from '../actions/ChatActions';
 import { handlePairingShow, platformActions } from '../actions/PlatformActions';
 import { getTelegramDefaultModel, systemActions } from '../actions/SystemActions';
@@ -242,12 +245,12 @@ export class ActionExecutor {
   private async handleIncomingMessage(message: IUnifiedIncomingMessage): Promise<void> {
     const { platform, chatId, user, content, action } = message;
 
-    console.log(`[ActionExecutor] Processing message from ${platform}:${user.id}`, JSON.stringify(message));
+    log.debug({ platform, userId: user.id, message }, 'Processing message');
 
     // Get plugin for sending responses
     const plugin = this.getPluginForMessage(message);
     if (!plugin) {
-      console.error(`[ActionExecutor] No plugin found for platform: ${platform}`);
+      log.error({ platform }, 'No plugin found for platform');
       return;
     }
 
@@ -267,7 +270,7 @@ export class ActionExecutor {
     try {
       // Check if user is authorized
       const isAuthorized = this.pairingService.isUserAuthorized(user.id, platform);
-      console.log(`[ActionExecutor] User ${user.id} authorized: ${isAuthorized}`);
+      log.debug({ userId: user.id, isAuthorized }, 'User authorization check');
 
       // Handle /start command - always show pairing
       if (content.type === 'command' && content.text === '/start') {
@@ -293,7 +296,7 @@ export class ActionExecutor {
       const channelUser = userResult.data;
 
       if (!channelUser) {
-        console.error(`[ActionExecutor] Authorized user not found in database: ${user.id}`);
+        log.error({ userId: user.id }, 'Authorized user not found in database');
         await context.sendMessage({
           type: 'text',
           text: '❌ User data error. Please re-pair your account.',
@@ -321,9 +324,9 @@ export class ActionExecutor {
 
         if (result.success && result.conversation) {
           session = this.sessionManager.createSessionWithConversation(channelUser, result.conversation.id);
-          console.log(`[ActionExecutor] Using conversation via ConversationService: ${result.conversation.id}`);
+          log.info({ conversationId: result.conversation.id }, 'Using conversation via ConversationService');
         } else {
-          console.error(`[ActionExecutor] Failed to create conversation: ${result.error}`);
+          log.error({ error: result.error }, 'Failed to create conversation');
           await context.sendMessage({
             type: 'text',
             text: `❌ Failed to create session: ${result.error || 'Unknown error'}`,
@@ -336,10 +339,10 @@ export class ActionExecutor {
       context.conversationId = session.conversationId;
 
       // Route based on action or content
-      console.log(`[ActionExecutor] Routing - action:`, action, `content.type:`, content.type);
+      log.debug({ action, contentType: content.type }, 'Routing message');
       if (action) {
         // Explicit action from button press
-        console.log(`[ActionExecutor] Executing action: ${action.name} with params:`, action.params);
+        log.debug({ actionName: action.name, params: action.params }, 'Executing action');
         await this.executeAction(context, action.name, action.params);
       } else if (content.type === 'action') {
         // Action encoded in content
@@ -357,7 +360,7 @@ export class ActionExecutor {
         });
       }
     } catch (error: any) {
-      console.error(`[ActionExecutor] Error handling message:`, error);
+      log.error({ err: error }, 'Error handling message');
       await context.sendMessage({
         type: 'text',
         text: `❌ Error processing message: ${error.message}`,
@@ -374,7 +377,7 @@ export class ActionExecutor {
     const action = this.actionRegistry.get(actionName);
 
     if (!action) {
-      console.warn(`[ActionExecutor] Unknown action: ${actionName}`);
+      log.warn({ actionName }, 'Unknown action');
       await context.sendMessage({
         type: 'text',
         text: `Unknown action: ${actionName}`,
@@ -383,7 +386,7 @@ export class ActionExecutor {
       return;
     }
 
-    console.log(`[ActionExecutor] Executing action: ${actionName}`);
+    log.info({ actionName }, 'Executing action');
 
     try {
       const result = await action.handler(context, params);
@@ -392,7 +395,7 @@ export class ActionExecutor {
         await context.sendMessage(result.message);
       }
     } catch (error: any) {
-      console.error(`[ActionExecutor] Action ${actionName} failed:`, error);
+      log.error({ err: error, actionName }, 'Action failed');
       await context.sendMessage({
         type: 'text',
         text: `❌ Action failed: ${error.message}`,
@@ -447,7 +450,7 @@ export class ActionExecutor {
           await context.editMessage(targetMsgId, msg);
         } catch (editError) {
           // Ignore edit errors (message not modified, etc.)
-          console.debug('[ActionExecutor] Edit error (ignored):', editError);
+          log.debug({ err: editError }, 'Edit error (ignored)');
         }
       };
 
@@ -461,16 +464,16 @@ export class ActionExecutor {
         // Save last message content
         lastMessageContent = outgoingMessage;
 
-        console.log(`[ActionExecutor] Stream callback - isInsert: ${isInsert}, msg_id: ${message.msg_id}, type: ${message.type}, sentMessageIds count: ${sentMessageIds.length}`);
+        log.debug({ isInsert, msgId: message.msg_id, type: message.type, sentCount: sentMessageIds.length }, 'Stream callback');
 
         // IMPORTANT: Always treat first streaming message as update to thinking message
         // This prevents async race condition where first insert's sendMessage takes time
         // while subsequent messages arrive and get processed as updates
         if (isInsert && sentMessageIds.length === 1) {
           // First streaming message: update thinking message instead of inserting
-          console.log(`[ActionExecutor] First streaming message, updating thinking message instead of inserting`);
+          log.debug('First streaming message, updating thinking message instead of inserting');
           const targetMsgId = sentMessageIds[0] || thinkingMsgId;
-          console.log(`[ActionExecutor] Updating message, targetMsgId: ${targetMsgId}, content preview: ${outgoingMessage.text?.slice(0, 50)}`);
+          log.debug({ targetMsgId, preview: outgoingMessage.text?.slice(0, 50) }, 'Updating message');
           pendingMessage = outgoingMessage;
 
           if (now - lastUpdateTime >= UPDATE_THROTTLE_MS) {
@@ -497,14 +500,14 @@ export class ActionExecutor {
           try {
             const newMsgId = await context.sendMessage(outgoingMessage);
             sentMessageIds.push(newMsgId);
-            console.log(`[ActionExecutor] Inserted new message, newMsgId: ${newMsgId}, total messages: ${sentMessageIds.length}`);
+            log.debug({ newMsgId, totalCount: sentMessageIds.length }, 'Inserted new message');
           } catch (sendError) {
-            console.debug('[ActionExecutor] Send error (ignored):', sendError);
+            log.debug({ err: sendError }, 'Send error (ignored)');
           }
         } else {
           // Update message: throttle with timer to ensure last message is sent
           const targetMsgId = sentMessageIds[sentMessageIds.length - 1] || thinkingMsgId;
-          console.log(`[ActionExecutor] Updating message, targetMsgId: ${targetMsgId}, content preview: ${outgoingMessage.text?.slice(0, 50)}`);
+          log.debug({ targetMsgId, preview: outgoingMessage.text?.slice(0, 50) }, 'Updating message');
           pendingMessage = outgoingMessage;
 
           if (now - lastUpdateTime >= UPDATE_THROTTLE_MS) {
@@ -541,7 +544,7 @@ export class ActionExecutor {
         try {
           await doEditMessage(pendingMessage);
         } catch (error) {
-          console.debug('[ActionExecutor] Final pending message edit error (ignored):', error);
+          log.debug({ err: error }, 'Final pending message edit error (ignored)');
         }
         pendingMessage = null;
       }
@@ -557,7 +560,7 @@ export class ActionExecutor {
         // Ignore final edit error
       }
     } catch (error: any) {
-      console.error(`[ActionExecutor] Chat processing failed:`, error);
+      log.error({ err: error }, 'Chat processing failed');
 
       // Update message with error
       const errorResponse = buildChatErrorResponse(error.message);

@@ -31,6 +31,7 @@
  */
 
 import pino from 'pino';
+import { trace, context } from '@opentelemetry/api';
 
 // ============================================================
 // Configuration
@@ -115,6 +116,36 @@ function buildTransport(): pino.TransportMultiOptions | pino.TransportSingleOpti
 }
 
 // ============================================================
+// OpenTelemetry Integration
+// ============================================================
+
+/**
+ * Pino mixin that injects OpenTelemetry trace context into every log.
+ *
+ * Adds traceId and spanId from the active OTEL span, enabling correlation
+ * between structured logs and distributed traces in observability platforms
+ * (Datadog, New Relic, Honeycomb, etc.).
+ *
+ * When OTEL is disabled or no active span exists, returns empty object.
+ */
+function otelMixin(): Record<string, string> {
+  try {
+    const activeContext = context.active();
+    const span = trace.getSpan(activeContext);
+    if (span) {
+      const spanContext = span.spanContext();
+      return {
+        traceId: spanContext.traceId,
+        spanId: spanContext.spanId,
+      };
+    }
+  } catch {
+    // OTEL not initialized or error accessing span - silently ignore
+  }
+  return {};
+}
+
+// ============================================================
 // Logger instances
 // ============================================================
 
@@ -129,6 +160,8 @@ export const logger: pino.Logger = pino({
   base: {
     service: 'aionui',
   },
+  // Mixin to inject OpenTelemetry trace context
+  mixin: otelMixin,
   // Serialize Error objects properly
   serializers: {
     err: pino.stdSerializers.err,

@@ -4,9 +4,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { createLogger } from '@/common/logger';
 import { uuid } from '@/common/utils';
 import { getDatabase } from '@/process/database';
 import type { ChannelAgentType, IChannelSession, IChannelUser, PluginType } from '../types';
+
+const log = createLogger('SessionManager');
 
 /**
  * SessionManager - Manages user sessions for the Personal Assistant
@@ -35,7 +38,7 @@ export class SessionManager {
       for (const session of result.data) {
         this.activeSessions.set(session.userId, session);
       }
-      console.log(`[SessionManager] Loaded ${this.activeSessions.size} active session(s)`);
+      log.info({ count: this.activeSessions.size }, 'Loaded active session(s)');
     }
   }
 
@@ -79,7 +82,7 @@ export class SessionManager {
     // Clear existing session if any
     const existingSession = this.activeSessions.get(user.id);
     if (existingSession) {
-      console.log(`[SessionManager] Clearing existing session for user ${user.id}`);
+      log.info({ userId: user.id }, 'Clearing existing session for user');
       db.deleteChannelSession(existingSession.id);
     }
 
@@ -104,7 +107,7 @@ export class SessionManager {
     // Update user's session reference
     db.getChannelUserByPlatform(user.platformUserId, user.platformType);
 
-    console.log(`[SessionManager] Created new session ${session.id} with conversation ${conversationId} for user ${user.id}`);
+    log.info({ sessionId: session.id, conversationId, userId: user.id }, 'Created new session');
     return session;
   }
 
@@ -124,7 +127,7 @@ export class SessionManager {
     }
 
     if (!session) {
-      console.warn(`[SessionManager] Session ${sessionId} not found`);
+      log.warn({ sessionId }, 'Session not found');
       return false;
     }
 
@@ -135,7 +138,7 @@ export class SessionManager {
     // Save to database
     db.upsertChannelSession(session);
 
-    console.log(`[SessionManager] Updated session ${sessionId} with conversation ${conversationId}`);
+    log.info({ sessionId, conversationId }, 'Updated session with conversation');
     return true;
   }
 
@@ -165,7 +168,7 @@ export class SessionManager {
     db.deleteChannelSession(session.id);
     this.activeSessions.delete(userId);
 
-    console.log(`[SessionManager] Cleared session for user ${userId}`);
+    log.info({ userId }, 'Cleared session for user');
     return true;
   }
 
@@ -196,7 +199,7 @@ export class SessionManager {
     db.deleteChannelSession(foundSession.id);
     this.activeSessions.delete(foundUserId);
 
-    console.log(`[SessionManager] Cleared session ${foundSession.id} for conversation ${conversationId}`);
+    log.info({ sessionId: foundSession.id, conversationId }, 'Cleared session for conversation');
     return foundSession;
   }
 
@@ -231,7 +234,7 @@ export class SessionManager {
     }
 
     if (cleaned > 0) {
-      console.log(`[SessionManager] Cleaned up ${cleaned} stale session(s)`);
+      log.info({ count: cleaned }, 'Cleaned up stale session(s)');
     }
 
     return cleaned;
