@@ -29,7 +29,7 @@ const API_PATH_PATTERNS = [
 ];
 
 export function initModelBridge(): void {
-  ipcBridge.mode.fetchModelList.provider(async function fetchModelList({ base_url, api_key, try_fix, platform }): Promise<{ success: boolean; msg?: string; data?: { mode: Array<string>; fix_base_url?: string } }> {
+  ipcBridge.mode.fetchModelList.provider(async function fetchModelList({ base_url, api_key, try_fix, platform, custom_headers }): Promise<{ success: boolean; msg?: string; data?: { mode: Array<string>; fix_base_url?: string } }> {
     // If multiple keys (comma or newline separated), use only the first one
     let actualApiKey = api_key;
     if (api_key && (api_key.includes(',') || api_key.includes('\n'))) {
@@ -91,6 +91,7 @@ export function initModelBridge(): void {
       // Use custom User-Agent to avoid some API proxies (like packyapi) blocking OpenAI SDK's default User-Agent
       defaultHeaders: {
         'User-Agent': 'AionUI/1.0',
+        ...(custom_headers || {}),
       },
     });
 

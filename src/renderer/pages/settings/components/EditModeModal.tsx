@@ -77,7 +77,12 @@ const EditModeModal = ModalHOC<{ data?: IProvider; onChange(data: IProvider): vo
 
   useEffect(() => {
     if (data) {
-      form.setFieldsValue(data);
+      // Serialize customHeaders object to JSON string for the textarea
+      const formData = {
+        ...data,
+        customHeaders: data.customHeaders ? JSON.stringify(data.customHeaders, null, 2) : '',
+      };
+      form.setFieldsValue(formData);
     }
   }, [data]);
 
@@ -90,7 +95,16 @@ const EditModeModal = ModalHOC<{ data?: IProvider; onChange(data: IProvider): vo
       contentStyle={{ background: 'var(--bg-1)', borderRadius: 16, padding: '20px 24px 16px', overflow: 'auto' }}
       onOk={async () => {
         const values = await form.validate();
-        props.onChange({ ...(data || {}), ...values });
+        // Parse customHeaders from JSON string back to object
+        let customHeaders: Record<string, string> | undefined;
+        if (values.customHeaders?.trim()) {
+          try {
+            customHeaders = JSON.parse(values.customHeaders);
+          } catch {
+            return; // Invalid JSON, don't save
+          }
+        }
+        props.onChange({ ...(data || {}), ...values, customHeaders });
         modalCtrl.close();
       }}
       okText={t('common.save')}
@@ -113,13 +127,18 @@ const EditModeModal = ModalHOC<{ data?: IProvider; onChange(data: IProvider): vo
             <Input placeholder={t('settings.modelProvider')} />
           </Form.Item>
 
-          {/* Base URL - only for Gemini platform (for custom proxy) */}
-          <Form.Item label={t('settings.baseUrl')} required={data?.platform !== 'gemini' && data?.platform !== 'gemini-vertex-ai'} rules={[{ required: data?.platform !== 'gemini' && data?.platform !== 'gemini-vertex-ai' }]} field={'baseUrl'} disabled>
-            <Input></Input>
+          {/* Base URL / Endpoint URL */}
+          <Form.Item label={t('settings.baseUrl')} required={data?.platform !== 'gemini' && data?.platform !== 'gemini-vertex-ai'} rules={[{ required: data?.platform !== 'gemini' && data?.platform !== 'gemini-vertex-ai' }]} field={'baseUrl'}>
+            <Input placeholder='https://api.example.com/v1' />
           </Form.Item>
 
           <Form.Item label={t('settings.apiKey')} required rules={[{ required: true }]} field={'apiKey'} extra={<div className='text-11px text-t-secondary mt-2'>💡 {t('settings.multiApiKeyEditTip')}</div>}>
             <Input.TextArea rows={4} placeholder={t('settings.apiKeyPlaceholder')} />
+          </Form.Item>
+
+          {/* Custom Headers */}
+          <Form.Item label='Custom Headers' field={'customHeaders'} extra={<div className='text-11px text-t-secondary mt-2'>Optional JSON headers for LLM gateway routing/auth</div>}>
+            <Input.TextArea rows={3} placeholder='{"header-name": "header-value"}' />
           </Form.Item>
         </Form>
       </div>

@@ -95,11 +95,11 @@ const sortGeminiModels = (models: { label: string; value: string }[]) => {
   });
 };
 
-const useModeModeList = (platform: string, base_url?: string, api_key?: string, try_fix?: boolean) => {
+const useModeModeList = (platform: string, base_url?: string, api_key?: string, try_fix?: boolean, custom_headers?: Record<string, string>) => {
   return useSWR([platform + '/models', { platform, base_url, api_key, try_fix }], async ([_url, { platform, base_url, api_key, try_fix }]): Promise<{ models: { label: string; value: string }[]; fix_base_url?: string }> => {
     // If API key or base_url is available, try to fetch model list via API
     if (api_key || base_url) {
-      const res = await ipcBridge.mode.fetchModelList.invoke({ base_url, api_key, try_fix, platform });
+      const res = await ipcBridge.mode.fetchModelList.invoke({ base_url, api_key, try_fix, platform, custom_headers });
       if (res.success) {
         let modelList =
           res.data?.mode.map((v) => ({

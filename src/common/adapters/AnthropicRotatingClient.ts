@@ -14,6 +14,7 @@ export interface AnthropicClientConfig {
   model?: string;
   baseURL?: string;
   timeout?: number;
+  defaultHeaders?: Record<string, string>;
 }
 
 export class AnthropicRotatingClient extends RotatingApiClient<Anthropic> {
@@ -34,6 +35,10 @@ export class AnthropicRotatingClient extends RotatingApiClient<Anthropic> {
 
       if (config.timeout) {
         clientConfig.timeout = config.timeout;
+      }
+
+      if (config.defaultHeaders) {
+        clientConfig.defaultHeaders = config.defaultHeaders;
       }
 
       return new Anthropic(clientConfig);

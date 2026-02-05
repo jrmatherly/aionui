@@ -54,6 +54,7 @@ const AddPlatformModal = ModalHOC<{
   const platformValue = Form.useWatch('platform', form);
   const baseUrl = Form.useWatch('baseUrl', form);
   const apiKey = Form.useWatch('apiKey', form);
+  const customHeadersRaw = Form.useWatch('customHeaders', form);
 
   // Get current selected platform config
   const selectedPlatform = useMemo(() => getPlatformByValue(platformValue), [platformValue]);
@@ -63,13 +64,30 @@ const AddPlatformModal = ModalHOC<{
   const isCustom = isCustomOption(platformValue);
   const isGemini = isGeminiPlatform(platform);
 
+  // Show base URL field for custom, gemini, and gateway/proxy providers
+  const showBaseUrl = isCustom || platformValue === 'gemini' || !!selectedPlatform?.requiresBaseUrl || ['LiteLLM', 'Portkey', 'AzureOpenAI', 'AzureAIFoundry', 'KongAI', 'AgentGateway', 'EnvoyAI'].includes(platformValue);
+  // Base URL is required when no usable preset exists
+  const requiresBaseUrl = isCustom || !!selectedPlatform?.requiresBaseUrl;
+  // Show custom headers for gateway providers or when platform has default headers
+  const showCustomHeaders = isCustom || !!selectedPlatform?.defaultHeaders || ['Portkey', 'EnvoyAI'].includes(platformValue);
+
   // Calculate actual baseUrl (prefer user input, fallback to platform preset)
   const actualBaseUrl = useMemo(() => {
     if (baseUrl) return baseUrl;
     return selectedPlatform?.baseUrl || '';
   }, [baseUrl, selectedPlatform?.baseUrl]);
 
-  const modelListState = useModeModeList(platform, actualBaseUrl, apiKey, true);
+  // Parse custom headers for model list fetching (safe parse, ignore invalid JSON)
+  const parsedCustomHeaders = useMemo(() => {
+    if (!customHeadersRaw?.trim()) return undefined;
+    try {
+      return JSON.parse(customHeadersRaw) as Record<string, string>;
+    } catch {
+      return undefined;
+    }
+  }, [customHeadersRaw]);
+
+  const modelListState = useModeModeList(platform, actualBaseUrl, apiKey, true, parsedCustomHeaders);
 
   // Protocol detection hook
   // Enable detection when:
@@ -131,6 +149,18 @@ const AddPlatformModal = ModalHOC<{
       .then((values) => {
         // If i18nKey exists use translated name, otherwise use platform name
         const name = selectedPlatform?.i18nKey ? t(selectedPlatform.i18nKey) : (selectedPlatform?.name ?? values.platform);
+
+        // Parse custom headers from JSON string (if provided)
+        let customHeaders: Record<string, string> | undefined;
+        if (values.customHeaders?.trim()) {
+          try {
+            customHeaders = JSON.parse(values.customHeaders);
+          } catch {
+            message.error('Invalid JSON format in Custom Headers');
+            return;
+          }
+        }
+
         onSubmit({
           id: uuid(),
           platform: selectedPlatform?.platform ?? 'custom',
@@ -139,6 +169,7 @@ const AddPlatformModal = ModalHOC<{
           baseUrl: values.baseUrl || selectedPlatform?.baseUrl || '',
           apiKey: values.apiKey,
           model: [values.model],
+          customHeaders,
         });
         modalCtrl.close();
       })
@@ -182,10 +213,10 @@ const AddPlatformModal = ModalHOC<{
             </Select>
           </Form.Item>
 
-          {/* Base URL - only for Custom option and standard Gemini */}
-          <Form.Item hidden={!isCustom && platformValue !== 'gemini'} label={t('settings.baseUrl')} field={'baseUrl'} required={isCustom} rules={[{ required: isCustom }]}>
+          {/* Base URL - shown for Custom, Gemini, and gateway/proxy providers */}
+          <Form.Item hidden={!showBaseUrl} label={t('settings.baseUrl')} field={'baseUrl'} required={requiresBaseUrl} rules={[{ required: requiresBaseUrl }]}>
             <Input
-              placeholder={selectedPlatform?.baseUrl || ''}
+              placeholder={selectedPlatform?.baseUrlPlaceholder || selectedPlatform?.baseUrl || 'https://api.example.com/v1'}
               onBlur={() => {
                 void modelListState.mutate();
               }}
@@ -213,6 +244,29 @@ const AddPlatformModal = ModalHOC<{
               suffix={<Edit theme='outline' size={16} className='cursor-pointer text-t-secondary hover:text-t-primary flex' onClick={() => setApiKeyEditorVisible(true)} />}
             />
           </Form.Item>
+
+          {/* Custom Headers — for gateway/proxy providers */}
+          {showCustomHeaders && (
+            <Form.Item
+              label='Custom Headers'
+              field={'customHeaders'}
+              extra={
+                <div className='text-11px text-t-secondary mt-2 leading-4'>
+                  Optional HTTP headers for gateway routing/auth (JSON format).
+                  {selectedPlatform?.helpUrl && (
+                    <>
+                      {' '}
+                      <a href={selectedPlatform.helpUrl} target='_blank' rel='noopener noreferrer' className='text-[rgb(var(--primary-6))]'>
+                        Provider docs →
+                      </a>
+                    </>
+                  )}
+                </div>
+              }
+            >
+              <Input.TextArea rows={3} placeholder={selectedPlatform?.defaultHeaders ? JSON.stringify(selectedPlatform.defaultHeaders, null, 2) : '{"header-name": "header-value"}'} />
+            </Form.Item>
+          )}
 
           {/* Model Selection */}
           <Form.Item label={t('settings.modelName')} field={'model'} required rules={[{ required: true }]} validateStatus={modelListState.error ? 'error' : 'success'} help={modelListState.error}>
@@ -258,6 +312,7 @@ const AddPlatformModal = ModalHOC<{
               base_url: actualBaseUrl,
               api_key: key,
               platform: selectedPlatform?.platform ?? 'custom',
+              custom_headers: parsedCustomHeaders,
             });
             // Strict check: success is true and model list is returned
             return res.success === true && Array.isArray(res.data?.mode) && res.data.mode.length > 0;

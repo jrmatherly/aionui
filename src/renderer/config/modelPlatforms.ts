@@ -36,28 +36,34 @@ import XaiLogo from '@/renderer/assets/logos/xai.svg';
 // import ZhipuLogo from '@/renderer/assets/logos/zhipu.svg';
 
 /**
- * 平台类型
- * Platform type
+ * Platform type — determines which API protocol and auth method to use
  */
 export type PlatformType = 'gemini' | 'gemini-vertex-ai' | 'anthropic' | 'custom';
 
 /**
- * 模型平台配置接口
  * Model Platform Configuration Interface
  */
 export interface PlatformConfig {
-  /** 平台名称 / Platform name */
+  /** Platform display name */
   name: string;
-  /** 平台值（用于表单） / Platform value (for form) */
+  /** Platform value (used in form submission) */
   value: string;
-  /** Logo 路径 / Logo path */
+  /** Logo path (null shows default icon) */
   logo: string | null;
-  /** 平台标识 / Platform identifier */
+  /** Platform identifier — determines API protocol */
   platform: PlatformType;
-  /** Base URL（预设供应商使用） / Base URL (for preset providers) */
+  /** Preset base URL for the provider */
   baseUrl?: string;
-  /** 国际化 key（可选，用于需要翻译的平台名称） / i18n key (optional, for platform names that need translation) */
+  /** i18n key (optional, for translated platform names) */
   i18nKey?: string;
+  /** Help URL for provider documentation */
+  helpUrl?: string;
+  /** Whether this provider requires a user-provided base URL (no usable preset) */
+  requiresBaseUrl?: boolean;
+  /** Placeholder text for the base URL input field */
+  baseUrlPlaceholder?: string;
+  /** Default custom headers template (pre-filled for gateways that need headers) */
+  defaultHeaders?: Record<string, string>;
 }
 
 /**
@@ -68,13 +74,78 @@ export interface PlatformConfig {
  * Hidden providers are commented out for easy re-enablement.
  */
 export const MODEL_PLATFORMS: PlatformConfig[] = [
-  // ===== Providers (alphabetical) =====
+  // ===== Direct Providers (alphabetical) =====
   { name: 'Anthropic', value: 'Anthropic', logo: AnthropicLogo, platform: 'anthropic', baseUrl: 'https://api.anthropic.com' },
+  {
+    name: 'Azure AI Foundry',
+    value: 'AzureAIFoundry',
+    logo: null,
+    platform: 'custom',
+    requiresBaseUrl: true,
+    baseUrlPlaceholder: 'https://{resource}.services.ai.azure.com/api/projects/{project}/openai/v1',
+    helpUrl: 'https://learn.microsoft.com/en-us/azure/ai-foundry/',
+  },
+  {
+    name: 'Azure OpenAI',
+    value: 'AzureOpenAI',
+    logo: null,
+    platform: 'custom',
+    requiresBaseUrl: true,
+    baseUrlPlaceholder: 'https://{resource}.openai.azure.com/openai/v1',
+    helpUrl: 'https://learn.microsoft.com/en-us/azure/ai-foundry/openai/',
+  },
   { name: 'Gemini', value: 'gemini', logo: GeminiLogo, platform: 'gemini', baseUrl: 'https://generativelanguage.googleapis.com/v1beta' },
   { name: 'Gemini (Vertex AI)', value: 'gemini-vertex-ai', logo: GeminiLogo, platform: 'gemini-vertex-ai' },
   { name: 'OpenAI', value: 'OpenAI', logo: OpenAILogo, platform: 'custom', baseUrl: 'https://api.openai.com/v1' },
   { name: 'OpenRouter', value: 'OpenRouter', logo: OpenRouterLogo, platform: 'custom', baseUrl: 'https://openrouter.ai/api/v1' },
   { name: 'xAI', value: 'xAI', logo: XaiLogo, platform: 'custom', baseUrl: 'https://api.x.ai/v1' },
+
+  // ===== LLM Gateways / Proxies (alphabetical) =====
+  {
+    name: 'AgentGateway',
+    value: 'AgentGateway',
+    logo: null,
+    platform: 'custom',
+    requiresBaseUrl: true,
+    baseUrlPlaceholder: 'http://gateway-host:3000/v1',
+    helpUrl: 'https://agentgateway.dev/docs/',
+  },
+  {
+    name: 'Envoy AI Gateway',
+    value: 'EnvoyAI',
+    logo: null,
+    platform: 'custom',
+    requiresBaseUrl: true,
+    baseUrlPlaceholder: 'http://envoy-host:10000/v1',
+    helpUrl: 'https://aigateway.envoyproxy.io/',
+  },
+  {
+    name: 'Kong AI Gateway',
+    value: 'KongAI',
+    logo: null,
+    platform: 'custom',
+    requiresBaseUrl: true,
+    baseUrlPlaceholder: 'http://kong-host:8000/ai',
+    helpUrl: 'https://developer.konghq.com/ai-gateway/',
+  },
+  {
+    name: 'LiteLLM',
+    value: 'LiteLLM',
+    logo: null,
+    platform: 'custom',
+    baseUrl: 'http://localhost:4000/v1',
+    baseUrlPlaceholder: 'http://your-litellm-host:4000/v1',
+    helpUrl: 'https://docs.litellm.ai/',
+  },
+  {
+    name: 'Portkey',
+    value: 'Portkey',
+    logo: null,
+    platform: 'custom',
+    baseUrl: 'https://api.portkey.ai/v1',
+    defaultHeaders: { 'x-portkey-api-key': '', 'x-portkey-provider': '' },
+    helpUrl: 'https://portkey.ai/docs/',
+  },
 
   // ===== Custom (always last — requires user-provided base URL) =====
   { name: 'Custom', value: 'custom', logo: null, platform: 'custom', i18nKey: 'settings.platformCustom' },

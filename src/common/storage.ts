@@ -206,6 +206,12 @@ export interface IProvider {
    * Context token limit. Optional field, only fill in when explicitly known.
    */
   contextLimit?: number;
+  /**
+   * Custom HTTP headers sent with every API request.
+   * Used by LLM gateways (Portkey, Kong, Envoy, etc.) that require
+   * additional headers for routing, authentication, or observability.
+   */
+  customHeaders?: Record<string, string>;
 }
 
 export type TProviderWithModel = Omit<IProvider, 'model'> & { useModel: string };
