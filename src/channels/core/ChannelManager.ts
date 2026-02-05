@@ -64,11 +64,11 @@ export class ChannelManager {
    */
   async initialize(): Promise<void> {
     if (this.initialized) {
-      console.log('[ChannelManager] Already initialized');
+      channelLogger.info('Already initialized');
       return;
     }
 
-    console.log('[ChannelManager] Initializing...');
+    channelLogger.info('Initializing...');
 
     try {
       // Initialize sub-components
@@ -82,29 +82,29 @@ export class ChannelManager {
 
       // Set confirm handler for tool confirmations
       this.pluginManager.setConfirmHandler(async (userId: string, platform: string, callId: string, value: string) => {
-        console.log(`[ChannelManager] Confirm handler called: userId=${userId}, platform=${platform}, callId=${callId}, value=${value}`);
+        channelLogger.debug({ userId, platform, callId, value }, 'Confirm handler called');
 
         // Find user
         const db = getDatabase();
         const userResult = db.getChannelUserByPlatform(userId, platform as PluginType);
         if (!userResult.data) {
-          console.error(`[ChannelManager] User not found: ${userId}@${platform}`);
+          channelLogger.error({ userId, platform }, 'User not found');
           return;
         }
 
         // Find session to get conversationId
         const session = this.sessionManager?.getSession(userResult.data.id);
         if (!session?.conversationId) {
-          console.error(`[ChannelManager] Session not found for user: ${userResult.data.id}`);
+          channelLogger.error({ userId: userResult.data.id }, 'Session not found for user');
           return;
         }
 
         // Call confirm
         try {
           await getChannelMessageService().confirm(session.conversationId, callId, value);
-          console.log(`[ChannelManager] Tool confirmation successful: callId=${callId}`);
+          channelLogger.info({ callId }, 'Tool confirmation successful');
         } catch (error) {
-          console.error(`[ChannelManager] Tool confirmation failed:`, error);
+          channelLogger.error({ err: error }, 'Tool confirmation failed');
         }
       });
 
@@ -112,9 +112,9 @@ export class ChannelManager {
       await this.loadEnabledPlugins();
 
       this.initialized = true;
-      console.log('[ChannelManager] Initialized successfully');
+      channelLogger.info('Initialized successfully');
     } catch (error) {
-      console.error('[ChannelManager] Initialization failed:', error);
+      channelLogger.error({ err: error }, 'Initialization failed');
       throw error;
     }
   }
@@ -128,7 +128,7 @@ export class ChannelManager {
       return;
     }
 
-    console.log('[ChannelManager] Shutting down...');
+    channelLogger.info('Shutting down...');
 
     try {
       // Stop all plugins
@@ -147,9 +147,9 @@ export class ChannelManager {
       this.actionExecutor = null;
 
       this.initialized = false;
-      console.log('[ChannelManager] Shutdown complete');
+      channelLogger.info('Shutdown complete');
     } catch (error) {
-      console.error('[ChannelManager] Shutdown error:', error);
+      channelLogger.error({ err: error }, 'Shutdown error');
     }
   }
 
@@ -168,18 +168,18 @@ export class ChannelManager {
     const result = db.getChannelPlugins();
 
     if (!result.success || !result.data) {
-      console.warn('[ChannelManager] Failed to load plugins:', result.error);
+      channelLogger.warn({ error: result.error }, 'Failed to load plugins');
       return;
     }
 
     const enabledPlugins = result.data.filter((p) => p.enabled);
-    console.log(`[ChannelManager] Found ${enabledPlugins.length} enabled plugin(s)`);
+    channelLogger.info({ count: enabledPlugins.length }, 'Found enabled plugin(s)');
 
     for (const plugin of enabledPlugins) {
       try {
         await this.startPlugin(plugin);
       } catch (error) {
-        console.error(`[ChannelManager] Failed to start plugin ${plugin.id}:`, error);
+        channelLogger.error({ err: error, pluginId: plugin.id }, 'Failed to start plugin');
         // Update status to error
         db.updateChannelPluginStatus(plugin.id, 'error');
       }
@@ -190,7 +190,7 @@ export class ChannelManager {
    * Start a specific plugin
    */
   private async startPlugin(config: IChannelPluginConfig): Promise<void> {
-    console.log(`[ChannelManager] Starting plugin: ${config.name} (${config.type}), hasPluginManager=${!!this.pluginManager}, initialized=${this.initialized}`);
+    channelLogger.info({ name: config.name, type: config.type, hasPluginManager: !!this.pluginManager, initialized: this.initialized }, 'Starting plugin');
     if (!this.pluginManager) {
       throw new Error('PluginManager not initialized');
     }
@@ -203,7 +203,7 @@ export class ChannelManager {
   async enablePlugin(pluginId: string, config: Record<string, unknown>): Promise<{ success: boolean; error?: string }> {
     // Ensure manager is initialized
     if (!this.initialized || !this.pluginManager) {
-      console.error('[ChannelManager] Cannot enable plugin: manager not initialized');
+      channelLogger.error('Cannot enable plugin: manager not initialized');
       return { success: false, error: 'Assistant manager not initialized' };
     }
 
@@ -348,11 +348,11 @@ export class ChannelManager {
    */
   async cleanupConversation(conversationId: string): Promise<boolean> {
     if (!this.initialized) {
-      console.warn('[ChannelManager] Not initialized, skipping cleanup');
+      channelLogger.warn('Not initialized, skipping cleanup');
       return false;
     }
 
-    console.log(`[ChannelManager] Cleaning up conversation: ${conversationId}`);
+    channelLogger.info({ conversationId }, 'Cleaning up conversation');
 
     let cleanedUp = false;
 
@@ -360,15 +360,15 @@ export class ChannelManager {
     const clearedSession = this.sessionManager?.clearSessionByConversationId(conversationId);
     if (clearedSession) {
       cleanedUp = true;
-      console.log(`[ChannelManager] Cleared session ${clearedSession.id} for conversation ${conversationId}`);
+      channelLogger.info({ sessionId: clearedSession.id, conversationId }, 'Cleared session');
 
       // 2. Clear AssistantGeminiService agent cache for this session
       try {
         const geminiService = getChannelMessageService();
         await geminiService.clearContext(clearedSession.id);
-        console.log(`[ChannelManager] Cleared Gemini context for session ${clearedSession.id}`);
+        channelLogger.info({ sessionId: clearedSession.id }, 'Cleared Gemini context');
       } catch (error) {
-        console.warn(`[ChannelManager] Failed to clear Gemini context:`, error);
+        channelLogger.warn({ err: error }, 'Failed to clear Gemini context');
       }
     }
 
