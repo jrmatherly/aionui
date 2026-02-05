@@ -4,43 +4,93 @@ on:
   push:
     branches: [main]
     paths-ignore:
+      # Documentation
       - "**.md"
-      - ".drift/**"
-      - ".serena/**"
-      - ".scratchpad/**"
+      - "docs/**"
+      - "LICENSE"
+      # AI assistant configs (local dev)
       - ".aionui/**"
+      - ".claude/**"
+      - ".drift/**"
       - ".gemini/**"
+      - ".serena/**"
       - ".specify/**"
+      # IDE and editor configs
       - ".vscode/**"
+      - ".ruby-lsp/**"
+      # GitHub non-build files
       - ".github/ISSUE_TEMPLATE/**"
+      - ".github/skills/**"
       - ".github/workflows/pr-checks.yml"
       - ".github/workflows/codeql.yml"
-      - "docs/**"
-      - "renovate.json5"
-      - "LICENSE"
+      # Local dev / tooling configs
+      - ".scratchpad/**"
+      - ".local_docs/**"
+      - ".husky/**"
+      - ".ruff_cache/**"
+      - ".gitattributes"
+      - ".driftignore"
+      - ".mcp.json"
+      # Linting / formatting configs
       - ".markdownlint-cli2.yaml"
       - ".prettierrc.json"
       - ".prettierignore"
+      - "renovate.json5"
+      # macOS / Homebrew (not Docker)
+      - "homebrew/**"
+      - "entitlements.plist"
+      # Tests (not in Docker image)
+      - "jest.config.js"
+      - "tests/**"
+      # Misc non-build files
+      - "workflows/**"
+      - "PROJECT_INDEX.json"
+      - "scripts/remove-i18n.py"
   pull_request:
     branches: [main]
     paths-ignore:
+      # Documentation
       - "**.md"
-      - ".drift/**"
-      - ".serena/**"
-      - ".scratchpad/**"
+      - "docs/**"
+      - "LICENSE"
+      # AI assistant configs (local dev)
       - ".aionui/**"
+      - ".claude/**"
+      - ".drift/**"
       - ".gemini/**"
+      - ".serena/**"
       - ".specify/**"
+      # IDE and editor configs
       - ".vscode/**"
+      - ".ruby-lsp/**"
+      # GitHub non-build files
       - ".github/ISSUE_TEMPLATE/**"
+      - ".github/skills/**"
       - ".github/workflows/pr-checks.yml"
       - ".github/workflows/codeql.yml"
-      - "docs/**"
-      - "renovate.json5"
-      - "LICENSE"
+      # Local dev / tooling configs
+      - ".scratchpad/**"
+      - ".local_docs/**"
+      - ".husky/**"
+      - ".ruff_cache/**"
+      - ".gitattributes"
+      - ".driftignore"
+      - ".mcp.json"
+      # Linting / formatting configs
       - ".markdownlint-cli2.yaml"
       - ".prettierrc.json"
       - ".prettierignore"
+      - "renovate.json5"
+      # macOS / Homebrew (not Docker)
+      - "homebrew/**"
+      - "entitlements.plist"
+      # Tests (not in Docker image)
+      - "jest.config.js"
+      - "tests/**"
+      # Misc non-build files
+      - "workflows/**"
+      - "PROJECT_INDEX.json"
+      - "scripts/remove-i18n.py"
   workflow_dispatch:
     inputs:
       push_image:
