@@ -6,7 +6,10 @@
 
 import { ipcBridge } from '@/common';
 import { ConfigStorage } from '@/common/storage';
+import { createLogger } from '@/renderer/utils/logger';
 import PwaPullToRefresh from '@/renderer/components/PwaPullToRefresh';
+
+const log = createLogger('Layout');
 import Titlebar from '@/renderer/components/Titlebar';
 import UpdateModal from '@/renderer/components/UpdateModal';
 import { Layout as ArcoLayout } from '@arco-design/web-react';
@@ -25,7 +28,7 @@ const useDebug = () => {
   const onClick = () => {
     const open = () => {
       ipcBridge.application.openDevTools.invoke().catch((error) => {
-        console.error('Failed to open dev tools:', error);
+        log.error({ err: error }, 'Failed to open dev tools');
       });
       setCount(0);
     };
@@ -71,7 +74,7 @@ const Layout: React.FC<{
       ConfigStorage.get('customCss')
         .then((css) => setCustomCss(css || ''))
         .catch((error) => {
-          console.error('Failed to load custom CSS:', error);
+          log.error({ err: error }, 'Failed to load custom CSS');
         });
     };
 

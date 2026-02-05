@@ -2,6 +2,9 @@ import { Tooltip } from '@arco-design/web-react';
 import { ArrowCircleLeft, Plus, SettingTwo } from '@icon-park/react';
 import React, { useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('Sider');
 import UserMenu from './components/UserMenu';
 import WorkspaceGroupedHistory from './pages/conversation/WorkspaceGroupedHistory';
 import { usePreviewContext } from './pages/conversation/preview';
@@ -31,11 +34,11 @@ const Sider: React.FC<SiderProps> = ({ onSessionClick, collapsed = false }) => {
     if (isSettings) {
       const target = lastNonSettingsPathRef.current || '/guid';
       Promise.resolve(navigate(target)).catch((error) => {
-        console.error('Navigation failed:', error);
+        log.error({ err: error }, 'Navigation failed');
       });
     } else {
       Promise.resolve(navigate('/settings/gemini')).catch((error) => {
-        console.error('Navigation failed:', error);
+        log.error({ err: error }, 'Navigation failed');
       });
     }
     if (onSessionClick) {
@@ -56,7 +59,7 @@ const Sider: React.FC<SiderProps> = ({ onSessionClick, collapsed = false }) => {
                 onClick={() => {
                   closePreview();
                   Promise.resolve(navigate('/guid')).catch((error) => {
-                    console.error('Navigation failed:', error);
+                    log.error({ err: error }, 'Navigation failed');
                   });
                   // Hide sidebar after starting new chat on mobile
                   if (onSessionClick) {
