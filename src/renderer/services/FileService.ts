@@ -5,6 +5,9 @@
  */
 
 import { ipcBridge } from '@/common';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('FileService');
 // Simple formatBytes implementation moved from deleted updateConfig
 function formatBytes(bytes: number, decimals = 2): string {
   if (bytes === 0) return '0 Bytes';
@@ -183,7 +186,7 @@ class FileServiceClass {
             filePath = tempPath;
           }
         } catch (error) {
-          console.error('Failed to create temp file for dragged file:', error);
+          log.error({ err: error, fileName: file.name }, 'Failed to create temp file for dragged file');
           // Skip failed files instead of using invalid paths
           continue;
         }

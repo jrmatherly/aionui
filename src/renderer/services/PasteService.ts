@@ -5,8 +5,11 @@
  */
 
 import { ipcBridge } from '@/common';
+import { createLogger } from '@/renderer/utils/logger';
 import type { FileMetadata } from './FileService';
 import { getFileExtension } from './FileService';
+
+const log = createLogger('PasteService');
 
 type PasteHandler = (event: React.ClipboardEvent | ClipboardEvent) => Promise<boolean>;
 
@@ -149,11 +152,11 @@ class PasteServiceClass {
                 });
               }
             } catch (error) {
-              console.error('Failed to create temporary file:', error);
+              log.error({ err: error, fileName: file.name, fileType: file.type }, 'Failed to create temporary file');
             }
           } else {
             // Unsupported file type, skip without error (let subsequent filtering handle it)
-            console.warn(`Unsupported image type: ${file.type}, extension: ${fileExt}`);
+            log.warn({ fileType: file.type, extension: fileExt }, 'Unsupported image type');
           }
         } else if (filePath) {
           // File with file path (dragged from file manager)
@@ -170,7 +173,7 @@ class PasteServiceClass {
             });
           } else {
             // Unsupported file type
-            console.warn(`Unsupported file type: ${file.name}, extension: ${fileExt}`);
+            log.warn({ fileName: file.name, extension: fileExt }, 'Unsupported file type');
           }
         } else if (!file.type.startsWith('image/')) {
           // Non-image file without file path (copy-pasted from file manager)
@@ -199,10 +202,10 @@ class PasteServiceClass {
                 });
               }
             } catch (error) {
-              console.error('Failed to create temporary file:', error);
+              log.error({ err: error, fileName: file.name, fileType: file.type }, 'Failed to create temporary file');
             }
           } else {
-            console.warn(`Unsupported file type: ${file.name}, extension: ${fileExt}`);
+            log.warn({ fileName: file.name, extension: fileExt }, 'Unsupported file type');
           }
         }
       }
