@@ -6,6 +6,9 @@
 
 import type { ElectronBridgeAPI } from '@/types/electron';
 import { bridge, logger } from '@office-ai/platform';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('BrowserAdapter');
 
 interface CustomWindow extends Window {
   electronAPI?: ElectronBridgeAPI;
@@ -33,7 +36,7 @@ if (win.electronAPI) {
           const { name, data } = JSON.parse(value);
           emitter.emit(name, data);
         } catch (e) {
-          console.warn('JSON parsing error:', e);
+          log.warn({ err: e }, 'JSON parsing error');
         }
       });
     },
@@ -117,7 +120,7 @@ if (win.electronAPI) {
 
         // Handle auth expiration - stop reconnecting and redirect to login
         if (payload.name === 'auth-expired') {
-          console.warn('[WebSocket] Authentication expired, stopping reconnection');
+          log.warn('Authentication expired, stopping reconnection');
           shouldReconnect = false;
 
           // Clear any pending reconnection timer
