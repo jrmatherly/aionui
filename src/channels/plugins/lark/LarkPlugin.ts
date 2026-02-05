@@ -364,7 +364,7 @@ export class LarkPlugin extends BasePlugin {
       // Handle card action callbacks (button clicks)
       // Event name: card.action.trigger
       'card.action.trigger': async (data: Record<string, unknown>) => {
-        console.log(`[LarkPlugin] Received card.action.trigger event:`, JSON.stringify(data, null, 2));
+        log.debug({ event: data }, 'Received card.action.trigger event');
         // Don't await - process in background to avoid 200340 timeout
         // Lark requires immediate response within 3 seconds
         void this.handleCardAction({ event: data });
@@ -375,12 +375,12 @@ export class LarkPlugin extends BasePlugin {
       // Handle bot menu clicks (custom menu in chat)
       // Event name: application.bot.menu_v6
       'application.bot.menu_v6': async (data: Record<string, unknown>) => {
-        console.log(`[LarkPlugin] Received application.bot.menu_v6 event:`, JSON.stringify(data, null, 2));
+        log.debug({ event: data }, 'Received application.bot.menu_v6 event');
         await this.handleBotMenuEvent({ event: data });
       },
     });
 
-    console.log(`[LarkPlugin] Event handlers registered`);
+    log.info('Event handlers registered');
   }
 
   /**
@@ -392,14 +392,14 @@ export class LarkPlugin extends BasePlugin {
       const sender = event?.event?.sender;
 
       if (!message || !sender) {
-        console.warn('[LarkPlugin] Invalid message event:', event);
+        log.warn({ event }, 'Invalid message event');
         return;
       }
 
       // Event deduplication - use message_id as unique identifier
       const eventId = message.message_id;
       if (eventId && this.isEventProcessed(eventId)) {
-        console.log(`[LarkPlugin] Duplicate message event ignored: ${eventId}`);
+        log.debug({ eventId }, 'Duplicate message event ignored');
         return;
       }
       if (eventId) {
@@ -426,17 +426,17 @@ export class LarkPlugin extends BasePlugin {
               type: buttonAction.type as 'system' | 'platform' | 'chat',
               name: buttonAction.action,
             };
-            console.log(`[LarkPlugin] Menu button command detected: ${buttonAction.action}`);
+            log.debug({ action: buttonAction.action }, 'Menu button command detected');
           }
         }
 
         // Process in background to avoid blocking
         void this.messageHandler(unifiedMessage)
-          .then(() => console.log(`[LarkPlugin] Message handled successfully`))
-          .catch((error) => console.error(`[LarkPlugin] Error handling message:`, error));
+          .then(() => log.debug('Message handled successfully'))
+          .catch((error) => log.error({ err: error }, 'Error handling message'));
       }
     } catch (error) {
-      console.error('[LarkPlugin] Error processing message event:', error);
+      log.error({ err: error }, 'Error processing message event');
     }
   }
 
@@ -466,24 +466,24 @@ export class LarkPlugin extends BasePlugin {
       const eventKey = event?.event?.event_key;
       const timestamp = event?.event?.timestamp;
 
-      console.log(`[LarkPlugin] Bot menu event: eventKey=${eventKey}, operator=`, operator);
+      log.debug({ eventKey, operator }, 'Bot menu event');
 
       if (!operator || !eventKey) {
-        console.warn('[LarkPlugin] Invalid bot menu event:', event);
+        log.warn({ event }, 'Invalid bot menu event');
         return;
       }
 
       // Event deduplication - use timestamp + eventKey as unique identifier
       const eventId = `menu_${eventKey}_${timestamp}`;
       if (this.isEventProcessed(eventId)) {
-        console.log(`[LarkPlugin] Duplicate bot menu event ignored: ${eventId}`);
+        log.debug({ eventId }, 'Duplicate bot menu event ignored');
         return;
       }
       this.markEventProcessed(eventId);
 
       const userId = operator.operator_id?.user_id || operator.operator_id?.open_id;
       if (!userId) {
-        console.warn('[LarkPlugin] No user ID in bot menu event');
+        log.warn('No user ID in bot menu event');
         return;
       }
 
@@ -496,11 +496,11 @@ export class LarkPlugin extends BasePlugin {
       // Map event_key to action
       const buttonAction = this.getMenuButtonAction(eventKey);
       if (!buttonAction) {
-        console.warn(`[LarkPlugin] Unknown menu event_key: ${eventKey}`);
+        log.warn({ eventKey }, 'Unknown menu event_key');
         return;
       }
 
-      console.log(`[LarkPlugin] Bot menu action detected: ${buttonAction.action}`);
+      log.debug({ action: buttonAction.action }, 'Bot menu action detected');
 
       // Build unified message for action
       const unifiedMessage = {
@@ -525,11 +525,11 @@ export class LarkPlugin extends BasePlugin {
 
       if (this.messageHandler) {
         void this.messageHandler(unifiedMessage)
-          .then(() => console.log(`[LarkPlugin] Bot menu action handled: ${buttonAction.action}`))
-          .catch((error) => console.error(`[LarkPlugin] Error handling bot menu action:`, error));
+          .then(() => log.debug({ action: buttonAction.action }, 'Bot menu action handled'))
+          .catch((error) => log.error({ err: error }, 'Error handling bot menu action'));
       }
     } catch (error) {
-      console.error('[LarkPlugin] Error processing bot menu event:', error);
+      log.error({ err: error }, 'Error processing bot menu event');
     }
   }
 
@@ -543,13 +543,13 @@ export class LarkPlugin extends BasePlugin {
       const eventToken = event?.event?.token;
 
       if (!action || !operator) {
-        console.warn('[LarkPlugin] Invalid card action event:', event);
+        log.warn({ event }, 'Invalid card action event');
         return;
       }
 
       // Event deduplication - use event token as unique identifier
       if (eventToken && this.isEventProcessed(eventToken)) {
-        console.log(`[LarkPlugin] Duplicate card action event ignored: ${eventToken}`);
+        log.debug({ eventToken }, 'Duplicate card action event ignored');
         return;
       }
       if (eventToken) {
@@ -570,11 +570,11 @@ export class LarkPlugin extends BasePlugin {
       const unifiedMessage = toUnifiedIncomingMessage(event, actionInfo);
       if (unifiedMessage && this.messageHandler) {
         void this.messageHandler(unifiedMessage)
-          .then(() => console.log(`[LarkPlugin] Card action handled: ${actionInfo.name}`))
-          .catch((error) => console.error(`[LarkPlugin] Error handling card action:`, error));
+          .then(() => log.debug({ actionName: actionInfo.name }, 'Card action handled'))
+          .catch((error) => log.error({ err: error }, 'Error handling card action'));
       }
     } catch (error) {
-      console.error('[LarkPlugin] Error processing card action:', error);
+      log.error({ err: error }, 'Error processing card action');
     }
   }
 
@@ -590,9 +590,9 @@ export class LarkPlugin extends BasePlugin {
     try {
       // The SDK handles token refresh internally
       // We just need to make sure it's initialized
-      console.log('[LarkPlugin] Access token refreshed');
+      log.debug('Access token refreshed');
     } catch (error) {
-      console.error('[LarkPlugin] Failed to refresh access token:', error);
+      log.error({ err: error }, 'Failed to refresh access token');
       throw error;
     }
   }
@@ -660,7 +660,7 @@ export class LarkPlugin extends BasePlugin {
     }
 
     if (cleaned > 0) {
-      console.log(`[LarkPlugin] Cleaned up ${cleaned} old event entries, remaining: ${this.processedEvents.size}`);
+      log.debug({ cleaned, remaining: this.processedEvents.size }, 'Cleaned up old event entries');
     }
   }
 
