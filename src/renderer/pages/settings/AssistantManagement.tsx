@@ -406,7 +406,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
       setPendingSkills([]); // Clear pending skills list
       await refreshAgentDetection();
     } catch (error) {
-      console.error('Failed to save assistant:', error);
+      log.error({ err: error }, 'Failed to save assistant');
       message.error('Failed');
     }
   };
@@ -872,7 +872,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
               setSkillsModalVisible(false);
             }
           } catch (error) {
-            console.error('Failed to scan skills:', error);
+            log.error({ err: error }, 'Failed to scan skills');
             message.error('Failed to scan skills');
             setSkillsModalVisible(false);
           }
@@ -923,7 +923,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
                       setSkillPath(result.join(', '));
                     }
                   } catch (error) {
-                    console.error('Failed to open directory dialog:', error);
+                    log.error({ err: error }, 'Failed to open directory dialog');
                   }
                 }}
               >
