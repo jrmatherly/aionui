@@ -687,7 +687,7 @@ Configured in `tsconfig.json`:
 
 ```bash
 # With mise (recommended — auto-installs correct Node.js)
-mise install          # Install tools (Node.js 22)
+mise install          # Install tools (Node.js 24)
 mise run dev          # Install deps + start dev server
 
 # Without mise

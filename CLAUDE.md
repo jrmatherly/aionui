@@ -23,7 +23,7 @@
 - **Webpack 6.x** - Module bundler (via @electron-forge/plugin-webpack)
 - **Electron Forge 7.8.x** - Build tooling (development)
 - **Electron Builder 26.x** - Application packaging (production)
-- **mise-en-place** - Tool version management (Node.js 22, npm 11)
+- **mise-en-place** - Tool version management (Node.js 24, npm 11)
 
 ### UI & Styling
 

@@ -278,7 +278,7 @@ Consider migrating to the new plugin system (`@streamdown/code`, `@streamdown/ma
 **BREAKING CHANGES:**
 
 - Minimum supported webpack version: 5.27.0 ✅ (we use webpack 5 via Electron Forge)
-- Minimum supported Node.js version: 18.12.0 ✅ (we require Node.js >= 22.0.0)
+- Minimum supported Node.js version: 18.12.0 ✅ (we require Node.js >= 24.0.0)
 - `insert` option can only be a selector or path to module (no inline functions)
 - `styleTagTransform` option can only be path to module (no inline functions)
 

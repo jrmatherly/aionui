@@ -19,8 +19,8 @@
 # -----------------------------------------------------------------------------
 # Node version pinned to match mise.lock for reproducible builds.
 # Update this when mise.lock changes: check with `grep version mise.lock`
-# Or build with: docker build --build-arg NODE_VERSION=22.22.0 ...
-ARG NODE_VERSION=22.22.0
+# Or build with: docker build --build-arg NODE_VERSION=24.13.0 ...
+ARG NODE_VERSION=24.13.0
 FROM node:${NODE_VERSION}-bookworm AS builder
 
 WORKDIR /app
@@ -32,7 +32,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     make \
     && rm -rf /var/lib/apt/lists/*
 
-# Upgrade npm to match project requirements (Node 22 bundles npm 10.x, project requires 11+).
+# Upgrade npm to match project requirements (Node 24 bundles npm 11.6.x, project standardizes on 11.9+).
 # Version pinned to match mise.lock. Update when mise.lock changes.
 ARG NPM_VERSION=11.9.0
 RUN npm install -g npm@${NPM_VERSION}

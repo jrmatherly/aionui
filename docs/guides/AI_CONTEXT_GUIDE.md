@@ -70,7 +70,7 @@ AionUI uses [mise](https://mise.jdx.dev) to manage tool versions, environment va
 **Configuration hierarchy (lowest → highest priority):**
 
 1. `~/.config/mise/config.toml` — Global tools (Jason's global config)
-2. `mise.toml` — Project tools (Node 22, npm 11, env vars, tasks)
+2. `mise.toml` — Project tools (Node 24, npm 11, env vars, tasks)
 3. `mise.local.toml` — Personal overrides (gitignored)
 
 **Dependency management (prepare):**
@@ -82,7 +82,7 @@ AionUI uses [mise](https://mise.jdx.dev) to manage tool versions, environment va
 
 **Lockfile:**
 
-- `mise.lock` pins exact versions (Node 22.22.0, npm 11.9.0) with SHA256 checksums
+- `mise.lock` pins exact versions (Node 24.13.0, npm 11.9.0) with SHA256 checksums
 - Platform entries for `linux-x64`, `macos-arm64`, `macos-x64` with download URLs
 - CI can use `--locked` flag to fail if lockfile URLs are missing (prevents API calls)
 - Update lockfile: `mise lock` (all platforms) or `mise lock --platform linux-x64` (specific)
@@ -92,7 +92,7 @@ AionUI uses [mise](https://mise.jdx.dev) to manage tool versions, environment va
 - `[hooks] enter` auto-installs tools when entering the project directory
 - `[hooks] postinstall` receives `MISE_INSTALLED_TOOLS` JSON array — useful for post-install verification
 - `[hooks] leave` can run cleanup when leaving the project (not currently configured)
-- Tool-level `postinstall` scripts can be added per-tool: `node = { version = "22", postinstall = "..." }`
+- Tool-level `postinstall` scripts can be added per-tool: `node = { version = "24", postinstall = "..." }`
 
 **Version requirements:**
 
@@ -104,7 +104,7 @@ AionUI uses [mise](https://mise.jdx.dev) to manage tool versions, environment va
 - `mise run docker:build` reads Node/npm versions from `mise.lock` and passes them as Docker build args
 - Dockerfile uses `ARG NODE_VERSION` / `ARG NPM_VERSION` defaulting to mise.lock values
 - This ensures Docker builds use the exact same tool versions as local development
-- `docker-compose.yml` also accepts these as environment variables: `NODE_VERSION=22.22.0 docker-compose build`
+- `docker-compose.yml` also accepts these as environment variables: `NODE_VERSION=24.13.0 docker-compose build`
 - Docker tasks: `docker:build` (with `--arch`, `--no-cache`, `--tag` flags), `docker:up`, `docker:down`, `docker:logs`
 
 **Troubleshooting:**
@@ -147,10 +147,10 @@ echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.bashrc  # bash
 
 # Restart your shell, then:
 cd /path/to/aionui
-# mise auto-installs Node.js 22 on entry (via hooks)
+# mise auto-installs Node.js 24 on entry (via hooks)
 ```
 
-> **Without mise:** Ensure Node.js >= 22.0.0 is installed, then upgrade npm: `npm install -g npm@11` (Node 22 bundles npm 10.x but this project requires 11+).
+> **Without mise:** Ensure Node.js >= 24.0.0 is installed. Node 24 bundles npm 11.6.x; optionally upgrade to 11.9+: `npm install -g npm@11`.
 
 ### 1. Install Tools
 
@@ -1814,7 +1814,7 @@ drift-check:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: "22"
+        node-version: "24"
 
     - name: Cache Drift data
       uses: actions/cache@v4

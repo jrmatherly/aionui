@@ -2,7 +2,7 @@
 
 **Date:** February 4, 2026
 **Author:** Bot42 (AI Analysis) for @jrmatherly
-**Node.js:** v22.22.0 (engines: `>=22.0.0`)
+**Node.js:** v24.13.0 (engines: `>=24.0.0`)
 **TypeScript:** v5.9.3
 
 This document provides a comprehensive analysis of 10 major version upgrades flagged by Renovate,
@@ -99,7 +99,7 @@ const timer = new Cron(schedule.expr, { timezone: schedule.tz, paused: false, sl
 
 - We **only use the CLI binary**, not the programmatic API
 - The ESM change does NOT affect CLI consumers — the `cross-env` binary still works the same way
-- Node.js >=22 satisfies >=20
+- Node.js >=24 satisfies >=20
 
 #### Recommended Action
 
@@ -201,7 +201,7 @@ The `auto: true` flag restricts CSS Modules processing to only `*.module.css` fi
 
 #### Breaking Changes
 
-1. **Node.js >= 20 required** (we use >=22)
+1. **Node.js >= 20 required** (we use >=24)
 
 #### Bug Fixes
 
@@ -243,7 +243,7 @@ The `auto: true` flag restricts CSS Modules processing to only `*.module.css` fi
 #### Impact Assessment
 
 - We do **NOT use Vue.js** — Vue.js drop is irrelevant
-- Node.js v12 drop is irrelevant (we require >=22)
+- Node.js v12 drop is irrelevant (we require >=24)
 - The `logger: 'webpack-infrastructure'` option is still supported
 - Package still provides CJS exports (the `require()` in our config works)
 

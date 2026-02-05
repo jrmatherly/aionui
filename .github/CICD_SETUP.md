@@ -67,7 +67,7 @@ These are only needed if the `.disabled` workflow is re-enabled:
 
 Tool versions are managed via **mise-en-place** (`mise.toml` + `mise.lock`):
 
-- **Node.js**: Locked in `mise.lock` (currently 22.x)
+- **Node.js**: Locked in `mise.lock` (currently 24.x)
 - **npm**: Locked in `mise.lock` (currently 11.x)
 
 The CI workflow extracts these versions from `mise.lock` to ensure Docker builds use identical versions to development.

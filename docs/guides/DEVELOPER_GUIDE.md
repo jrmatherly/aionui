@@ -6,7 +6,7 @@ This guide covers development setup, architecture patterns, and contribution gui
 
 ### Prerequisites
 
-- **Node.js** >= 22.0.0 (managed automatically by mise)
+- **Node.js** >= 24.0.0 (managed automatically by mise)
 - **npm** >= 11.0.0
 - **Git** for source control
 - **[mise-en-place](https://mise.jdx.dev)** (recommended) — manages tool versions automatically
@@ -37,9 +37,9 @@ That's it. mise reads `mise.toml` and `mise.lock` to ensure you get the exact sa
 
 ```bash
 # Ensure you have the correct Node.js version (see engines in package.json)
-node --version  # Must be >= 22.0.0
+node --version  # Must be >= 24.0.0
 
-# Node 22 bundles npm 10.x — this project requires npm 11+
+# Node 24 bundles npm 11.6.x — project standardizes on npm 11.9+
 npm install -g npm@11
 npm --version   # Must be >= 11.0.0
 
@@ -123,7 +123,7 @@ To override a tool version locally without affecting the team:
 ```toml
 # mise.local.toml (create this file, it's gitignored)
 [tools]
-node = "24"  # Use Node 24 instead of 22
+node = "24"  # Default; override to test other versions
 ```
 
 ## Project Structure

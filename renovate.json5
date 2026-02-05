@@ -97,6 +97,13 @@
       "matchPackageNames": ["openid-client"],
       "matchUpdateTypes": ["major"],
       "enabled": false
+    },
+    {
+      // @types/node major bumps may include types for Node APIs not in Node 24
+      // Project pins Node 24 via mise.toml — types should stay compatible
+      "matchPackageNames": ["@types/node"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     }
   ],
 

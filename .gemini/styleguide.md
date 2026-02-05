@@ -6,7 +6,7 @@ This document defines the coding standards and best practices for the AionUI pro
 
 ## Technology Stack
 
-- **Runtime**: Node.js 22+ with npm 11+
+- **Runtime**: Node.js 24+ with npm 11+
 - **Framework**: Electron 37 + React 19
 - **Language**: TypeScript 5.8 (strict mode)
 - **Styling**: UnoCSS (atomic CSS) + Arco Design

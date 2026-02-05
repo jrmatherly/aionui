@@ -33,7 +33,7 @@
 #### Breaking Changes
 
 - **ESM-only**: Package is now ESM-only, no CommonJS support
-- **Node.js >=22.12.0 required**: Minimum Node version bumped significantly
+- **Node.js >=22.12.0 required**: Minimum Node version bumped (project already on >=24.0.0)
 
 #### ⚠️ CRITICAL BLOCKER: Peer Dependency Conflict
 
@@ -76,14 +76,14 @@ version: FuseVersion.V1,
 
 1. Wait for `@electron-forge/plugin-fuses` to support `@electron/fuses@^2.0.0`
 2. Verify `forge.config.ts` is treated as ESM (may need `.mts` extension or build changes)
-3. Ensure Node.js >=22.12.0 in CI/CD and development environments
+3. Ensure Node.js >=24.0.0 in CI/CD and development environments
 4. Test that fuse configuration syntax hasn't changed
 
 #### Migration Steps (Deferred)
 
 ```bash
 # 1. Verify Node version
-node --version  # Must be >=22.12.0
+node --version  # Must be >=24.0.0
 
 # 2. Update BOTH packages together (when forge supports it)
 npm install @electron-forge/plugin-fuses@latest @electron/fuses@^2.0.0
@@ -352,7 +352,7 @@ npm test
 - **`?` character behavior**: Now acts as wildcard alias (same as `*`), previously replaced with current time values
 - **`legacyMode` deprecated**: Use `domAndDow` instead
 - **New features**: Year field support, W modifier, + modifier
-- **Node.js >=18.0 required** (project already requires >=22.0.0)
+- **Node.js >=18.0 required** (project already requires >=24.0.0)
 
 #### Current Usage in Codebase
 
@@ -439,7 +439,7 @@ npm run test:integration
 #### Impact Assessment
 
 - ✅ CLI-only usage = **No changes required**
-- ✅ Already planning Node.js >=22.0.0
+- ✅ Project already on Node.js >=24.0.0
 - Package is archived (Nov 2025) but stable
 
 #### Migration Steps
@@ -662,7 +662,7 @@ Based on dependencies, risk levels, and blocking issues:
 
 ## Pre-Upgrade Checklist
 
-- [ ] Ensure Node.js >=22.12.0 installed (`node --version`)
+- [ ] Ensure Node.js >=24.0.0 installed (`node --version`)
 - [ ] Run full test suite with current versions: `npm test`
 - [ ] Create git branch for upgrades: `git checkout -b chore/dependency-upgrades`
 - [ ] Back up `package-lock.json`

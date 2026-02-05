@@ -4,7 +4,7 @@ This guide will help you set up and start using AionUI to interact with AI agent
 
 ## Prerequisites
 
-- **Node.js**: 22.x or later (automatically managed if using [mise](https://mise.jdx.dev))
+- **Node.js**: 24.x or later (automatically managed if using [mise](https://mise.jdx.dev))
 - **npm**: 11.x or later
 - **Operating System**: macOS, Windows, or Linux
 - **AI API Keys** (optional, depending on agent):
@@ -32,8 +32,8 @@ mise run dev        # Installs npm deps + starts dev server
 ### From Source (without mise)
 
 ```bash
-# Ensure Node.js >= 22 is installed, then upgrade npm to 11+
-# (Node 22 bundles npm 10.x; this project requires npm 11+)
+# Ensure Node.js >= 24 is installed (npm 11+ is bundled)
+# Optionally upgrade npm to 11.9+: npm install -g npm@11
 npm install -g npm@11
 git clone https://github.com/jrmatherly/aionui.git
 cd aionui

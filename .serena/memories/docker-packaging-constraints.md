@@ -57,10 +57,10 @@ Note: `electron-builder.yml` includes `bcrypt/**/*` in `files` and `asarUnpack`.
 
 ## mise Integration for Docker Builds
 
-- **Dockerfile uses `ARG NODE_VERSION` / `ARG NPM_VERSION`** defaulting to `mise.lock` values (22.22.0 / 11.8.0)
+- **Dockerfile uses `ARG NODE_VERSION` / `ARG NPM_VERSION`** defaulting to `mise.lock` values (24.13.0 / 11.9.0)
 - **`mise run docker:build`** auto-reads versions from `mise.lock` and passes them as build args — ensures Docker uses exact same tool versions as local dev
 - **`docker-compose.yml`** accepts `NODE_VERSION` / `NPM_VERSION` env vars, defaulting to current mise.lock values
-- **npm is upgraded** in the builder stage (`npm install -g npm@${NPM_VERSION}`) because Node 22 bundles npm 10.x but the project requires 11+
+- **npm is upgraded** in the builder stage (`npm install -g npm@${NPM_VERSION}`) because Node 24 bundles npm 11.6.x but the project standardizes on 11.9+
 - **`.dockerignore`** explicitly excludes `mise.local.toml`, `mise.*.local.toml`, `mise.local.lock` but includes `mise.toml` and `mise.lock`
 - When updating tool versions: update `mise.toml`, run `mise install`, then `mise lock` to refresh `mise.lock`, then `mise run docker:build` to rebuild with new versions
 

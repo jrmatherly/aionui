@@ -12,7 +12,13 @@ on:
       - ".gemini/**"
       - ".specify/**"
       - ".vscode/**"
+      - ".github/ISSUE_TEMPLATE/**"
       - "docs/**"
+      - "renovate.json5"
+      - "LICENSE"
+      - ".markdownlint-cli2.yaml"
+      - ".prettierrc.json"
+      - ".prettierignore"
   pull_request:
     branches: [main]
     paths-ignore:
@@ -24,7 +30,13 @@ on:
       - ".gemini/**"
       - ".specify/**"
       - ".vscode/**"
+      - ".github/ISSUE_TEMPLATE/**"
       - "docs/**"
+      - "renovate.json5"
+      - "LICENSE"
+      - ".markdownlint-cli2.yaml"
+      - ".prettierrc.json"
+      - ".prettierignore"
   workflow_dispatch:
     inputs:
       push_image:

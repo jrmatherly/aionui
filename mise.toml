@@ -15,15 +15,16 @@
 min_version = { hard = "2025.1.0", soft = "2026.1.0" }
 
 [tools]
-# Node.js — Electron 37 requires Node >= 22
+# Node.js — pinned to 24 LTS (Electron 37 requires Node >= 22)
 # We pin to the major version; mise.lock stores the exact resolved version.
 # Contributors can override locally via mise.local.toml if needed.
-node = "22"
+node = "24"
 
-# npm — Node 22 bundles npm 10.x, but the project requires npm 11+ (see engines
-# in package.json). We upgrade npm inside Node's prefix via [hooks.postinstall]
-# because mise's npm tool (npm:npm backend) installs to a separate directory that
-# gets shadowed by Node's bundled npm in PATH. See: jdx/mise#7083
+# npm — Node 24 bundles npm 11.6.x, but the project standardizes on npm 11.9+
+# (see engines in package.json). We upgrade npm inside Node's prefix via
+# [hooks.postinstall] because mise's npm tool (npm:npm backend) installs to a
+# separate directory that gets shadowed by Node's bundled npm in PATH.
+# See: jdx/mise#7083
 
 [env]
 # Add node_modules/.bin to PATH so locally-installed CLIs work without npx

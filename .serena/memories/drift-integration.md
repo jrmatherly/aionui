@@ -215,7 +215,7 @@ tokens) for efficiency.
 
 ## Node.js Version Requirement
 
-Drift Detect is installed globally under Node 25.x (mise global config). AionUI's `mise.toml` activates Node 22.x inside the project directory. Since Drift's `better-sqlite3` native module is compiled for Node 25, **running `drift` directly inside the project directory fails** with a `NODE_MODULE_VERSION` mismatch.
+Drift Detect is installed globally under Node 25.x (mise global config). AionUI's `mise.toml` activates Node 24.x inside the project directory. Since Drift's `better-sqlite3` native module is compiled for Node 25, **running `drift` directly inside the project directory may fail** with a `NODE_MODULE_VERSION` mismatch.
 
 **Workaround:** Use `mise x node@25 -- drift <command>` to run Drift with the correct Node version inside the AionUI project directory. Outside the project (e.g., `/tmp`), Drift works normally under the global Node 25.
 
@@ -232,7 +232,7 @@ Drift Detect is installed globally under Node 25.x (mise global config). AionUI'
 AionUI uses mise to manage tool versions, environment variables, and tasks.
 This provides a unified developer experience and deterministic environments.
 
-- **Tool versions:** `mise.toml` pins Node.js 22 LTS + npm 11 (exact versions in `mise.lock`)
+- **Tool versions:** `mise.toml` pins Node.js 24 LTS + npm 11 (exact versions in `mise.lock`)
 - **Lockfile:** `mise.lock` includes SHA256 checksums and download URLs for linux-x64, macos-arm64, macos-x64
 - **Tasks:** `mise run dev`, `mise run lint`, `mise run test`, `mise run drift:check`, etc.
 - **Source tracking:** lint, format:check, test, and build tasks have `sources` — skip re-runs when unchanged

@@ -104,7 +104,7 @@ Code must be maintainable and extensible:
 
 ### Tool Management
 
-- mise-en-place manages Node.js 22 and npm 11+ versions
+- mise-en-place manages Node.js 24 and npm 11+ versions
 - `mise.toml` defines tool versions, env vars, and tasks
 - `mise.lock` pins exact versions with checksums
 - Docker builds read versions from mise.lock

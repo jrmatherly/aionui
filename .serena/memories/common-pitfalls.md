@@ -72,7 +72,7 @@ Only exclude endpoints that are cookie-only or use one-time tokens: `/login`, `/
 
 ### Node version mismatch inside project directory
 
-Drift Detect is installed globally under Node 25.x, but AionUI's `mise.toml` activates Node 22.x. Running `drift` directly inside the project directory fails because Drift's `better-sqlite3` was compiled for Node 25 (`NODE_MODULE_VERSION 141`) vs Node 22 (`NODE_MODULE_VERSION 127`).
+Drift Detect is installed globally under Node 25.x, but AionUI's `mise.toml` activates Node 24.x inside the project directory. Since Drift's `better-sqlite3` native module is compiled for Node 25, **running `drift` directly inside the project directory may fail** with a `NODE_MODULE_VERSION` mismatch.
 
 **Fix:** Use `mise x node@25 -- drift <command>` to run Drift with the correct Node version.
 
