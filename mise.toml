@@ -147,6 +147,21 @@ sources = ["src/**/*.ts", "src/**/*.tsx", "src/**/*.css", "package.json", "forge
 outputs = ["out/**/*"]
 run = "npm run build"
 
+[tasks."build:branded"]
+description = "Build with custom brand name (set AIONUI_BRAND_NAME in env or mise.local.toml)"
+usage = '''
+flag "--brand <name>" help="Custom brand name (overrides AIONUI_BRAND_NAME env)"
+'''
+run = """
+#!/usr/bin/env bash
+set -e
+if [ -n "${usage_brand:-}" ]; then
+  export AIONUI_BRAND_NAME="${usage_brand}"
+fi
+echo "Building with brand: ${AIONUI_BRAND_NAME:-AionUi}"
+npm run build
+"""
+
 [tasks."build:mac"]
 description = "Build macOS distribution"
 run = "npm run dist:mac"
@@ -225,6 +240,7 @@ flag "--arch <arch>" help="Target architecture" default="arm64" {
 }
 flag "--no-cache" help="Build without Docker layer cache"
 flag "--tag <tag>" help="Image tag" default="aionui:latest"
+flag "--brand <name>" help="Custom brand name (baked into build)"
 '''
 run = """
 #!/usr/bin/env bash
@@ -236,12 +252,16 @@ NODE_VERSION=$(grep -A1 'tools.node' mise.lock | grep version | head -1 | sed 's
 # npm isn't in mise.lock (installed via postinstall hook); read from Dockerfile default
 NPM_VERSION=$(grep 'ARG NPM_VERSION=' deploy/docker/Dockerfile | head -1 | sed 's/ARG NPM_VERSION=//')
 
+# Use --brand flag, env var, or default
+BRAND="${usage_brand:-${AIONUI_BRAND_NAME:-AionUi}}"
+
 echo "Building Docker image with:"
-echo "  Node.js: ${NODE_VERSION}"
-echo "  npm:     ${NPM_VERSION}"
-echo "  Arch:    ${usage_arch?}"
-echo "  Tag:     ${usage_tag?}"
-echo "  CLI tools: All included (Claude, Qwen, Codex, iFlow, Auggie, Copilot, Qoder, OpenCode)"
+echo "  Node.js:    ${NODE_VERSION}"
+echo "  npm:        ${NPM_VERSION}"
+echo "  Arch:       ${usage_arch?}"
+echo "  Tag:        ${usage_tag?}"
+echo "  Brand:      ${BRAND}"
+echo "  CLI tools:  All included (Claude, Qwen, Codex, iFlow, Auggie, Copilot, Qoder, OpenCode)"
 echo ""
 
 CACHE_FLAG=""
@@ -254,6 +274,7 @@ docker build \
   --build-arg NODE_VERSION="${NODE_VERSION}" \
   --build-arg NPM_VERSION="${NPM_VERSION}" \
   --build-arg TARGETARCH="${usage_arch?}" \
+  --build-arg AIONUI_BRAND_NAME="${BRAND}" \
   ${CACHE_FLAG} \
   -t "${usage_tag?}" \
   .

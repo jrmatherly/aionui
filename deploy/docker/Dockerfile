@@ -59,8 +59,13 @@ COPY . .
 #     Persisted across builds so Electron doesn't re-download every time.
 #   - /app/.webpack-cache: Webpack 5 filesystem cache for incremental rebuilds.
 #     Only changed modules are recompiled, cutting webpack time dramatically.
+#
+# AIONUI_BRAND_NAME: Custom brand name baked into the build (HTML title, default configs).
+# Pass via: docker build --build-arg AIONUI_BRAND_NAME="My Brand" ...
 ARG TARGETARCH=arm64
+ARG AIONUI_BRAND_NAME=AionUi
 ENV NODE_OPTIONS="--max-old-space-size=4096"
+ENV AIONUI_BRAND_NAME=${AIONUI_BRAND_NAME}
 RUN --mount=type=cache,target=/root/.cache/electron,sharing=locked \
     --mount=type=cache,target=/app/.webpack-cache,sharing=locked \
     npm exec electron-forge -- package --platform=linux --arch=${TARGETARCH}
@@ -135,9 +140,10 @@ FROM debian:bookworm-slim AS runtime
 
 # OCI Image Labels
 ARG APP_VERSION=0.0.0
+ARG AIONUI_BRAND_NAME=AionUi
 LABEL org.opencontainers.image.source="https://github.com/jrmatherly/aionui" \
-    org.opencontainers.image.title="AionUI" \
-    org.opencontainers.image.description="AionUI WebUI Server - Transform CLI AI agents into a modern chat interface" \
+    org.opencontainers.image.title="${AIONUI_BRAND_NAME}" \
+    org.opencontainers.image.description="${AIONUI_BRAND_NAME} WebUI Server - Transform CLI AI agents into a modern chat interface" \
     org.opencontainers.image.version="${APP_VERSION}" \
     org.opencontainers.image.licenses="Apache-2.0"
 
