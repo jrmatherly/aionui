@@ -85,6 +85,10 @@ module.exports = {
       unpack: '**/node_modules/{node-pty,better-sqlite3,@mapbox,detect-libc,prebuild-install,node-gyp-build,bindings,web-tree-sitter,tree-sitter-bash}/**/*',
     }, // Enable asar with native modules and their dependencies unpacking
     executableName: 'AionUi',
+    // Disable macOS code signing for local development (no Apple Developer cert)
+    // Set APPLE_CODESIGN=1 to enable signing when credentials are available
+    osxSign: process.env.APPLE_CODESIGN === '1' ? {} : null,
+    osxNotarize: null, // Notarization requires Apple Developer account
     out: path.resolve(__dirname, 'out'),
     tmpdir: path.resolve(__dirname, '../AionUi-tmp'),
     extraResource: [path.resolve(__dirname, 'public')],
