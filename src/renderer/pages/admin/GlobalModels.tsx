@@ -7,11 +7,14 @@
  * Global models are shared model configurations available to all users.
  */
 
+import { createLogger } from '@/renderer/utils/logger';
 import { Button, Message, Modal, Popconfirm, Space, Switch, Table, Tag, Tooltip } from '@arco-design/web-react';
 import type { ColumnProps } from '@arco-design/web-react/es/Table';
 import { AddOne, Delete, Edit, Server, Sort } from '@icon-park/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import GlobalModelForm, { type GlobalModelFormData } from './components/GlobalModelForm';
+
+const log = createLogger('GlobalModels');
 
 interface GlobalModel {
   id: string;
@@ -51,7 +54,7 @@ const GlobalModels: React.FC = () => {
         Message.error(data.error || 'Failed to fetch models');
       }
     } catch (error) {
-      console.error('Failed to fetch global models:', error);
+      log.error({ err: error }, 'Failed to fetch global models');
       Message.error('Failed to fetch global models');
     } finally {
       setLoading(false);
@@ -79,7 +82,7 @@ const GlobalModels: React.FC = () => {
         message.error(data.error || 'Failed to toggle model');
       }
     } catch (error) {
-      console.error('Failed to toggle model:', error);
+      log.error({ err: error }, 'Failed to toggle model');
       message.error('Failed to toggle model');
     }
   };
@@ -99,7 +102,7 @@ const GlobalModels: React.FC = () => {
         message.error(data.error || 'Failed to delete model');
       }
     } catch (error) {
-      console.error('Failed to delete model:', error);
+      log.error({ err: error }, 'Failed to delete model');
       message.error('Failed to delete model');
     }
   };
@@ -128,7 +131,7 @@ const GlobalModels: React.FC = () => {
         message.error(data.error || 'Failed to save model');
       }
     } catch (error) {
-      console.error('Failed to save model:', error);
+      log.error({ err: error }, 'Failed to save model');
       message.error('Failed to save model');
     }
   };

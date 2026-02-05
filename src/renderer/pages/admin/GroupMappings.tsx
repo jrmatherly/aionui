@@ -11,10 +11,13 @@
  * Read-only — mappings are configured via GROUP_MAPPINGS_FILE or GROUP_MAPPINGS_JSON env var.
  */
 
+import { createLogger } from '@/renderer/utils/logger';
 import { Message, Table, Tag } from '@arco-design/web-react';
 import type { ColumnProps } from '@arco-design/web-react/es/Table';
 import React, { useCallback, useEffect, useState } from 'react';
 import SettingsPageWrapper from '../settings/components/SettingsPageWrapper';
+
+const log = createLogger('GroupMappings');
 
 interface IGroupMapping {
   groupId: string;
@@ -35,7 +38,7 @@ const GroupMappings: React.FC = () => {
       setMappings(data.mappings ?? []);
     } catch (err) {
       Message.error('Failed to load group mappings');
-      console.error('[Admin] fetchMappings:', err);
+      log.error({ err }, 'Failed to load group mappings');
     } finally {
       setLoading(false);
     }

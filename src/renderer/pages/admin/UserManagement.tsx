@@ -11,12 +11,15 @@
  * Only accessible to users with admin role.
  */
 
+import { createLogger } from '@/renderer/utils/logger';
 import { withCsrfToken } from '@/webserver/middleware/csrfClient';
 import { Button, Message, Modal, Select, Table, Tag, Tooltip } from '@arco-design/web-react';
 import { IconEdit, IconRefresh } from '@arco-design/web-react/icon';
 import type { ColumnProps } from '@arco-design/web-react/es/Table';
 import React, { useCallback, useEffect, useState } from 'react';
 import SettingsPageWrapper from '../settings/components/SettingsPageWrapper';
+
+const log = createLogger('UserManagement');
 
 interface IAdminUser {
   id: string;
@@ -63,7 +66,7 @@ const UserManagement: React.FC = () => {
       setUsers(data.users ?? []);
     } catch (err) {
       Message.error('Failed to load users');
-      console.error('[Admin] fetchUsers:', err);
+      log.error({ err }, 'Failed to load users');
     } finally {
       setLoading(false);
     }
