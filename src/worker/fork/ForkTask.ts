@@ -10,10 +10,13 @@
  * Provides main/child process communication functionality
  */
 
+import { createLogger } from '@/common/logger';
 import { uuid } from '@/renderer/utils/common';
 import type { UtilityProcess } from 'electron';
 import { app, utilityProcess } from 'electron';
 import { Pipe } from './pipe';
+
+const log = createLogger('ForkTask');
 
 /**
  * Get working directory for worker process
@@ -78,7 +81,7 @@ export class ForkTask<Data> extends Pipe {
         if (e.pipeId) {
           // If callback exists, send callback information to child process
           Promise.resolve(deferred.pipe(this.postMessage.bind(this))).catch((error) => {
-            console.error('Failed to pipe message:', error);
+            log.error({ err: error }, 'Failed to pipe message');
           });
         }
         return this.emit(e.type, e.data, deferred);

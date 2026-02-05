@@ -1,5 +1,8 @@
 import { withCsrfToken } from '@/webserver/middleware/csrfClient';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('AuthContext');
 
 type AuthStatus = 'checking' | 'authenticated' | 'unauthenticated';
 
@@ -62,7 +65,7 @@ async function fetchCurrentUser(signal?: AbortSignal): Promise<AuthUser | null> 
     if ((error as Error).name === 'AbortError') {
       return null;
     }
-    console.error('Failed to fetch current user:', error);
+    log.error({ err: error }, 'Failed to fetch current user');
   }
 
   return null;
@@ -156,7 +159,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
 
       return { success: true };
     } catch (error) {
-      console.error('Login request failed:', error);
+      log.error({ err: error }, 'Login request failed');
       return {
         success: false,
         message: 'Network error. Please try again.',
@@ -184,7 +187,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         body: JSON.stringify(withCsrfToken({})),
       });
     } catch (error) {
-      console.error('Logout request failed:', error);
+      log.error({ err: error }, 'Logout request failed');
     } finally {
       setUser(null);
       setStatus('unauthenticated');

@@ -161,5 +161,5 @@ export const executePendingCallbacks = (): void => {
  * @deprecated This function is no longer needed with direct database operations
  */
 export const nextTickToLocalRunning = (_fn: (list: TMessage[]) => TMessage[]): void => {
-  console.warn('[Message] nextTickToLocalRunning is deprecated with database storage');
+  log.warn('nextTickToLocalRunning is deprecated with database storage');
 };

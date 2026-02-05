@@ -125,11 +125,11 @@ export class Pipe {
    */
   call(name: string, data: any, extPrams: any = {}) {
     if (this.isClose) {
-      console.log('---Main process has closed', name, 'execution failed!!');
+      log.warn({ name }, 'Main process has closed, execution failed');
       return;
     }
     if (!process.parentPort?.postMessage) {
-      console.error('---Not a child process, cannot use main process event mechanism');
+      log.error('Not a child process, cannot use main process event mechanism');
       return;
     }
     process.parentPort.postMessage({

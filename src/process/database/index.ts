@@ -1788,7 +1788,7 @@ export class AionUIDatabase {
    */
   vacuum(): void {
     this.db.exec('VACUUM');
-    console.log('[Database] Vacuum completed');
+    log.info('Vacuum completed');
   }
 }
 
