@@ -226,4 +226,4 @@ _This checklist is updated during execution flow_
 
 ---
 
-_Based on Constitution v2.1.1 - See `/memory/constitution.md`_
+_Based on Constitution v2.0.0 - See `.specify/memory/constitution.md`_

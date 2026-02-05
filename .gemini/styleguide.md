@@ -6,12 +6,14 @@ This document defines the coding standards and best practices for the AionUI pro
 
 ## Technology Stack
 
-- **Runtime**: Bun
-- **Framework**: Electron + React
-- **Language**: TypeScript (strict mode)
-- **Styling**: Tailwind CSS + Arco Design
-- **State Management**: React hooks + SWR
-- **i18n**: react-i18next (support: en-US, zh-CN, zh-TW, ja-JP, ko-KR)
+- **Runtime**: Node.js 22+ with npm 11+
+- **Framework**: Electron 37 + React 19
+- **Language**: TypeScript 5.8 (strict mode)
+- **Styling**: UnoCSS (atomic CSS) + Arco Design
+- **State Management**: React hooks + Context + SWR
+- **Database**: SQLite via better-sqlite3
+- **Build**: Electron Forge (dev) + electron-builder (packaging)
+- **Language**: English only (i18n removed in v1.8.2)
 
 ## Code Quality Standards
 
@@ -22,6 +24,7 @@ This document defines the coding standards and best practices for the AionUI pro
 - Prefer interfaces over type aliases for object shapes
 - Use explicit return types for exported functions
 - Use optional chaining (`?.`) and nullish coalescing (`??`)
+- Use path aliases: `@/*`, `@process/*`, `@renderer/*`
 
 ### React
 
@@ -30,6 +33,7 @@ This document defines the coding standards and best practices for the AionUI pro
 - Avoid inline functions in JSX when possible
 - Use proper dependency arrays in hooks
 - Follow React naming conventions (PascalCase for components)
+- Use Arco Design components for consistent UI
 
 ### Error Handling
 
@@ -44,6 +48,7 @@ This document defines the coding standards and best practices for the AionUI pro
 - Validate all user inputs
 - Sanitize data before rendering (XSS prevention)
 - Use secure IPC communication patterns in Electron
+- Use the bridge system (`@office-ai/platform`) for IPC, never raw `ipcMain`/`ipcRenderer`
 
 ### Performance
 
@@ -51,19 +56,31 @@ This document defines the coding standards and best practices for the AionUI pro
 - Avoid unnecessary re-renders
 - Use proper memoization
 - Consider bundle size when adding dependencies
+- Use React Virtuoso for long message lists
 
 ## File Organization
 
 ```
 src/
-├── common/         # Shared utilities and types
-├── process/        # Main process code (Electron)
+├── adapter/        # Platform adapters (browser, main)
+├── agent/          # AI agent implementations (acp, codex, gemini)
+├── channels/       # External messaging channels (telegram, lark)
+├── common/         # Shared utilities, types, adapters
+├── process/        # Main process code (bridges, services, database)
+│   ├── bridge/     # IPC bridge definitions
+│   ├── database/   # SQLite schema, migrations
+│   └── services/   # Backend services
 ├── renderer/       # Renderer process code (React)
+│   ├── assets/     # Static assets (logos, images)
 │   ├── components/ # Reusable UI components
+│   ├── context/    # React Context providers
 │   ├── hooks/      # Custom React hooks
 │   ├── pages/      # Page components
-│   └── i18n/       # Internationalization
-└── agent/          # AI agent related code
+│   └── utils/      # Frontend utilities
+├── webserver/      # WebUI server (Express + WebSocket)
+│   ├── auth/       # Authentication (OIDC, JWT, RBAC)
+│   └── routes/     # HTTP routes
+└── worker/         # Background workers for AI agents
 ```
 
 ## Commit Message Convention
@@ -79,6 +96,8 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `test:` - Tests
 - `chore:` - Maintenance tasks
 
+**Note**: Project has a git hook that only accepts these commit types.
+
 ## Review Priorities
 
 When reviewing code, prioritize in this order:
@@ -91,6 +110,14 @@ When reviewing code, prioritize in this order:
 
 ## Language
 
-- Code comments should be in English or bilingual (English + Chinese)
+- All user-facing strings must be hardcoded English (no i18n)
+- Code comments should be in English
 - Use clear and descriptive variable/function names
 - Avoid abbreviations unless widely understood
+
+## Web Mode vs Electron Mode
+
+- Use `isWebMode()` from `src/renderer/utils/platform.ts` to detect environment
+- Web mode: use `window.open()` for external links (not `shell.openExternal`)
+- Web mode: use REST API `/api/branding` instead of IPC for pre-auth resources
+- Both modes: ensure functionality works in Docker (headless Electron via Xvfb)

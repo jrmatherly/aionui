@@ -1,21 +1,21 @@
-# AionUi Constitution
+# AionUI Constitution
 
 ## Core Principles
 
 ### I. Multi-Agent AI Integration
 
-AionUi serves as a unified desktop interface for multiple AI terminal agents (Gemini CLI, Claude Code, Qwen Code, etc.). Each AI agent integration must be:
+AionUI serves as a unified desktop interface for multiple AI terminal agents (Gemini CLI, Claude Code, OpenAI Codex, etc.). Each AI agent integration must be:
 
 - Protocol-agnostic with standardized adapters
 - Independently manageable and configurable
-- Cross-platform compatible (macOS, Windows, Linux)
+- Cross-platform compatible (macOS, Windows, Linux, Docker)
 - Real-time streaming capable for live interaction
 
 ### II. Modular Architecture First
 
 Every major feature is implemented as an independent, testable module:
 
-- Bridge pattern for IPC communication (dialog, fs, conversation, auth, etc.)
+- Bridge pattern for IPC communication via `@office-ai/platform` (dialog, fs, conversation, auth, etc.)
 - Agent managers as separate, swappable components
 - UI components with clear separation of concerns
 - Shared utilities and common interfaces
@@ -33,9 +33,10 @@ User interaction must be intuitive and efficient:
 
 All user data and AI interactions must be secure:
 
-- Local storage of conversation history and settings
-- Secure API key management with encryption
-- No data transmission without explicit user consent
+- SQLite database for conversation history and settings
+- Secure API key management with AES-256-GCM encryption
+- Per-user data isolation in multi-user deployments
+- OIDC/SSO support for enterprise authentication
 - Proper credential isolation between different AI providers
 
 ### V. Developer Experience and Maintainability
@@ -44,31 +45,39 @@ Code must be maintainable and extensible:
 
 - TypeScript for type safety across the entire stack
 - ESLint and Prettier for consistent code quality
-- Modular commit message format (feat/fix/chore/docs/refactor)
+- Conventional commit message format (feat/fix/chore/docs/refactor)
 - Clear documentation for architectural decisions
+- mise-en-place for tool version management
 
 ## Technology Standards
 
 ### Electron Framework
 
-- Use Electron Forge for build and packaging management
+- Use Electron Forge for development and Electron Builder for packaging
 - Maintain main process and renderer process separation
-- Leverage IPC bridges for secure communication
+- Leverage IPC bridges (`@office-ai/platform`) for secure communication
 - Support hot reload in development for rapid iteration
+- Support headless mode via Xvfb for Docker deployments
 
 ### React and TypeScript
 
-- React with functional components and hooks
-- Strict TypeScript configuration with comprehensive type checking
+- React 19 with functional components and hooks
+- Strict TypeScript 5.8 configuration with comprehensive type checking
 - UnoCSS for atomic CSS styling
 - Arco Design components for consistent UI patterns
 
 ### State Management
 
 - React Context + SWR for data fetching and caching
-- Local electron-store for persistent application settings
-- File-system based storage for conversation history
+- SQLite (better-sqlite3) for persistent application data
+- File-system based storage for workspace operations
 - Event-driven communication between components
+
+### Database
+
+- SQLite via better-sqlite3 with migration system
+- Schema versioning (current: v15)
+- Tables: conversations, messages, users, refresh_tokens, token_blacklist, user_api_keys, organizations, teams, etc.
 
 ## Development Workflow
 
@@ -93,6 +102,13 @@ Code must be maintainable and extensible:
 - No direct commits to main branch
 - Pull request reviews required for all changes
 
+### Tool Management
+
+- mise-en-place manages Node.js 22 and npm 11+ versions
+- `mise.toml` defines tool versions, env vars, and tasks
+- `mise.lock` pins exact versions with checksums
+- Docker builds read versions from mise.lock
+
 ## Governance
 
 ### Architecture Decisions
@@ -104,9 +120,10 @@ Code must be maintainable and extensible:
 
 ### Compliance Requirements
 
-- All features must work across supported platforms (macOS, Windows, Linux)
+- All features must work across supported platforms (macOS, Windows, Linux, Docker)
 - User data privacy and security standards are non-negotiable
 - Accessibility considerations for all UI components
 - Regular dependency updates for security patches
+- English-only UI (i18n removed in v1.8.2)
 
-**Version**: 1.0.0 | **Ratified**: 2025-01-22 | **Last Amended**: 2025-01-22
+**Version**: 2.0.0 | **Ratified**: 2025-01-22 | **Last Amended**: 2026-02-05
