@@ -83,11 +83,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Extract tool versions from mise.lock
+      - name: Extract tool versions
         id: versions
         run: |
+          # Node version from mise.lock (pinned)
           NODE_VERSION=$(grep -A1 'tools.node' mise.lock | grep version | head -1 | sed 's/.*= "//' | sed 's/"//')
-          NPM_VERSION=$(grep -A1 'tools.npm' mise.lock | grep version | head -1 | sed 's/.*= "//' | sed 's/"//')
+          # npm version from Dockerfile default (not in mise.lock — installed via postinstall hook)
+          NPM_VERSION=$(grep 'ARG NPM_VERSION=' deploy/docker/Dockerfile | head -1 | sed 's/ARG NPM_VERSION=//')
           echo "node=${NODE_VERSION}" >> $GITHUB_OUTPUT
           echo "npm=${NPM_VERSION}" >> $GITHUB_OUTPUT
           echo "Node.js: ${NODE_VERSION}, npm: ${NPM_VERSION}"

@@ -228,7 +228,8 @@ set -e
 # Extract pinned versions from mise.lock to pass as Docker build args.
 # This ensures Docker uses the exact same Node/npm versions as local dev.
 NODE_VERSION=$(grep -A1 'tools.node' mise.lock | grep version | head -1 | sed 's/.*= "//' | sed 's/"//')
-NPM_VERSION=$(grep -A1 'tools.npm' mise.lock | grep version | head -1 | sed 's/.*= "//' | sed 's/"//')
+# npm isn't in mise.lock (installed via postinstall hook); read from Dockerfile default
+NPM_VERSION=$(grep 'ARG NPM_VERSION=' deploy/docker/Dockerfile | head -1 | sed 's/ARG NPM_VERSION=//')
 
 echo "Building Docker image with:"
 echo "  Node.js: ${NODE_VERSION}"
