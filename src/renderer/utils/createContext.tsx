@@ -6,6 +6,9 @@
 
 import type { FunctionComponent, PropsWithChildren } from 'react';
 import React, { useEffect, useRef, useState } from 'react';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('CreateContext');
 
 type FN<P> = FunctionComponent<PropsWithChildren<P>>;
 
@@ -18,7 +21,7 @@ export const createContext = <T extends any>(value: T): [() => T, FN<{ value: T 
   }>({
     value,
     setValue() {
-      console.warn('');
+      log.warn('setValue called before Context.Provider mounted');
     },
   });
 

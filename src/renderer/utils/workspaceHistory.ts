@@ -4,6 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('WorkspaceHistory');
+
 const WORKSPACE_UPDATE_TIME_KEY = 'aionui_workspace_update_time';
 
 /**
@@ -33,6 +37,6 @@ export const updateWorkspaceTime = (workspace: string): void => {
     times[workspace] = Date.now();
     localStorage.setItem(WORKSPACE_UPDATE_TIME_KEY, JSON.stringify(times));
   } catch (error) {
-    console.error('[WorkspaceHistory] Failed to update workspace time:', error);
+    log.error({ err: error }, 'Failed to update workspace time');
   }
 };
