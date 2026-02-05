@@ -227,6 +227,7 @@ mise.local.toml
 mise.*.local.toml
 mise.local.lock
 
-# Docker — real group mappings contain tenant-specific EntraID group IDs
+# Docker — real config files contain secrets (API keys, group IDs)
 deploy/docker/group-mappings.json
+deploy/docker/global-models.json
 # Note: .dockerignore is intentionally tracked

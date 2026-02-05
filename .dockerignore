@@ -76,6 +76,7 @@ mise.local.lock
 *.local
 .npmrc
 deploy/docker/group-mappings.json
+deploy/docker/global-models.json
 
 # -----------------------------------------------------------------------------
 # macOS
