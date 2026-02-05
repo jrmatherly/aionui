@@ -82,7 +82,7 @@ AionUI uses [mise](https://mise.jdx.dev) to manage tool versions, environment va
 
 **Lockfile:**
 
-- `mise.lock` pins exact versions (Node 22.22.0, npm 11.8.0) with SHA256 checksums
+- `mise.lock` pins exact versions (Node 22.22.0, npm 11.9.0) with SHA256 checksums
 - Platform entries for `linux-x64`, `macos-arm64`, `macos-x64` with download URLs
 - CI can use `--locked` flag to fail if lockfile URLs are missing (prevents API calls)
 - Update lockfile: `mise lock` (all platforms) or `mise lock --platform linux-x64` (specific)

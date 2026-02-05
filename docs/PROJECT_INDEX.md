@@ -1,6 +1,6 @@
 # AionUI Project Documentation Index
 
-> **Version**: 1.8.1 | **License**: Apache-2.0 | **Platform**: Cross-platform (macOS, Windows, Linux)
+> **Version**: 1.8.2 | **License**: Apache-2.0 | **Platform**: Cross-platform (macOS, Windows, Linux)
 
 Transform command-line AI agents into a modern, efficient chat interface.
 
@@ -110,7 +110,6 @@ src/
 ├── process/                    # Main process services
 │   ├── bridge/                 # IPC bridges
 │   ├── database/               # SQLite database
-│   ├── i18n/                   # Server-side i18n
 │   ├── services/               # Backend services
 │   │   ├── cron/               # Scheduled tasks
 │   │   └── mcpServices/        # MCP protocol
@@ -124,7 +123,6 @@ src/
 │   ├── config/                 # Frontend config
 │   ├── context/                # React Context providers
 │   ├── hooks/                  # Custom React hooks
-│   ├── i18n/                   # Internationalization
 │   ├── messages/               # Message components
 │   ├── pages/                  # Page components
 │   ├── services/               # Client services
@@ -588,7 +586,6 @@ class WebSocketManager {
 |-----------|------|-------------|
 | `Markdown` | `Markdown.tsx` | Markdown rendering with syntax highlighting |
 | `ThemeSwitcher` | `ThemeSwitcher.tsx` | Light/dark mode toggle |
-| `LanguageSwitcher` | `LanguageSwitcher.tsx` | i18n language selection |
 | `FontSizeControl` | `FontSizeControl.tsx` | Font size adjustment |
 | `FilePreview` | `FilePreview.tsx` | File preview modal |
 | `Diff2Html` | `Diff2Html.tsx` | Diff visualization |
@@ -785,20 +782,11 @@ npm run test:integration
 
 ---
 
-## Internationalization
+## Language Support
 
-**Supported Languages**: en-US, zh-CN, zh-TW, ja-JP, ko-KR
+**Language**: English only (en-US)
 
-**Location**: `src/renderer/i18n/locales/`
-
-**Usage**:
-
-```typescript
-import { useTranslation } from 'react-i18next';
-
-const { t } = useTranslation();
-<span>{t('common.send')}</span>
-```
+> **Note**: i18n/internationalization support was removed in v1.8.2. The application uses hardcoded English strings throughout.
 
 ---
 
@@ -861,4 +849,4 @@ See [AI Context Guide](guides/AI_CONTEXT_GUIDE.md) for setup and usage.
 
 ---
 
-_Generated: February 2026 | AionUI v1.8.1_
+_Generated: February 2026 | AionUI v1.8.2_

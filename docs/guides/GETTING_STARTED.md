@@ -23,7 +23,7 @@ This guide will help you set up and start using AionUI to interact with AI agent
 curl https://mise.run | sh
 
 # Clone and start
-git clone https://github.com/iOfficeAI/AionUi.git
+git clone https://github.com/jrmatherly/aionui.git
 cd aionui
 mise install        # Installs correct Node.js automatically
 mise run dev        # Installs npm deps + starts dev server
@@ -35,7 +35,7 @@ mise run dev        # Installs npm deps + starts dev server
 # Ensure Node.js >= 22 is installed, then upgrade npm to 11+
 # (Node 22 bundles npm 10.x; this project requires npm 11+)
 npm install -g npm@11
-git clone https://github.com/iOfficeAI/AionUi.git
+git clone https://github.com/jrmatherly/aionui.git
 cd aionui
 npm install
 npm start
@@ -208,9 +208,10 @@ Access via **Settings** in the sidebar:
 | Setting | Description |
 |---------|-------------|
 | **Theme** | Light, Dark, or System |
-| **Language** | en-US, zh-CN, zh-TW, ja-JP, ko-KR |
 | **Font Size** | Adjust text size |
 | **Workspace** | Default project folder |
+
+> **Note**: The application is English-only. Multi-language support was removed in v1.8.2.
 
 ### Agent-Specific Settings
 

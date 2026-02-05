@@ -21,7 +21,7 @@ curl https://mise.run | sh
 # Then activate mise in your shell — see https://mise.jdx.dev/getting-started.html#activate-mise
 
 # 2. Clone and enter the project
-git clone https://github.com/iOfficeAI/AionUi.git
+git clone https://github.com/jrmatherly/aionui.git
 cd aionui
 
 # 3. Install tools + dependencies and start developing
@@ -44,7 +44,7 @@ npm install -g npm@11
 npm --version   # Must be >= 11.0.0
 
 # Clone and install
-git clone https://github.com/iOfficeAI/AionUi.git
+git clone https://github.com/jrmatherly/aionui.git
 cd aionui
 npm install
 npm start
