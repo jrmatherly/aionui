@@ -54,13 +54,13 @@ function resolvePresetId(conversation: TChatConversation): string | null {
 }
 
 /**
- * Build assistant info from preset
+ * Build assistant info from preset (English-only)
  */
-function buildPresetInfo(presetId: string, locale: string): PresetAssistantInfo | null {
+function buildPresetInfo(presetId: string): PresetAssistantInfo | null {
   const preset = ASSISTANT_PRESETS.find((p) => p.id === presetId);
   if (!preset) return null;
 
-  const name = preset.nameI18n[locale] || preset.nameI18n['en-US'] || preset.id;
+  const name = preset.nameI18n['en-US'] || preset.id;
 
   // avatar can be emoji or svg filename
   const isEmoji = !preset.avatar.endsWith('.svg');
@@ -94,8 +94,8 @@ export function usePresetAssistantInfo(conversation: TChatConversation | undefin
     const presetId = resolvePresetId(conversation);
     if (!presetId) return null;
 
-    // First try to find in built-in presets (English only)
-    const builtinInfo = buildPresetInfo(presetId, 'en-US');
+    // First try to find in built-in presets
+    const builtinInfo = buildPresetInfo(presetId);
     if (builtinInfo) {
       return builtinInfo;
     }
@@ -104,8 +104,6 @@ export function usePresetAssistantInfo(conversation: TChatConversation | undefin
     if (customAgents && Array.isArray(customAgents)) {
       const customAgent = customAgents.find((agent) => agent.id === presetId || agent.id === `builtin-${presetId}`);
       if (customAgent) {
-        const localeKey = 'en-US';
-
         // Handle avatar: could be emoji or svg filename
         let logo = customAgent.avatar || '🤖';
         let isEmoji = true;
@@ -128,7 +126,7 @@ export function usePresetAssistantInfo(conversation: TChatConversation | undefin
         }
 
         return {
-          name: customAgent.nameI18n?.[localeKey] || customAgent.name || presetId,
+          name: customAgent.nameI18n?.['en-US'] || customAgent.name || presetId,
           logo,
           isEmoji,
         };

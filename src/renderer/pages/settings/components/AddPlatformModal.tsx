@@ -143,7 +143,7 @@ const AddPlatformModal = ModalHOC<{
     form
       .validate()
       .then((values) => {
-        // If i18nKey exists use translated name, otherwise use platform name
+        // Use platform display name or fall back to platform value
         const name = selectedPlatform?.name ?? values.platform;
 
         // Parse custom headers from JSON string (if provided)

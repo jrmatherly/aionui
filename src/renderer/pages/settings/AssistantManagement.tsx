@@ -67,7 +67,7 @@ const AssistantManagement: React.FC<AssistantManagementProps> = ({ message }) =>
   const [deletePendingSkillName, setDeletePendingSkillName] = useState<string | null>(null); // Pending skill name to delete
   const [deleteCustomSkillName, setDeleteCustomSkillName] = useState<string | null>(null); // Custom skill to remove from assistant
   const textareaWrapperRef = useRef<HTMLDivElement>(null);
-  const localeKey = 'en-US';
+  const localeKey = 'en-US'; // Fixed to English (i18n removed from project)
   const avatarImageMap: Record<string, string> = {
     'cowork.svg': coworkSvg,
     '🛠️': coworkSvg,

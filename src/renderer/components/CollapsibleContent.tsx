@@ -63,7 +63,6 @@ interface CollapsibleContentProps {
  * ```
  */
 export const CollapsibleContent: React.FC<CollapsibleContentProps> = ({ children, maxHeight = 240, defaultCollapsed = true, className, contentClassName, useMask = false, allowHorizontalScroll = false }) => {
-  // i18n
   const { theme } = useThemeContext(); // Theme context (light/dark)
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed); // Collapse state
   const [needsCollapse, setNeedsCollapse] = useState(false); // Whether collapse feature is needed

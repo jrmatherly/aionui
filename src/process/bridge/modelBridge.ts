@@ -699,9 +699,11 @@ function isPackyAPI(baseUrl: string): boolean {
 }
 
 /**
- * Generate suggestion
+ * Generate suggestion for protocol detection results.
  *
- * Return i18n key and params, frontend handles translation
+ * Note: i18nKey and i18nParams fields are vestigial from when this project
+ * supported multiple languages. The `message` field now contains the final
+ * English text directly.
  */
 function generateSuggestion(protocol: ProtocolType, _confidence: number, baseUrl: string, error?: string): ProtocolDetectionResponse['suggestion'] {
   if (protocol === 'unknown') {

@@ -108,9 +108,9 @@ export interface ProtocolDetectionResponse {
     message: string;
     /** Suggested platform */
     suggestedPlatform?: string;
-    /** i18n key for frontend */
+    /** @deprecated Vestigial i18n key (project is now English-only) */
     i18nKey?: string;
-    /** i18n parameters */
+    /** @deprecated Vestigial i18n parameters (project is now English-only) */
     i18nParams?: Record<string, string>;
   };
   /** Multi-key test result if enabled */

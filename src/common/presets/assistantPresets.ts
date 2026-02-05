@@ -1,5 +1,12 @@
 import type { PresetAgentType } from '@/types/acpTypes';
 
+/**
+ * Assistant preset configuration.
+ *
+ * Note: The `*I18n` suffix on property names is historical. This project is now
+ * English-only. The Record<string, string> structure uses 'en-US' as the key
+ * for backward compatibility with stored user data.
+ */
 export type AssistantPreset = {
   id: string;
   avatar: string;

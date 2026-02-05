@@ -58,7 +58,7 @@ export interface PlatformConfig {
   platform: PlatformType;
   /** Preset base URL for the provider */
   baseUrl?: string;
-  /** i18n key (optional, for translated platform names) */
+  /** @deprecated Vestigial i18n key (project is now English-only, use `name` directly) */
   i18nKey?: string;
   /** Help URL for provider documentation */
   helpUrl?: string;
@@ -151,7 +151,7 @@ export const MODEL_PLATFORMS: PlatformConfig[] = [
   },
 
   // ===== Custom (always last — requires user-provided base URL) =====
-  { name: 'Custom', value: 'custom', logo: null, platform: 'custom', i18nKey: 'settings.platformCustom' },
+  { name: 'Custom', value: 'custom', logo: null, platform: 'custom' },
 
   // ===== Hidden Providers (kept for reference, uncomment to re-enable) =====
   // { name: 'Ark', value: 'Ark', logo: VolcengineLogo, platform: 'custom', baseUrl: 'https://ark.cn-beijing.volces.com/api/v3' },

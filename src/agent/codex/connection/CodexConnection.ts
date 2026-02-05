@@ -540,7 +540,6 @@ export class CodexConnection {
     const processedError = globalErrorService.handleError(codexError);
 
     // Convert to legacy NetworkError format for backward compatibility
-    // The userMessage now contains an i18n key that should be translated by the UI layer
     const networkError: NetworkError = {
       type: this.getNetworkErrorType(processedError.code),
       originalError: errorMsg,

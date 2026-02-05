@@ -131,7 +131,8 @@ export interface AcpBackendConfig {
   name: string;
 
   /**
-   * Localized names (e.g., { 'zh-CN': '...', 'en-US': '...' })
+   * Name by language key (kept for backward compatibility with stored data).
+   * Note: Project is now English-only; only 'en-US' key is used.
    */
   nameI18n?: Record<string, string>;
 
@@ -141,7 +142,8 @@ export interface AcpBackendConfig {
   description?: string;
 
   /**
-   * Localized descriptions (e.g., { 'zh-CN': '...', 'en-US': '...' })
+   * Description by language key (kept for backward compatibility with stored data).
+   * Note: Project is now English-only; only 'en-US' key is used.
    */
   descriptionI18n?: Record<string, string>;
 
@@ -200,13 +202,13 @@ export interface AcpBackendConfig {
   /** The system prompt or rule context for this preset */
   context?: string;
 
-  /** Localized prompts for this preset (e.g., { 'zh-CN': '...', 'en-US': '...' }) */
+  /** Context by language key (kept for backward compatibility; only 'en-US' used) */
   contextI18n?: Record<string, string>;
 
   /** Example prompts for this preset */
   prompts?: string[];
 
-  /** Localized example prompts */
+  /** Prompts by language key (kept for backward compatibility; only 'en-US' used) */
   promptsI18n?: Record<string, string[]>;
 
   /**

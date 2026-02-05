@@ -192,7 +192,7 @@ const Guid: React.FC = () => {
   const guidContainerRef = useRef<HTMLDivElement>(null);
   const { closeAllTabs, openTab } = useConversationTabs();
   const { activeBorderColor, inactiveBorderColor, activeShadow } = useInputFocusRing();
-  const localeKey = 'en-US';
+  const localeKey = 'en-US'; // Fixed to English (i18n removed from project)
   const branding = useBranding();
 
   // Open external link — use window.open in web mode (shell.openExternal calls xdg-open on server)

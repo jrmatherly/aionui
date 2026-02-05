@@ -31,10 +31,9 @@ export const isTemporaryWorkspace = (workspacePath: string): boolean => {
  * Get the display name for a workspace path
  *
  * @param workspacePath - The full workspace path
- * @param t - Optional i18n translation function
  * @returns The display name for the workspace
  */
-export const getWorkspaceDisplayName = (workspacePath: string, t?: (key: string) => string): string => {
+export const getWorkspaceDisplayName = (workspacePath: string): string => {
   // Check for temporary workspace
   if (isTemporaryWorkspace(workspacePath)) {
     // Try to extract timestamp from temp workspace path using the generic pattern
@@ -46,10 +45,9 @@ export const getWorkspaceDisplayName = (workspacePath: string, t?: (key: string)
       const timestamp = parseInt(match[1], 10);
       const date = new Date(timestamp);
       const dateStr = date.toLocaleDateString();
-      const label = t ? 'Temporary Space' : 'Temporary Session';
-      return `${label} (${dateStr})`;
+      return `Temporary Session (${dateStr})`;
     }
-    return t ? 'Temporary Space' : 'Temporary Session';
+    return 'Temporary Session';
   }
 
   // For regular workspace, show the last directory name

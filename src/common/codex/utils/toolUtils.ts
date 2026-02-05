@@ -408,9 +408,9 @@ export class ToolRegistry {
   }
 
   /**
-   * Generate localization parameters for MCP tool
+   * Extract MCP tool name parts (server name and tool name)
    */
-  getMcpToolI18nParams(tool: ToolDefinition): Record<string, string> {
+  getMcpToolNameParts(tool: ToolDefinition): Record<string, string> {
     if (tool.id.includes('/')) {
       const [serverName, toolName] = tool.id.split('/');
       return { toolName, serverName };

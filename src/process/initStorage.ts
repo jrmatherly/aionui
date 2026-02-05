@@ -415,14 +415,14 @@ const initBuiltinAssistantRules = async (): Promise<void> => {
     const presetRulesDir = preset.resourceDir ? resolveBuiltinDir(preset.resourceDir) : rulesDir;
     const presetSkillsDir = preset.resourceDir ? resolveBuiltinDir(preset.resourceDir) : builtinSkillsDir;
 
-    // Copy rule files
+    // Copy rule files (English-only, 'en-US' key used for backward compatibility)
     const hasRuleFiles = Object.keys(preset.ruleFiles).length > 0;
     if (hasRuleFiles) {
-      for (const [locale, ruleFile] of Object.entries(preset.ruleFiles)) {
+      for (const [langKey, ruleFile] of Object.entries(preset.ruleFiles)) {
         try {
           const sourceRulesPath = path.join(presetRulesDir, ruleFile);
-          // Target file name format: {assistantId}.{locale}.md
-          const targetFileName = `${assistantId}.${locale}.md`;
+          // Target file name format: {assistantId}.{langKey}.md
+          const targetFileName = `${assistantId}.${langKey}.md`;
           const targetPath = path.join(assistantsDir, targetFileName);
 
           // Check if source file exists
@@ -438,7 +438,7 @@ const initBuiltinAssistantRules = async (): Promise<void> => {
           await fs.writeFile(targetPath, content, 'utf-8');
           console.log(`[AionUi] Updated builtin rule: ${targetFileName}`);
         } catch (error) {
-          // Ignore missing locale files
+          // Ignore missing files
           console.warn(`[AionUi] Failed to copy rule file ${ruleFile}:`, error);
         }
       }
@@ -459,13 +459,13 @@ const initBuiltinAssistantRules = async (): Promise<void> => {
       }
     }
 
-    // Copy skill files (if preset has skills)
+    // Copy skill files (English-only, 'en-US' key used for backward compatibility)
     if (preset.skillFiles) {
-      for (const [locale, skillFile] of Object.entries(preset.skillFiles)) {
+      for (const [langKey, skillFile] of Object.entries(preset.skillFiles)) {
         try {
           const sourceSkillsPath = path.join(presetSkillsDir, skillFile);
-          // Target file name format: {assistantId}-skills.{locale}.md
-          const targetFileName = `${assistantId}-skills.${locale}.md`;
+          // Target file name format: {assistantId}-skills.{langKey}.md
+          const targetFileName = `${assistantId}-skills.${langKey}.md`;
           const targetPath = path.join(assistantsDir, targetFileName);
 
           // Check if source file exists

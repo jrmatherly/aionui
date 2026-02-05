@@ -34,7 +34,7 @@ export const getActivityTime = (conversation: TChatConversation): number => {
  *
  * @param time - The timestamp to check
  * @param currentTime - The current timestamp (usually Date.now())
- * @param t - The i18n translation function
+ * @returns Timeline label string ('Today', 'Yesterday', 'Last 7 Days', or 'Earlier')
  */
 export const getTimelineLabel = (time: number, currentTime: number): string => {
   const daysDiff = diffDay(currentTime, time);

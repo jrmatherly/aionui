@@ -64,14 +64,14 @@ export interface ToolRenderer {
 export interface ToolDefinition {
   id: string;
   name: string;
-  displayNameKey: string; // i18n key for display name
+  displayNameKey: string; // Display name for the tool
   category: ToolCategory;
   priority: number; // priority, lower number means higher priority
   availability: ToolAvailability;
   capabilities: ToolCapabilities;
   renderer: ToolRenderer;
   icon?: string; // tool icon
-  descriptionKey: string; // i18n key for description
+  descriptionKey: string; // Description text for the tool
   schema?: any; // tool schema
 }
 
