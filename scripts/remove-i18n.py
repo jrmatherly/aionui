@@ -1,14 +1,27 @@
 #!/usr/bin/env python3
 """
 i18n Removal Script for AionUI
+
+STATUS: COMPLETE - i18n removal was finished in v1.8.2 (commit 4e7aa0a0)
+This script is kept for historical reference only.
+
+Original Purpose:
 Replaces t('key') calls with hardcoded English strings from en-US.json
 
-Usage: python3 scripts/remove-i18n.py [--dry-run] [--file path/to/file.tsx]
+Usage (historical):
+  python3 scripts/remove-i18n.py [--dry-run] [--file path/to/file.tsx]
 
-Validation:
+Requirements (no longer needed):
+- Backup of en-US.json at /tmp/en-US-backup.json
 - Run with --dry-run first to preview changes
 - After running, validate with: npx tsc --noEmit
 - Review git diff for unintended changes
+
+Results achieved:
+- 132 files changed, 2,458 insertions, 9,532 deletions
+- ~1,000+ t() calls replaced with hardcoded English strings
+- i18next, react-i18next dependencies removed
+- All locale files except en-US deleted (then en-US also removed)
 """
 
 import json

@@ -1,18 +1,20 @@
 # Build Scripts Documentation
 
-This directory contains scripts for building and packaging AionUi across different platforms and architectures.
+This directory contains scripts for building, packaging, and maintaining AionUI across different platforms and architectures.
 
 ## Scripts Overview
 
 | Script | Lines | Purpose |
 |--------|-------|---------|
-| `build-with-builder.js` | 116 | Coordinates Electron Forge and electron-builder |
-| `rebuildNativeModules.js` | 219 | **Unified native module rebuild utility** |
-| `beforeBuild.js` | 38 | Pre-packaging native module rebuild hook |
-| `afterPack.js` | 67 | Post-packaging verification (Linux only) |
+| `build-with-builder.js` | 177 | Coordinates Electron Forge and electron-builder |
+| `rebuildNativeModules.js` | 337 | **Unified native module rebuild utility** |
+| `afterPack.js` | 207 | Post-packaging native module rebuild (cross-compilation) |
 | `afterSign.js` | 47 | macOS code signing and notarization |
+| `postinstall.js` | 45 | Post-install native module setup |
+| `start-forge.js` | 20 | Electron Forge dev server launcher |
+| `remove-i18n.py` | 393 | **One-time script** (i18n removal complete in v1.8.2) |
 
-**Total**: 487 lines (down from 711 lines before optimization)
+**Total**: ~833 lines of build infrastructure
 
 ## Architecture
 
@@ -24,13 +26,25 @@ npm run dist:*
 build-with-builder.js
     ↓
     ├─→ Electron Forge (webpack compilation)
+    │   └─→ Output: .webpack/
     ↓
 electron-builder
     ↓
-    ├─→ beforeBuild.js → rebuildNativeModules.js (all platforms)
-    ├─→ Package app
-    ├─→ afterPack.js → rebuildNativeModules.js (Linux only)
+    ├─→ Package app to app.asar
+    ├─→ afterPack.js → rebuildNativeModules.js (cross-compilation)
     └─→ afterSign.js (macOS only)
+```
+
+### Development Flow
+
+```text
+npm start / mise run dev
+    ↓
+start-forge.js
+    ↓
+electron-forge start
+    ↓
+Hot reload development server
 ```
 
 ## Native Module Rebuild Strategy
@@ -42,7 +56,6 @@ This is the core module that handles all native module rebuilding. It provides:
 #### Functions
 
 1. **`rebuildWithElectronRebuild(options)`**
-   - Used by: `beforeBuild.js`
    - Rebuilds all native modules in source directory
    - Modules: `better-sqlite3`
 
@@ -70,29 +83,32 @@ This is the core module that handles all native module rebuilding. It provides:
 #### macOS
 
 - **Modules rebuilt**: `better-sqlite3`
-- **When**: `beforeBuild` hook only
+- **When**: `afterPack` hook for cross-compilation
 - **Post-build**: Code signing and notarization
 
 #### Linux
 
 - **Modules rebuilt**: `better-sqlite3`
-- **When**:
-  - `beforeBuild`: Rebuild in source directory
-  - `afterPack`: Rebuild `better-sqlite3` in packaged app
 - **Strategy**: Download prebuilt binary first, compile if unavailable
+- **Docker**: Uses prebuild binaries (no native compilation needed)
 
 ## Usage Examples
 
 ### Building for specific platform
 
 ```bash
-# Build for macOS
-npm run dist:mac
+# Build for macOS (using mise tasks)
+mise run build:mac
 
 # Build for Windows
-npm run dist:win
+mise run build:win
 
 # Build for Linux
+mise run build:linux
+
+# Or using npm directly
+npm run dist:mac
+npm run dist:win
 npm run dist:linux
 ```
 
@@ -122,19 +138,51 @@ rebuildSingleModule({
 });
 ```
 
-## Why Two Rebuild Stages?
+## Script Details
 
-### beforeBuild (All Platforms)
+### `afterPack.js`
 
-- Rebuilds modules in **source directory** (`node_modules/`)
-- Ensures correct binaries are packaged
-- Uses `electron-rebuild` for all modules
+Runs after electron-builder packages the app. Main responsibilities:
 
-### afterPack (Linux Only)
+1. **Cross-compilation detection**: Checks if build arch ≠ target arch
+2. **Clean up wrong-architecture artifacts**: Removes `build/` and `bin/` directories
+3. **Remove opposite-arch packages**: Cleans up `@lydell/*-x64` when building for `arm64`
+4. **Rebuild native modules**: Uses prebuild-install or electron-rebuild
+5. **Verify binaries**: Ensures `.node` files exist
 
-- Rebuilds `better-sqlite3` in **packaged app** (`app.asar.unpacked/`)
-- Handles cross-compilation issues
-- Uses `prebuild-install` for faster builds (downloads prebuilt binary)
+### `afterSign.js`
+
+macOS-only. Handles:
+
+1. **Code signature verification**: Checks app is signed before notarization
+2. **Notarization**: Submits to Apple's notary service (requires credentials)
+3. **Environment variables**: `appleId`, `appleIdPassword`, `teamId`
+
+### `postinstall.js`
+
+Runs after `npm install`. Handles:
+
+1. **CI detection**: Skips rebuild in CI (uses prebuilt binaries)
+2. **Local development**: Runs `electron-builder install-app-deps`
+3. **npm 11.9+ compatibility**: Avoids `npm_config_build_from_source` warning
+
+### `start-forge.js`
+
+Simple wrapper to start Electron Forge:
+
+1. **Windows fix**: Sets `FORGE_SKIP_NATIVE_REBUILD=true` on Windows
+2. **Args forwarding**: Passes extra arguments to Forge
+
+### `remove-i18n.py`
+
+**One-time migration script** — i18n removal was completed in v1.8.2.
+
+This script was used to:
+- Replace `t('key')` calls with hardcoded English strings
+- Remove `useTranslation` hooks and imports
+- Handle interpolation patterns
+
+**Status**: Complete. Kept for historical reference.
 
 ## Troubleshooting
 
@@ -146,8 +194,7 @@ rebuildSingleModule({
 
 1. Module is in `electron-builder.yml` → `files` section
 2. Module is in `electron-builder.yml` → `asarUnpack` section
-3. `beforeBuild.js` ran successfully during build
-4. For Linux: `afterPack.js` ran successfully
+3. `afterPack.js` ran successfully during build
 
 ### Native module crashes on launch
 
@@ -156,8 +203,8 @@ rebuildSingleModule({
 **Solution**:
 
 1. Verify target architecture matches build architecture
-2. Check that `beforeBuild.js` rebuilt for correct architecture
-3. For Linux ARM64: Ensure `afterPack.js` rebuilt the module
+2. Check that `afterPack.js` rebuilt for correct architecture
+3. For Linux ARM64: Ensure prebuild-install found prebuilt binaries
 
 ### Cross-compilation fails
 
@@ -169,32 +216,21 @@ rebuildSingleModule({
 - macOS/Linux: Ensure build tools for target architecture are installed
 - Consider building on native architecture instead
 
-## Optimization History
+### npm 11.9+ build_from_source warning
 
-### Version 1.0 (Before Optimization)
+**Symptom**: `Unknown env config: npm_config_build_from_source`
 
-- Total: 711 lines across 5 files
-- Duplication: Rebuild logic in both `beforeBuild` and `afterPack`
+**Solution**: This was fixed in `postinstall.js`. The script no longer passes this env var explicitly.
 
-### Version 2.0 (Current)
+## Docker Integration
 
-- Total: 487 lines across 5 files
-- Savings: 224 lines (31% reduction)
-- Changes:
-  - ✅ Deleted `release.sh` (67 lines) - use `npm version` instead
-  - ✅ Created `rebuildNativeModules.js` (219 lines) - unified utility
-  - ✅ Simplified `build-with-builder.js`: 321 → 116 lines
-  - ✅ Simplified `beforeBuild.js`: 95 → 38 lines
-  - ✅ Simplified `afterPack.js`: 181 → 67 lines
+For Docker builds, native modules use prebuild binaries:
 
-## Contributing
+1. **No native compilation** in Docker (uses prebuild-install)
+2. **Version lock**: Docker uses Node/npm versions from `mise.lock`
+3. **Build command**: `mise run docker:build` or `docker-compose build`
 
-When modifying build scripts:
-
-1. **Test on all platforms** before committing
-2. **Update this documentation** if behavior changes
-3. **Maintain the unified rebuild utility** - avoid duplicating logic
-4. **Keep error messages clear** - they help users troubleshoot
+See `deploy/docker/Dockerfile` for details.
 
 ## Related Files
 
@@ -202,3 +238,4 @@ When modifying build scripts:
 - `/forge.config.ts` - Electron Forge configuration
 - `/.github/workflows/build-and-release.yml` - CI/CD pipeline
 - `/package.json` - Build scripts and dependencies
+- `/mise.toml` - Task definitions and tool versions
