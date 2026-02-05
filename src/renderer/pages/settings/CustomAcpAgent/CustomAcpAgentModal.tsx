@@ -7,6 +7,7 @@ import { acpConversation } from '@/common/ipcBridge';
 import { uuid } from '@/common/utils';
 import AionModal from '@/renderer/components/base/AionModal';
 import { useThemeContext } from '@/renderer/context/ThemeContext';
+import { createLogger } from '@/renderer/utils/logger';
 import type { AcpBackend, AcpBackendConfig } from '@/types/acpTypes';
 import { ACP_BACKENDS_ALL } from '@/types/acpTypes';
 import { Alert, Collapse, Input, Spin } from '@arco-design/web-react';
@@ -14,6 +15,8 @@ import { json } from '@codemirror/lang-json';
 import { CheckSmall } from '@icon-park/react';
 import CodeMirror from '@uiw/react-codemirror';
 import React, { useCallback, useEffect, useState } from 'react';
+
+const log = createLogger('CustomAcpAgentModal');
 // CLI Logo imports
 import AuggieLogo from '@/renderer/assets/logos/auggie.svg';
 import GooseLogo from '@/renderer/assets/logos/goose.svg';
@@ -82,7 +85,7 @@ const CustomAcpAgentModal: React.FC<CustomAcpAgentModalProps> = ({ visible, agen
         setDetectedAgents(filteredAgents);
       }
     } catch (error) {
-      console.error('Failed to load detected agents:', error);
+      log.error({ err: error }, 'Failed to load detected agents');
     } finally {
       setLoadingAgents(false);
     }
