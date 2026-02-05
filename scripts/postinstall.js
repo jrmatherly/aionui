@@ -19,7 +19,7 @@ function runPostInstall() {
 
     if (isCI) {
       // In CI, skip rebuilding to use prebuilt binaries for better compatibility
-      // 在 CI 中跳过重建，使用预编译的二进制文件以获得更好的兼容性
+
       console.log('CI environment detected, skipping rebuild to use prebuilt binaries');
       console.log('Native modules will be handled by electron-forge during packaging');
     } else {
