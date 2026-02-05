@@ -18,6 +18,9 @@ import { Message } from '@arco-design/web-react';
 import { Copy, Down, Up } from '@icon-park/react';
 import { theme } from '@office-ai/platform';
 import classNames from 'classnames';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('Markdown');
 import React, { useMemo, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { addImportantToAll } from '../utils/customCssProcessor';
@@ -302,7 +305,7 @@ const ShadowView = ({ children }: { children: React.ReactNode }) => {
           }
         })
         .catch((error) => {
-          console.error('Failed to load custom CSS:', error);
+          log.error({ err: error }, 'Failed to load custom CSS');
         });
     });
 
@@ -460,10 +463,10 @@ const MarkdownView: React.FC<MarkdownViewProps> = ({ hiddenCodeCopyButton, codeS
                     if (!props.href) return;
                     try {
                       ipcBridge.shell.openExternal.invoke(props.href).catch((error) => {
-                        console.error('Failed to open link', error);
+                        log.error({ err: error }, 'Failed to open link');
                       });
                     } catch (error) {
-                      console.error('Failed to open link', error);
+                      log.error({ err: error }, 'Failed to open link');
                     }
                   }}
                 />

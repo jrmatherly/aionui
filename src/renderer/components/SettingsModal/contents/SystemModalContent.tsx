@@ -13,6 +13,9 @@ import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import { useSettingsViewMode } from '../settingsViewContext';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('SystemModalContent');
 
 /**
  * Directory selection input component
@@ -41,7 +44,7 @@ const DirInputItem: React.FC<{
               }
             })
             .catch((error) => {
-              console.error('Failed to open directory dialog:', error);
+              log.error({ err: error }, 'Failed to open directory dialog');
             });
         };
 

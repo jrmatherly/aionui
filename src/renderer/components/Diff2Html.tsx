@@ -17,6 +17,9 @@ import React, { useCallback, useMemo, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { usePreviewLauncher } from '../hooks/usePreviewLauncher';
 import CollapsibleContent from './CollapsibleContent';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('Diff2Html');
 
 const Diff2Html = ({ diff, className, title, filePath }: { diff: string; className?: string; title?: string; filePath?: string }) => {
   const { theme } = useThemeContext();
@@ -130,7 +133,7 @@ const Diff2Html = ({ diff, className, title, filePath }: { diff: string; classNa
         name.innerHTML = title;
       }
     } else {
-      console.warn('[Diff2Html] Header or operatorRef missing', { hasHeader: !!header, hasRef: !!operatorRef.current });
+      log.warn({ hasHeader: !!header, hasRef: !!operatorRef.current }, 'Header or operatorRef missing');
     }
   });
 

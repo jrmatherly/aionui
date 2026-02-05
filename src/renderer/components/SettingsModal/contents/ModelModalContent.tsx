@@ -17,6 +17,9 @@ import { Copy, DeleteFour, Eyes, PreviewCloseOne, Info, Minus, Planet, Plus, Wri
 import React, { useCallback, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import { useSettingsViewMode } from '../settingsViewContext';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('ModelModalContent');
 
 interface GlobalModel {
   id: string;
@@ -135,7 +138,7 @@ const ModelModalContent: React.FC = () => {
         }
       })
       .catch((error) => {
-        console.error('Failed to save model config:', error);
+        log.error({ err: error }, 'Failed to save model config');
         message.error('Failed to save model configuration');
       });
   };

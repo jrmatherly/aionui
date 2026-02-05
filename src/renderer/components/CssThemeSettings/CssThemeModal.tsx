@@ -16,6 +16,9 @@ import CodeMirror from '@uiw/react-codemirror';
 import type { CSSProperties } from 'react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { injectBackgroundCssBlock } from './backgroundUtils';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('CssThemeModal');
 
 /** CodeMirror editor styles */
 const CODE_MIRROR_STYLE: CSSProperties = {
@@ -88,7 +91,7 @@ const CssThemeModal: React.FC<CssThemeModalProps> = ({ visible, theme, onClose, 
         }
       }
     } catch (error) {
-      console.error('Failed to upload cover:', error);
+      log.error({ err: error }, 'Failed to upload cover');
     }
   }, [applyBackgroundImageToCss]);
 

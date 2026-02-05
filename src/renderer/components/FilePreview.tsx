@@ -10,6 +10,9 @@ import { getFileExtension } from '@/renderer/services/FileService';
 import { Image } from '@arco-design/web-react';
 import { Close } from '@icon-park/react';
 import React, { useEffect, useState } from 'react';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('FilePreview');
 
 const IMAGE_EXTS = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.svg'];
 
@@ -36,7 +39,7 @@ interface FilePreviewProps {
 const FilePreview: React.FC<FilePreviewProps> = ({ path, onRemove, readonly = false }) => {
   // Defensive check: ensure path is a string
   if (typeof path !== 'string') {
-    console.error('[FilePreview] Invalid path type:', typeof path, path);
+    log.error({ pathType: typeof path, path }, 'Invalid path type');
     return null;
   }
 
@@ -55,7 +58,7 @@ const FilePreview: React.FC<FilePreviewProps> = ({ path, onRemove, readonly = fa
         setFileSize(formatFileSize(metadata.size));
       })
       .catch((error) => {
-        console.error('[FilePreview] Failed to get file metadata:', { path, error });
+        log.error({ err: error, path }, 'Failed to get file metadata');
       });
 
     // If it's an image, get the base64 data
@@ -66,7 +69,7 @@ const FilePreview: React.FC<FilePreviewProps> = ({ path, onRemove, readonly = fa
           setImageUrl(base64);
         })
         .catch((error) => {
-          console.error('[FilePreview] Failed to load image:', { path, error });
+          log.error({ err: error, path }, 'Failed to load image');
         });
     }
   }, [path, isImage]);
