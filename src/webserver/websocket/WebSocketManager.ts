@@ -11,6 +11,7 @@ import type { WebSocketServer } from 'ws';
 import { WebSocket } from 'ws';
 import { SHOW_OPEN_REQUEST_EVENT } from '../../adapter/constant';
 import { WEBSOCKET_CONFIG } from '../config/constants';
+import { wsLogger as log } from '@/common/logger';
 
 interface ClientInfo {
   token: string;
@@ -33,7 +34,7 @@ export class WebSocketManager {
    */
   initialize(): void {
     this.startHeartbeat();
-    console.log('[WebSocketManager] Initialized');
+    log.info('Initialized');
   }
 
   /**
@@ -52,7 +53,7 @@ export class WebSocketManager {
       this.setupCloseHandler(ws);
       this.setupErrorHandler(ws);
 
-      console.log('[WebSocketManager] Client connected');
+      log.info('Client connected');
     });
   }
 
@@ -141,7 +142,7 @@ export class WebSocketManager {
   private setupCloseHandler(ws: WebSocket): void {
     ws.on('close', () => {
       this.clients.delete(ws);
-      console.log('[WebSocketManager] Client disconnected');
+      log.info('Client disconnected');
     });
   }
 
@@ -150,7 +151,7 @@ export class WebSocketManager {
    */
   private setupErrorHandler(ws: WebSocket): void {
     ws.on('error', (error) => {
-      console.error('[WebSocketManager] Client error:', error);
+      log.error({ err: error }, 'Client error');
       this.clients.delete(ws);
     });
   }
@@ -183,7 +184,7 @@ export class WebSocketManager {
     for (const [ws, clientInfo] of this.clients) {
       // Check if client timed out
       if (this.isClientTimeout(clientInfo, now)) {
-        console.log('[WebSocketManager] Client heartbeat timeout, closing connection');
+        log.info('Client heartbeat timeout, closing connection');
         ws.close(WEBSOCKET_CONFIG.CLOSE_CODES.POLICY_VIOLATION, 'Heartbeat timeout');
         this.clients.delete(ws);
         continue;
@@ -191,7 +192,7 @@ export class WebSocketManager {
 
       // Validate if WebSocket token is still valid
       if (!TokenMiddleware.validateWebSocketToken(clientInfo.token)) {
-        console.log('[WebSocketManager] Token expired, closing connection');
+        log.info('Token expired, closing connection');
         ws.send(JSON.stringify({ name: 'auth-expired', data: { message: 'Token expired, please login again' } }));
         ws.close(WEBSOCKET_CONFIG.CLOSE_CODES.POLICY_VIOLATION, 'Token expired');
         this.clients.delete(ws);
@@ -243,7 +244,7 @@ export class WebSocketManager {
         try {
           ws.send(message);
         } catch (error) {
-          console.error(`[WebSocketManager] Failed to send to user ${userId}:`, error);
+          log.error({ err: error, userId }, 'Failed to send to user');
         }
       }
     }
@@ -278,7 +279,7 @@ export class WebSocketManager {
     }
 
     this.clients.clear();
-    console.log('[WebSocketManager] Destroyed');
+    log.info('Destroyed');
   }
 }
 
