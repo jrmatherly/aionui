@@ -96,11 +96,15 @@ const UserManagement: React.FC = () => {
     {
       title: 'Username',
       dataIndex: 'username',
-      width: 140,
+      width: 120,
       render: (val: string, record: IAdminUser) => (
         <span>
           <strong>{val}</strong>
-          {record.displayName && <div className='text-xs color-gray-5'>{record.displayName}</div>}
+          {record.displayName && (
+            <div className='text-xs color-gray-5 truncate' style={{ maxWidth: 100 }}>
+              {record.displayName}
+            </div>
+          )}
         </span>
       ),
     },
@@ -114,7 +118,7 @@ const UserManagement: React.FC = () => {
     {
       title: 'Role',
       dataIndex: 'role',
-      width: 80,
+      width: 75,
       render: (role: string) => (
         <Tag color={ROLE_COLORS[role] || 'gray'} size='small'>
           {role.toUpperCase()}
@@ -124,36 +128,38 @@ const UserManagement: React.FC = () => {
     {
       title: 'Auth',
       dataIndex: 'authMethod',
-      width: 70,
+      width: 68,
       render: (method: string) => <Tag size='small'>{method === 'oidc' ? 'EntraID' : 'Local'}</Tag>,
     },
     {
       title: 'Last Login',
       dataIndex: 'lastLogin',
-      width: 145,
+      width: 125,
+      ellipsis: true,
       render: (ts?: number) => <span className='text-xs'>{formatTimestamp(ts)}</span>,
     },
     {
       title: 'Created',
       dataIndex: 'createdAt',
-      width: 145,
+      width: 125,
+      ellipsis: true,
       render: (ts: number) => <span className='text-xs'>{formatTimestamp(ts)}</span>,
     },
     {
       title: '',
-      width: 60,
+      width: 40,
+      align: 'center',
       render: (_: unknown, record: IAdminUser) => (
         <Button
           type='text'
-          size='small'
+          size='mini'
           icon={<IconEdit />}
           onClick={() => {
             setEditingUser(record);
             setPendingRole(record.role);
           }}
-        >
-          Edit
-        </Button>
+          style={{ padding: '0 4px' }}
+        />
       ),
     },
   ];
@@ -167,7 +173,7 @@ const UserManagement: React.FC = () => {
         </Button>
       </div>
 
-      <Table columns={columns} data={users} loading={loading} pagination={{ pageSize: 25, simple: true }} rowKey='id' size='small' noDataElement={<div className='py-40px text-center color-gray-5'>No users found</div>} />
+      <Table columns={columns} data={users} loading={loading} pagination={{ pageSize: 25, simple: true }} rowKey='id' size='small' tableLayoutFixed noDataElement={<div className='py-40px text-center color-gray-5'>No users found</div>} />
 
       <Modal title='Edit User Role' visible={!!editingUser} onOk={() => void handleRoleUpdate()} onCancel={() => setEditingUser(null)} confirmLoading={saving} autoFocus={false} style={{ maxWidth: 400 }}>
         {editingUser && (
