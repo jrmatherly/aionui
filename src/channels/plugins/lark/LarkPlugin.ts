@@ -6,9 +6,12 @@
 
 import * as lark from '@larksuiteoapi/node-sdk';
 
+import { createLogger } from '@/common/logger';
 import type { BotInfo, IChannelPluginConfig, IUnifiedOutgoingMessage, PluginType } from '../../types';
 import { BasePlugin } from '../BasePlugin';
 import { extractCardAction, LARK_MESSAGE_LIMIT, toLarkSendParams, toUnifiedIncomingMessage } from './LarkAdapter';
+
+const log = createLogger('LarkPlugin');
 
 /**
  * LarkPlugin - Lark/Feishu Bot integration for Personal Assistant
@@ -47,7 +50,7 @@ export class LarkPlugin extends BasePlugin {
     const appId = config.credentials?.appId;
     const appSecret = config.credentials?.appSecret;
 
-    console.log(`[LarkPlugin] onInitialize called, hasAppId=${!!appId}, hasAppSecret=${!!appSecret}, pluginId=${config.id}`);
+    log.debug({ hasAppId: !!appId, hasAppSecret: !!appSecret, pluginId: config.id }, 'onInitialize called');
 
     if (!appId || !appSecret) {
       throw new Error('Lark App ID and App Secret are required');
@@ -62,7 +65,7 @@ export class LarkPlugin extends BasePlugin {
     });
 
     this.botInfo = { appId };
-    console.log(`[LarkPlugin] Client instance created for app ${appId}`);
+    log.info({ appId }, 'Client instance created');
   }
 
   /**
@@ -87,7 +90,7 @@ export class LarkPlugin extends BasePlugin {
       // Get bot info
       // Note: Lark doesn't have a direct "getMe" API like Telegram
       // Bot info is configured in the app settings
-      console.log(`[LarkPlugin] Starting bot for app ${appId}`);
+      log.info({ appId }, 'Starting bot');
 
       // Get optional security config
       const encryptKey = this.config?.credentials?.encryptKey;
@@ -111,21 +114,21 @@ export class LarkPlugin extends BasePlugin {
         loggerLevel: lark.LoggerLevel.debug, // Enable debug logging
       });
 
-      console.log(`[LarkPlugin] WSClient created with debug logging enabled`);
+      log.debug('WSClient created with debug logging enabled');
 
       // Start WebSocket connection with event dispatcher
       // Note: wsClient.start() may not resolve immediately, the 'client ready' log from SDK indicates success
-      console.log(`[LarkPlugin] Starting WebSocket connection for app ${appId}...`);
+      log.info({ appId }, 'Starting WebSocket connection...');
 
       this.wsClient
         .start({
           eventDispatcher: this.eventDispatcher,
         })
         .then(() => {
-          console.log(`[LarkPlugin] WebSocket start() promise resolved`);
+          log.info('WebSocket start() promise resolved');
         })
         .catch((err) => {
-          console.error(`[LarkPlugin] WebSocket start() error:`, err);
+          log.error({ err }, 'WebSocket start() error');
         });
 
       this.isConnected = true;
@@ -133,9 +136,9 @@ export class LarkPlugin extends BasePlugin {
       // Start event cache cleanup timer
       this.startEventCleanup();
 
-      console.log(`[LarkPlugin] WebSocket connection initiated for app ${appId}`);
+      log.info({ appId }, 'WebSocket connection initiated');
     } catch (error) {
-      console.error('[LarkPlugin] Failed to start:', error);
+      log.error({ err: error }, 'Failed to start');
       throw error;
     }
   }
@@ -161,7 +164,7 @@ export class LarkPlugin extends BasePlugin {
     this.processedEvents.clear();
     this.isConnected = false;
 
-    console.log('[LarkPlugin] Stopped and cleaned up');
+    log.info('Stopped and cleaned up');
   }
 
   /**
@@ -210,7 +213,7 @@ export class LarkPlugin extends BasePlugin {
     const { contentType, content, rawText } = toLarkSendParams(message);
     const receiveIdType = this.getReceiveIdType(chatId);
 
-    console.log(`[LarkPlugin] sendMessage: contentType=${contentType}, chatId=${chatId}, receiveIdType=${receiveIdType}`);
+    log.debug({ contentType, chatId, receiveIdType }, 'sendMessage');
 
     // Handle text messages - send as card for streaming support
     // Lark only allows editing card messages, not text messages
@@ -231,10 +234,10 @@ export class LarkPlugin extends BasePlugin {
         });
 
         const messageId = response.data?.message_id || '';
-        console.log(`[LarkPlugin] Sent card message (for text), messageId=${messageId}`);
+        log.info({ messageId }, 'Sent card message (for text)');
         return messageId;
       } catch (error) {
-        console.error('[LarkPlugin] Failed to send card message:', error);
+        log.error({ err: error }, 'Failed to send card message');
         throw error;
       }
     }
@@ -253,10 +256,10 @@ export class LarkPlugin extends BasePlugin {
       });
 
       const messageId = response.data?.message_id || '';
-      console.log(`[LarkPlugin] Sent ${contentType} message, messageId=${messageId}`);
+      log.info({ messageId, contentType }, 'Sent message');
       return messageId;
     } catch (error) {
-      console.error('[LarkPlugin] Failed to send message:', error);
+      log.error({ err: error }, 'Failed to send message');
       throw error;
     }
   }
@@ -292,7 +295,7 @@ export class LarkPlugin extends BasePlugin {
 
     const { contentType, content, rawText } = toLarkSendParams(message);
 
-    console.log(`[LarkPlugin] editMessage: contentType=${contentType}, messageId=${messageId}`);
+    log.debug({ contentType, messageId }, 'editMessage');
 
     try {
       let cardContent: Record<string, unknown>;
@@ -319,7 +322,7 @@ export class LarkPlugin extends BasePlugin {
         },
       });
 
-      console.log(`[LarkPlugin] Message edited successfully: ${messageId}`);
+      log.info({ messageId }, 'Message edited successfully');
     } catch (error: any) {
       // Ignore common errors
       const errorCode = error?.response?.data?.code || error?.code;
@@ -327,17 +330,17 @@ export class LarkPlugin extends BasePlugin {
 
       // Ignore "message not changed" or "not modified" errors
       if (errorCode === 230002 || errorMsg.includes('not modified')) {
-        console.log(`[LarkPlugin] Message not modified (same content): ${messageId}`);
+        log.debug({ messageId }, 'Message not modified (same content)');
         return;
       }
 
       // Log but don't throw for "not a card" errors (shouldn't happen now but just in case)
       if (errorMsg.includes('NOT a card')) {
-        console.warn(`[LarkPlugin] Cannot edit non-card message: ${messageId}, skipping`);
+        log.warn({ messageId }, 'Cannot edit non-card message, skipping');
         return;
       }
 
-      console.error('[LarkPlugin] Failed to edit message:', error);
+      log.error({ err: error }, 'Failed to edit message');
       throw error;
     }
   }
@@ -348,13 +351,13 @@ export class LarkPlugin extends BasePlugin {
   private setupEventHandlers(): void {
     if (!this.eventDispatcher) return;
 
-    console.log(`[LarkPlugin] Setting up event handlers...`);
+    log.info('Setting up event handlers...');
 
     // Register event handlers on the EventDispatcher
     this.eventDispatcher.register({
       // Handle incoming messages
       'im.message.receive_v1': async (data: Record<string, unknown>) => {
-        console.log(`[LarkPlugin] Received im.message.receive_v1 event:`, JSON.stringify(data, null, 2));
+        log.debug({ event: data }, 'Received im.message.receive_v1 event');
         await this.handleMessageEvent({ event: data });
       },
 

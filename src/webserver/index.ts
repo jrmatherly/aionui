@@ -20,6 +20,7 @@ import { AUTH_CONFIG, SERVER_CONFIG } from './config/constants';
 import { registerAdminRoutes } from './routes/adminRoutes';
 import { registerApiRoutes } from './routes/apiRoutes';
 import { registerAuthRoutes } from './routes/authRoutes';
+import { registerLoggingRoutes } from './routes/loggingRoutes';
 import { registerStaticRoutes } from './routes/staticRoutes';
 import { setupBasicMiddleware, setupCors, setupErrorHandler } from './setup';
 
@@ -264,6 +265,7 @@ export async function startWebServerWithInstance(port: number, allowRemote = fal
   // Register routes
   registerAuthRoutes(app);
   registerAdminRoutes(app);
+  registerLoggingRoutes(app);
   registerApiRoutes(app);
   registerStaticRoutes(app);
 
