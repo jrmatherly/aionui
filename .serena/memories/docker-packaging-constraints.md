@@ -131,3 +131,16 @@ Both main and renderer webpack configs use `cache: { type: 'filesystem' }`:
 - **`docker build -t aionui:latest`** creates a DIFFERENT image that compose won't use
 - **Always add `image: aionui:latest`** alongside `build:` in docker-compose.yml so both commands use the same tag
 - **Symptom of mismatch**: Compose runs old code even after fresh `docker build` — check `docker images` for two different image names
+
+## Deployment Configuration Files
+
+| File                                        | Purpose                            | Git           |
+| ------------------------------------------- | ---------------------------------- | ------------- |
+| `deploy/docker/.env.example`                | Full env var documentation         | ✅ Committed  |
+| `deploy/docker/.env`                        | Actual deployment config (secrets) | ❌ Gitignored |
+| `deploy/docker/global-models-example.json`  | Example shared model configs       | ✅ Committed  |
+| `deploy/docker/global-models.json`          | Actual model configs (API keys)    | ❌ Gitignored |
+| `deploy/docker/group-mappings-example.json` | Example OIDC group mappings        | ✅ Committed  |
+| `deploy/docker/group-mappings.json`         | Actual group mappings              | ❌ Gitignored |
+
+**JSON env vars** (`GLOBAL_MODELS`, `GROUP_MAPPINGS_JSON`) are passed through via `env_file:` only — NOT in docker-compose `environment:` block. JSON breaks Compose's `${VAR:-default}` interpolation.

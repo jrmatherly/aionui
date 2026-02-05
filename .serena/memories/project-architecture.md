@@ -65,6 +65,27 @@ SQLite with schema versioning (v17) and migrations in `src/process/database/`
 - v16: `global_models`, `user_model_overrides` (admin-managed shared models)
 - v17: `logging_config` (logging/OTEL/syslog/Langfuse settings)
 
+## Environment Variable Configuration
+
+Configs that sync from env vars to DB on startup (allows deployment-time config):
+
+| Env Var                                     | Description                        | Sync Location               |
+| ------------------------------------------- | ---------------------------------- | --------------------------- |
+| `GLOBAL_MODELS`                             | JSON array of shared model configs | `v16_add_global_models.ts`  |
+| `LOG_*`, `OTEL_*`, `SYSLOG_*`, `LANGFUSE_*` | Logging/observability settings     | `v17_add_logging_config.ts` |
+
+**Deploy files:**
+
+- `deploy/docker/.env.example` — Full documentation of all env vars
+- `deploy/docker/global-models-example.json` — Example model configs
+- `deploy/docker/group-mappings-example.json` — Example OIDC group mappings
+
+**Gitignored (contain secrets):**
+
+- `deploy/docker/.env`
+- `deploy/docker/global-models.json`
+- `deploy/docker/group-mappings.json`
+
 ## Logging & Observability
 
 - **Pino** structured logging (`src/common/logger.ts`) — 17 component child loggers

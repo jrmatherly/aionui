@@ -64,6 +64,16 @@ Always log errors at minimum. No empty catch blocks.
 
 Use environment variables. `.env` files for local dev (gitignored).
 
+Config files with secrets (gitignored):
+
+- `deploy/docker/.env`
+- `deploy/docker/global-models.json` (API keys)
+- `deploy/docker/group-mappings.json` (EntraID group IDs)
+
+### JSON env vars break docker-compose interpolation
+
+`GLOBAL_MODELS` and `GROUP_MAPPINGS_JSON` contain JSON arrays. Docker Compose's `${VAR:-default}` syntax breaks on JSON. Pass these via `env_file:` only — do NOT add them to the `environment:` block in docker-compose.yml.
+
 ### CSRF exclusions must be justified
 
 Only exclude endpoints that are cookie-only or use one-time tokens: `/login`, `/logout`, `/api/auth/refresh`, `/api/auth/qr-login`.

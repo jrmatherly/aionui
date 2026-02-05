@@ -118,6 +118,17 @@ npm run build          # Build for macOS
 | `mise.local.lock` | Lockfile for local overrides | ❌ Gitignored |
 | `mise.*.local.toml` | Environment-specific local overrides | ❌ Gitignored |
 
+#### Deploy Configuration (Docker)
+
+| File | Purpose | Git |
+|------|---------|-----|
+| `deploy/docker/.env.example` | Full env var documentation | ✅ Committed |
+| `deploy/docker/.env` | Actual deployment config (secrets) | ❌ Gitignored |
+| `deploy/docker/global-models-example.json` | Example shared model configs | ✅ Committed |
+| `deploy/docker/global-models.json` | Actual model configs (API keys) | ❌ Gitignored |
+| `deploy/docker/group-mappings-example.json` | Example OIDC group mappings | ✅ Committed |
+| `deploy/docker/group-mappings.json` | Actual group mappings | ❌ Gitignored |
+
 To override a tool version locally without affecting the team:
 
 ```toml
