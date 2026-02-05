@@ -5,6 +5,7 @@
  */
 
 import type Database from 'better-sqlite3';
+import { dbLogger as log } from '@/common/logger';
 import { migrate_v14_add_user_api_keys } from './migrations/v14_add_user_api_keys';
 import { migrate_v15_add_organizations_and_user_directories, rollback_v15 } from './migrations/v15_add_organizations_and_user_directories';
 import { migrate_v16_add_global_models } from './migrations/v16_add_global_models';
@@ -29,7 +30,7 @@ const migration_v1: IMigration = {
   name: 'Initial schema',
   up: (_db) => {
     // Already handled by initSchema()
-    console.log('[Migration v1] Initial schema created by initSchema()');
+    log.info({ version: 1 }, 'Initial schema created by initSchema()');
   },
   down: (db) => {
     // Drop all tables (only core tables now)
@@ -38,7 +39,7 @@ const migration_v1: IMigration = {
       DROP TABLE IF EXISTS conversations;
       DROP TABLE IF EXISTS users;
     `);
-    console.log('[Migration v1] Rolled back: All tables dropped');
+    log.info({ version: 1 }, 'Rolled back: All tables dropped');
   },
 };
 
@@ -63,7 +64,7 @@ const migration_v2: IMigration = {
       CREATE INDEX IF NOT EXISTS idx_conversations_user_type
         ON conversations(user_id, type);
     `);
-    console.log('[Migration v2] Added performance indexes');
+    log.info({ version: 2 }, 'Added performance indexes');
   },
   down: (db) => {
     db.exec(`
@@ -71,7 +72,7 @@ const migration_v2: IMigration = {
       DROP INDEX IF EXISTS idx_messages_type_created;
       DROP INDEX IF EXISTS idx_conversations_user_type;
     `);
-    console.log('[Migration v2] Rolled back: Removed performance indexes');
+    log.info({ version: 2 }, 'Rolled back: Removed performance indexes');
   },
 };
 
@@ -86,14 +87,14 @@ const migration_v3: IMigration = {
   name: 'Add full-text search (skipped)',
   up: (_db) => {
     // FTS removed - will be re-added when search functionality is implemented
-    console.log('[Migration v3] FTS support skipped (removed, will be added back later)');
+    log.info({ version: 3 }, 'FTS support skipped (removed, will be added back later)');
   },
   down: (db) => {
     // Clean up FTS table if it exists from older versions
     db.exec(`
       DROP TABLE IF EXISTS messages_fts;
     `);
-    console.log('[Migration v3] Rolled back: Removed full-text search');
+    log.info({ version: 3 }, 'Rolled back: Removed full-text search');
   },
 };
 
@@ -105,10 +106,10 @@ const migration_v4: IMigration = {
   name: 'Removed user_preferences table',
   up: (_db) => {
     // user_preferences table removed from schema
-    console.log('[Migration v4] Skipped (user_preferences table removed)');
+    log.info({ version: 4 }, 'Skipped (user_preferences table removed)');
   },
   down: (_db) => {
-    console.log('[Migration v4] Rolled back: No-op (user_preferences table removed)');
+    log.info({ version: 4 }, 'Rolled back: No-op (user_preferences table removed)');
   },
 };
 
@@ -124,11 +125,11 @@ const migration_v5: IMigration = {
     db.exec(`
       DROP TABLE IF EXISTS messages_fts;
     `);
-    console.log('[Migration v5] Removed FTS table (cleanup for FTS removal)');
+    log.info({ version: 5 }, 'Removed FTS table (cleanup for FTS removal)');
   },
   down: (_db) => {
     // If rolling back, we don't recreate FTS table (it's deprecated)
-    console.log('[Migration v5] Rolled back: FTS table remains removed (deprecated feature)');
+    log.info({ version: 5 }, 'Rolled back: FTS table remains removed (deprecated feature)');
   },
 };
 
@@ -147,9 +148,9 @@ const migration_v6: IMigration = {
     if (!hasJwtSecret) {
       // Add jwt_secret column to users table
       db.exec(`ALTER TABLE users ADD COLUMN jwt_secret TEXT;`);
-      console.log('[Migration v6] Added jwt_secret column to users table');
+      log.info({ version: 6 }, 'Added jwt_secret column to users table');
     } else {
-      console.log('[Migration v6] jwt_secret column already exists, skipping');
+      log.info({ version: 6 }, 'jwt_secret column already exists, skipping');
     }
   },
   down: (db) => {
@@ -161,7 +162,7 @@ const migration_v6: IMigration = {
       CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
       CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
     `);
-    console.log('[Migration v6] Rolled back: Removed jwt_secret column from users table');
+    log.info({ version: 6 }, 'Rolled back: Removed jwt_secret column from users table');
   },
 };
 
@@ -241,7 +242,7 @@ const migration_v7: IMigration = {
       CREATE INDEX IF NOT EXISTS idx_assistant_pairing_status ON assistant_pairing_codes(status);
     `);
 
-    console.log('[Migration v7] Added Personal Assistant tables');
+    log.info({ version: 7 }, 'Added Personal Assistant tables');
   },
   down: (db) => {
     db.exec(`
@@ -250,7 +251,7 @@ const migration_v7: IMigration = {
       DROP TABLE IF EXISTS assistant_users;
       DROP TABLE IF EXISTS assistant_plugins;
     `);
-    console.log('[Migration v7] Rolled back: Removed Personal Assistant tables');
+    log.info({ version: 7 }, 'Rolled back: Removed Personal Assistant tables');
   },
 };
 
@@ -273,7 +274,7 @@ const migration_v8: IMigration = {
       CREATE INDEX IF NOT EXISTS idx_conversations_source_updated ON conversations(source, updated_at DESC);
     `);
 
-    console.log('[Migration v8] Added source column to conversations table');
+    log.info({ version: 8 }, 'Added source column to conversations table');
   },
   down: (db) => {
     // SQLite doesn't support DROP COLUMN directly, need to recreate table
@@ -282,7 +283,7 @@ const migration_v8: IMigration = {
       DROP INDEX IF EXISTS idx_conversations_source;
       DROP INDEX IF EXISTS idx_conversations_source_updated;
     `);
-    console.log('[Migration v8] Rolled back: Removed source indexes');
+    log.info({ version: 8 }, 'Rolled back: Removed source indexes');
   },
 };
 
@@ -336,7 +337,7 @@ const migration_v9: IMigration = {
       -- Index for querying by agent type (if needed)
       CREATE INDEX IF NOT EXISTS idx_cron_jobs_agent_type ON cron_jobs(agent_type);
     `);
-    console.log('[Migration v9] Added cron_jobs table');
+    log.info({ version: 9 }, 'Added cron_jobs table');
   },
   down: (db) => {
     db.exec(`
@@ -345,7 +346,7 @@ const migration_v9: IMigration = {
       DROP INDEX IF EXISTS idx_cron_jobs_conversation;
       DROP TABLE IF EXISTS cron_jobs;
     `);
-    console.log('[Migration v9] Rolled back: Removed cron_jobs table');
+    log.info({ version: 9 }, 'Rolled back: Removed cron_jobs table');
   },
 };
 
@@ -396,7 +397,7 @@ const migration_v10: IMigration = {
     // Add index for auth method queries
     db.exec(`CREATE INDEX IF NOT EXISTS idx_users_auth_method ON users(auth_method);`);
 
-    console.log('[Migration v10] Added multi-user auth columns (role, auth_method, oidc_subject, display_name, groups)');
+    log.info({ version: 10 }, 'Added multi-user auth columns (role, auth_method, oidc_subject, display_name, groups)');
   },
   down: (db) => {
     // SQLite doesn't support DROP COLUMN before 3.35.0, so just drop indexes
@@ -407,7 +408,7 @@ const migration_v10: IMigration = {
     `);
     // Reset admin role back (column stays but won't cause issues)
     db.exec(`UPDATE users SET role = 'user' WHERE id = 'system_default_user';`);
-    console.log('[Migration v10] Rolled back: Removed multi-user auth indexes');
+    log.info({ version: 10 }, 'Rolled back: Removed multi-user auth indexes');
   },
 };
 
@@ -446,14 +447,14 @@ const migration_v11: IMigration = {
       CREATE INDEX IF NOT EXISTS idx_token_blacklist_expires ON token_blacklist(expires_at);
     `);
 
-    console.log('[Migration v11] Added refresh_tokens and token_blacklist tables');
+    log.info({ version: 11 }, 'Added refresh_tokens and token_blacklist tables');
   },
   down: (db) => {
     db.exec(`
       DROP TABLE IF EXISTS token_blacklist;
       DROP TABLE IF EXISTS refresh_tokens;
     `);
-    console.log('[Migration v11] Rolled back: Removed refresh_tokens and token_blacklist tables');
+    log.info({ version: 11 }, 'Rolled back: Removed refresh_tokens and token_blacklist tables');
   },
 };
 
@@ -470,15 +471,15 @@ const migration_v12: IMigration = {
 
     if (!hasAvatarUrl) {
       db.exec(`ALTER TABLE users ADD COLUMN avatar_url TEXT;`);
-      console.log('[Migration v12] Added avatar_url column to users table');
+      log.info({ version: 12 }, 'Added avatar_url column to users table');
     } else {
-      console.log('[Migration v12] avatar_url column already exists, skipping');
+      log.info({ version: 12 }, 'avatar_url column already exists, skipping');
     }
   },
   down: (db) => {
     // SQLite doesn't support DROP COLUMN directly before 3.35.0
     // For rollback, just log — column will remain but won't be used
-    console.log('[Migration v12] Rolled back: avatar_url column remains (cannot drop in older SQLite)');
+    log.info({ version: 12 }, 'Rolled back: avatar_url column remains (cannot drop in older SQLite)');
   },
 };
 
@@ -520,7 +521,7 @@ const migration_v13: IMigration = {
       CREATE INDEX IF NOT EXISTS idx_assistant_plugins_enabled ON assistant_plugins(enabled);
     `);
 
-    console.log('[Migration v13] Added lark to assistant_plugins type constraint');
+    log.info({ version: 13 }, 'Added lark to assistant_plugins type constraint');
   },
   down: (db) => {
     // Rollback: recreate table without lark type (data with lark type will be lost)
@@ -546,7 +547,7 @@ const migration_v13: IMigration = {
       CREATE INDEX IF NOT EXISTS idx_assistant_plugins_type ON assistant_plugins(type);
       CREATE INDEX IF NOT EXISTS idx_assistant_plugins_enabled ON assistant_plugins(enabled);
     `);
-    console.log('[Migration v13] Rolled back: Removed lark from assistant_plugins type constraint');
+    log.info({ version: 13 }, 'Rolled back: Removed lark from assistant_plugins type constraint');
   },
 };
 
@@ -565,7 +566,7 @@ const migration_v14: IMigration = {
       DROP INDEX IF EXISTS idx_user_api_keys_user_id;
       DROP TABLE IF EXISTS user_api_keys;
     `);
-    console.log('[Migration v14] Rolled back: Removed user_api_keys table');
+    log.info({ version: 14 }, 'Rolled back: Removed user_api_keys table');
   },
 };
 
@@ -604,7 +605,7 @@ const migration_v16: IMigration = {
       DROP INDEX IF EXISTS idx_global_models_enabled;
       DROP TABLE IF EXISTS global_models;
     `);
-    console.log('[Migration v16] Rolled back: Removed global_models and user_model_overrides tables');
+    log.info({ version: 16 }, 'Rolled back: Removed global_models and user_model_overrides tables');
   },
 };
 
@@ -622,7 +623,7 @@ const migration_v17: IMigration = {
     db.exec(`
       DROP TABLE IF EXISTS logging_config;
     `);
-    console.log('[Migration v17] Rolled back: Removed logging_config table');
+    log.info({ version: 17 }, 'Rolled back: Removed logging_config table');
   },
 };
 
@@ -650,33 +651,33 @@ export function getMigrationsToRollback(fromVersion: number, toVersion: number):
  */
 export function runMigrations(db: Database.Database, fromVersion: number, toVersion: number): void {
   if (fromVersion === toVersion) {
-    console.log('[Migrations] Already at target version');
+    log.info({ fromVersion, toVersion }, 'Already at target version');
     return;
   }
 
   if (fromVersion > toVersion) {
-    throw new Error(`[Migrations] Downgrade not supported in production. Use rollbackMigration() for testing only.`);
+    throw new Error(`Downgrade not supported in production. Use rollbackMigration() for testing only.`);
   }
 
   const migrations = getMigrationsToRun(fromVersion, toVersion);
 
   if (migrations.length === 0) {
-    console.log(`[Migrations] No migrations needed from v${fromVersion} to v${toVersion}`);
+    log.info({ fromVersion, toVersion }, 'No migrations needed');
     return;
   }
 
-  console.log(`[Migrations] Running ${migrations.length} migrations from v${fromVersion} to v${toVersion}`);
+  log.info({ count: migrations.length, fromVersion, toVersion }, 'Running migrations');
 
   // Run all migrations in a single transaction
   const runAll = db.transaction(() => {
     for (const migration of migrations) {
       try {
-        console.log(`[Migrations] Running migration v${migration.version}: ${migration.name}`);
+        log.info({ version: migration.version, name: migration.name }, 'Running migration');
         migration.up(db);
 
-        console.log(`[Migrations] ✓ Migration v${migration.version} completed`);
+        log.info({ version: migration.version }, '✓ Migration completed');
       } catch (error) {
-        console.error(`[Migrations] ✗ Migration v${migration.version} failed:`, error);
+        log.error({ err: error, version: migration.version }, '✗ Migration failed');
         throw error; // Transaction will rollback
       }
     }
@@ -684,9 +685,9 @@ export function runMigrations(db: Database.Database, fromVersion: number, toVers
 
   try {
     runAll();
-    console.log(`[Migrations] All migrations completed successfully`);
+    log.info('All migrations completed successfully');
   } catch (error) {
-    console.error('[Migrations] Migration failed, all changes rolled back:', error);
+    log.error({ err: error }, 'Migration failed, all changes rolled back');
     throw error;
   }
 }
@@ -697,29 +698,29 @@ export function runMigrations(db: Database.Database, fromVersion: number, toVers
  */
 export function rollbackMigrations(db: Database.Database, fromVersion: number, toVersion: number): void {
   if (fromVersion <= toVersion) {
-    throw new Error('[Migrations] Cannot rollback to a higher or equal version');
+    throw new Error('Cannot rollback to a higher or equal version');
   }
 
   const migrations = getMigrationsToRollback(fromVersion, toVersion);
 
   if (migrations.length === 0) {
-    console.log(`[Migrations] No rollback needed from v${fromVersion} to v${toVersion}`);
+    log.info({ fromVersion, toVersion }, 'No rollback needed');
     return;
   }
 
-  console.log(`[Migrations] Rolling back ${migrations.length} migrations from v${fromVersion} to v${toVersion}`);
-  console.warn('[Migrations] WARNING: This may cause data loss!');
+  log.info({ count: migrations.length, fromVersion, toVersion }, 'Rolling back migrations');
+  log.warn('WARNING: This may cause data loss!');
 
   // Run all rollbacks in a single transaction
   const rollbackAll = db.transaction(() => {
     for (const migration of migrations) {
       try {
-        console.log(`[Migrations] Rolling back migration v${migration.version}: ${migration.name}`);
+        log.info({ version: migration.version, name: migration.name }, 'Rolling back migration');
         migration.down(db);
 
-        console.log(`[Migrations] ✓ Rollback v${migration.version} completed`);
+        log.info({ version: migration.version }, '✓ Rollback completed');
       } catch (error) {
-        console.error(`[Migrations] ✗ Rollback v${migration.version} failed:`, error);
+        log.error({ err: error, version: migration.version }, '✗ Rollback failed');
         throw error; // Transaction will rollback
       }
     }
@@ -727,9 +728,9 @@ export function rollbackMigrations(db: Database.Database, fromVersion: number, t
 
   try {
     rollbackAll();
-    console.log(`[Migrations] All rollbacks completed successfully`);
+    log.info('All rollbacks completed successfully');
   } catch (error) {
-    console.error('[Migrations] Rollback failed:', error);
+    log.error({ err: error }, 'Rollback failed');
     throw error;
   }
 }
