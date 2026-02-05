@@ -16,6 +16,7 @@ import { correlationIdMiddleware } from './middleware/correlationId';
 import { errorHandler } from './middleware/errorHandler';
 import { requestLoggerMiddleware } from './middleware/requestLogger';
 import { attachCsrfToken } from './middleware/security';
+import { initLogger, httpLogger } from '@/common/logger';
 
 /**
  * Get LAN IP address for CORS configuration
@@ -53,7 +54,7 @@ function getCsrfSecret(): string {
 
   // Generate random 32-character secret (16 bytes hex encoded)
   const randomSecret = crypto.randomBytes(16).toString('hex');
-  console.log('[security] Generated random CSRF secret for this session');
+  initLogger.info('Generated random CSRF secret for this session');
   return randomSecret;
 }
 
@@ -117,8 +118,9 @@ function getConfiguredOrigins(port: number, allowRemote: boolean): Set<string> {
   if (allowRemote) {
     const lanIP = getLanIP();
     if (lanIP) {
-      baseOrigins.add(`http://${lanIP}:${port}`);
-      console.log(`[CORS] Added LAN IP to allowed origins: http://${lanIP}:${port}`);
+      const origin = `http://${lanIP}:${port}`;
+      baseOrigins.add(origin);
+      httpLogger.info({ origin }, 'Added LAN IP to allowed origins');
     }
   }
 
