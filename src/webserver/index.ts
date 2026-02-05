@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { getBrandName } from '@/common/branding';
 import { httpLogger as log } from '@/common/logger';
 import { generateQRLoginUrlDirect } from '@/process/bridge/webuiBridge';
 import { OIDC_CONFIG } from '@/webserver/auth/config/oidcConfig';
@@ -185,7 +186,7 @@ function displayInitialCredentials(credentials: { username: string; password: st
   const { qrUrl } = generateQRLoginUrlDirect(port, allowRemote);
 
   console.log('\n' + '='.repeat(70));
-  console.log('🎉 AionUI Web Server Started Successfully!');
+  console.log(`🎉 ${getBrandName()} Web Server Started Successfully!`);
   console.log('='.repeat(70));
   console.log(`\n📍 Local URL:    ${localUrl}`);
 

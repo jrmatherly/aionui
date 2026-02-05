@@ -527,7 +527,7 @@ const WebuiModalContent: React.FC = () => {
       <div className='flex flex-col h-full w-full'>
         <div className='flex flex-col items-center justify-center h-200px px-32px text-center'>
           <div className='text-16px font-500 text-t-primary mb-8px'>{'WebUI settings not available in browser'}</div>
-          <div className='text-14px text-t-secondary'>{'For security reasons, WebUI settings can only be managed in the desktop application. Please open the settings panel in AionUi desktop app to configure.'}</div>
+          <div className='text-14px text-t-secondary'>{`For security reasons, WebUI settings can only be managed in the desktop application. Please open the settings panel in ${branding.brandName} desktop app to configure.`}</div>
         </div>
       </div>
     );
@@ -542,7 +542,7 @@ const WebuiModalContent: React.FC = () => {
 
           {/* Description */}
           <div className='p-16px bg-fill-2 rd-12px border border-line text-13px text-t-secondary leading-relaxed'>
-            <p className='m-0'>{'Use AionUi as your "24/7 Remote Assistant" - arrange tasks from any remote device, anytime, anywhere.'}</p>
+            <p className='m-0'>{`Use ${branding.brandName} as your "24/7 Remote Assistant" - arrange tasks from any remote device, anytime, anywhere.`}</p>
             <p className='m-0 mt-4px'>{'Step 1. Turn on WebUI; Step 2. Copy the access URL; Step 3. Open in remote browser'}</p>
           </div>
 

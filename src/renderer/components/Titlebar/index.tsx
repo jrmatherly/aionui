@@ -2,6 +2,7 @@ import { ExpandLeft, ExpandRight, MenuFold, MenuUnfold } from '@icon-park/react'
 import classNames from 'classnames';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLayoutContext } from '@/renderer/context/LayoutContext';
+import { useBranding } from '@/renderer/hooks/useBranding';
 import { isElectronDesktop, isMacOS } from '@/renderer/utils/platform';
 import type { WorkspaceStateDetail } from '@renderer/utils/workspaceEvents';
 import { WORKSPACE_STATE_EVENT, dispatchWorkspaceToggleEvent } from '@renderer/utils/workspaceEvents';
@@ -12,7 +13,7 @@ interface TitlebarProps {
 }
 
 const Titlebar: React.FC<TitlebarProps> = ({ workspaceAvailable }) => {
-  const appTitle = useMemo(() => 'AionUi', []);
+  const branding = useBranding();
   const [workspaceCollapsed, setWorkspaceCollapsed] = useState(true);
   const layout = useLayoutContext();
 
@@ -81,7 +82,7 @@ const Titlebar: React.FC<TitlebarProps> = ({ workspaceAvailable }) => {
           </button>
         )}
       </div>
-      <div className='app-titlebar__brand'>{appTitle}</div>
+      <div className='app-titlebar__brand'>{branding.brandName}</div>
       <div className='app-titlebar__toolbar'>
         {showWorkspaceButton && (
           <button type='button' className='app-titlebar__button' onClick={handleWorkspaceToggle} aria-label={workspaceTooltip}>

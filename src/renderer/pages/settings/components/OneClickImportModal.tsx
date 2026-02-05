@@ -2,6 +2,7 @@ import { acpConversation, mcpService } from '@/common/ipcBridge';
 import type { IMcpServer, IMcpTool } from '@/common/storage';
 import AionModal from '@/renderer/components/base/AionModal';
 import AionSteps from '@/renderer/components/base/AionSteps';
+import { useBranding } from '@/renderer/hooks/useBranding';
 import { iconColors } from '@/renderer/theme/colors';
 import { createLogger } from '@/renderer/utils/logger';
 import { Button, Select, Spin } from '@arco-design/web-react';
@@ -16,6 +17,7 @@ interface OneClickImportModalProps {
 }
 
 const OneClickImportModal: React.FC<OneClickImportModalProps> = ({ visible, onCancel, onBatchImport }) => {
+  const branding = useBranding();
   const [detectedAgents, setDetectedAgents] = useState<Array<{ backend: string; name: string }>>([]);
   const [selectedAgent, setSelectedAgent] = useState<string>('');
   const [importableServers, setImportableServers] = useState<IMcpServer[]>([]);
@@ -245,7 +247,7 @@ const OneClickImportModal: React.FC<OneClickImportModalProps> = ({ visible, onCa
   return (
     <AionModal header={{ title: 'One-Click Import', showClose: true }} visible={visible} onCancel={onCancel} footer={{ render: renderFooter }} style={{ width: 600, height: 420 }} contentStyle={{ borderRadius: 16, padding: '24px', background: 'var(--bg-1)', overflow: 'hidden', height: 420 - 96 }}>
       <div className='flex flex-col h-275px mt-20px'>
-        <div className='mb-6 text-t-secondary text-sm'>{'AionUi will automatically retrieve the MCP installed in your CLI Agent and import it with one click'}</div>
+        <div className='mb-6 text-t-secondary text-sm'>{`${branding.brandName} will automatically retrieve the MCP installed in your CLI Agent and import it with one click`}</div>
 
         <div className='mb-6'>
           <AionSteps current={currentStep} size='small'>

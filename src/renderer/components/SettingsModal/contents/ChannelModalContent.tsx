@@ -11,6 +11,7 @@ import type { IProvider, TProviderWithModel } from '@/common/storage';
 import { ConfigStorage } from '@/common/storage';
 import { uuid } from '@/common/utils';
 import AionScrollArea from '@/renderer/components/base/AionScrollArea';
+import { useBranding } from '@/renderer/hooks/useBranding';
 import { useGeminiGoogleAuthModels } from '@/renderer/hooks/useGeminiGoogleAuthModels';
 import { hasSpecificModelCapability } from '@/renderer/utils/modelCapabilities';
 import { Message } from '@arco-design/web-react';
@@ -94,6 +95,7 @@ const useChannelModelList = () => {
 const ChannelModalContent: React.FC = () => {
   const viewMode = useSettingsViewMode();
   const isPageMode = viewMode === 'page';
+  const branding = useBranding();
 
   // Plugin state
   const [pluginStatus, setPluginStatus] = useState<IChannelPluginStatus | null>(null);
@@ -274,7 +276,7 @@ const ChannelModalContent: React.FC = () => {
     const telegramChannel: ChannelConfig = {
       id: 'telegram',
       title: 'Telegram',
-      description: 'Chat with AionUi assistant via Telegram',
+      description: `Chat with ${branding.brandName} assistant via Telegram`,
       status: 'active',
       enabled: pluginStatus?.enabled || false,
       disabled: enableLoading,
@@ -287,7 +289,7 @@ const ChannelModalContent: React.FC = () => {
     const larkChannel: ChannelConfig = {
       id: 'lark',
       title: 'Lark / Feishu',
-      description: 'Chat with AionUi assistant via Lark or Feishu',
+      description: `Chat with ${branding.brandName} assistant via Lark or Feishu`,
       status: 'active',
       enabled: larkPluginStatus?.enabled || false,
       disabled: larkEnableLoading,
@@ -300,7 +302,7 @@ const ChannelModalContent: React.FC = () => {
       {
         id: 'slack',
         title: 'Slack',
-        description: 'Chat with AionUi assistant via Slack',
+        description: `Chat with ${branding.brandName} assistant via Slack`,
         status: 'coming_soon',
         enabled: false,
         disabled: true,
@@ -309,7 +311,7 @@ const ChannelModalContent: React.FC = () => {
       {
         id: 'discord',
         title: 'Discord',
-        description: 'Chat with AionUi assistant via Discord',
+        description: `Chat with ${branding.brandName} assistant via Discord`,
         status: 'coming_soon',
         enabled: false,
         disabled: true,
@@ -318,7 +320,7 @@ const ChannelModalContent: React.FC = () => {
     ];
 
     return [telegramChannel, larkChannel, ...comingSoonChannels];
-  }, [pluginStatus, larkPluginStatus, selectedModel, larkSelectedModel, modelList, enableLoading, larkEnableLoading]);
+  }, [pluginStatus, larkPluginStatus, selectedModel, larkSelectedModel, modelList, enableLoading, larkEnableLoading, branding.brandName]);
 
   // Get toggle handler for each channel
   const getToggleHandler = (channelId: string) => {

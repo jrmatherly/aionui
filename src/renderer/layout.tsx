@@ -20,6 +20,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { LayoutContext } from './context/LayoutContext';
 import { useDirectorySelection } from './hooks/useDirectorySelection';
 import { useMultiAgentDetection } from './hooks/useMultiAgentDetection';
+import { useBranding } from './hooks/useBranding';
 import { processCustomCss } from './utils/customCssProcessor';
 
 const useDebug = () => {
@@ -64,9 +65,15 @@ const Layout: React.FC<{
   const { onClick } = useDebug();
   const { contextHolder: multiAgentContextHolder } = useMultiAgentDetection();
   const { contextHolder: directorySelectionContextHolder } = useDirectorySelection();
+  const branding = useBranding();
   const location = useLocation();
   const workspaceAvailable = location.pathname.startsWith('/conversation/');
   const collapsedRef = useRef(collapsed);
+
+  // Update document title with brand name
+  useEffect(() => {
+    document.title = branding.brandName;
+  }, [branding.brandName]);
 
   // Load & watch custom CSS configuration
   useEffect(() => {
@@ -223,7 +230,7 @@ const Layout: React.FC<{
                   <path key='logo-path-2' d='M18 50 Q40 70 62 50' stroke='white' strokeWidth='3.5' fill='none' strokeLinecap='round'></path>
                 </svg>
               </div>
-              <div className=' flex-1 text-20px collapsed-hidden font-bold'>AionUi</div>
+              <div className=' flex-1 text-20px collapsed-hidden font-bold'>{branding.brandName}</div>
               {isMobile && !collapsed && (
                 <button type='button' className='app-titlebar__button' onClick={() => setCollapsed(true)} aria-label='Collapse sidebar'>
                   {collapsed ? <MenuUnfold theme='outline' size='18' fill='currentColor' /> : <MenuFold theme='outline' size='18' fill='currentColor' />}

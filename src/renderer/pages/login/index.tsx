@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppLoader from '../../components/AppLoader';
 import { useAuth } from '../../context/AuthContext';
+import { useBranding } from '../../hooks/useBranding';
 import './LoginPage.css';
 
 type MessageState = {
@@ -35,6 +36,7 @@ const isDesktopRuntime = typeof window !== 'undefined' && Boolean((window as any
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { status, login } = useAuth();
+  const branding = useBranding();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -75,8 +77,8 @@ const LoginPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    document.title = 'AionUi - Sign In';
-  }, []);
+    document.title = `${branding.brandName} - Sign In`;
+  }, [branding.brandName]);
 
   useEffect(() => {
     document.documentElement.lang = 'en-US';
@@ -201,9 +203,9 @@ const LoginPage: React.FC = () => {
       <div className='login-page__card'>
         <div className='login-page__header'>
           <div className='login-page__logo'>
-            <img src={loginLogo} alt={'AionUi'} />
+            <img src={loginLogo} alt={branding.brandName} />
           </div>
-          <h1 className='login-page__title'>{'AionUi'}</h1>
+          <h1 className='login-page__title'>{branding.brandName}</h1>
           <p className='login-page__subtitle'>{'Welcome back, please sign in to your account'}</p>
         </div>
 
@@ -322,7 +324,7 @@ const LoginPage: React.FC = () => {
           <div className='login-page__footer-content'>
             <span>{'Enterprise AI, beautifully managed'}</span>
             <span className='login-page__footer-divider'>•</span>
-            <span>{'© 2026 AionUi'}</span>
+            <span>{`© 2026 ${branding.brandName}`}</span>
           </div>
         </div>
       </div>
