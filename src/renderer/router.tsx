@@ -4,6 +4,7 @@ import AppLoader from './components/AppLoader';
 import { useAuth } from './context/AuthContext';
 import GlobalModels from './pages/admin/GlobalModels';
 import GroupMappings from './pages/admin/GroupMappings';
+import LoggingSettings from './pages/admin/LoggingSettings';
 import UserManagement from './pages/admin/UserManagement';
 import Conversation from './pages/conversation';
 import Guid from './pages/guid';
@@ -86,6 +87,14 @@ const PanelRoute: React.FC<{ layout: React.ReactElement }> = ({ layout }) => {
             element={
               <AdminGuard>
                 <GlobalModels />
+              </AdminGuard>
+            }
+          />
+          <Route
+            path='/admin/logging'
+            element={
+              <AdminGuard>
+                <LoggingSettings />
               </AdminGuard>
             }
           />

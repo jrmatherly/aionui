@@ -213,7 +213,7 @@ export class TelegramPlugin extends BasePlugin {
 
     // Handle callback queries (button presses)
     this.bot.on('callback_query:data', async (ctx) => {
-      console.log(`[TelegramPlugin] callback_query:data handler triggered, data:`, ctx.callbackQuery?.data);
+      log.debug({ data: ctx.callbackQuery?.data }, 'callback_query:data handler triggered');
       await this.handleCallbackQuery(ctx);
     });
 
@@ -236,7 +236,7 @@ export class TelegramPlugin extends BasePlugin {
     this.bot.catch((botError) => {
       const actualError = botError.error || botError;
       const errorMessage = actualError instanceof Error ? actualError.message : String(actualError);
-      console.error('[TelegramPlugin] Bot error:', errorMessage, botError);
+      log.error({ err: botError, errorMessage }, 'Bot error');
       this.setError(errorMessage);
       // Don't re-throw - let the bot continue running
     });
@@ -250,7 +250,7 @@ export class TelegramPlugin extends BasePlugin {
     const userId = ctx.from?.id.toString();
     if (!userId) return;
 
-    console.log(`[TelegramPlugin] handleStartCommand called: userId=${userId}`);
+    log.debug({ userId }, 'handleStartCommand called');
 
     // Track user
     this.activeUsers.add(userId);
@@ -263,8 +263,8 @@ export class TelegramPlugin extends BasePlugin {
       unifiedMessage.content.text = '/start';
       // Don't await - process in background
       void this.messageHandler(unifiedMessage)
-        .then(() => console.log(`[TelegramPlugin] Start command handled successfully`))
-        .catch((error) => console.error(`[TelegramPlugin] Error handling start command:`, error));
+        .then(() => log.debug('Start command handled successfully'))
+        .catch((error) => log.error({ err: error }, 'Error handling start command'));
     }
   }
 
@@ -275,7 +275,7 @@ export class TelegramPlugin extends BasePlugin {
     const userId = ctx.from?.id.toString();
     const text = ctx.message?.text;
 
-    console.log(`[TelegramPlugin] handleTextMessage called: text="${text}", userId=${userId}, hasMessageHandler=${!!this.messageHandler}, isPollingActive=${this.isPollingActive}`);
+    log.debug({ text, userId, hasMessageHandler: !!this.messageHandler, isPollingActive: this.isPollingActive }, 'handleTextMessage called');
 
     if (!userId || !text) return;
 
@@ -291,23 +291,23 @@ export class TelegramPlugin extends BasePlugin {
       // Convert to unified message and forward to handler
       const unifiedMessage = toUnifiedIncomingMessage(ctx);
       if (unifiedMessage && this.messageHandler) {
-        console.log(`[TelegramPlugin] Forwarding message to handler (non-blocking)`);
+        log.debug('Forwarding message to handler (non-blocking)');
         // IMPORTANT: Don't await - process in background to avoid blocking polling loop
         // grammY's simple polling processes messages sequentially, so blocking here
         // would prevent subsequent messages from being received
         void this.messageHandler(unifiedMessage)
           .then(() => {
-            console.log(`[TelegramPlugin] Message handler completed successfully for: ${text?.slice(0, 20)}...`);
+            log.debug({ textPreview: text?.slice(0, 20) }, 'Message handler completed successfully');
           })
           .catch((error) => {
-            console.error(`[TelegramPlugin] Message handler failed for: ${text?.slice(0, 20)}...`, error);
+            log.error({ err: error, textPreview: text?.slice(0, 20) }, 'Message handler failed');
           });
       } else {
-        console.warn(`[TelegramPlugin] Cannot forward message: unifiedMessage=${!!unifiedMessage}, messageHandler=${!!this.messageHandler}`);
+        log.warn({ hasUnifiedMessage: !!unifiedMessage, hasMessageHandler: !!this.messageHandler }, 'Cannot forward message');
       }
     } catch (error) {
       // Catch errors to prevent them from stopping the bot
-      console.error(`[TelegramPlugin] Error handling text message:`, error);
+      log.error({ err: error }, 'Error handling text message');
       // Don't re-throw - let grammY continue processing
     }
   }
@@ -339,8 +339,8 @@ export class TelegramPlugin extends BasePlugin {
       };
       // Don't await - process in background
       void this.messageHandler(unifiedMessage)
-        .then(() => console.log(`[TelegramPlugin] Button command handled: ${buttonAction.action}`))
-        .catch((error) => console.error(`[TelegramPlugin] Error handling button command:`, error));
+        .then(() => log.debug({ action: buttonAction.action }, 'Button command handled'))
+        .catch((error) => log.error({ err: error }, 'Error handling button command'));
       return true;
     }
 
@@ -354,7 +354,7 @@ export class TelegramPlugin extends BasePlugin {
     const userId = ctx.from?.id.toString();
     if (!userId) return;
 
-    console.log(`[TelegramPlugin] handleMediaMessage called: userId=${userId}`);
+    log.debug({ userId }, 'handleMediaMessage called');
 
     // Track user
     this.activeUsers.add(userId);
@@ -364,8 +364,8 @@ export class TelegramPlugin extends BasePlugin {
     if (unifiedMessage && this.messageHandler) {
       // Don't await - process in background
       void this.messageHandler(unifiedMessage)
-        .then(() => console.log(`[TelegramPlugin] Media message handled successfully`))
-        .catch((error) => console.error(`[TelegramPlugin] Error handling media message:`, error));
+        .then(() => log.debug('Media message handled successfully'))
+        .catch((error) => log.error({ err: error }, 'Error handling media message'));
     }
   }
 
@@ -373,18 +373,18 @@ export class TelegramPlugin extends BasePlugin {
    * Handle callback queries (inline button presses)
    */
   private async handleCallbackQuery(ctx: Context): Promise<void> {
-    console.log(`[TelegramPlugin] handleCallbackQuery entered`);
+    log.debug('handleCallbackQuery entered');
     const data = ctx.callbackQuery?.data;
-    console.log(`[TelegramPlugin] Callback data:`, data);
+    log.debug({ data }, 'Callback data');
     if (!data) {
-      console.log(`[TelegramPlugin] No callback data, returning`);
+      log.debug('No callback data, returning');
       return;
     }
 
     const userId = ctx.from?.id.toString();
-    console.log(`[TelegramPlugin] Callback userId:`, userId);
+    log.debug({ userId }, 'Callback userId');
     if (!userId) {
-      console.log(`[TelegramPlugin] No userId, returning`);
+      log.debug('No userId, returning');
       return;
     }
 
@@ -393,12 +393,12 @@ export class TelegramPlugin extends BasePlugin {
 
     // Answer callback to remove loading state (don't await to avoid blocking)
     void ctx.answerCallbackQuery().catch((err) => {
-      console.warn('[TelegramPlugin] Failed to answer callback query:', err);
+      log.warn({ err }, 'Failed to answer callback query');
     });
 
     // Parse callback data
     const category = extractCategory(data);
-    console.log(`[TelegramPlugin] Callback category:`, category);
+    log.debug({ category }, 'Callback category');
 
     // Handle tool confirmation callback, format: confirm:{callId}:{value}
     if (category === 'confirm') {
@@ -406,24 +406,24 @@ export class TelegramPlugin extends BasePlugin {
       if (parts.length >= 3 && this.confirmHandler) {
         const callId = parts[1];
         const value = parts.slice(2).join(':'); // value may contain colons
-        console.log(`[TelegramPlugin] Calling confirmHandler: userId=${userId}, callId=${callId}, value=${value}`);
+        log.debug({ userId, callId, value }, 'Calling confirmHandler');
 
         // Call confirmHandler directly, not through messageHandler
         void this.confirmHandler(userId, 'telegram', callId, value)
           .then(async () => {
-            console.log(`[TelegramPlugin] Confirm callback handled: ${data}`);
+            log.info({ data }, 'Confirm callback handled');
             // Remove buttons after confirmation success
             try {
               await ctx.editMessageReplyMarkup({ reply_markup: undefined });
-              console.log(`[TelegramPlugin] Removed confirmation buttons`);
+              log.debug('Removed confirmation buttons');
             } catch (editError) {
               // Ignore edit errors (message may have been deleted or modified)
-              console.debug(`[TelegramPlugin] Failed to remove buttons (ignored):`, editError);
+              log.debug({ err: editError }, 'Failed to remove buttons (ignored)');
             }
           })
-          .catch((error) => console.error(`[TelegramPlugin] Error handling confirm callback:`, error));
+          .catch((error) => log.error({ err: error }, 'Error handling confirm callback'));
       } else {
-        console.warn(`[TelegramPlugin] Invalid confirm callback data or no confirmHandler:`, data);
+        log.warn({ data }, 'Invalid confirm callback data or no confirmHandler');
       }
       return;
     }
@@ -443,22 +443,22 @@ export class TelegramPlugin extends BasePlugin {
         // Don't await - process in background
         void this.messageHandler(unifiedMessage)
           .then(async () => {
-            console.log(`[TelegramPlugin] Agent selection handled: ${agentType}`);
+            log.info({ agentType }, 'Agent selection handled');
             // Remove inline keyboard after selection
             try {
               await ctx.editMessageReplyMarkup({ reply_markup: undefined });
             } catch (editError) {
-              console.debug(`[TelegramPlugin] Failed to remove agent selection buttons (ignored):`, editError);
+              log.debug({ err: editError }, 'Failed to remove agent selection buttons (ignored)');
             }
           })
-          .catch((error) => console.error(`[TelegramPlugin] Error handling agent selection:`, error));
+          .catch((error) => log.error({ err: error }, 'Error handling agent selection'));
       }
       return;
     }
 
     // Other callback types are handled through messageHandler
     const unifiedMessage = toUnifiedIncomingMessage(ctx);
-    console.log(`[TelegramPlugin] unifiedMessage:`, unifiedMessage ? 'created' : 'null', `messageHandler:`, this.messageHandler ? 'exists' : 'null');
+    log.debug({ hasUnifiedMessage: !!unifiedMessage, hasMessageHandler: !!this.messageHandler }, 'Unified message and handler status');
     if (unifiedMessage && this.messageHandler) {
       unifiedMessage.content.type = 'action';
       unifiedMessage.content.text = data;
@@ -473,8 +473,8 @@ export class TelegramPlugin extends BasePlugin {
 
       // Don't await - process in background
       void this.messageHandler(unifiedMessage)
-        .then(() => console.log(`[TelegramPlugin] Callback query handled: ${data}`))
-        .catch((error) => console.error(`[TelegramPlugin] Error handling callback query:`, error));
+        .then(() => log.info({ data }, 'Callback query handled'))
+        .catch((error) => log.error({ err: error }, 'Error handling callback query'));
     }
   }
 
@@ -489,28 +489,28 @@ export class TelegramPlugin extends BasePlugin {
    */
   private async startPolling(): Promise<void> {
     if (!this.bot) {
-      console.error('[TelegramPlugin] Cannot start polling: bot is null');
+      log.error('Cannot start polling: bot is null');
       return;
     }
 
     if (this.isPollingActive) {
-      console.warn('[TelegramPlugin] Polling is already active, skipping start');
+      log.warn('Polling is already active, skipping start');
       return;
     }
 
-    console.log('[TelegramPlugin] startPolling called, preparing to start bot.start()...');
+    log.info('startPolling called, preparing to start bot.start()...');
 
     // Create a promise that resolves when polling starts successfully
     return new Promise<void>((resolve, reject) => {
       let started = false;
       const startTimeout = setTimeout(() => {
         if (!started) {
-          console.error('[TelegramPlugin] Polling start timeout - bot.start() did not trigger onStart within 30s');
+          log.error('Polling start timeout - bot.start() did not trigger onStart within 30s');
           reject(new Error('Polling start timeout after 30s'));
         }
       }, 30000);
 
-      console.log('[TelegramPlugin] Calling bot.start()...');
+      log.info('Calling bot.start()...');
 
       // Start polling in background (non-blocking)
       // bot.start() returns a Promise that resolves when the bot stops,
@@ -524,7 +524,7 @@ export class TelegramPlugin extends BasePlugin {
           started = true;
           this.isPollingActive = true;
           clearTimeout(startTimeout);
-          console.log(`[TelegramPlugin] onStart callback fired! Polling started for @${botInfo.username}`);
+          log.info({ username: botInfo.username }, 'onStart callback fired! Polling started');
           resolve();
         },
         allowed_updates: ['message', 'callback_query'],
@@ -534,12 +534,12 @@ export class TelegramPlugin extends BasePlugin {
         .then(() => {
           // This resolves when bot.stop() is called
           this.isPollingActive = false;
-          console.log('[TelegramPlugin] bot.start() Promise resolved (bot stopped normally)');
+          log.info('bot.start() Promise resolved (bot stopped normally)');
         })
         .catch((error) => {
           this.isPollingActive = false;
           clearTimeout(startTimeout);
-          console.error('[TelegramPlugin] bot.start() Promise rejected:', error);
+          log.error({ err: error }, 'bot.start() Promise rejected');
           if (!started) {
             reject(error);
           } else {
@@ -548,7 +548,7 @@ export class TelegramPlugin extends BasePlugin {
           }
         });
 
-      console.log('[TelegramPlugin] bot.start() called, waiting for onStart callback...');
+      log.debug('bot.start() called, waiting for onStart callback...');
     });
   }
 
@@ -562,17 +562,17 @@ export class TelegramPlugin extends BasePlugin {
    */
   private async stopPolling(): Promise<void> {
     if (!this.bot || !this.isPollingActive) {
-      console.log('[TelegramPlugin] Polling not active, nothing to stop');
+      log.debug('Polling not active, nothing to stop');
       return;
     }
 
-    console.log('[TelegramPlugin] Stopping polling...');
+    log.info('Stopping polling...');
     try {
       await this.bot.stop();
       this.isPollingActive = false;
-      console.log('[TelegramPlugin] Polling stopped successfully');
+      log.info('Polling stopped successfully');
     } catch (error) {
-      console.error('[TelegramPlugin] Error stopping polling:', error);
+      log.error({ err: error }, 'Error stopping polling');
       this.isPollingActive = false;
     }
   }
@@ -580,13 +580,13 @@ export class TelegramPlugin extends BasePlugin {
   /**
    * Handle polling errors with exponential backoff reconnection
    */
-  private async handlePollingError(error: unknown): Promise<void> {
+  private async handlePollingError(_error: unknown): Promise<void> {
     if (this.status !== 'running') return;
 
     this.reconnectAttempts++;
 
     if (this.reconnectAttempts > this.maxReconnectAttempts) {
-      console.error('[TelegramPlugin] Max reconnect attempts reached, stopping');
+      log.error('Max reconnect attempts reached, stopping');
       this.setError('Connection failed after multiple attempts');
       await this.stop();
       return;
@@ -598,7 +598,7 @@ export class TelegramPlugin extends BasePlugin {
       30000 // Max 30 seconds
     );
 
-    console.log(`[TelegramPlugin] Reconnecting in ${Math.round(delay / 1000)}s (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
+    log.info({ delaySeconds: Math.round(delay / 1000), attempt: this.reconnectAttempts, maxAttempts: this.maxReconnectAttempts }, 'Reconnecting...');
 
     await new Promise((resolve) => setTimeout(resolve, delay));
 

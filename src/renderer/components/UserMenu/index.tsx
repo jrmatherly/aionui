@@ -8,7 +8,7 @@ import { useAuth } from '@/renderer/context/AuthContext';
 import { useThemeContext } from '@/renderer/context/ThemeContext';
 import { getAvatarColor, getInitials } from '@/renderer/utils/avatar';
 import { Dropdown, Menu, Tag, Tooltip } from '@arco-design/web-react';
-import { Logout, Moon, People, Server, Sun, User } from '@icon-park/react';
+import { Log, Logout, Moon, People, Server, Sun, User } from '@icon-park/react';
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -46,6 +46,9 @@ const UserMenu: React.FC<UserMenuProps> = ({ collapsed = false }) => {
         break;
       case 'admin-models':
         void navigate('/admin/models');
+        break;
+      case 'admin-logging':
+        void navigate('/admin/logging');
         break;
       case 'theme':
         void setTheme(isDark ? 'light' : 'dark');
@@ -95,6 +98,12 @@ const UserMenu: React.FC<UserMenuProps> = ({ collapsed = false }) => {
             <div className='flex items-center gap-8px'>
               <Server theme='outline' size='16' fill='currentColor' />
               <span>Global Models</span>
+            </div>
+          </Menu.Item>
+          <Menu.Item key='admin-logging'>
+            <div className='flex items-center gap-8px'>
+              <Log theme='outline' size='16' fill='currentColor' />
+              <span>Logging Settings</span>
             </div>
           </Menu.Item>
         </>
