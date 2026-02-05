@@ -9,6 +9,7 @@ import type { ExecCommandBeginData, ExecCommandEndData, ExecCommandOutputDeltaDa
 import type { AcpBackend, AcpPermissionRequest, PlanUpdate, ToolCallUpdate } from '@/types/acpTypes';
 import type { IResponseMessage } from './ipcBridge';
 import { uuid } from './utils';
+import { conversationLogger as log } from '@/common/logger';
 
 /**
  * Safe path joining function, compatible with Windows and Mac
@@ -410,12 +411,18 @@ export const transformMessage = (message: IResponseMessage): TMessage => {
 export const composeMessage = (message: TMessage | undefined, list: TMessage[] | undefined, messageHandler: (type: 'update' | 'insert', message: TMessage) => void = () => {}): TMessage[] => {
   if (!message) return list || [];
   if (!list?.length) {
-    console.log('[composeMessage] Empty list, inserting first message:', message.msg_id, message.type);
+    log.debug({ msgId: message.msg_id, type: message.type }, 'Empty list, inserting first message');
     messageHandler('insert', message);
     return [message];
   }
   const last = list[list.length - 1];
-  console.log('[composeMessage] Comparing - incoming msg_id:', message.msg_id, 'type:', message.type, '| last msg_id:', last.msg_id, 'type:', last.type);
+  log.debug(
+    {
+      incoming: { msgId: message.msg_id, type: message.type },
+      last: { msgId: last.msg_id, type: last.type },
+    },
+    'Comparing messages'
+  );
 
   const updateMessage = (index: number, message: TMessage, change = true) => {
     message.id = list[index].id;
@@ -455,10 +462,10 @@ export const composeMessage = (message: TMessage | undefined, list: TMessage[] |
     }
     if (tools.length) {
       message.content = tools;
-      console.log('[composeMessage] tool_group with new tools, inserting');
+      log.debug({ toolCount: tools.length }, 'tool_group with new tools, inserting');
       return pushMessage(message);
     }
-    console.log('[composeMessage] tool_group with no new tools, skipping');
+    log.debug('tool_group with no new tools, skipping');
     return list;
   }
 
@@ -517,10 +524,10 @@ export const composeMessage = (message: TMessage | undefined, list: TMessage[] |
   }
 
   if (last.msg_id !== message.msg_id || last.type !== message.type) {
-    console.log('[composeMessage] msg_id or type mismatch, inserting new message');
+    log.debug({ incomingMsgId: message.msg_id, lastMsgId: last.msg_id }, 'msg_id or type mismatch, inserting new message');
     return pushMessage(message);
   }
-  console.log('[composeMessage] Same msg_id and type, updating existing message');
+  log.debug({ msgId: message.msg_id, type: message.type }, 'Same msg_id and type, updating existing message');
   if (message.type === 'text' && last.type === 'text') {
     message.content.content = last.content.content + message.content.content;
   }

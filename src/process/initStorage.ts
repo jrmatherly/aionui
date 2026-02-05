@@ -5,6 +5,7 @@
  */
 
 import type { TMessage } from '@/common/chatLib';
+import { initLogger as log } from '@/common/logger';
 import { ASSISTANT_PRESETS } from '@/common/presets/assistantPresets';
 import type { AcpBackendConfig } from '@/types/acpTypes';
 import { app } from 'electron';
@@ -51,7 +52,7 @@ const migrateLegacyData = async () => {
         try {
           return existsSync(newDir) && readdirSync(newDir).length === 0;
         } catch (error) {
-          console.warn('[AionUi] Warning: Could not read new directory during migration check:', error);
+          log.warn({ err: error, dir: newDir }, 'Could not read new directory during migration check');
           return false; // Assume not empty to avoid migration overwrite
         }
       })();
@@ -72,7 +73,7 @@ const migrateLegacyData = async () => {
           try {
             await fs.rm(oldDir, { recursive: true });
           } catch (cleanupError) {
-            console.warn('[AionUi] Failed to clean up original directory, please delete manually:', oldDir, cleanupError);
+            log.warn({ err: cleanupError, oldDir }, 'Failed to clean up original directory, please delete manually');
           }
         }
       }
@@ -80,7 +81,7 @@ const migrateLegacyData = async () => {
       return true;
     }
   } catch (error) {
-    console.error('[AionUi] Data migration failed:', error);
+    log.error({ err: error }, 'Data migration failed');
   }
 
   return false;
@@ -159,13 +160,13 @@ const JsonFileBuilder = <S extends object = Record<string, unknown>>(path: strin
 
       // Verify file content is not empty and not corrupted base64
       if (result.trim() === '') {
-        console.warn(`[Storage] Empty file detected: ${path}`);
+        log.warn({ filePath: path }, 'Empty file detected');
         return {} as S;
       }
 
       const decoded = decode(result);
       if (!decoded || decoded.trim() === '') {
-        console.warn(`[Storage] Empty or corrupted content after decode: ${path}`);
+        log.warn({ filePath: path }, 'Empty or corrupted content after decode');
         return {} as S;
       }
 
@@ -173,7 +174,7 @@ const JsonFileBuilder = <S extends object = Record<string, unknown>>(path: strin
 
       // Additional validation: if it's a chat history file and parsed result is empty object, warn user
       if (path.includes('chat.txt') && Object.keys(parsed).length === 0) {
-        console.warn(`[Storage] Chat history file appears to be empty: ${path}`);
+        log.warn({ filePath: path }, 'Chat history file appears to be empty');
       }
 
       return parsed;
@@ -375,7 +376,7 @@ const initBuiltinAssistantRules = async (): Promise<void> => {
 
     // 'rules' directory is optional — only warn for directories that should exist
     if (dirPath !== 'rules') {
-      console.warn(`[AionUi] Could not find builtin ${dirPath} directory, tried:`, candidates);
+      log.warn({ dirPath, candidates }, 'Could not find builtin directory');
     }
     return candidates[0];
   };
@@ -396,16 +397,16 @@ const initBuiltinAssistantRules = async (): Promise<void> => {
       }
       // Copy builtin skills to user directory (do not overwrite existing files)
       await copyDirectoryRecursively(builtinSkillsDir, userSkillsDir, { overwrite: false });
-      console.log(`[AionUi] Skills directory initialized: ${userSkillsDir}`);
+      log.info({ userSkillsDir }, 'Skills directory initialized');
     } catch (error) {
-      console.warn(`[AionUi] Failed to copy skills directory:`, error);
+      log.warn({ err: error, builtinSkillsDir, userSkillsDir }, 'Failed to copy skills directory');
     }
   }
 
   // Ensure assistants directory exists
   if (!existsSync(assistantsDir)) {
     mkdirSync(assistantsDir);
-    console.log(`[AionUi] Created assistants directory: ${assistantsDir}`);
+    log.info({ assistantsDir }, 'Created assistants directory');
   }
 
   for (const preset of ASSISTANT_PRESETS) {
@@ -427,7 +428,7 @@ const initBuiltinAssistantRules = async (): Promise<void> => {
 
           // Check if source file exists
           if (!existsSync(sourceRulesPath)) {
-            console.warn(`[AionUi] Source rule file not found: ${sourceRulesPath}`);
+            log.warn({ sourceRulesPath }, 'Source rule file not found');
             continue;
           }
 
@@ -436,10 +437,10 @@ const initBuiltinAssistantRules = async (): Promise<void> => {
           // Replace relative paths with absolute paths so AI can find scripts correctly
           content = content.replace(/skills\//g, userSkillsDir + '/');
           await fs.writeFile(targetPath, content, 'utf-8');
-          console.log(`[AionUi] Updated builtin rule: ${targetFileName}`);
+          log.info({ targetFileName }, 'Updated builtin rule');
         } catch (error) {
           // Ignore missing files
-          console.warn(`[AionUi] Failed to copy rule file ${ruleFile}:`, error);
+          log.warn({ err: error, ruleFile }, 'Failed to copy rule file');
         }
       }
     } else {
@@ -451,7 +452,7 @@ const initBuiltinAssistantRules = async (): Promise<void> => {
           if (rulesFilePattern.test(file)) {
             const filePath = path.join(assistantsDir, file);
             await fs.unlink(filePath);
-            console.log(`[AionUi] Removed deprecated rule file: ${file}`);
+            log.info({ file }, 'Removed deprecated rule file');
           }
         }
       } catch (error) {
@@ -470,7 +471,7 @@ const initBuiltinAssistantRules = async (): Promise<void> => {
 
           // Check if source file exists
           if (!existsSync(sourceSkillsPath)) {
-            console.warn(`[AionUi] Source skill file not found: ${sourceSkillsPath}`);
+            log.warn({ sourceSkillsPath }, 'Source skill file not found');
             continue;
           }
 
@@ -479,10 +480,10 @@ const initBuiltinAssistantRules = async (): Promise<void> => {
           // Replace relative paths with absolute paths so AI can find scripts correctly
           content = content.replace(/skills\//g, userSkillsDir + '/');
           await fs.writeFile(targetPath, content, 'utf-8');
-          console.log(`[AionUi] Updated builtin skill: ${targetFileName}`);
+          log.info({ targetFileName }, 'Updated builtin skill');
         } catch (error) {
           // Ignore missing skill files
-          console.warn(`[AionUi] Failed to copy skill file ${skillFile}:`, error);
+          log.warn({ err: error, skillFile }, 'Failed to copy skill file');
         }
       }
     } else {
@@ -495,7 +496,7 @@ const initBuiltinAssistantRules = async (): Promise<void> => {
           if (skillsFilePattern.test(file)) {
             const filePath = path.join(assistantsDir, file);
             await fs.unlink(filePath);
-            console.log(`[AionUi] Removed deprecated skill file: ${file}`);
+            log.info({ file }, 'Removed deprecated skill file');
           }
         }
       } catch (error) {
@@ -568,7 +569,7 @@ const getDefaultMcpServers = (): IMcpServer[] => {
 };
 
 const initStorage = async () => {
-  console.log('[AionUi] Starting storage initialization...');
+  log.info('Starting storage initialization...');
 
   // 1. Execute data migration first (before any directory creation)
   await migrateLegacyData();
@@ -595,10 +596,10 @@ const initStorage = async () => {
     if (!existingMcpConfig || !Array.isArray(existingMcpConfig) || existingMcpConfig.length === 0) {
       const defaultServers = getDefaultMcpServers();
       await configFile.set('mcp.config', defaultServers);
-      console.log('[AionUi] Default MCP servers initialized');
+      log.info('Default MCP servers initialized');
     }
   } catch (error) {
-    console.error('[AionUi] Failed to initialize default MCP servers:', error);
+    log.error({ err: error }, 'Failed to initialize default MCP servers');
   }
   // 5. Initialize builtin assistants
   try {
@@ -670,21 +671,21 @@ const initStorage = async () => {
     // Mark migration as done
     if (needsMigration) {
       await configFile.set(ASSISTANT_ENABLED_MIGRATION_KEY, true);
-      console.log('[AionUi] Assistant enabled migration completed');
+      log.info('Assistant enabled migration completed');
     }
     if (needsBuiltinSkillsMigration) {
       await configFile.set(BUILTIN_SKILLS_MIGRATION_KEY, true);
-      console.log('[AionUi] Builtin assistants default skills migration completed');
+      log.info('Builtin assistants default skills migration completed');
     }
   } catch (error) {
-    console.error('[AionUi] Failed to initialize builtin assistants:', error);
+    log.error({ err: error }, 'Failed to initialize builtin assistants');
   }
 
   // 6. Initialize database (better-sqlite3)
   try {
     getDatabase();
   } catch (error) {
-    console.error('[InitStorage] Database initialization failed, falling back to file-based storage:', error);
+    log.error({ err: error }, 'Database initialization failed, falling back to file-based storage');
   }
 
   // NOTE: systemInfo provider is now in applicationBridge.ts
@@ -763,7 +764,7 @@ export const loadSkillsContent = async (enabledSkills: string[]): Promise<string
         skillContents.push(`## Skill: ${skillName}\n${content}`);
       }
     } catch (error) {
-      console.warn(`[AionUi] Failed to load skill ${skillName}:`, error);
+      log.warn({ err: error, skillName }, 'Failed to load skill');
     }
   }
 
