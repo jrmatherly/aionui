@@ -90,11 +90,11 @@
       "enabled": false
     },
     {
-      // Major Electron upgrades need careful review
+      // Major Electron upgrades blocked — require manual decision
+      // Electron 37 → 40 is a major jump; upgrade when ready
       "matchPackageNames": ["electron"],
       "matchUpdateTypes": ["major"],
-      "labels": ["dependencies", "breaking-change"],
-      "automerge": false
+      "enabled": false
     },
     {
       // openid-client v6 is a complete API rewrite — pin to v5.x
