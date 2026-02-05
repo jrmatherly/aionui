@@ -172,6 +172,110 @@ export interface IDirectoryChain {
 
 /**
  * ======================
+ * Global Models types (admin-managed shared model configs)
+ * ======================
+ */
+
+/**
+ * Override type for user model overrides
+ */
+export type ModelOverrideType = 'hidden' | 'modified';
+
+/**
+ * Global model configuration (admin-managed, shared across all users)
+ * Stored in database, available to all users unless hidden
+ */
+export interface IGlobalModel {
+  id: string;
+  platform: string;
+  name: string;
+  base_url: string;
+  // Note: encrypted_api_key NOT exposed in this interface (security)
+  models: string[]; // Parsed from JSON
+  capabilities?: string[]; // Parsed from JSON
+  context_limit?: number;
+  custom_headers?: Record<string, string>; // Parsed from JSON
+  enabled: boolean;
+  priority: number;
+  created_by: string;
+  created_at: number;
+  updated_at: number;
+}
+
+/**
+ * Global model with API key (internal use only, never sent to frontend)
+ */
+export interface IGlobalModelWithKey extends IGlobalModel {
+  api_key: string; // Decrypted API key
+}
+
+/**
+ * Global model database row (raw from SQLite)
+ */
+export interface IGlobalModelRow {
+  id: string;
+  platform: string;
+  name: string;
+  base_url: string;
+  encrypted_api_key: string | null;
+  models: string; // JSON string
+  capabilities: string | null; // JSON string
+  context_limit: number | null;
+  custom_headers: string | null; // JSON string
+  enabled: number; // SQLite boolean (0/1)
+  priority: number;
+  created_by: string;
+  created_at: number;
+  updated_at: number;
+}
+
+/**
+ * User override for a global model
+ */
+export interface IUserModelOverride {
+  id: string;
+  user_id: string;
+  global_model_id: string;
+  override_type: ModelOverrideType;
+  local_provider_id?: string; // If modified, points to user's local copy
+  created_at: number;
+  updated_at: number;
+}
+
+/**
+ * Create global model DTO (for admin API)
+ */
+export interface ICreateGlobalModelDTO {
+  platform: string;
+  name: string;
+  base_url?: string;
+  api_key?: string;
+  models: string[];
+  capabilities?: string[];
+  context_limit?: number;
+  custom_headers?: Record<string, string>;
+  enabled?: boolean;
+  priority?: number;
+}
+
+/**
+ * Update global model DTO (for admin API)
+ */
+export interface IUpdateGlobalModelDTO {
+  platform?: string;
+  name?: string;
+  base_url?: string;
+  api_key?: string; // Only set if changing
+  models?: string[];
+  capabilities?: string[];
+  context_limit?: number;
+  custom_headers?: Record<string, string>;
+  enabled?: boolean;
+  priority?: number;
+}
+
+/**
+ * ======================
  * Database query helper types
  * ======================
  */

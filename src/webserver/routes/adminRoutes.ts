@@ -1,11 +1,11 @@
 /**
  * @author Jason Matherly
- * @modified 2026-02-03
+ * @modified 2026-02-05
  * SPDX-License-Identifier: Apache-2.0
  */
 
 /**
- * Admin-only routes for user management.
+ * Admin-only routes for user and global model management.
  * All endpoints require admin role.
  */
 
@@ -13,7 +13,8 @@ import { GROUP_MAPPINGS } from '@/webserver/auth/config/groupMappings';
 import { AuthMiddleware } from '@/webserver/auth/middleware/AuthMiddleware';
 import { requireAdmin } from '@/webserver/auth/middleware/RoleMiddleware';
 import { UserRepository } from '@/webserver/auth/repository/UserRepository';
-import type { UserRole } from '@process/database/types';
+import { GlobalModelService } from '@process/services/GlobalModelService';
+import type { ICreateGlobalModelDTO, IUpdateGlobalModelDTO, UserRole } from '@process/database/types';
 import type { Express, Request, Response } from 'express';
 import { apiRateLimiter } from '../middleware/security';
 
@@ -137,6 +138,190 @@ export function registerAdminRoutes(app: Express): void {
   /* ------------------------------------------------------------------ */
   app.get('/api/admin/group-mappings', ...adminGuard, (_req: Request, res: Response) => {
     res.json({ success: true, mappings: GROUP_MAPPINGS });
+  });
+
+  /* ================================================================== */
+  /*  GLOBAL MODELS MANAGEMENT                                          */
+  /* ================================================================== */
+
+  /* ------------------------------------------------------------------ */
+  /*  GET /api/admin/models — list all global models                     */
+  /* ------------------------------------------------------------------ */
+  app.get('/api/admin/models', ...adminGuard, (req: Request, res: Response) => {
+    try {
+      const includeDisabled = req.query.includeDisabled === 'true';
+      const service = GlobalModelService.getInstance();
+      const models = service.listGlobalModels(includeDisabled);
+
+      // Add API key hints for display
+      const modelsWithHints = models.map((m) => ({
+        ...m,
+        apiKeyHint: service.getApiKeyHint(m.id),
+      }));
+
+      res.json({ success: true, models: modelsWithHints, total: modelsWithHints.length });
+    } catch (error) {
+      console.error('[Admin] List global models error:', error);
+      res.status(500).json({ success: false, error: 'Failed to list global models' });
+    }
+  });
+
+  /* ------------------------------------------------------------------ */
+  /*  GET /api/admin/models/:id — get single global model                */
+  /* ------------------------------------------------------------------ */
+  app.get('/api/admin/models/:id', ...adminGuard, (req: Request, res: Response) => {
+    try {
+      const service = GlobalModelService.getInstance();
+      const model = service.getGlobalModel(req.params.id);
+      if (!model) {
+        res.status(404).json({ success: false, error: 'Global model not found' });
+        return;
+      }
+      res.json({
+        success: true,
+        model: {
+          ...model,
+          apiKeyHint: service.getApiKeyHint(model.id),
+        },
+      });
+    } catch (error) {
+      console.error('[Admin] Get global model error:', error);
+      res.status(500).json({ success: false, error: 'Failed to get global model' });
+    }
+  });
+
+  /* ------------------------------------------------------------------ */
+  /*  POST /api/admin/models — create a new global model                 */
+  /* ------------------------------------------------------------------ */
+  app.post('/api/admin/models', ...adminGuard, (req: Request, res: Response) => {
+    try {
+      const dto = req.body as ICreateGlobalModelDTO;
+
+      // Validate required fields
+      if (!dto.platform || !dto.name) {
+        res.status(400).json({ success: false, error: 'platform and name are required' });
+        return;
+      }
+
+      const service = GlobalModelService.getInstance();
+      const model = service.createGlobalModel(dto, req.user!.id);
+
+      res.status(201).json({
+        success: true,
+        model: {
+          ...model,
+          apiKeyHint: service.getApiKeyHint(model.id),
+        },
+      });
+    } catch (error) {
+      console.error('[Admin] Create global model error:', error);
+      res.status(500).json({ success: false, error: 'Failed to create global model' });
+    }
+  });
+
+  /* ------------------------------------------------------------------ */
+  /*  PATCH /api/admin/models/:id — update a global model                */
+  /* ------------------------------------------------------------------ */
+  app.patch('/api/admin/models/:id', ...adminGuard, (req: Request, res: Response) => {
+    try {
+      const dto = req.body as IUpdateGlobalModelDTO;
+      const service = GlobalModelService.getInstance();
+      const model = service.updateGlobalModel(req.params.id, dto);
+
+      if (!model) {
+        res.status(404).json({ success: false, error: 'Global model not found' });
+        return;
+      }
+
+      res.json({
+        success: true,
+        model: {
+          ...model,
+          apiKeyHint: service.getApiKeyHint(model.id),
+        },
+      });
+    } catch (error) {
+      console.error('[Admin] Update global model error:', error);
+      res.status(500).json({ success: false, error: 'Failed to update global model' });
+    }
+  });
+
+  /* ------------------------------------------------------------------ */
+  /*  DELETE /api/admin/models/:id — delete a global model               */
+  /* ------------------------------------------------------------------ */
+  app.delete('/api/admin/models/:id', ...adminGuard, (req: Request, res: Response) => {
+    try {
+      const service = GlobalModelService.getInstance();
+      const deleted = service.deleteGlobalModel(req.params.id);
+
+      if (!deleted) {
+        res.status(404).json({ success: false, error: 'Global model not found' });
+        return;
+      }
+
+      res.json({ success: true, message: 'Global model deleted' });
+    } catch (error) {
+      console.error('[Admin] Delete global model error:', error);
+      res.status(500).json({ success: false, error: 'Failed to delete global model' });
+    }
+  });
+
+  /* ------------------------------------------------------------------ */
+  /*  POST /api/admin/models/:id/toggle — enable/disable a global model  */
+  /* ------------------------------------------------------------------ */
+  app.post('/api/admin/models/:id/toggle', ...adminGuard, (req: Request, res: Response) => {
+    try {
+      const { enabled } = req.body as { enabled?: boolean };
+      if (typeof enabled !== 'boolean') {
+        res.status(400).json({ success: false, error: 'enabled must be a boolean' });
+        return;
+      }
+
+      const service = GlobalModelService.getInstance();
+      const model = service.updateGlobalModel(req.params.id, { enabled });
+
+      if (!model) {
+        res.status(404).json({ success: false, error: 'Global model not found' });
+        return;
+      }
+
+      res.json({
+        success: true,
+        model: {
+          ...model,
+          apiKeyHint: service.getApiKeyHint(model.id),
+        },
+      });
+    } catch (error) {
+      console.error('[Admin] Toggle global model error:', error);
+      res.status(500).json({ success: false, error: 'Failed to toggle global model' });
+    }
+  });
+
+  /* ------------------------------------------------------------------ */
+  /*  POST /api/admin/models/reorder — update priorities for all models  */
+  /* ------------------------------------------------------------------ */
+  app.post('/api/admin/models/reorder', ...adminGuard, (req: Request, res: Response) => {
+    try {
+      const { order } = req.body as { order?: string[] };
+      if (!Array.isArray(order)) {
+        res.status(400).json({ success: false, error: 'order must be an array of model IDs' });
+        return;
+      }
+
+      const service = GlobalModelService.getInstance();
+
+      // Update priority for each model (higher index = lower priority)
+      order.forEach((id, index) => {
+        service.updateGlobalModel(id, { priority: order.length - index });
+      });
+
+      const models = service.listGlobalModels(true);
+      res.json({ success: true, models });
+    } catch (error) {
+      console.error('[Admin] Reorder global models error:', error);
+      res.status(500).json({ success: false, error: 'Failed to reorder global models' });
+    }
   });
 }
 

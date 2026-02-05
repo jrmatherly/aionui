@@ -7,6 +7,7 @@
 import type Database from 'better-sqlite3';
 import { migrate_v14_add_user_api_keys } from './migrations/v14_add_user_api_keys';
 import { migrate_v15_add_organizations_and_user_directories, rollback_v15 } from './migrations/v15_add_organizations_and_user_directories';
+import { migrate_v16_add_global_models } from './migrations/v16_add_global_models';
 
 /**
  * Migration script definition
@@ -583,9 +584,33 @@ const migration_v15: IMigration = {
 };
 
 /**
+ * Migration v15 -> v16: Add global_models and user_model_overrides tables
+ * Supports admin-managed shared model configurations available to all users
+ */
+const migration_v16: IMigration = {
+  version: 16,
+  name: 'Add global_models and user_model_overrides',
+  up: (db) => {
+    migrate_v16_add_global_models(db);
+  },
+  down: (db) => {
+    db.exec(`
+      DROP INDEX IF EXISTS idx_user_model_overrides_global_model;
+      DROP INDEX IF EXISTS idx_user_model_overrides_user;
+      DROP TABLE IF EXISTS user_model_overrides;
+      DROP INDEX IF EXISTS idx_global_models_priority;
+      DROP INDEX IF EXISTS idx_global_models_platform;
+      DROP INDEX IF EXISTS idx_global_models_enabled;
+      DROP TABLE IF EXISTS global_models;
+    `);
+    console.log('[Migration v16] Rolled back: Removed global_models and user_model_overrides tables');
+  },
+};
+
+/**
  * All migrations in order
  */
-export const ALL_MIGRATIONS: IMigration[] = [migration_v1, migration_v2, migration_v3, migration_v4, migration_v5, migration_v6, migration_v7, migration_v8, migration_v9, migration_v10, migration_v11, migration_v12, migration_v13, migration_v14, migration_v15];
+export const ALL_MIGRATIONS: IMigration[] = [migration_v1, migration_v2, migration_v3, migration_v4, migration_v5, migration_v6, migration_v7, migration_v8, migration_v9, migration_v10, migration_v11, migration_v12, migration_v13, migration_v14, migration_v15, migration_v16];
 
 /**
  * Get migrations needed to upgrade from one version to another
