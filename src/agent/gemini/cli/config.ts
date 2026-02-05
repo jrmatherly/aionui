@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { createLogger } from '@/common/logger';
 import type { FallbackIntent, GeminiCLIExtension, SkillDefinition, TelemetryTarget } from '@office-ai/aioncli-core';
 import { ApprovalMode, Config, DEFAULT_GEMINI_EMBEDDING_MODEL, DEFAULT_GEMINI_MODEL, DEFAULT_MEMORY_FILE_FILTERING_OPTIONS, FileDiscoveryService, PREVIEW_GEMINI_MODEL_AUTO, SimpleExtensionLoader, getCurrentGeminiMdFilename, loadServerHierarchicalMemory, loadSkillsFromDir, setGeminiMdFilename as setServerGeminiMdFilename } from '@office-ai/aioncli-core';
 import process from 'node:process';
@@ -11,12 +12,7 @@ import { getCurrentGeminiAgent } from '../index';
 import { annotateActiveExtensions } from './extension';
 import type { Settings } from './settings';
 
-// Simple console logger for now - replace with actual logger if available
-const logger = {
-  debug: (...args: unknown[]) => console.debug('[DEBUG]', ...args),
-  warn: (...args: unknown[]) => console.warn('[WARN]', ...args),
-  error: (...args: unknown[]) => console.error('[ERROR]', ...args),
-};
+const log = createLogger('GeminiConfig');
 
 export interface CliArgs {
   model: string | undefined;
@@ -87,7 +83,7 @@ export async function loadCliConfig({ workspace, settings, extensions, sessionId
   if (skillsDir) {
     try {
       builtinSkills = await loadSkillsFromDir(skillsDir);
-      console.log(`[Config] Loaded ${builtinSkills.length} builtin skills from ${skillsDir}`);
+      log.info({ count: builtinSkills.length, skillsDir }, 'Loaded builtin skills');
 
       // Filter skills based on enabledSkills
       // When enabledSkills is an array (including empty), apply filtering
@@ -95,10 +91,10 @@ export async function loadCliConfig({ workspace, settings, extensions, sessionId
         const enabledSet = new Set(enabledSkills);
         const originalCount = builtinSkills.length;
         builtinSkills = builtinSkills.filter((skill) => enabledSet.has(skill.name));
-        console.log(`[Config] Filtered skills: ${builtinSkills.length}/${originalCount} enabled (${enabledSkills.join(', ') || 'none'})`);
+        log.info({ filtered: builtinSkills.length, total: originalCount, enabled: enabledSkills.join(', ') || 'none' }, 'Filtered skills');
       }
     } catch (error) {
-      console.warn(`[Config] Failed to load builtin skills from ${skillsDir}:`, error);
+      log.warn({ err: error, skillsDir }, 'Failed to load builtin skills');
     }
   }
 
@@ -274,7 +270,7 @@ export async function loadCliConfig({ workspace, settings, extensions, sessionId
       if (!apiKeyManager?.hasMultipleKeys()) {
         // Single key mode, return 'stop' to stop retrying
         // Avoid returning 'retry_once' which causes infinite retry loop
-        console.log('[FallbackHandler] Single key mode, stopping retry');
+        log.info('Single key mode, stopping retry');
         return 'stop';
       }
 
@@ -289,7 +285,7 @@ export async function loadCliConfig({ workspace, settings, extensions, sessionId
       // All keys exhausted or blacklisted, stop retrying
       return 'stop';
     } catch (e) {
-      console.error(`[FallbackHandler] Handler error:`, e);
+      log.error({ err: e }, 'Handler error');
       // On error, return 'stop' to stop retrying
       return 'stop';
     }
@@ -307,7 +303,7 @@ function mergeMcpServers(settings: Settings, extensions: GeminiCLIExtension[], u
   for (const extension of extensions) {
     Object.entries(extension.mcpServers || {}).forEach(([key, server]) => {
       if (mcpServers[key]) {
-        logger.warn(`Skipping extension MCP config for server with key "${key}" as it already exists.`);
+        log.warn({ key }, 'Skipping extension MCP config as it already exists');
         return;
       }
       mcpServers[key] = {
@@ -321,10 +317,10 @@ function mergeMcpServers(settings: Settings, extensions: GeminiCLIExtension[], u
   if (uiMcpServers) {
     Object.entries(uiMcpServers).forEach(([key, server]) => {
       if (mcpServers[key]) {
-        logger.warn(`Overriding existing MCP config for server with key "${key}" with UI configuration.`);
+        log.warn({ key }, 'Overriding existing MCP config with UI configuration');
       }
       mcpServers[key] = server;
-      console.log(`[MCP] Added UI-configured server: ${key}`);
+      log.info({ key }, 'Added UI-configured MCP server');
     });
   }
 

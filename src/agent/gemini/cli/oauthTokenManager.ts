@@ -16,7 +16,10 @@
  * 4. Token Synchronization during concurrent requests
  */
 
+import { createLogger } from '@/common/logger';
 import { AuthType } from '@office-ai/aioncli-core';
+
+const log = createLogger('OAuthTokenManager');
 
 /** Token State */
 export enum TokenState {
@@ -220,7 +223,7 @@ export class OAuthTokenManager {
     }
 
     if (!this.refreshCallback) {
-      console.warn('[OAuthTokenManager] No refresh callback set');
+      log.warn('No refresh callback set');
       return false;
     }
 

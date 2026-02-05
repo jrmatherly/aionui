@@ -4,11 +4,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { createLogger } from '@/common/logger';
 import type { AllToolCallsCompleteHandler, CancelledToolCall, CompletedToolCall, Config, Status as CoreStatus, EditorType, ExecutingToolCall, OutputUpdateHandler, ScheduledToolCall, ToolCall, ToolCallRequestInfo, ToolCallsUpdateHandler, ValidatingToolCall, WaitingToolCall } from '@office-ai/aioncli-core';
 import { CoreToolScheduler } from '@office-ai/aioncli-core';
 import { useCallback, useMemo, useState } from 'react';
 import type { HistoryItemToolGroup, HistoryItemWithoutId, IndividualToolCallDisplay } from './types';
 import { ToolCallStatus } from './types';
+
+const log = createLogger('ToolScheduler');
 
 export type ScheduleFn = (request: ToolCallRequestInfo | ToolCallRequestInfo[], signal: AbortSignal) => void;
 export type MarkToolsAsSubmittedFn = (callIds: string[]) => void;
@@ -138,7 +141,7 @@ function mapCoreStatusToDisplayStatus(coreStatus: CoreStatus): ToolCallStatus {
       return ToolCallStatus.Pending;
     default: {
       const exhaustiveCheck: never = coreStatus;
-      console.warn(`Unknown core status encountered: ${exhaustiveCheck}`);
+      log.warn({ status: exhaustiveCheck }, 'Unknown core status encountered');
       return ToolCallStatus.Error;
     }
   }

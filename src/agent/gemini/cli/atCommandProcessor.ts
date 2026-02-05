@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { createLogger } from '@/common/logger';
 import type { PartListUnion, PartUnion } from '@google/genai';
 import type { AnyToolInvocation, Config } from '@office-ai/aioncli-core';
 import { getErrorMessage, isNodeError, unescapePath } from '@office-ai/aioncli-core';
@@ -11,6 +12,8 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import type { HistoryItem, IndividualToolCallDisplay } from './types';
 import { ToolCallStatus } from './types';
+
+const log = createLogger('AtCommandProcessor');
 
 // Truncation constants synced from aioncli-core/src/utils/fileUtils.ts
 const DEFAULT_MAX_LINES_TEXT_FILE = 2000;
@@ -270,14 +273,14 @@ export async function handleAtCommand({ query, config, addItem, onDebugMessage, 
                 onDebugMessage(`Glob search for '**/*${pathName}*' found no files or an error. Path ${pathName} will be skipped.`);
               }
             } catch (globError) {
-              console.error(`Error during glob search for ${pathName}: ${getErrorMessage(globError)}`);
+              log.error({ pathName, err: globError }, 'Error during glob search');
               onDebugMessage(`Error during glob search for ${pathName}. Path ${pathName} will be skipped.`);
             }
           } else {
             onDebugMessage(`Glob tool not found. Path ${pathName} will be skipped.`);
           }
         } else {
-          console.error(`Error stating path ${pathName}: ${getErrorMessage(error)}`);
+          log.error({ pathName, err: error }, 'Error stating path');
           onDebugMessage(`Error stating path ${pathName}. Path ${pathName} will be skipped.`);
         }
       }

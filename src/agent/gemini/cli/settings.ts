@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { createLogger } from '@/common/logger';
 import type { AuthType, BugCommandSettings, MCPServerConfig, TelemetrySettings } from '@office-ai/aioncli-core';
 import { GEMINI_DIR, getErrorMessage } from '@office-ai/aioncli-core';
 import * as dotenv from 'dotenv';
@@ -11,6 +12,8 @@ import * as fs from 'fs';
 import { homedir, platform } from 'os';
 import * as path from 'path';
 import stripJsonComments from 'strip-json-comments';
+
+const log = createLogger('Settings');
 
 export const SETTINGS_DIRECTORY_NAME = '.gemini';
 export const USER_SETTINGS_DIR = path.join(homedir(), SETTINGS_DIRECTORY_NAME);
@@ -454,6 +457,6 @@ export function saveSettings(settingsFile: SettingsFile): void {
 
     fs.writeFileSync(settingsFile.path, JSON.stringify(settingsFile.settings, null, 2), 'utf-8');
   } catch (error) {
-    console.error('Error saving user settings file:', error);
+    log.error({ err: error }, 'Error saving user settings file');
   }
 }

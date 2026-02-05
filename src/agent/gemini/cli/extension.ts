@@ -4,10 +4,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { createLogger } from '@/common/logger';
 import type { GeminiCLIExtension, MCPServerConfig } from '@office-ai/aioncli-core';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
+
+const log = createLogger('Extension');
 
 export const EXTENSIONS_DIRECTORY_NAME = path.join('.gemini', 'extensions');
 export const EXTENSIONS_CONFIG_FILENAME = 'gemini-extension.json';
@@ -59,13 +62,13 @@ function loadExtensionsFromDir(dir: string): GeminiCLIExtension[] {
 
 function loadExtension(extensionDir: string): GeminiCLIExtension | null {
   if (!fs.statSync(extensionDir).isDirectory()) {
-    console.error(`Warning: unexpected file ${extensionDir} in extensions directory.`);
+    log.warn({ extensionDir }, 'Unexpected file in extensions directory');
     return null;
   }
 
   const configFilePath = path.join(extensionDir, EXTENSIONS_CONFIG_FILENAME);
   if (!fs.existsSync(configFilePath)) {
-    console.error(`Warning: extension directory ${extensionDir} does not contain a config file ${configFilePath}.`);
+    log.warn({ extensionDir, configFilePath }, 'Extension directory does not contain config file');
     return null;
   }
 
@@ -73,7 +76,7 @@ function loadExtension(extensionDir: string): GeminiCLIExtension | null {
     const configContent = fs.readFileSync(configFilePath, 'utf-8');
     const config = JSON.parse(configContent) as ExtensionConfigFile;
     if (!config.name || !config.version) {
-      console.error(`Invalid extension config in ${configFilePath}: missing name or version.`);
+      log.error({ configFilePath }, 'Invalid extension config: missing name or version');
       return null;
     }
 
@@ -92,7 +95,7 @@ function loadExtension(extensionDir: string): GeminiCLIExtension | null {
       excludeTools: config.excludeTools,
     };
   } catch (e) {
-    console.error(`Warning: error parsing extension config in ${configFilePath}: ${e}`);
+    log.error({ err: e, configFilePath }, 'Error parsing extension config');
     return null;
   }
 }
@@ -136,7 +139,7 @@ export function annotateActiveExtensions(extensions: GeminiCLIExtension[], enabl
   });
 
   for (const requestedName of notFoundNames) {
-    console.error(`Extension not found: ${requestedName}`);
+    log.error({ requestedName }, 'Extension not found');
   }
 
   return annotatedExtensions;
