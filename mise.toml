@@ -24,6 +24,11 @@ node = "24"
 # Major-pinned: auto-updates within 2.x, exact version locked in mise.lock.
 git-cliff = "2"
 
+# Drift Detect — code pattern analysis and health scoring
+# Used for pattern validation, drift detection, and AI context export
+"npm:driftdetect" = "latest"
+"npm:driftdetect-mcp" = "latest"
+
 # npm — Node 24 bundles npm 11.6.x, but the project standardizes on npm 11.9+
 # (see engines in package.json). We upgrade npm inside Node's prefix via
 # [hooks.postinstall] because mise's npm tool (npm:npm backend) installs to a
@@ -54,9 +59,9 @@ status.show_tools = false
 status.show_prepare_stale = true
 
 [hooks]
-# Only install project-specific tools (node, git-cliff) — not inherited global tools
+# Only install project-specific tools — not inherited global tools
 # This prevents slow startup and terminal issues with large global configs
-enter = "mise install -q node git-cliff 2>/dev/null || true"
+enter = "mise install -q node git-cliff npm:driftdetect npm:driftdetect-mcp 2>/dev/null || true"
 
 # Upgrade npm inside Node's prefix after tool install.
 # Only runs when npm major version doesn't match expected.
