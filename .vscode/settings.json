@@ -11,7 +11,8 @@
   "typescript.updateImportsOnFileMove.enabled": "always",
   "files.associations": {
     "*.tsx": "typescriptreact",
-    "*.ts": "typescript"
+    "*.ts": "typescript",
+    "*.dockerignore": "ignore"
   },
   "emmet.includeLanguages": {
     "typescript": "html",
