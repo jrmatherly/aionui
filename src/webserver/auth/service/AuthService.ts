@@ -10,6 +10,7 @@ import jwt from 'jsonwebtoken';
 import { AUTH_CONFIG } from '../../config/constants';
 import type { AuthUser } from '../repository/UserRepository';
 import { UserRepository } from '../repository/UserRepository';
+import { authLogger as log } from '@/common/logger';
 
 interface TokenPayload {
   userId: string;
@@ -208,11 +209,11 @@ export class AuthService {
       }
 
       // Fallback: If admin user does not exist (should not happen)
-      console.warn('[AuthService] Admin user not found, using temporary secret');
+      log.warn('Admin user not found, using temporary secret');
       this.jwtSecret = this.generateSecretKey();
       return this.jwtSecret;
     } catch (error) {
-      console.error('Failed to get/save JWT secret:', error);
+      log.error({ err: error }, 'Failed to get/save JWT secret');
       this.jwtSecret = this.generateSecretKey();
       return this.jwtSecret;
     }
@@ -225,7 +226,7 @@ export class AuthService {
     try {
       const adminUser = UserRepository.findByUsername(AUTH_CONFIG.DEFAULT_USER.USERNAME);
       if (!adminUser) {
-        console.warn('[AuthService] Admin user not found, cannot invalidate tokens');
+        log.warn('Admin user not found, cannot invalidate tokens');
         return;
       }
 
@@ -233,7 +234,7 @@ export class AuthService {
       UserRepository.updateJwtSecret(adminUser.id, newSecret);
       this.jwtSecret = newSecret;
     } catch (error) {
-      console.error('Failed to invalidate tokens:', error);
+      log.error({ err: error }, 'Failed to invalidate tokens');
     }
   }
 
@@ -296,7 +297,7 @@ export class AuthService {
       const db = getDb();
       db.storeRefreshToken(jti, userId, tokenHash, expiresAt);
     } catch (error) {
-      console.error('[AuthService] Failed to store refresh token:', error);
+      log.error({ err: error }, 'Failed to store refresh token');
     }
 
     return token;
@@ -372,7 +373,7 @@ export class AuthService {
       const db = getDb();
       db.revokeAllUserRefreshTokens(userId);
     } catch (error) {
-      console.error('[AuthService] Failed to revoke user tokens:', error);
+      log.error({ err: error }, 'Failed to revoke user tokens');
     }
   }
 
@@ -409,7 +410,7 @@ export class AuthService {
       if (error instanceof jwt.TokenExpiredError || error instanceof jwt.JsonWebTokenError || error instanceof jwt.NotBeforeError) {
         return null;
       }
-      console.error('Token verification failed:', error);
+      log.error({ err: error }, 'Token verification failed');
       return null;
     }
   }
@@ -439,7 +440,7 @@ export class AuthService {
         userId: this.normalizeUserId(decoded.userId),
       };
     } catch (error) {
-      console.error('WebSocket token verification failed:', error);
+      log.error({ err: error }, 'WebSocket token verification failed');
       return null;
     }
   }

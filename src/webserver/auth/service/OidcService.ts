@@ -15,6 +15,7 @@ import { Issuer } from 'openid-client';
 import { GROUP_MAPPINGS, resolveRoleFromGroups } from '../config/groupMappings';
 import { OIDC_CONFIG } from '../config/oidcConfig';
 import { UserRepository } from '../repository/UserRepository';
+import { oidcLogger as log } from '@/common/logger';
 
 interface StateEntry {
   createdAt: number;
@@ -64,7 +65,7 @@ export class OidcService {
   /** Discover the OIDC issuer and create a client. Call once at startup. */
   public static async initialize(): Promise<void> {
     if (!OIDC_CONFIG.enabled) {
-      console.log('[OIDC] Disabled, skipping initialization');
+      log.info('Disabled, skipping initialization');
       return;
     }
 
@@ -78,11 +79,15 @@ export class OidcService {
         response_types: [OIDC_CONFIG.responseType],
       });
 
-      console.log('[OIDC] Initialized successfully');
-      console.log(`[OIDC] Issuer: ${OIDC_CONFIG.issuer}`);
-      console.log(`[OIDC] Redirect URI: ${OIDC_CONFIG.redirectUri}`);
+      log.info(
+        {
+          issuer: OIDC_CONFIG.issuer,
+          redirectUri: OIDC_CONFIG.redirectUri,
+        },
+        'Initialized successfully'
+      );
     } catch (error) {
-      console.error('[OIDC] Failed to initialize:', error);
+      log.error({ err: error }, 'Failed to initialize');
       throw error;
     }
   }
@@ -170,7 +175,7 @@ export class OidcService {
         }
       } catch (e) {
         // Photo not available — not an error, just skip
-        console.log('[OIDC] Profile photo not available');
+        log.debug('Profile photo not available');
       }
 
       /* ── JIT provisioning ───────────────────────────────────────── */
@@ -190,11 +195,11 @@ export class OidcService {
           avatarUrl,
         });
 
-        console.log(`[OIDC] Created new user: ${username} (subject=${oidcSubject})`);
+        log.info({ username, oidcSubject }, 'Created new user');
       } else {
         // Returning user — sync role / groups / display name / avatar
         UserRepository.updateOidcUserInfo(user.id, { role, groups, displayName, avatarUrl });
-        console.log(`[OIDC] Updated user: ${user.username} (role=${role})`);
+        log.info({ username: user.username, role }, 'Updated user');
       }
 
       UserRepository.updateLastLogin(user.id);
@@ -215,7 +220,7 @@ export class OidcService {
         redirectTo: stateData.redirectTo,
       };
     } catch (error) {
-      console.error('[OIDC] Callback error:', error);
+      log.error({ err: error }, 'Callback error');
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Authentication failed',
