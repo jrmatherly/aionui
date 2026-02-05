@@ -166,6 +166,10 @@ Pino has `"browser": "./browser.js"` in package.json — a console.log shim with
 
 Any npm package with a `"browser"` field may have its Node.js code replaced by a browser shim in webpack. Check with `node -e "console.log(require('<pkg>/package.json').browser)"`. Known safe: `ws` (throws error), `mammoth`/`turndown` (object maps), `@opentelemetry/*` (object maps). Known dangerous: `pino` (string redirect).
 
+### UnoCSS is incompatible with webpack filesystem cache
+
+Do NOT enable `cache: { type: 'filesystem' }` on the renderer webpack config. UnoCSS generates utility classes by scanning source at build time. Webpack's cache skips re-scanning cached modules, producing incomplete CSS. See unocss/unocss#419. The main process config CAN use filesystem cache (no UnoCSS).
+
 ### Transport modules need require.resolve()
 
 Pino transports run in worker threads via `thread-stream`. Workers use `require(target)` which can't resolve short module names from inside asar/webpack contexts. Always use `require.resolve('pino-roll')` etc. to convert to absolute paths.
