@@ -84,8 +84,8 @@
     },
     {
       // Major Electron upgrades blocked — require manual decision
-      // Electron 37 → 40 is a major jump; upgrade when ready
-      "matchPackageNames": ["electron"],
+      // Electron 37 → 40 is a major jump; @electron/* packages should stay in sync
+      "matchPackageNames": ["electron", "@electron/fuses", "@electron/notarize"],
       "matchUpdateTypes": ["major"],
       "enabled": false
     },
