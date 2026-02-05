@@ -1,6 +1,9 @@
 // hooks/useTheme.ts
 import { ConfigStorage } from '@/common/storage';
+import { createLogger } from '@/renderer/utils/logger';
 import { useCallback, useEffect, useState } from 'react';
+
+const log = createLogger('useTheme');
 
 export type Theme = 'light' | 'dark';
 
@@ -15,7 +18,7 @@ const initTheme = async () => {
     document.body.setAttribute('arco-theme', initialTheme);
     return initialTheme;
   } catch (error) {
-    console.error('Failed to load initial theme:', error);
+    log.error({ err: error }, 'Failed to load initial theme');
     document.documentElement.setAttribute('data-theme', DEFAULT_THEME);
     document.body.setAttribute('arco-theme', DEFAULT_THEME);
     return DEFAULT_THEME;
@@ -45,7 +48,7 @@ const useTheme = (): [Theme, (theme: Theme) => Promise<void>] => {
         applyTheme(newTheme);
         await ConfigStorage.set('theme', newTheme);
       } catch (error) {
-        console.error('Failed to save theme:', error);
+        log.error({ err: error, newTheme }, 'Failed to save theme');
         // Revert on error
         setThemeState(theme);
         applyTheme(theme);
@@ -62,7 +65,7 @@ const useTheme = (): [Theme, (theme: Theme) => Promise<void>] => {
           setThemeState(initialTheme);
         })
         .catch((error) => {
-          console.error('Failed to initialize theme:', error);
+          log.error({ err: error }, 'Failed to initialize theme');
         });
     }
   }, []);

@@ -7,6 +7,7 @@
 import { ClientFactory, type RotatingClient } from '@/common/ClientFactory';
 import type { UnifiedChatCompletionResponse } from '@/common/RotatingApiClient';
 import { DEFAULT_IMAGE_EXTENSION, IMAGE_EXTENSIONS, MIME_TO_EXT_MAP, MIME_TYPE_MAP } from '@/common/constants';
+import { createLogger } from '@/common/logger';
 import type { TProviderWithModel } from '@/common/storage';
 import { Type } from '@google/genai';
 import type { Config, MessageBus, ToolCallConfirmationDetails, ToolInvocation, ToolLocation, ToolResult, ToolResultDisplay } from '@office-ai/aioncli-core';
@@ -15,6 +16,8 @@ import * as fs from 'fs';
 import { jsonrepair } from 'jsonrepair';
 import type OpenAI from 'openai';
 import * as path from 'path';
+
+const log = createLogger('ImageGenTool');
 
 /**
  * Safely parse JSON string with jsonrepair fallback
@@ -31,7 +34,7 @@ function safeJsonParse<T = unknown>(jsonString: string, fallbackValue: T): T {
       const repairedJson = jsonrepair(jsonString);
       return JSON.parse(repairedJson) as T;
     } catch (repairError) {
-      console.warn('[ImageGen] JSON parse failed:', jsonString.substring(0, 50));
+      log.warn({ jsonPreview: jsonString.substring(0, 50) }, 'JSON parse failed');
       return fallbackValue;
     }
   }
@@ -123,7 +126,7 @@ async function saveGeneratedImage(base64Data: string, config: Config, messageId?
 
     return filePath;
   } catch (error) {
-    console.error('[ImageGen] Failed to save image file:', error);
+    log.error({ err: error }, 'Failed to save image file');
     throw new Error(`Failed to save image: ${error instanceof Error ? error.message : String(error)}`);
   }
 }

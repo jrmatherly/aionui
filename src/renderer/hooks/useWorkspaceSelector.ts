@@ -7,9 +7,12 @@
 import { ipcBridge } from '@/common';
 import type { TChatConversation } from '@/common/storage';
 import { emitter } from '@/renderer/utils/emitter';
+import { createLogger } from '@/renderer/utils/logger';
 import { Message } from '@arco-design/web-react';
 import { useCallback } from 'react';
 import { useSWRConfig } from 'swr';
+
+const log = createLogger('useWorkspaceSelector');
 
 export type WorkspaceEventPrefix = 'gemini' | 'acp' | 'codex';
 
@@ -48,7 +51,7 @@ export const useWorkspaceSelector = (conversationId: string, eventPrefix: Worksp
       emitter.emit('chat.history.refresh');
       Message.success('Saved successfully');
     } catch (error) {
-      console.error('Failed to select workspace:', error);
+      log.error({ err: error, conversationId }, 'Failed to select workspace');
       Message.error('Failed to save');
     }
   }, [conversationId, eventPrefix, mutate]);

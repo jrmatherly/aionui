@@ -7,9 +7,12 @@
  * Allows runtime control of log levels, OTEL, syslog, and Langfuse settings.
  */
 
+import { createLogger } from '@/renderer/utils/logger';
 import { Button, Card, Divider, Form, Input, InputNumber, Message, Select, Space, Switch } from '@arco-design/web-react';
 import { Check, Refresh } from '@icon-park/react';
 import React, { useCallback, useEffect, useState } from 'react';
+
+const log = createLogger('LoggingSettings');
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -61,7 +64,7 @@ const LoggingSettings: React.FC = () => {
         message.error(data.error || 'Failed to fetch logging configuration');
       }
     } catch (error) {
-      console.error('Failed to fetch logging config:', error);
+      log.error({ err: error }, 'Failed to fetch logging config');
       message.error('Failed to fetch logging configuration');
     } finally {
       setLoading(false);
@@ -94,7 +97,7 @@ const LoggingSettings: React.FC = () => {
         message.error(data.error || 'Failed to update configuration');
       }
     } catch (error) {
-      console.error('Failed to save logging config:', error);
+      log.error({ err: error }, 'Failed to save logging config');
       message.error('Failed to save configuration');
     } finally {
       setSaving(false);
@@ -126,7 +129,7 @@ const LoggingSettings: React.FC = () => {
         message.error(data.error || 'Syslog connectivity test failed');
       }
     } catch (error) {
-      console.error('Syslog test failed:', error);
+      log.error({ err: error }, 'Syslog test failed');
       message.error('Syslog connectivity test failed');
     } finally {
       setTestingSyslog(false);

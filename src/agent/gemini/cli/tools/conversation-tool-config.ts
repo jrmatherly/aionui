@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { createLogger } from '@/common/logger';
 import type { TProviderWithModel } from '@/common/storage';
 import { uuid } from '@/common/utils';
 import type { GeminiClient } from '@office-ai/aioncli-core';
@@ -11,6 +12,8 @@ import { AuthType, Config } from '@office-ai/aioncli-core';
 import { ImageGenerationTool } from './img-gen';
 import { WebFetchTool } from './web-fetch';
 import { WebSearchTool } from './web-search';
+
+const log = createLogger('ConversationToolConfig');
 
 interface ConversationToolConfigOptions {
   proxy: string;
@@ -75,7 +78,7 @@ export class ConversationToolConfig {
 
       return null;
     } catch (error) {
-      console.error('[ConversationTools] Error finding Gemini model:', error);
+      log.error({ err: error }, 'Error finding Gemini model');
       return null;
     }
   }
@@ -155,7 +158,7 @@ export class ConversationToolConfig {
           toolRegistry.registerTool(customWebSearchTool);
         }
       } catch (error) {
-        console.warn('Failed to register gemini_web_search tool:', error);
+        log.warn({ err: error }, 'Failed to register gemini_web_search tool');
         // Error here doesn't affect other tool registration
       }
     }

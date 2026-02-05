@@ -4,10 +4,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { createLogger } from '@/renderer/utils/logger';
 import { Message } from '@arco-design/web-react';
 import { useCallback, useRef, useState } from 'react';
 import type { FileMetadata } from '../services/FileService';
 import { FileService, isSupportedFile } from '../services/FileService';
+
+const log = createLogger('useDragUpload');
 
 export interface UseDragUploadOptions {
   supportedExts?: string[];
@@ -92,7 +95,7 @@ export const useDragUpload = ({ supportedExts = [], onFilesAdded }: UseDragUploa
           }
         }
       } catch (err) {
-        console.error('Failed to process dropped files:', err);
+        log.error({ err }, 'Failed to process dropped files');
         Message.error('Failed to process dropped files');
       }
     },
