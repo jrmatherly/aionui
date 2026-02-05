@@ -52,7 +52,7 @@
 
 ### Data & Storage
 
-- **Better SQLite3** - Local database (schema v17)
+- **Better SQLite3** - Local database (schema v18)
 - **Zod** - Data validation
 
 ## Project Structure
