@@ -5,6 +5,9 @@
  */
 
 import { useCallback, useEffect } from 'react';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('useScrollSyncHelpers');
 
 /**
  * Hook for listening to external scroll sync requests
@@ -57,7 +60,7 @@ export const useCodeMirrorScroll = (wrapperRef: React.RefObject<HTMLDivElement>,
       // CodeMirror's scroll container is the .cm-scroller element
       const scroller = wrapper.querySelector('.cm-scroller') as HTMLElement;
       if (!scroller) {
-        console.warn('[useCodeMirrorScroll] Could not find .cm-scroller element');
+        log.warn('[useCodeMirrorScroll] Could not find .cm-scroller element');
         return;
       }
 

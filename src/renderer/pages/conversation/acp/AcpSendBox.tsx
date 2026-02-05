@@ -20,6 +20,9 @@ import type { AcpBackend } from '@/types/acpTypes';
 import { Button, Tag } from '@arco-design/web-react';
 import { Plus } from '@icon-park/react';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('AcpSendBox');
 const useAcpSendBoxDraft = getSendBoxDraftHook('acp', {
   _type: 'acp',
   atPath: [],
@@ -300,7 +303,7 @@ const AcpSendBox: React.FC<{
           emitter.emit('chat.history.refresh');
         } else {
           // Handle send failure
-          console.error('[ACP-FRONTEND] Failed to send initial message:', result);
+          log.error({ err: result }, '[ACP-FRONTEND] Failed to send initial message:');
           // Create error message in UI
           const errorMessage: TMessage = {
             id: uuid(),
@@ -319,7 +322,7 @@ const AcpSendBox: React.FC<{
           setAiProcessing(false); // Stop loading state on failure
         }
       } catch (error) {
-        console.error('Error sending initial message:', error);
+        log.error({ err: error }, 'Error sending initial message:');
         sessionStorage.removeItem(storageKey);
         sendingInitialMessageRef.current = false; // Reset flag on error
         setAiProcessing(false); // Stop loading state on error
@@ -327,7 +330,7 @@ const AcpSendBox: React.FC<{
     };
 
     sendInitialMessage().catch((error) => {
-      console.error('Failed to send initial message:', error);
+      log.error({ err: error }, 'Failed to send initial message:');
     });
   }, [conversation_id, backend, acpStatus]);
 

@@ -9,6 +9,9 @@ import type { TMessage } from '@/common/chatLib';
 import { composeMessage } from '@/common/chatLib';
 import { useCallback, useEffect, useRef } from 'react';
 import { createContext } from '../utils/createContext';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('hooks');
 
 const [useMessageList, MessageListProvider, useUpdateMessageList] = createContext([] as TMessage[]);
 
@@ -221,7 +224,7 @@ export const useMessageLstCache = (key: string) => {
         }
       })
       .catch((error) => {
-        console.error('[useMessageLstCache] Failed to load messages from database:', error);
+        log.error({ err: error }, '[useMessageLstCache] Failed to load messages from database:');
       });
   }, [key]);
 };

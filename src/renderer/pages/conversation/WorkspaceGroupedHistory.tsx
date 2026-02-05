@@ -19,6 +19,9 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import WorkspaceCollapse from './WorkspaceCollapse';
 import { useConversationTabs } from './context/ConversationTabsContext';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('WorkspaceGroupedHistory');
 
 interface WorkspaceGroup {
   workspace: string; // Full path
@@ -188,7 +191,7 @@ const WorkspaceGroupedHistory: React.FC<{ onSessionClick?: () => void; collapsed
           }
         })
         .catch((error) => {
-          console.error('[WorkspaceGroupedHistory] Failed to load conversations:', error);
+          log.error({ err: error }, '[WorkspaceGroupedHistory] Failed to load conversations:');
           setConversations([]);
         });
     };
@@ -303,7 +306,7 @@ const WorkspaceGroupedHistory: React.FC<{ onSessionClick?: () => void; collapsed
           }
         })
         .catch((error) => {
-          console.error('Failed to remove conversation:', error);
+          log.error({ err: error }, 'Failed to remove conversation:');
         });
     },
     [id, navigate]
@@ -328,7 +331,7 @@ const WorkspaceGroupedHistory: React.FC<{ onSessionClick?: () => void; collapsed
         emitter.emit('chat.history.refresh');
       }
     } catch (error) {
-      console.error('Failed to update conversation name:', error);
+      log.error({ err: error }, 'Failed to update conversation name:');
     } finally {
       setEditingId(null);
       setEditingName('');

@@ -7,6 +7,9 @@ import type { AcpBackendConfig } from '@/types/acpTypes';
 import { Button, Dropdown, Empty, Input, List, Menu, Message, Modal, Radio, Spin, Typography } from '@arco-design/web-react';
 import { FolderOpen, Lightning, Magic } from '@icon-park/react';
 import React, { useEffect, useState } from 'react';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('SkillRuleGenerator');
 interface SkillRuleGeneratorProps {
   conversationId: string;
   workspace?: string;
@@ -54,7 +57,7 @@ const LoadRuleModal: React.FC<{
       flatList.sort((a, b) => a.name.localeCompare(b.name));
       setFiles(flatList);
     } catch (error) {
-      console.error('Failed to load files:', error);
+      log.error({ err: error }, 'Failed to load files:');
       Message.error('Failed to load files');
     } finally {
       setLoading(false);
@@ -87,7 +90,7 @@ Please acknowledge receiving this rule/skill and confirm you will apply it.
       Message.success('Rule loaded successfully');
       onCancel();
     } catch (error) {
-      console.error('Failed to read file:', error);
+      log.error({ err: error }, 'Failed to read file:');
       Message.error('Failed to read file');
     } finally {
       setLoadingFile(false);
@@ -217,7 +220,7 @@ Requirements:
       setPresetName('');
       Message.success('Request sent to agent');
     } catch (error) {
-      console.error('Failed to generate skill/rule:', error);
+      log.error({ err: error }, 'Failed to generate skill/rule:');
       Message.error('Failed to generate');
     } finally {
       setLoading(false);
@@ -239,7 +242,7 @@ Requirements:
       await ipcBridge.acpConversation.refreshCustomAgents.invoke();
       Message.success('Agent preset registered successfully!');
     } catch (error) {
-      console.error('Failed to register preset:', error);
+      log.error({ err: error }, 'Failed to register preset:');
     }
   };
 

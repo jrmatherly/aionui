@@ -27,6 +27,9 @@ import PDFPreview from '../viewers/PDFViewer';
 import PPTPreview from '../viewers/PPTViewer';
 import URLViewer from '../viewers/URLViewer';
 import WordPreview from '../viewers/WordViewer';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('PreviewPanel');
 
 /**
  * Main preview panel component
@@ -338,7 +341,7 @@ const PreviewPanel: React.FC = () => {
       document.body.removeChild(link);
       URL.revokeObjectURL(url); // Release URL object
     } catch (error) {
-      console.error('[PreviewPanel] Failed to download file:', error);
+      log.error({ err: error }, '[PreviewPanel] Failed to download file:');
       messageApi.error('Failed to download');
     }
   }, [content, contentType, metadata?.fileName, metadata?.filePath, metadata?.language, messageApi]);

@@ -20,6 +20,9 @@ import { ImagePreviewContext } from './MessageList';
 import MessageFileChanges from './codex/MessageFileChanges';
 import { COLLAPSE_CONFIG, TEXT_CONFIG } from './constants';
 import type { ImageGenerationResult, WriteFileResult } from './types';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('MessageToolGroup');
 
 // Alert component style constant
 // Top-align icon and content to avoid vertical centering when text wraps to multiple lines
@@ -200,7 +203,7 @@ const ImageDisplay: React.FC<{
           setLoading(false);
         })
         .catch((error) => {
-          console.error('Failed to load image:', error);
+          log.error({ err: error }, 'Failed to load image:');
           setError(true);
           setLoading(false);
         });
@@ -228,7 +231,7 @@ const ImageDisplay: React.FC<{
           messageApi.success('Copied successfully');
           return;
         } catch (clipboardError) {
-          console.warn('[ImageDisplay] Clipboard API failed, trying fallback:', clipboardError);
+          log.warn({ err: clipboardError }, 'Clipboard API failed, trying fallback');
         }
       }
 
@@ -260,12 +263,12 @@ const ImageDisplay: React.FC<{
           ]);
           messageApi.success('Copied successfully');
         } catch (canvasError) {
-          console.error('[ImageDisplay] Canvas fallback also failed:', canvasError);
+          log.error({ err: canvasError }, '[ImageDisplay] Canvas fallback also failed:');
           messageApi.error('Failed to copy');
         }
       }, 'image/png');
     } catch (error) {
-      console.error('Failed to copy image:', error);
+      log.error({ err: error }, 'Failed to copy image:');
       messageApi.error('Failed to copy');
     }
   }, [getImageBlob, imageUrl, messageApi]);
@@ -287,7 +290,7 @@ const ImageDisplay: React.FC<{
 
       messageApi.success('Download successful');
     } catch (error) {
-      console.error('Failed to download image:', error);
+      log.error({ err: error }, 'Failed to download image:');
       messageApi.error('Failed to download');
     }
   }, [getImageBlob, relativePath, messageApi]);
@@ -408,7 +411,7 @@ const MessageToolGroup: React.FC<IMessageToolGroupProps> = ({ message }) => {
                     // confirmed
                   })
                   .catch((error) => {
-                    console.error('Failed to confirm message:', error);
+                    log.error({ err: error }, 'Failed to confirm message:');
                   });
               }}
             ></ConfirmationDetails>

@@ -15,6 +15,9 @@ import { DeleteOne, EditOne, MessageOne } from '@icon-park/react';
 import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('ChatHistory');
 
 const useTimeline = () => {
   return createTimelineGrouper();
@@ -68,7 +71,7 @@ const ChatHistory: React.FC<{ onSessionClick?: () => void; collapsed?: boolean }
   const handleSelect = (conversation: TChatConversation) => {
     // ipcBridge.conversation.createWithConversation.invoke({ conversation }).then(() => {
     Promise.resolve(navigate(`/conversation/${conversation.id}`)).catch((error) => {
-      console.error('Navigation failed:', error);
+      log.error({ err: error }, 'Navigation failed:');
     });
     // Automatically hide sidebar after clicking a session
     if (onSessionClick) {
@@ -93,7 +96,7 @@ const ChatHistory: React.FC<{ onSessionClick?: () => void; collapsed?: boolean }
           }
         })
         .catch((error) => {
-          console.error('[ChatHistory] Failed to load conversations from database:', error);
+          log.error({ err: error }, '[ChatHistory] Failed to load conversations from database:');
           setChatHistory([]);
         });
     };
@@ -109,12 +112,12 @@ const ChatHistory: React.FC<{ onSessionClick?: () => void; collapsed?: boolean }
           // Trigger refresh to reload from database
           emitter.emit('chat.history.refresh');
           void Promise.resolve(navigate('/')).catch((error) => {
-            console.error('Navigation failed:', error);
+            log.error({ err: error }, 'Navigation failed:');
           });
         }
       })
       .catch((error) => {
-        console.error('Failed to remove conversation:', error);
+        log.error({ err: error }, 'Failed to remove conversation:');
       });
   };
 
@@ -137,7 +140,7 @@ const ChatHistory: React.FC<{ onSessionClick?: () => void; collapsed?: boolean }
         emitter.emit('chat.history.refresh');
       }
     } catch (error) {
-      console.error('Failed to update conversation name:', error);
+      log.error({ err: error }, 'Failed to update conversation name:');
     } finally {
       setEditingId(null);
       setEditingName('');

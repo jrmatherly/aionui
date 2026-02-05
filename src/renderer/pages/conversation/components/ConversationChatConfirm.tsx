@@ -5,6 +5,9 @@ import { Divider, Typography } from '@arco-design/web-react';
 import type { PropsWithChildren } from 'react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { removeStack } from '../../../utils/common';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('ConversationChatConfirm');
 
 const ConversationChatConfirm: React.FC<PropsWithChildren<{ conversation_id: string }>> = ({ conversation_id, children }) => {
   const [confirmations, setConfirmations] = useState<IConfirmation<any>[]>([]);
@@ -73,7 +76,7 @@ const ConversationChatConfirm: React.FC<PropsWithChildren<{ conversation_id: str
         setConfirmations(manualConfirmations);
         setLoadError(null);
       } catch (error) {
-        console.error('[ConversationChatConfirm] Failed to load confirmations:', error);
+        log.error({ err: error }, '[ConversationChatConfirm] Failed to load confirmations:');
         if (retryCount < maxRetries) {
           retryCount++;
           setTimeout(loadConfirmations, 1000);

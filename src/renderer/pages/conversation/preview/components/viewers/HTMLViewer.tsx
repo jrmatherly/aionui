@@ -7,6 +7,9 @@
 import { Message } from '@arco-design/web-react';
 import MonacoEditor from '@monaco-editor/react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('HTMLViewer');
 interface HTMLPreviewProps {
   content: string;
   filePath?: string;
@@ -403,7 +406,7 @@ const HTMLPreview: React.FC<HTMLPreviewProps> = ({ content, filePath, hideToolba
           <div
             className='px-12px py-6px text-13px text-t-primary hover:bg-bg-2 cursor-pointer transition-colors'
             onClick={() => {
-              console.log('[HTMLPreview] Element info:', contextMenu.element);
+              log.info({ element: contextMenu.element }, 'Element info');
               messageApi.info('Element info logged to console');
               setContextMenu(null);
             }}

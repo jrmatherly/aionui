@@ -24,6 +24,9 @@ import { Button, Message, Tag } from '@arco-design/web-react';
 import { Plus } from '@icon-park/react';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { GeminiModelSelection } from './useGeminiModelSelection';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('GeminiSendBox');
 
 const useGeminiSendBoxDraft = getSendBoxDraftHook('gemini', {
   _type: 'gemini',
@@ -460,7 +463,7 @@ const GeminiSendBox: React.FC<{
           emitter.emit('gemini.workspace.refresh');
         }
       } catch (error) {
-        console.error('Failed to send initial message:', error);
+        log.error({ err: error }, 'Failed to send initial message:');
       }
     };
 

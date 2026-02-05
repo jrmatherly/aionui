@@ -19,6 +19,9 @@ import { buildDisplayMessage } from '@/renderer/utils/messageFiles';
 import { Button, Tag } from '@arco-design/web-react';
 import { Plus } from '@icon-park/react';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('CodexSendBox');
 interface CodexDraftData {
   _type: 'codex';
   atPath: Array<string | FileOrFolderItem>;
@@ -329,7 +332,7 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
     // Small delay to ensure status message is fully processed
     const timer = setTimeout(() => {
       processInitialMessage().catch((error) => {
-        console.error('Failed to process initial message:', error);
+        log.error({ err: error }, 'Failed to process initial message:');
       });
     }, 200);
 

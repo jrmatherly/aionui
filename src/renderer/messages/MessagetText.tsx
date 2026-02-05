@@ -17,6 +17,9 @@ import HorizontalFileList from '../components/HorizontalFileList';
 import MarkdownView from '../components/Markdown';
 import MessageAvatar from './MessageAvatar';
 import { useMessageAvatars } from './MessageAvatarContext';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('MessagetText');
 
 const parseFileMarker = (content: string) => {
   const markerIndex = content.indexOf(AIONUI_FILES_MARKER);
@@ -75,7 +78,7 @@ const MessageText: React.FC<{ message: IMessageText }> = ({ message }) => {
         setTimeout(() => setShowCopyAlert(false), 2000);
       })
       .catch((error) => {
-        console.error('Copy failed:', error);
+        log.error({ err: error }, 'Copy failed:');
       });
   };
 

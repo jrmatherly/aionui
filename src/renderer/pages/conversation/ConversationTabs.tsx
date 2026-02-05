@@ -14,6 +14,9 @@ import { Close, Plus } from '@icon-park/react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useConversationTabs } from './context/ConversationTabsContext';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('ConversationTabs');
 
 const TAB_OVERFLOW_THRESHOLD = 10;
 
@@ -145,11 +148,11 @@ const ConversationTabs: React.FC = () => {
             emitter.emit('chat.history.refresh');
           })
           .catch((error) => {
-            console.error('Failed to create conversation:', error);
+            log.error({ err: error }, 'Failed to create conversation:');
           });
       })
       .catch((error) => {
-        console.error('Failed to load conversations:', error);
+        log.error({ err: error }, 'Failed to load conversations:');
         void navigate('/guid');
       });
   }, [navigate, openTabs, activeTabId, openTab]);

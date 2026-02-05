@@ -8,6 +8,9 @@ import type { IMessageAcpPermission } from '@/common/chatLib';
 import { conversation } from '@/common/ipcBridge';
 import { Button, Card, Radio, Typography } from '@arco-design/web-react';
 import React, { useState } from 'react';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('MessageAcpPermission');
 const { Text } = Typography;
 
 interface MessageAcpPermissionProps {
@@ -65,11 +68,11 @@ const MessageAcpPermission: React.FC<MessageAcpPermissionProps> = React.memo(({ 
         setHasResponded(true);
       } else {
         // Handle failure case - could add error display here
-        console.error('Failed to confirm permission:', result);
+        log.error({ err: result }, 'Failed to confirm permission:');
       }
     } catch (error) {
       // Handle error case - could add error logging here
-      console.error('Error confirming permission:', error);
+      log.error({ err: error }, 'Error confirming permission:');
     } finally {
       setIsResponding(false);
     }

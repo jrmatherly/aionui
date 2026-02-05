@@ -10,6 +10,9 @@ import type React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useScrollSyncTarget } from '../../hooks/useScrollSyncHelpers';
 import { generateInspectScript } from './htmlInspectScript';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('HTMLRenderer');
 
 /** Selected element data structure */
 export interface InspectedElement {
@@ -102,7 +105,7 @@ async function inlineRelativeResources(html: string, basePath: string): Promise<
         result = result.replace(fullMatch, newTag);
       }
     } catch (e) {
-      console.warn('[HTMLRenderer] Failed to inline image:', src, e);
+      log.warn({ err: e, src }, 'Failed to inline image');
     }
   }
 
@@ -140,7 +143,7 @@ async function inlineRelativeResources(html: string, basePath: string): Promise<
                 processedCss = processedCss.replace(urlFullMatch, `url("${dataUrl}")`);
               }
             } catch (e) {
-              console.warn('[HTMLRenderer] Failed to inline CSS resource:', urlPath, e);
+              log.warn({ err: e, urlPath }, 'Failed to inline CSS resource');
             }
           }
 
@@ -148,7 +151,7 @@ async function inlineRelativeResources(html: string, basePath: string): Promise<
           result = result.replace(fullMatch, styleTag);
         }
       } catch (e) {
-        console.warn('[HTMLRenderer] Failed to inline CSS:', href, e);
+        log.warn({ err: e, href }, 'Failed to inline CSS');
       }
     }
   }
@@ -171,7 +174,7 @@ async function inlineRelativeResources(html: string, basePath: string): Promise<
         result = result.replace(fullMatch, scriptTag);
       }
     } catch (e) {
-      console.warn('[HTMLRenderer] Failed to inline script:', src, e);
+      log.warn({ err: e, src }, 'Failed to inline script');
     }
   }
 
@@ -258,7 +261,7 @@ const HTMLRenderer: React.FC<HTMLRendererProps> = ({ content, filePath, containe
         }
       })
       .catch((e) => {
-        console.warn('[HTMLRenderer] Failed to inline resources:', e);
+        log.warn({ err: e }, 'Failed to inline resources');
         if (!cancelled) {
           setInlinedHtmlContent(content); // Fallback to original content
         }
@@ -397,7 +400,7 @@ const HTMLRenderer: React.FC<HTMLRendererProps> = ({ content, filePath, containe
             const data = JSON.parse(jsonStr) as InspectedElement;
             onElementSelected(data);
           } catch (e) {
-            console.warn('[HTMLRenderer] Failed to parse inspect element message:', e);
+            log.warn({ err: e }, 'Failed to parse inspect element message');
           }
         }
         // Handle scroll message
@@ -412,7 +415,7 @@ const HTMLRenderer: React.FC<HTMLRendererProps> = ({ content, filePath, containe
             };
             onScroll(data.scrollTop, data.scrollHeight, data.clientHeight);
           } catch (e) {
-            console.warn('[HTMLRenderer] Failed to parse scroll message:', e);
+            log.warn({ err: e }, 'Failed to parse scroll message');
           }
         }
         // Handle content height message
@@ -423,7 +426,7 @@ const HTMLRenderer: React.FC<HTMLRendererProps> = ({ content, filePath, containe
               setWebviewContentHeight(height);
             }
           } catch (e) {
-            console.warn('[HTMLRenderer] Failed to parse content height message:', e);
+            log.warn({ err: e }, 'Failed to parse content height message');
           }
         }
       }

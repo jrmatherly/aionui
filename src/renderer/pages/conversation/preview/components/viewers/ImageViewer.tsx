@@ -7,6 +7,9 @@
 import { ipcBridge } from '@/common';
 import { Image } from '@arco-design/web-react';
 import React, { useEffect, useState } from 'react';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('ImageViewer');
 interface ImagePreviewProps {
   filePath?: string;
   content?: string;
@@ -43,7 +46,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = ({ filePath, content, fileName
         setImageSrc(base64);
       } catch (err) {
         if (!isMounted) return;
-        console.error('[ImagePreview] Failed to load image:', err);
+        log.error({ err }, '[ImagePreview] Failed to load image:');
         setError('Failed to load image');
       } finally {
         if (isMounted) {

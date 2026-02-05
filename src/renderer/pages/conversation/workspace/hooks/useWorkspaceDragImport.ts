@@ -9,6 +9,9 @@ import { FileService } from '@/renderer/services/FileService';
 import type { DragEvent } from 'react';
 import { useCallback, useRef, useState } from 'react';
 import type { MessageApi } from '../types';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('useWorkspaceDragImport');
 
 interface UseWorkspaceDragImportOptions {
   onFilesDropped: (files: Array<{ path: string; name: string }>) => Promise<void> | void;
@@ -96,7 +99,7 @@ export function useWorkspaceDragImport({ onFilesDropped, messageApi }: UseWorksp
         const kind = metadata.isDirectory ? 'directory' : 'file';
         unique.set(item.path, { path: item.path, name: itemName, kind });
       } catch (error) {
-        console.warn('[WorkspaceDragImport] Failed to inspect dropped path:', item.path, error);
+        log.warn({ err: error, path: item.path }, 'Failed to inspect dropped path');
         const fallbackName = item.name || getBaseName(item.path);
         unique.set(item.path, { path: item.path, name: fallbackName, kind: 'file' });
       }
@@ -125,7 +128,7 @@ export function useWorkspaceDragImport({ onFilesDropped, messageApi }: UseWorksp
             try {
               filePath = window.electronAPI.getPathForFile(file);
             } catch (err) {
-              console.warn('[WorkspaceDragImport] getPathForFile failed:', err);
+              log.warn({ err }, 'getPathForFile failed');
             }
           }
 
@@ -145,7 +148,7 @@ export function useWorkspaceDragImport({ onFilesDropped, messageApi }: UseWorksp
             const entry = item?.webkitGetAsEntry?.();
             if (entry?.isDirectory) {
               // Directory without path, cannot process
-              console.warn('[WorkspaceDragImport] Directory without path property, cannot process:', entry.name);
+              log.warn({ entryName: entry.name }, 'Directory without path property, cannot process');
             } else {
               // Regular file, need to create temp file
               filesWithoutPath.push(file);
@@ -159,7 +162,7 @@ export function useWorkspaceDragImport({ onFilesDropped, messageApi }: UseWorksp
         try {
           tempItems = await createTempItemsFromFiles(filesWithoutPath);
         } catch (error) {
-          console.error('[WorkspaceDragImport] Failed to create temp files:', error);
+          log.error({ err: error }, '[WorkspaceDragImport] Failed to create temp files:');
         }
       }
 
@@ -174,7 +177,7 @@ export function useWorkspaceDragImport({ onFilesDropped, messageApi }: UseWorksp
       try {
         await onFilesDropped(targets.map(({ path, name }) => ({ path, name })));
       } catch (error) {
-        console.error('Failed to import dropped files:', error);
+        log.error({ err: error }, 'Failed to import dropped files:');
         messageApi.error('Failed to import dropped files.');
       }
     },

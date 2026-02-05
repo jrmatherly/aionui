@@ -11,6 +11,9 @@ import { keymap } from '@codemirror/view';
 import CodeMirror from '@uiw/react-codemirror';
 import React, { useCallback, useMemo, useRef } from 'react';
 import { useCodeMirrorScroll, useScrollSyncTarget } from '../../hooks/useScrollSyncHelpers';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('HTMLEditor');
 
 interface HTMLEditorProps {
   value: string;
@@ -51,7 +54,7 @@ const HTMLEditor: React.FC<HTMLEditorProps> = ({ value, onChange, containerRef, 
     (newValue: string) => {
       // Strict type checking
       if (typeof newValue !== 'string') {
-        console.error('[HTMLEditor] onChange received non-string value:', newValue);
+        log.error({ err: newValue }, '[HTMLEditor] onChange received non-string value:');
         return;
       }
       onChange(newValue);

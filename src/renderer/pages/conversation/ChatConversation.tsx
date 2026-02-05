@@ -24,6 +24,9 @@ import CodexChat from './codex/CodexChat';
 import GeminiChat from './gemini/GeminiChat';
 import GeminiModelSelector from './gemini/GeminiModelSelector';
 import { useGeminiModelSelection } from './gemini/useGeminiModelSelection';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('ChatConversation');
 // import SkillRuleGenerator from './components/SkillRuleGenerator'; // Temporarily hidden
 
 const _AssociatedConversation: React.FC<{ conversation_id: string }> = ({ conversation_id }) => {
@@ -40,7 +43,7 @@ const _AssociatedConversation: React.FC<{ conversation_id: string }> = ({ conver
         <Menu
           onClickMenuItem={(key) => {
             Promise.resolve(navigate(`/conversation/${key}`)).catch((error) => {
-              console.error('Navigation failed:', error);
+              log.error({ err: error }, 'Navigation failed:');
             });
           }}
         >
@@ -74,12 +77,12 @@ const _AddNewConversation: React.FC<{ conversation: TChatConversation }> = ({ co
             .invoke({ conversation: { ...conversation, id, createTime: Date.now(), modifyTime: Date.now() } })
             .then(() => {
               Promise.resolve(navigate(`/conversation/${id}`)).catch((error) => {
-                console.error('Navigation failed:', error);
+                log.error({ err: error }, 'Navigation failed:');
               });
               emitter.emit('chat.history.refresh');
             })
             .catch((error) => {
-              console.error('Failed to create conversation:', error);
+              log.error({ err: error }, 'Failed to create conversation:');
             });
         }}
       />

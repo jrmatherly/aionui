@@ -22,6 +22,9 @@ import { Streamdown } from 'streamdown';
 import { useContainerScroll, useContainerScrollTarget } from '../../hooks/useScrollSyncHelpers';
 import MarkdownEditor from '../editors/MarkdownEditor';
 import SelectionToolbar from '../renderers/SelectionToolbar';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('MarkdownViewer');
 
 interface MarkdownPreviewProps {
   content: string; // Markdown content
@@ -102,7 +105,7 @@ const MarkdownImage: React.FC<MarkdownImageProps> = ({ src, alt, baseDir, ...pro
               }
             })
             .catch((error) => {
-              console.error('[MarkdownPreview] Failed to fetch remote image:', src, error);
+              log.error({ err: error, src }, 'Failed to fetch remote image');
               if (!cancelled) {
                 setResolvedSrc(src);
               }
@@ -129,7 +132,7 @@ const MarkdownImage: React.FC<MarkdownImageProps> = ({ src, alt, baseDir, ...pro
           }
         })
         .catch((error) => {
-          console.error('[MarkdownPreview] Failed to load local image:', { src, absolutePath, error });
+          log.error({ err: error, src, absolutePath }, 'Failed to load local image');
           if (!cancelled) {
             setResolvedSrc(src);
           }
@@ -281,7 +284,7 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({ content, onClose, hid
           img.src = dataUrl;
         })
         .catch((error) => {
-          console.error('[MarkdownPreview] Failed to inline rendered image:', { rawAttr, absolutePath, error });
+          log.error({ err: error, rawAttr, absolutePath }, 'Failed to inline rendered image');
         })
         .finally(() => {
           seen.add(img);
