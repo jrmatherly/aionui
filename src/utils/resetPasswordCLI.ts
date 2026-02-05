@@ -6,6 +6,7 @@
  * Reset password CLI utility for packaged applications
  */
 
+import { getBrandName } from '@/common/branding';
 import { ensureDirectory, getDataPath } from '@process/utils';
 import { hash } from 'bcrypt-ts';
 import type Database from 'better-sqlite3';
@@ -80,7 +81,7 @@ export async function resetPasswordCLI(username: string): Promise<void> {
     if (!tableExists) {
       log.error('Database is not initialized yet');
       log.info('');
-      log.info('Please run AionUi at least once to initialize the database:');
+      log.info(`Please run ${getBrandName()} at least once to initialize the database:`);
       log.info('  aionui --webui');
       log.info('');
       log.info('Then you can reset the password using:');

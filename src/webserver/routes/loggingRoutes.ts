@@ -7,6 +7,7 @@
  * All endpoints require admin role.
  */
 
+import { getBrandName } from '@/common/branding';
 import { adminLogger as log, getLogLevel, setLogLevel } from '@/common/logger';
 import { AuthMiddleware } from '@/webserver/auth/middleware/AuthMiddleware';
 import { requireAdmin } from '@/webserver/auth/middleware/RoleMiddleware';
@@ -329,7 +330,7 @@ export function registerLoggingRoutes(app: Express): void {
         return;
       }
 
-      const testMessage = '<134>1 2026-02-05T10:00:00Z aionui - - - - Test message from AionUI';
+      const testMessage = `<134>1 ${new Date().toISOString()} aionui - - - - Test message from ${getBrandName()}`;
 
       if (protocol === 'udp') {
         // UDP test

@@ -5,6 +5,7 @@
  */
 
 import { AuthType } from '@office-ai/aioncli-core';
+import { getBrandName } from './branding';
 import type { RotatingApiClientOptions } from './RotatingApiClient';
 import { AnthropicRotatingClient, type AnthropicClientConfig } from './adapters/AnthropicRotatingClient';
 import { GeminiRotatingClient, type GeminiClientConfig } from './adapters/GeminiRotatingClient';
@@ -33,7 +34,7 @@ export class ClientFactory {
           timeout: options.timeout,
           defaultHeaders: {
             'HTTP-Referer': 'https://aionui.com',
-            'X-Title': 'AionUi',
+            'X-Title': getBrandName(),
             ...(provider.customHeaders || {}),
           },
           ...(options.baseConfig as OpenAIClientConfig),
@@ -87,7 +88,7 @@ export class ClientFactory {
           timeout: options.timeout,
           defaultHeaders: {
             'HTTP-Referer': 'https://aionui.com',
-            'X-Title': 'AionUi',
+            'X-Title': getBrandName(),
             ...(provider.customHeaders || {}),
           },
           ...(options.baseConfig as OpenAIClientConfig),
