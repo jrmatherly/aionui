@@ -12,8 +12,30 @@
 import { ipcBridge } from '@/common';
 import { MODEL_PLATFORMS, getPlatformByValue, type PlatformConfig } from '@/renderer/config/modelPlatforms';
 import { Button, Form, Input, InputNumber, Message, Select, Space, Switch } from '@arco-design/web-react';
-import { Refresh, Search } from '@icon-park/react';
+import { LinkCloud, Refresh, Search } from '@icon-park/react';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+
+/**
+ * Provider Logo Component - displays platform logo with fallback icon
+ */
+const ProviderLogo: React.FC<{ logo: string | null; name: string; size?: number }> = ({ logo, name, size = 20 }) => {
+  if (logo) {
+    return <img src={logo} alt={name} className='object-contain shrink-0' style={{ width: size, height: size }} />;
+  }
+  return <LinkCloud theme='outline' size={size} className='text-t-secondary flex shrink-0' />;
+};
+
+/**
+ * Platform dropdown option renderer with logo
+ */
+const renderPlatformOption = (platform: PlatformConfig) => {
+  return (
+    <div className='flex items-center gap-8px'>
+      <ProviderLogo logo={platform.logo} name={platform.name} size={18} />
+      <span>{platform.name}</span>
+    </div>
+  );
+};
 
 const FormItem = Form.Item;
 
@@ -53,13 +75,8 @@ const GlobalModelForm: React.FC<GlobalModelFormProps> = ({ initialData, onSubmit
   const [modelFetchError, setModelFetchError] = useState<string | null>(null);
 
   // Platform options from MODEL_PLATFORMS config - sorted alphabetically
-  const platformOptions = useMemo(() => {
-    return [...MODEL_PLATFORMS]
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .map((p: PlatformConfig) => ({
-        label: p.name,
-        value: p.value,
-      }));
+  const sortedPlatforms = useMemo(() => {
+    return [...MODEL_PLATFORMS].sort((a, b) => a.name.localeCompare(b.name));
   }, []);
 
   // Watch form fields for model fetching
@@ -170,7 +187,27 @@ const GlobalModelForm: React.FC<GlobalModelFormProps> = ({ initialData, onSubmit
       {messageContext}
 
       <FormItem label='Platform' field='platform' rules={[{ required: true, message: 'Please select a platform' }]}>
-        <Select placeholder='Select platform' options={platformOptions} showSearch filterOption={(inputValue, option) => (option as { label?: string })?.label?.toLowerCase().includes(inputValue.toLowerCase()) ?? false} />
+        <Select
+          placeholder='Select platform'
+          showSearch
+          filterOption={(inputValue, option) => {
+            const optionValue = (option as React.ReactElement<{ value?: string }>)?.props?.value;
+            const plat = sortedPlatforms.find((p) => p.value === optionValue);
+            return plat?.name.toLowerCase().includes(inputValue.toLowerCase()) ?? false;
+          }}
+          renderFormat={(option) => {
+            const optionValue = (option as { value?: string })?.value;
+            const plat = sortedPlatforms.find((p) => p.value === optionValue);
+            if (!plat) return optionValue;
+            return renderPlatformOption(plat);
+          }}
+        >
+          {sortedPlatforms.map((plat) => (
+            <Select.Option key={plat.value} value={plat.value}>
+              {renderPlatformOption(plat)}
+            </Select.Option>
+          ))}
+        </Select>
       </FormItem>
 
       <FormItem label='Name' field='name' rules={[{ required: true, message: 'Please enter a name' }]}>
