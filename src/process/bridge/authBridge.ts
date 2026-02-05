@@ -7,6 +7,7 @@
 import { AuthType, clearCachedCredentialFile, Config, getOauthInfoWithCache, loginWithOauth, Storage } from '@office-ai/aioncli-core';
 import * as fs from 'node:fs';
 import { ipcBridge } from '../../common';
+import { authLogger as log } from '@/common/logger';
 
 export function initAuthBridge(): void {
   ipcBridge.googleAuth.status.provider(async ({ proxy }) => {
@@ -28,13 +29,13 @@ export function initAuthBridge(): void {
           const creds = JSON.parse(credsContent);
           if (creds.refresh_token) {
             // Has refresh_token, credentials are valid but may need refresh when used
-            console.log('[Auth] Credentials exist with refresh_token, returning success');
+            log.info('Credentials exist with refresh_token, returning success');
             return { success: true, data: { account: 'Logged in (refresh needed)' } };
           }
         }
       } catch (fsError) {
         // Ignore filesystem errors, continue to return false
-        console.debug('[Auth] Error checking credentials file:', fsError);
+        log.debug({ err: fsError }, 'Error checking credentials file');
       }
 
       return { success: false };
@@ -72,18 +73,18 @@ export function initAuthBridge(): void {
 
           const oauthInfo = await getOauthInfoWithCache(proxy);
           if (oauthInfo && oauthInfo.email) {
-            console.log('[Auth] Login successful, account:', oauthInfo.email);
+            log.info({ account: oauthInfo.email }, 'Login successful');
             return { success: true, data: { account: oauthInfo.email } };
           }
 
           // Credential retrieval failed - login returned client but credentials weren't saved properly
-          console.warn('[Auth] Login completed but no credentials found');
+          log.warn('Login completed but no credentials found');
           return {
             success: false,
             msg: 'Login completed but credentials were not saved. Please try again.',
           };
         } catch (error) {
-          console.error('[Auth] Failed to verify credentials after login:', error);
+          log.error({ err: error }, 'Failed to verify credentials after login');
           return {
             success: false,
             msg: `Login verification failed: ${error.message || error.toString()}`,
@@ -95,7 +96,7 @@ export function initAuthBridge(): void {
       return { success: false, msg: 'Login failed: No client returned' };
     } catch (error) {
       // Catch all exceptions during login to prevent unhandled errors from showing error dialogs
-      console.error('[Auth] Login error:', error);
+      log.error({ err: error }, 'Login error');
       return { success: false, msg: error.message || error.toString() };
     }
   });
