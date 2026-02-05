@@ -82,8 +82,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.839Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -106,10 +106,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.46,
+        "frequency": 0.52,
         "consistency": 0.9,
         "age": 0,
-        "spread": 2,
+        "spread": 3,
         "score": 0.77,
         "level": "medium"
       },
@@ -274,12 +274,33 @@
           "column": 42,
           "isOutlier": false,
           "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 48,
+          "column": 20,
+          "isOutlier": false,
+          "confidence": 0.6824999999999999
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 5,
+          "column": 210,
+          "isOutlier": false,
+          "confidence": 0.6824999999999999
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 125,
+          "column": 6,
+          "isOutlier": false,
+          "confidence": 0.6824999999999999
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.839Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -302,7 +323,7 @@
         }
       },
       "confidence": {
-        "frequency": 0.57,
+        "frequency": 0.61,
         "consistency": 0.9,
         "age": 0,
         "spread": 9,
@@ -581,11 +602,39 @@
           "line": 12,
           "column": 5,
           "isOutlier": false,
-          "confidence": 0.595
+          "confidence": 0.5755555555555556
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 26,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.5755555555555556
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 34,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.5755555555555556
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 5,
+          "column": 198,
+          "isOutlier": false,
+          "confidence": 0.5755555555555556
         },
         {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
-          "line": 71,
+          "line": 38,
+          "column": 76,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 86,
           "column": 42,
           "isOutlier": false,
           "confidence": 0.77
@@ -669,21 +718,21 @@
         },
         {
           "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
-          "line": 52,
+          "line": 55,
           "column": 52,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
-          "line": 52,
+          "line": 55,
           "column": 42,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/ISSUE_TEMPLATE/question.yml",
-          "line": 23,
+          "line": 25,
           "column": 19,
           "isOutlier": false,
           "confidence": 0.77
@@ -697,7 +746,7 @@
         },
         {
           "file": ".github/ISSUE_TEMPLATE/question.yml",
-          "line": 34,
+          "line": 36,
           "column": 36,
           "isOutlier": false,
           "confidence": 0.77
@@ -712,8 +761,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.261Z",
-        "lastSeen": "2026-02-05T05:33:11.261Z",
+        "firstSeen": "2026-02-05T06:17:52.838Z",
+        "lastSeen": "2026-02-05T06:17:52.838Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -736,10 +785,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.44,
+        "frequency": 0.28,
         "consistency": 0.9,
         "age": 0,
-        "spread": 7,
+        "spread": 6,
         "score": 0.77,
         "level": "medium"
       },
@@ -762,25 +811,22 @@
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 14,
           "column": 5,
-          "isOutlier": true,
-          "confidence": 0.77,
-          "outlierReason": "Value above IQR upper bound"
+          "isOutlier": false,
+          "confidence": 0.77
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 3,
           "column": 38,
-          "isOutlier": true,
-          "confidence": 0.77,
-          "outlierReason": "Value above IQR upper bound"
+          "isOutlier": false,
+          "confidence": 0.77
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 252,
           "column": 61,
-          "isOutlier": true,
-          "confidence": 0.77,
-          "outlierReason": "Value above IQR upper bound"
+          "isOutlier": false,
+          "confidence": 0.77
         },
         {
           "file": ".aionui/FEATURE_CHANNELS_LARK_LARK.md",
@@ -800,70 +846,33 @@
           "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
           "line": 3,
           "column": 59,
-          "isOutlier": true,
-          "confidence": 0.595,
-          "outlierReason": "Value below IQR lower bound"
-        },
-        {
-          "file": ".github/CICD_SETUP.md",
-          "line": 21,
-          "column": 15,
           "isOutlier": false,
-          "confidence": 0.7
-        },
-        {
-          "file": ".github/CICD_SETUP.md",
-          "line": 47,
-          "column": 30,
-          "isOutlier": false,
-          "confidence": 0.7
-        },
-        {
-          "file": ".github/CICD_SETUP.md",
-          "line": 182,
-          "column": 103,
-          "isOutlier": false,
-          "confidence": 0.7
-        },
-        {
-          "file": ".github/CICD_SETUP.md",
-          "line": 182,
-          "column": 92,
-          "isOutlier": false,
-          "confidence": 0.7
-        },
-        {
-          "file": ".github/CICD_SETUP.md",
-          "line": 182,
-          "column": 66,
-          "isOutlier": false,
-          "confidence": 0.7
+          "confidence": 0.595
         },
         {
           "file": ".github/ISSUE_TEMPLATE/question.yml",
-          "line": 25,
+          "line": 27,
           "column": 11,
-          "isOutlier": true,
-          "confidence": 0.77,
-          "outlierReason": "Value above IQR upper bound"
+          "isOutlier": false,
+          "confidence": 0.77
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 100,
+          "line": 112,
           "column": 25,
           "isOutlier": false,
           "confidence": 0.6824999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 108,
+          "line": 120,
           "column": 23,
           "isOutlier": false,
           "confidence": 0.6824999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 108,
+          "line": 120,
           "column": 43,
           "isOutlier": false,
           "confidence": 0.6824999999999999
@@ -871,8 +880,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.261Z",
-        "lastSeen": "2026-02-05T05:33:11.261Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.839Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -895,10 +904,10 @@
         }
       },
       "confidence": {
-        "frequency": 1,
+        "frequency": 0.95,
         "consistency": 0.9,
         "age": 0,
-        "spread": 7,
+        "spread": 8,
         "score": 0.77,
         "level": "medium"
       },
@@ -1168,73 +1177,27 @@
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 21,
-          "column": 15,
-          "isOutlier": false,
-          "confidence": 0.7075
-        },
-        {
-          "file": ".github/CICD_SETUP.md",
-          "line": 47,
-          "column": 30,
-          "isOutlier": false,
-          "confidence": 0.7075
-        },
-        {
-          "file": ".github/CICD_SETUP.md",
-          "line": 182,
-          "column": 103,
-          "isOutlier": false,
-          "confidence": 0.7075
-        },
-        {
-          "file": ".github/CICD_SETUP.md",
-          "line": 5,
-          "column": 17,
-          "isOutlier": false,
-          "confidence": 0.7075
-        },
-        {
-          "file": ".github/CICD_SETUP.md",
-          "line": 26,
+          "line": 46,
           "column": 1,
-          "isOutlier": false,
-          "confidence": 0.7075
+          "isOutlier": true,
+          "confidence": 0.6199999999999999,
+          "outlierReason": "Low confidence outlier"
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 43,
-          "column": 19,
-          "isOutlier": false,
-          "confidence": 0.7075
+          "line": 46,
+          "column": 16,
+          "isOutlier": true,
+          "confidence": 0.6199999999999999,
+          "outlierReason": "Low confidence outlier"
         },
         {
-          "file": ".github/CICD_SETUP.md",
-          "line": 47,
-          "column": 6,
-          "isOutlier": false,
-          "confidence": 0.7075
-        },
-        {
-          "file": ".github/CICD_SETUP.md",
-          "line": 170,
-          "column": 4,
-          "isOutlier": false,
-          "confidence": 0.7075
-        },
-        {
-          "file": ".github/CICD_SETUP.md",
-          "line": 26,
-          "column": 54,
-          "isOutlier": false,
-          "confidence": 0.7075
-        },
-        {
-          "file": ".github/CICD_SETUP.md",
-          "line": 47,
-          "column": 19,
-          "isOutlier": false,
-          "confidence": 0.7075
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 38,
+          "column": 65,
+          "isOutlier": true,
+          "confidence": 0.77,
+          "outlierReason": "Value above IQR upper bound"
         },
         {
           "file": ".github/ISSUE_TEMPLATE/config.yml",
@@ -1246,7 +1209,7 @@
         },
         {
           "file": ".github/ISSUE_TEMPLATE/question.yml",
-          "line": 22,
+          "line": 23,
           "column": 11,
           "isOutlier": true,
           "confidence": 0.77,
@@ -1254,7 +1217,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 100,
+          "line": 112,
           "column": 25,
           "isOutlier": true,
           "confidence": 0.6824999999999999,
@@ -1262,7 +1225,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 108,
+          "line": 120,
           "column": 23,
           "isOutlier": true,
           "confidence": 0.6824999999999999,
@@ -1270,7 +1233,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 108,
+          "line": 120,
           "column": 43,
           "isOutlier": false,
           "confidence": 0.6824999999999999
@@ -1278,8 +1241,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.839Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -1312,10 +1275,10 @@
       "locations": [
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 116,
+          "line": 117,
           "column": 16,
           "isOutlier": false,
-          "confidence": 0.7949999999999999
+          "confidence": 0.7755555555555556
         },
         {
           "file": ".github/pull_request_template.md",
@@ -1334,8 +1297,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.840Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -1358,10 +1321,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.62,
+        "frequency": 0.6,
         "consistency": 0.9,
         "age": 0,
-        "spread": 6,
+        "spread": 7,
         "score": 0.77,
         "level": "medium"
       },
@@ -1382,52 +1345,45 @@
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 18,
-          "column": 19,
-          "isOutlier": false,
-          "confidence": 0.665
-        },
-        {
-          "file": ".github/CICD_SETUP.md",
-          "line": 98,
-          "column": 23,
-          "isOutlier": false,
-          "confidence": 0.665
-        },
-        {
-          "file": ".github/CICD_SETUP.md",
-          "line": 144,
+          "line": 127,
           "column": 6,
           "isOutlier": false,
-          "confidence": 0.665
+          "confidence": 0.6387499999999999
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 149,
+          "line": 131,
           "column": 6,
           "isOutlier": false,
-          "confidence": 0.665
+          "confidence": 0.6387499999999999
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 158,
+          "line": 137,
           "column": 17,
           "isOutlier": false,
-          "confidence": 0.665
+          "confidence": 0.6387499999999999
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 146,
+          "line": 139,
           "column": 6,
           "isOutlier": false,
-          "confidence": 0.665
+          "confidence": 0.6387499999999999
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 151,
+          "line": 130,
           "column": 6,
           "isOutlier": false,
-          "confidence": 0.665
+          "confidence": 0.6387499999999999
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 38,
+          "column": 59,
+          "isOutlier": false,
+          "confidence": 0.7262500000000001
         },
         {
           "file": ".github/ISSUE_TEMPLATE/config.yml",
@@ -1438,42 +1394,42 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 44,
+          "line": 54,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 45,
+          "line": 55,
           "column": 23,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 56,
+          "line": 66,
           "column": 26,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 63,
+          "line": 73,
           "column": 29,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 73,
+          "line": 83,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 74,
+          "line": 84,
           "column": 23,
           "isOutlier": false,
           "confidence": 0.77
@@ -1586,8 +1542,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.839Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -1628,8 +1584,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.839Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -1652,10 +1608,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.28,
+        "frequency": 0.32,
         "consistency": 0.9,
         "age": 0,
-        "spread": 3,
+        "spread": 4,
         "score": 0.77,
         "level": "medium"
       },
@@ -1752,18 +1708,34 @@
           "confidence": 0.6533333333333333
         },
         {
+          "file": ".github/CICD_SETUP.md",
+          "line": 5,
+          "column": 210,
+          "isOutlier": true,
+          "confidence": 0.77,
+          "outlierReason": "Value above IQR upper bound"
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 125,
+          "column": 6,
+          "isOutlier": true,
+          "confidence": 0.77,
+          "outlierReason": "Value above IQR upper bound"
+        },
+        {
           "file": ".github/workflows/codeql.yml",
           "line": 31,
           "column": 15,
           "isOutlier": true,
           "confidence": 0.77,
-          "outlierReason": "High confidence outlier"
+          "outlierReason": "Value above IQR upper bound"
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.839Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -1786,40 +1758,26 @@
         }
       },
       "confidence": {
-        "frequency": 0.06,
+        "frequency": 0.02,
         "consistency": 0.9,
         "age": 0,
-        "spread": 2,
+        "spread": 1,
         "score": 0.7949999999999999,
         "level": "medium"
       },
       "locations": [
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 204,
-          "column": 50,
-          "isOutlier": false,
-          "confidence": 0.7366666666666666
-        },
-        {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 53,
-          "column": 68,
-          "isOutlier": false,
-          "confidence": 0.7949999999999999
-        },
-        {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 126,
-          "column": 53,
+          "line": 91,
+          "column": 41,
           "isOutlier": false,
           "confidence": 0.7949999999999999
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.010Z",
-        "lastSeen": "2026-02-04T05:34:32.010Z",
+        "firstSeen": "2026-02-05T06:17:52.840Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -1860,8 +1818,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.840Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -1884,82 +1842,26 @@
         }
       },
       "confidence": {
-        "frequency": 0.25,
+        "frequency": 0.03,
         "consistency": 0.9,
         "age": 0,
-        "spread": 3,
-        "score": 0.788,
+        "spread": 1,
+        "score": 0.82,
         "level": "medium"
       },
       "locations": [
         {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 236,
-          "column": 70,
+          "file": ".github/CICD_SETUP.md",
+          "line": 104,
+          "column": 21,
           "isOutlier": false,
-          "confidence": 0.76
-        },
-        {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 236,
-          "column": 240,
-          "isOutlier": false,
-          "confidence": 0.76
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 134,
-          "column": 60,
-          "isOutlier": false,
-          "confidence": 0.788
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 135,
-          "column": 64,
-          "isOutlier": false,
-          "confidence": 0.788
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 136,
-          "column": 78,
-          "isOutlier": false,
-          "confidence": 0.788
-        },
-        {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 130,
-          "column": 55,
-          "isOutlier": false,
-          "confidence": 0.7224390243902439
-        },
-        {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 132,
-          "column": 50,
-          "isOutlier": false,
-          "confidence": 0.7224390243902439
-        },
-        {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 134,
-          "column": 49,
-          "isOutlier": false,
-          "confidence": 0.7224390243902439
-        },
-        {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 148,
-          "column": 106,
-          "isOutlier": false,
-          "confidence": 0.7224390243902439
+          "confidence": 0.82
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.012Z",
-        "lastSeen": "2026-02-04T05:34:32.012Z",
+        "firstSeen": "2026-02-05T06:17:52.840Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -2014,8 +1916,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.839Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -2038,75 +1940,33 @@
         }
       },
       "confidence": {
-        "frequency": 0.3,
+        "frequency": 0.06,
         "consistency": 0.9,
         "age": 0,
-        "spread": 2,
-        "score": 0.8084615384615385,
-        "level": "medium"
+        "spread": 1,
+        "score": 0.95,
+        "level": "high"
       },
       "locations": [
         {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 134,
-          "column": 60,
+          "file": ".github/CICD_SETUP.md",
+          "line": 104,
+          "column": 21,
           "isOutlier": false,
-          "confidence": 0.8084615384615385
+          "confidence": 0.97
         },
         {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 135,
-          "column": 64,
+          "file": ".github/CICD_SETUP.md",
+          "line": 73,
+          "column": 108,
           "isOutlier": false,
-          "confidence": 0.8084615384615385
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 136,
-          "column": 78,
-          "isOutlier": false,
-          "confidence": 0.8084615384615385
-        },
-        {
-          "file": ".github/workflows/gemini-review.yml",
-          "line": 208,
-          "column": 55,
-          "isOutlier": false,
-          "confidence": 0.8084615384615385
-        },
-        {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 130,
-          "column": 55,
-          "isOutlier": false,
-          "confidence": 0.76
-        },
-        {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 132,
-          "column": 50,
-          "isOutlier": false,
-          "confidence": 0.76
-        },
-        {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 134,
-          "column": 49,
-          "isOutlier": false,
-          "confidence": 0.76
-        },
-        {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 148,
-          "column": 106,
-          "isOutlier": false,
-          "confidence": 0.76
+          "confidence": 0.97
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.012Z",
-        "lastSeen": "2026-02-04T05:34:32.012Z",
+        "firstSeen": "2026-02-05T06:17:52.840Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -2154,8 +2014,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.839Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -2178,10 +2038,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.07,
+        "frequency": 0.1,
         "consistency": 0.9,
         "age": 0,
-        "spread": 5,
+        "spread": 6,
         "score": 0.9233333333333333,
         "level": "high"
       },
@@ -2197,9 +2057,8 @@
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 7,
           "column": 7,
-          "isOutlier": true,
-          "confidence": 0.9233333333333333,
-          "outlierReason": "Value above IQR upper bound"
+          "isOutlier": false,
+          "confidence": 0.9233333333333333
         },
         {
           "file": ".aionui/FEATURE_CHANNELS_LARK_LARK.md",
@@ -2230,18 +2089,38 @@
           "confidence": 0.8727777777777778
         },
         {
+          "file": ".github/CICD_SETUP.md",
+          "line": 38,
+          "column": 31,
+          "isOutlier": false,
+          "confidence": 0.7755555555555556
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 40,
+          "column": 61,
+          "isOutlier": false,
+          "confidence": 0.7755555555555556
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 56,
+          "column": 32,
+          "isOutlier": false,
+          "confidence": 0.7755555555555556
+        },
+        {
           "file": ".github/workflows/pr-checks.yml",
           "line": 189,
           "column": 41,
-          "isOutlier": true,
-          "confidence": 0.76,
-          "outlierReason": "Value below IQR lower bound"
+          "isOutlier": false,
+          "confidence": 0.76
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.261Z",
-        "lastSeen": "2026-02-05T05:33:11.261Z",
+        "firstSeen": "2026-02-05T06:17:52.838Z",
+        "lastSeen": "2026-02-05T06:17:52.838Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -2264,10 +2143,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.07,
+        "frequency": 0.08,
         "consistency": 0.9,
         "age": 0,
-        "spread": 3,
+        "spread": 4,
         "score": 0.8727777777777778,
         "level": "high"
       },
@@ -2315,18 +2194,24 @@
           "confidence": 0.8727777777777778
         },
         {
+          "file": ".github/CICD_SETUP.md",
+          "line": 56,
+          "column": 57,
+          "isOutlier": false,
+          "confidence": 0.7755555555555556
+        },
+        {
           "file": ".github/workflows/pr-checks.yml",
           "line": 96,
           "column": 109,
-          "isOutlier": true,
-          "confidence": 0.76,
-          "outlierReason": "Value below IQR lower bound"
+          "isOutlier": false,
+          "confidence": 0.76
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.261Z",
-        "lastSeen": "2026-02-05T05:33:11.261Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.839Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -2391,40 +2276,26 @@
         }
       },
       "confidence": {
-        "frequency": 0.06,
+        "frequency": 0.02,
         "consistency": 0.9,
         "age": 0,
-        "spread": 2,
-        "score": 0.8533333333333333,
-        "level": "high"
+        "spread": 1,
+        "score": 0.7949999999999999,
+        "level": "medium"
       },
       "locations": [
         {
-          "file": ".github/workflows/gemini-invoke.yml",
-          "line": 207,
-          "column": 163,
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 91,
+          "column": 41,
           "isOutlier": false,
-          "confidence": 0.7366666666666666
-        },
-        {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 53,
-          "column": 68,
-          "isOutlier": false,
-          "confidence": 0.8533333333333333
-        },
-        {
-          "file": ".github/workflows/gemini-triage.yml",
-          "line": 126,
-          "column": 53,
-          "isOutlier": false,
-          "confidence": 0.8533333333333333
+          "confidence": 0.7949999999999999
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.012Z",
-        "lastSeen": "2026-02-04T05:34:32.012Z",
+        "firstSeen": "2026-02-05T06:17:52.840Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -2521,8 +2392,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.261Z",
-        "lastSeen": "2026-02-05T05:33:11.261Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.839Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -2545,10 +2416,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.11,
+        "frequency": 0.06,
         "consistency": 0.9,
         "age": 0,
-        "spread": 2,
+        "spread": 1,
         "score": 0.9190909090909091,
         "level": "high"
       },
@@ -2573,26 +2444,12 @@
           "column": 28,
           "isOutlier": false,
           "confidence": 0.9190909090909091
-        },
-        {
-          "file": ".github/CICD_SETUP.md",
-          "line": 146,
-          "column": 52,
-          "isOutlier": false,
-          "confidence": 0.9075
-        },
-        {
-          "file": ".github/CICD_SETUP.md",
-          "line": 144,
-          "column": 37,
-          "isOutlier": false,
-          "confidence": 0.9075
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.839Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -2615,7 +2472,7 @@
         }
       },
       "confidence": {
-        "frequency": 0.04,
+        "frequency": 0.06,
         "consistency": 0.9,
         "age": 0,
         "spread": 2,
@@ -2625,10 +2482,17 @@
       "locations": [
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 13,
+          "line": 18,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.83875
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 28,
           "column": 18,
           "isOutlier": false,
-          "confidence": 0.865
+          "confidence": 0.83875
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -2640,8 +2504,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.840Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -2664,7 +2528,7 @@
         }
       },
       "confidence": {
-        "frequency": 0.12,
+        "frequency": 0.1,
         "consistency": 0.9,
         "age": 0,
         "spread": 3,
@@ -2688,17 +2552,10 @@
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 163,
+          "line": 143,
           "column": 4,
           "isOutlier": false,
-          "confidence": 0.865
-        },
-        {
-          "file": ".github/CICD_SETUP.md",
-          "line": 165,
-          "column": 4,
-          "isOutlier": false,
-          "confidence": 0.865
+          "confidence": 0.83875
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -2717,8 +2574,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.839Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -2741,52 +2598,66 @@
         }
       },
       "confidence": {
-        "frequency": 0.26,
+        "frequency": 0.3,
         "consistency": 0.9,
         "age": 0,
-        "spread": 4,
+        "spread": 5,
         "score": 0.95,
         "level": "high"
       },
       "locations": [
         {
+          "file": ".github/CICD_SETUP.md",
+          "line": 54,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.8825
+        },
+        {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
-          "line": 17,
+          "line": 15,
           "column": 7,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
-          "line": 26,
+          "line": 32,
           "column": 7,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
-          "line": 35,
+          "line": 41,
           "column": 7,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
-          "line": 47,
+          "line": 50,
           "column": 7,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
-          "line": 56,
+          "line": 62,
           "column": 7,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
-          "line": 65,
+          "line": 71,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 80,
           "column": 7,
           "isOutlier": false,
           "confidence": 0.97
@@ -2814,7 +2685,7 @@
         },
         {
           "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
-          "line": 46,
+          "line": 49,
           "column": 7,
           "isOutlier": false,
           "confidence": 0.97
@@ -2828,23 +2699,24 @@
         },
         {
           "file": ".github/ISSUE_TEMPLATE/question.yml",
-          "line": 28,
+          "line": 30,
           "column": 7,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 23,
+          "line": 33,
           "column": 9,
-          "isOutlier": false,
-          "confidence": 0.97
+          "isOutlier": true,
+          "confidence": 0.7949999999999999,
+          "outlierReason": "Low confidence outlier"
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.840Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -2867,7 +2739,7 @@
         }
       },
       "confidence": {
-        "frequency": 0.24,
+        "frequency": 0.26,
         "consistency": 0.9,
         "age": 0,
         "spread": 3,
@@ -2877,45 +2749,52 @@
       "locations": [
         {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
-          "line": 16,
+          "line": 14,
           "column": 5,
           "isOutlier": false,
-          "confidence": 0.97
+          "confidence": 0.92625
         },
         {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
-          "line": 25,
+          "line": 31,
           "column": 5,
           "isOutlier": false,
-          "confidence": 0.97
+          "confidence": 0.92625
         },
         {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
-          "line": 34,
+          "line": 40,
           "column": 5,
           "isOutlier": false,
-          "confidence": 0.97
+          "confidence": 0.92625
         },
         {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
-          "line": 46,
+          "line": 49,
           "column": 5,
           "isOutlier": false,
-          "confidence": 0.97
+          "confidence": 0.92625
         },
         {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
-          "line": 55,
+          "line": 61,
           "column": 5,
           "isOutlier": false,
-          "confidence": 0.97
+          "confidence": 0.92625
         },
         {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
-          "line": 64,
+          "line": 70,
           "column": 5,
           "isOutlier": false,
-          "confidence": 0.97
+          "confidence": 0.92625
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 79,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.92625
         },
         {
           "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
@@ -2940,7 +2819,7 @@
         },
         {
           "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
-          "line": 45,
+          "line": 48,
           "column": 5,
           "isOutlier": false,
           "confidence": 0.97
@@ -2954,7 +2833,7 @@
         },
         {
           "file": ".github/ISSUE_TEMPLATE/question.yml",
-          "line": 27,
+          "line": 29,
           "column": 5,
           "isOutlier": false,
           "confidence": 0.97
@@ -2962,8 +2841,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.840Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -3017,7 +2896,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 51,
+          "line": 61,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.97
@@ -3039,8 +2918,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.840Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -3080,7 +2959,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 33,
+          "line": 43,
           "column": 1,
           "isOutlier": false,
           "confidence": 0.8825
@@ -3088,8 +2967,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.840Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -3116,22 +2995,22 @@
         "consistency": 0.9,
         "age": 0,
         "spread": 1,
-        "score": 0.95,
-        "level": "high"
+        "score": 0.7949999999999999,
+        "level": "medium"
       },
       "locations": [
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 23,
+          "line": 33,
           "column": 9,
           "isOutlier": false,
-          "confidence": 0.97
+          "confidence": 0.7949999999999999
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.263Z",
-        "lastSeen": "2026-02-05T05:33:11.263Z",
+        "firstSeen": "2026-02-05T06:17:52.840Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -3206,7 +3085,7 @@
       "locations": [
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 33,
+          "line": 43,
           "column": 1,
           "isOutlier": false,
           "confidence": 0.8825
@@ -3214,8 +3093,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.263Z",
-        "lastSeen": "2026-02-05T05:33:11.263Z",
+        "firstSeen": "2026-02-05T06:17:52.840Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -3256,8 +3135,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.839Z",
         "source": "auto-detected",
         "tags": [
           "config",
@@ -3331,6 +3210,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-05T05:33:11.278Z",
-  "checksum": "bca5700d916fbc51"
+  "lastUpdated": "2026-02-05T06:18:08.310Z",
+  "checksum": "885e16b86c40c523"
 }

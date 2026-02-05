@@ -33,8 +33,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.840Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -57,10 +57,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.12,
+        "frequency": 0.1,
         "consistency": 0.9,
         "age": 0,
-        "spread": 4,
+        "spread": 3,
         "score": 0.77,
         "level": "medium"
       },
@@ -99,19 +99,12 @@
           "column": 1,
           "isOutlier": false,
           "confidence": 0.77
-        },
-        {
-          "file": ".github/CICD_SETUP.md",
-          "line": 127,
-          "column": 15,
-          "isOutlier": false,
-          "confidence": 0.77
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.261Z",
-        "lastSeen": "2026-02-05T05:33:11.261Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.839Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -134,10 +127,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.24,
+        "frequency": 0.3,
         "consistency": 0.9,
         "age": 0,
-        "spread": 5,
+        "spread": 6,
         "score": 0.77,
         "level": "medium"
       },
@@ -146,9 +139,8 @@
           "file": ".aionui/FEATURE_ASSISTANT.md",
           "line": 238,
           "column": 16,
-          "isOutlier": true,
-          "confidence": 0.77,
-          "outlierReason": "Value above IQR upper bound"
+          "isOutlier": false,
+          "confidence": 0.77
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
@@ -203,39 +195,56 @@
           "file": ".aionui/FEATURE_CHANNELS_LARK_LARK.md",
           "line": 210,
           "column": 5,
-          "isOutlier": true,
-          "confidence": 0.77,
-          "outlierReason": "Value above IQR upper bound"
+          "isOutlier": false,
+          "confidence": 0.77
         },
         {
           "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
           "line": 235,
           "column": 16,
-          "isOutlier": true,
-          "confidence": 0.77,
-          "outlierReason": "Value above IQR upper bound"
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 133,
+          "column": 18,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 134,
+          "column": 6,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 134,
+          "column": 65,
+          "isOutlier": false,
+          "confidence": 0.77
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 125,
+          "line": 138,
           "column": 11,
-          "isOutlier": true,
-          "confidence": 0.6533333333333333,
-          "outlierReason": "Value below IQR lower bound"
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 126,
+          "line": 139,
           "column": 11,
-          "isOutlier": true,
-          "confidence": 0.6533333333333333,
-          "outlierReason": "Value below IQR lower bound"
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.261Z",
-        "lastSeen": "2026-02-05T05:33:11.261Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.839Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -479,8 +488,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.840Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -521,8 +530,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.839Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -545,10 +554,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.1,
+        "frequency": 0.16,
         "consistency": 0.9,
         "age": 0,
-        "spread": 2,
+        "spread": 3,
         "score": 0.77,
         "level": "medium"
       },
@@ -575,24 +584,47 @@
           "confidence": 0.77
         },
         {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 125,
-          "column": 11,
+          "file": ".github/CICD_SETUP.md",
+          "line": 133,
+          "column": 18,
           "isOutlier": false,
-          "confidence": 0.6533333333333333
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 134,
+          "column": 6,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 134,
+          "column": 65,
+          "isOutlier": false,
+          "confidence": 0.77
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 126,
+          "line": 138,
           "column": 11,
-          "isOutlier": false,
-          "confidence": 0.6533333333333333
+          "isOutlier": true,
+          "confidence": 0.6533333333333333,
+          "outlierReason": "Value below IQR lower bound"
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 139,
+          "column": 11,
+          "isOutlier": true,
+          "confidence": 0.6533333333333333,
+          "outlierReason": "Value below IQR lower bound"
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -877,7 +909,7 @@
       "locations": [
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 50,
+          "line": 60,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.8533333333333333
@@ -899,8 +931,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.263Z",
-        "lastSeen": "2026-02-05T05:33:11.263Z",
+        "firstSeen": "2026-02-05T06:17:52.840Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -933,7 +965,7 @@
       "locations": [
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 50,
+          "line": 60,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.8533333333333333
@@ -955,8 +987,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.263Z",
-        "lastSeen": "2026-02-05T05:33:11.263Z",
+        "firstSeen": "2026-02-05T06:17:52.840Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -997,8 +1029,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.840Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -1039,8 +1071,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.839Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -1081,8 +1113,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.264Z",
-        "lastSeen": "2026-02-05T05:33:11.264Z",
+        "firstSeen": "2026-02-05T06:17:52.841Z",
+        "lastSeen": "2026-02-05T06:17:52.841Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -1135,6 +1167,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-05T05:33:11.281Z",
-  "checksum": "0734f9a982066a91"
+  "lastUpdated": "2026-02-05T06:18:08.313Z",
+  "checksum": "88082ff1cd68b64a"
 }

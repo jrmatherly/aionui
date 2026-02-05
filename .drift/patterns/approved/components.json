@@ -47,8 +47,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.839Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -89,8 +89,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.840Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -493,8 +493,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.261Z",
-        "lastSeen": "2026-02-05T05:33:11.261Z",
+        "firstSeen": "2026-02-05T06:17:52.838Z",
+        "lastSeen": "2026-02-05T06:17:52.838Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -517,7 +517,7 @@
         }
       },
       "confidence": {
-        "frequency": 0.36,
+        "frequency": 0.4,
         "consistency": 0.9,
         "age": 0,
         "spread": 7,
@@ -529,15 +529,17 @@
           "file": ".aionui/FEATURE_ASSISTANT.md",
           "line": 39,
           "column": 3,
-          "isOutlier": false,
-          "confidence": 0.77
+          "isOutlier": true,
+          "confidence": 0.77,
+          "outlierReason": "Value above IQR upper bound"
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
           "line": 40,
           "column": 3,
-          "isOutlier": false,
-          "confidence": 0.77
+          "isOutlier": true,
+          "confidence": 0.77,
+          "outlierReason": "Value above IQR upper bound"
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
@@ -564,22 +566,31 @@
           "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
           "line": 31,
           "column": 3,
-          "isOutlier": false,
-          "confidence": 0.77
+          "isOutlier": true,
+          "confidence": 0.77,
+          "outlierReason": "Value above IQR upper bound"
         },
         {
           "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
           "line": 32,
           "column": 3,
-          "isOutlier": false,
-          "confidence": 0.77
+          "isOutlier": true,
+          "confidence": 0.77,
+          "outlierReason": "Value above IQR upper bound"
         },
         {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
-          "line": 19,
+          "line": 34,
           "column": 11,
           "isOutlier": false,
-          "confidence": 0.7262500000000001
+          "confidence": 0.7
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 87,
+          "column": 61,
+          "isOutlier": false,
+          "confidence": 0.7
         },
         {
           "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
@@ -597,45 +608,52 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 119,
+          "line": 131,
           "column": 97,
           "isOutlier": false,
-          "confidence": 0.6824999999999999
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 111,
-          "column": 42,
-          "isOutlier": false,
-          "confidence": 0.6824999999999999
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 120,
-          "column": 32,
-          "isOutlier": false,
-          "confidence": 0.6824999999999999
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 121,
-          "column": 34,
-          "isOutlier": false,
-          "confidence": 0.6824999999999999
+          "confidence": 0.6922222222222223
         },
         {
           "file": ".github/workflows/build-and-release.yml",
           "line": 123,
-          "column": 45,
+          "column": 42,
           "isOutlier": false,
-          "confidence": 0.6824999999999999
+          "confidence": 0.6922222222222223
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 124,
+          "line": 132,
+          "column": 32,
+          "isOutlier": false,
+          "confidence": 0.6922222222222223
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 133,
+          "column": 34,
+          "isOutlier": false,
+          "confidence": 0.6922222222222223
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 135,
+          "column": 45,
+          "isOutlier": false,
+          "confidence": 0.6922222222222223
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 136,
           "column": 44,
           "isOutlier": false,
-          "confidence": 0.6824999999999999
+          "confidence": 0.6922222222222223
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 137,
+          "column": 39,
+          "isOutlier": false,
+          "confidence": 0.6922222222222223
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -654,8 +672,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.261Z",
-        "lastSeen": "2026-02-05T05:33:11.261Z",
+        "firstSeen": "2026-02-05T06:17:52.838Z",
+        "lastSeen": "2026-02-05T06:17:52.838Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -678,10 +696,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.98,
+        "frequency": 0.96,
         "consistency": 0.9,
         "age": 0,
-        "spread": 7,
+        "spread": 6,
         "score": 0.77,
         "level": "medium"
       },
@@ -1030,13 +1048,6 @@
           "confidence": 0.7395652173913043
         },
         {
-          "file": ".github/CICD_SETUP.md",
-          "line": 178,
-          "column": 38,
-          "isOutlier": false,
-          "confidence": 0.77
-        },
-        {
           "file": ".github/pull_request_template.md",
           "line": 16,
           "column": 51,
@@ -1061,8 +1072,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.261Z",
-        "lastSeen": "2026-02-05T05:33:11.261Z",
+        "firstSeen": "2026-02-05T06:17:52.838Z",
+        "lastSeen": "2026-02-05T06:17:52.838Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -1401,8 +1412,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.261Z",
-        "lastSeen": "2026-02-05T05:33:11.261Z",
+        "firstSeen": "2026-02-05T06:17:52.838Z",
+        "lastSeen": "2026-02-05T06:17:52.838Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -1425,10 +1436,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.25,
+        "frequency": 0.27,
         "consistency": 0.9,
         "age": 0,
-        "spread": 4,
+        "spread": 5,
         "score": 0.77,
         "level": "medium"
       },
@@ -1525,6 +1536,13 @@
           "confidence": 0.77
         },
         {
+          "file": ".github/CICD_SETUP.md",
+          "line": 11,
+          "column": 80,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
           "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
           "line": 18,
           "column": 22,
@@ -1534,8 +1552,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.261Z",
-        "lastSeen": "2026-02-05T05:33:11.261Z",
+        "firstSeen": "2026-02-05T06:17:52.838Z",
+        "lastSeen": "2026-02-05T06:17:52.838Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -1710,8 +1728,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.261Z",
-        "lastSeen": "2026-02-05T05:33:11.261Z",
+        "firstSeen": "2026-02-05T06:17:52.838Z",
+        "lastSeen": "2026-02-05T06:17:52.838Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -1734,11 +1752,11 @@
         }
       },
       "confidence": {
-        "frequency": 0.24,
+        "frequency": 0.32,
         "consistency": 0.9,
         "age": 0,
-        "spread": 3,
-        "score": 0.72,
+        "spread": 4,
+        "score": 0.77,
         "level": "medium"
       },
       "locations": [
@@ -1798,12 +1816,28 @@
           "column": 77,
           "isOutlier": false,
           "confidence": 0.72
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 27,
+          "column": 38,
+          "isOutlier": true,
+          "confidence": 0.77,
+          "outlierReason": "Value above IQR upper bound"
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 40,
+          "column": 116,
+          "isOutlier": true,
+          "confidence": 0.77,
+          "outlierReason": "Value above IQR upper bound"
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.261Z",
-        "lastSeen": "2026-02-05T05:33:11.261Z",
+        "firstSeen": "2026-02-05T06:17:52.838Z",
+        "lastSeen": "2026-02-05T06:17:52.838Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -1865,8 +1899,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.261Z",
-        "lastSeen": "2026-02-05T05:33:11.261Z",
+        "firstSeen": "2026-02-05T06:17:52.838Z",
+        "lastSeen": "2026-02-05T06:17:52.838Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -1893,7 +1927,7 @@
         "consistency": 0.9,
         "age": 0,
         "spread": 2,
-        "score": 0.8825,
+        "score": 0.8922222222222222,
         "level": "high"
       },
       "locations": [
@@ -1906,16 +1940,16 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 97,
+          "line": 109,
           "column": 89,
           "isOutlier": false,
-          "confidence": 0.8825
+          "confidence": 0.8922222222222222
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.839Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -1994,11 +2028,11 @@
         }
       },
       "confidence": {
-        "frequency": 0.14,
+        "frequency": 0.12,
         "consistency": 0.9,
         "age": 0,
-        "spread": 3,
-        "score": 0.95,
+        "spread": 2,
+        "score": 0.8975862068965517,
         "level": "high"
       },
       "locations": [
@@ -2043,20 +2077,12 @@
           "column": 71,
           "isOutlier": false,
           "confidence": 0.8922222222222222
-        },
-        {
-          "file": ".github/CICD_SETUP.md",
-          "line": 72,
-          "column": 4,
-          "isOutlier": true,
-          "confidence": 0.97,
-          "outlierReason": "Value above IQR upper bound"
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.261Z",
-        "lastSeen": "2026-02-05T05:33:11.261Z",
+        "firstSeen": "2026-02-05T06:17:52.838Z",
+        "lastSeen": "2026-02-05T06:17:52.838Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -2126,8 +2152,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.261Z",
-        "lastSeen": "2026-02-05T05:33:11.261Z",
+        "firstSeen": "2026-02-05T06:17:52.838Z",
+        "lastSeen": "2026-02-05T06:17:52.838Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -2175,8 +2201,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.261Z",
-        "lastSeen": "2026-02-05T05:33:11.261Z",
+        "firstSeen": "2026-02-05T06:17:52.838Z",
+        "lastSeen": "2026-02-05T06:17:52.838Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -2224,8 +2250,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.261Z",
-        "lastSeen": "2026-02-05T05:33:11.261Z",
+        "firstSeen": "2026-02-05T06:17:52.838Z",
+        "lastSeen": "2026-02-05T06:17:52.838Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -2248,7 +2274,7 @@
         }
       },
       "confidence": {
-        "frequency": 0.36,
+        "frequency": 0.38,
         "consistency": 0.9,
         "age": 0,
         "spread": 5,
@@ -2261,49 +2287,56 @@
           "line": 8,
           "column": 5,
           "isOutlier": false,
-          "confidence": 0.92625
+          "confidence": 0.8999999999999999
         },
         {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
-          "line": 21,
+          "line": 19,
           "column": 5,
           "isOutlier": false,
-          "confidence": 0.92625
+          "confidence": 0.8999999999999999
         },
         {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
-          "line": 30,
+          "line": 36,
           "column": 5,
           "isOutlier": false,
-          "confidence": 0.92625
+          "confidence": 0.8999999999999999
         },
         {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
-          "line": 39,
+          "line": 45,
           "column": 5,
           "isOutlier": false,
-          "confidence": 0.92625
+          "confidence": 0.8999999999999999
         },
         {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
-          "line": 51,
+          "line": 54,
           "column": 5,
           "isOutlier": false,
-          "confidence": 0.92625
+          "confidence": 0.8999999999999999
         },
         {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
-          "line": 60,
+          "line": 66,
           "column": 5,
           "isOutlier": false,
-          "confidence": 0.92625
+          "confidence": 0.8999999999999999
         },
         {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
-          "line": 69,
+          "line": 75,
           "column": 5,
           "isOutlier": false,
-          "confidence": 0.92625
+          "confidence": 0.8999999999999999
+        },
+        {
+          "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
+          "line": 84,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.8999999999999999
         },
         {
           "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
@@ -2335,7 +2368,7 @@
         },
         {
           "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
-          "line": 50,
+          "line": 53,
           "column": 5,
           "isOutlier": false,
           "confidence": 0.87
@@ -2344,36 +2377,40 @@
           "file": ".github/ISSUE_TEMPLATE/question.yml",
           "line": 8,
           "column": 5,
-          "isOutlier": false,
-          "confidence": 0.97
+          "isOutlier": true,
+          "confidence": 0.97,
+          "outlierReason": "Value above IQR upper bound"
         },
         {
           "file": ".github/ISSUE_TEMPLATE/question.yml",
           "line": 17,
           "column": 5,
-          "isOutlier": false,
-          "confidence": 0.97
+          "isOutlier": true,
+          "confidence": 0.97,
+          "outlierReason": "Value above IQR upper bound"
         },
         {
           "file": ".github/ISSUE_TEMPLATE/question.yml",
-          "line": 32,
+          "line": 34,
           "column": 5,
-          "isOutlier": false,
-          "confidence": 0.97
+          "isOutlier": true,
+          "confidence": 0.97,
+          "outlierReason": "Value above IQR upper bound"
         },
         {
           "file": ".github/ISSUE_TEMPLATE/question.yml",
-          "line": 39,
+          "line": 41,
           "column": 5,
-          "isOutlier": false,
-          "confidence": 0.97
+          "isOutlier": true,
+          "confidence": 0.97,
+          "outlierReason": "Value above IQR upper bound"
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 19,
+          "line": 29,
           "column": 5,
           "isOutlier": false,
-          "confidence": 0.8825
+          "confidence": 0.8922222222222222
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -2385,8 +2422,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.840Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -2468,7 +2505,7 @@
       "locations": [
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 26,
+          "line": 36,
           "column": 44,
           "isOutlier": false,
           "confidence": 0.97
@@ -2476,8 +2513,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.263Z",
-        "lastSeen": "2026-02-05T05:33:11.263Z",
+        "firstSeen": "2026-02-05T06:17:52.840Z",
+        "lastSeen": "2026-02-05T06:17:52.840Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -2560,8 +2597,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-05T06:17:52.839Z",
+        "lastSeen": "2026-02-05T06:17:52.839Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -2705,6 +2742,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-05T05:33:11.272Z",
-  "checksum": "d1466cc93fad0a9d"
+  "lastUpdated": "2026-02-05T06:18:08.300Z",
+  "checksum": "7d04d1f6e5a56d08"
 }
