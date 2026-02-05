@@ -317,7 +317,12 @@ export function registerLoggingRoutes(app: Express): void {
   /* ------------------------------------------------------------------ */
   app.post('/api/admin/logging/test-syslog', ...adminGuard, async (req: Request, res: Response) => {
     try {
-      const { host, port, protocol } = req.body as { host?: string; port?: number; protocol?: string };
+      const { host, port, protocol, verifyCert } = req.body as {
+        host?: string;
+        port?: number;
+        protocol?: string;
+        verifyCert?: boolean;
+      };
 
       if (!host || !port || !protocol) {
         res.status(400).json({ success: false, error: 'host, port, and protocol are required' });
@@ -374,9 +379,11 @@ export function registerLoggingRoutes(app: Express): void {
 
         res.json({ success: true, message: 'TCP syslog test successful (connection established)' });
       } else if (protocol === 'tls') {
-        // TLS test
+        // TLS test — certificate validation enabled by default.
+        // Admins can disable for self-signed/internal CA certs by passing verifyCert: false.
+        const rejectUnauthorized = verifyCert !== false; // default true (secure)
         await new Promise<void>((resolve, reject) => {
-          const socket = tls.connect({ host, port, timeout: 5000, rejectUnauthorized: false }, () => {
+          const socket = tls.connect({ host, port, timeout: 5000, rejectUnauthorized }, () => {
             socket.write(testMessage + '\n', (err) => {
               socket.end();
               if (err) {
