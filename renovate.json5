@@ -83,13 +83,6 @@
       "enabled": false
     },
     {
-      // officeparser — unused in codebase, pending removal decision
-      // v6 has major API change (string → AST output). No source code imports this package.
-      // See: docs/guides/MAJOR_DEPENDENCY_UPGRADE_ANALYSIS.md
-      "matchPackageNames": ["officeparser"],
-      "enabled": false
-    },
-    {
       // Major Electron upgrades blocked — require manual decision
       // Electron 37 → 40 is a major jump; upgrade when ready
       "matchPackageNames": ["electron"],
