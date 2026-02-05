@@ -158,6 +158,70 @@ deploy/                   # Deployment configurations
 └── docker/               # Docker containerization
 ```
 
+## Branding Customization
+
+AionUI supports full white-label branding via the `AIONUI_BRAND_NAME` environment variable.
+
+### Build-Time vs Runtime Branding
+
+Branding happens at two levels:
+
+| Layer | Method | When Applied | Examples |
+|-------|--------|--------------|----------|
+| HTML `<title>` | BrandingInjectorPlugin | Build time | Browser tab title |
+| React defaults | DefinePlugin | Build time | Initial component renders |
+| Server messages | `getBrandName()` | Runtime | Telegram/Lark bot messages |
+| HTTP headers | `getBrandName()` | Runtime | User-Agent strings |
+
+**Important**: Build-time branding eliminates the "flash of default brand" that occurs with runtime-only configuration.
+
+### Building with Custom Brand
+
+```bash
+# Option 1: mise task with --brand flag
+mise run build:branded --brand "Enterprise AI"
+
+# Option 2: Set env var before build
+export AIONUI_BRAND_NAME="Enterprise AI"
+mise run build
+
+# Option 3: Docker with --brand flag
+mise run docker:build --brand "Enterprise AI" --tag myapp:latest
+
+# Option 4: docker-compose (set in .env)
+echo 'AIONUI_BRAND_NAME="Enterprise AI"' >> deploy/docker/.env
+docker-compose build
+```
+
+### Key Branding Files
+
+| File | Purpose |
+|------|---------|
+| `src/common/branding.ts` | Runtime functions (`getBrandName()`, `getBrandingConfig()`) |
+| `src/renderer/hooks/useBranding.ts` | React hook for UI components |
+| `config/webpack/webpack.plugins.ts` | Build-time injection (BrandingInjectorPlugin, DefinePlugin) |
+| `deploy/docker/Dockerfile` | `AIONUI_BRAND_NAME` build arg |
+| `mise.toml` | `build:branded` and `docker:build --brand` tasks |
+
+### Adding Branding to New Components
+
+```typescript
+// In UI components (renderer)
+import { useBranding } from '@/renderer/hooks/useBranding';
+
+const MyComponent = () => {
+  const branding = useBranding();
+  return <h1>{branding.brandName}</h1>;
+};
+
+// In server-side code (main process)
+import { getBrandName } from '@/common/branding';
+
+const message = `Welcome to ${getBrandName()}`;
+```
+
+See `.serena/memories/branding-and-release-configuration.md` for complete documentation.
+
 ## Architecture Patterns
 
 ### Multi-Process Communication

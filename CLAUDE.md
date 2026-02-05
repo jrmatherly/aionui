@@ -188,6 +188,43 @@ npm run changelog:preview      # Preview unreleased (without mise)
 - Code comments: English
 - JSDoc for function documentation
 
+## Branding Customization
+
+AionUI supports full white-label branding via the `AIONUI_BRAND_NAME` environment variable.
+
+### Build-Time vs Runtime
+
+| Layer | Method | When Applied |
+|-------|--------|--------------|
+| HTML `<title>` | BrandingInjectorPlugin | Build time |
+| React components | DefinePlugin | Build time |
+| useBranding default | DefinePlugin | Build time |
+| Server messages | `getBrandName()` | Runtime |
+| HTTP headers | `getBrandName()` | Runtime |
+
+### Usage
+
+```bash
+# Option 1: mise task with --brand flag
+mise run build:branded --brand "Enterprise AI"
+
+# Option 2: Set env var before build
+export AIONUI_BRAND_NAME="Enterprise AI"
+mise run build
+
+# Option 3: Docker with --brand flag
+mise run docker:build --brand "Enterprise AI" --tag myapp:latest
+```
+
+### Key Files
+
+- `src/common/branding.ts` - Runtime branding functions (`getBrandName()`)
+- `src/renderer/hooks/useBranding.ts` - React hook for UI components
+- `config/webpack/webpack.plugins.ts` - Build-time injection (BrandingInjectorPlugin)
+- `deploy/docker/Dockerfile` - AIONUI_BRAND_NAME build arg
+
+See `.serena/memories/branding-and-release-configuration.md` for full details.
+
 ## Git Conventions
 
 ### Commit Messages

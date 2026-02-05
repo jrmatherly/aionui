@@ -183,3 +183,28 @@ Do NOT enable `cache: { type: 'filesystem' }` on the renderer webpack config. Un
 ### Transport modules need require.resolve()
 
 Pino transports run in worker threads via `thread-stream`. Workers use `require(target)` which can't resolve short module names from inside asar/webpack contexts. Always use `require.resolve('pino-roll')` etc. to convert to absolute paths.
+
+## Branding
+
+### Build-time vs runtime branding
+
+Client-side branding (HTML title, React defaults) must be set at **build time** via `AIONUI_BRAND_NAME` env var. Setting it only at runtime causes a "flash of default brand" before React hydrates.
+
+**Build-time** (webpack DefinePlugin + BrandingInjectorPlugin):
+- HTML `<title>` tag
+- `useBranding()` hook default value
+- React component initial renders
+
+**Runtime** (`getBrandName()` reads env):
+- Telegram/Lark bot messages
+- HTTP User-Agent headers
+- Server startup banner
+
+**Fix:** Always set `AIONUI_BRAND_NAME` before building:
+```bash
+mise run build:branded --brand "Enterprise AI"
+# or
+export AIONUI_BRAND_NAME="Enterprise AI" && npm run build
+```
+
+See `.serena/memories/branding-and-release-configuration.md` for full details.
