@@ -1,0 +1,40 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="ll-body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E8E8E8"/>
+      <stop offset="100%" stop-color="#C0C0C0"/>
+    </linearGradient>
+    <linearGradient id="ll-nose" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#D0D0D0"/>
+      <stop offset="100%" stop-color="#B8B8B8"/>
+    </linearGradient>
+    <clipPath id="ll-circle">
+      <circle cx="100" cy="100" r="90"/>
+    </clipPath>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="90" fill="#7EC8E3"/>
+  <g clip-path="url(#ll-circle)">
+    <!-- Train body - main shell -->
+    <path d="M40,130 L40,95 Q40,70 60,60 L130,55 Q165,53 180,65 L185,70 Q190,75 190,85 L190,130 Z" fill="url(#ll-body)"/>
+    <!-- Roof highlight -->
+    <path d="M45,95 Q45,72 65,63 L128,58 Q160,56 175,66 L178,69 Q50,72 45,95Z" fill="#F0F0F0" opacity="0.6"/>
+    <!-- Blue stripe -->
+    <rect x="38" y="105" width="155" height="12" rx="2" fill="#1A3C7A"/>
+    <!-- Undercarriage -->
+    <rect x="38" y="117" width="155" height="18" rx="3" fill="#3A3A3A"/>
+    <!-- Windshield -->
+    <path d="M55,70 Q55,65 62,63 L90,60 Q98,59 98,66 L98,100 Q98,104 94,104 L60,104 Q55,104 55,99 Z" fill="#1A5276"/>
+    <!-- Windshield reflection -->
+    <path d="M60,67 L85,64 Q90,63 90,68 L90,80 L60,83 Z" fill="#2C5F8A" opacity="0.5"/>
+    <!-- Nose tip -->
+    <path d="M40,95 L40,120 Q30,120 28,115 L25,108 Q23,103 25,98 L28,93 Q30,88 40,90 Z" fill="#D0C8B0"/>
+    <!-- Front bumper details -->
+    <rect x="30" y="122" width="8" height="5" rx="1" fill="#2D2D2D"/>
+    <rect x="30" y="130" width="8" height="4" rx="1" fill="#2D2D2D"/>
+    <!-- Nose cone point -->
+    <path d="M40,92 Q32,95 28,102 Q24,108 28,115 Q32,120 40,122" fill="#B8B0A0" opacity="0.5"/>
+    <!-- Light reflection on top -->
+    <path d="M70,58 Q100,52 145,55 Q160,56 170,60" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.4"/>
+  </g>
+</svg>

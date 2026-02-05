@@ -11,10 +11,16 @@
  */
 
 // Provider Logo imports
+import AgentGatewayLogo from '@/renderer/assets/logos/agentgateway.svg';
 import AnthropicLogo from '@/renderer/assets/logos/anthropic.svg';
+import AzureLogo from '@/renderer/assets/logos/azure.svg';
+import EnvoyLogo from '@/renderer/assets/logos/envoy.svg';
 import GeminiLogo from '@/renderer/assets/logos/gemini.svg';
+import KongLogo from '@/renderer/assets/logos/kong.svg';
+import LiteLLMLogo from '@/renderer/assets/logos/litellm.svg';
 import OpenAILogo from '@/renderer/assets/logos/openai.svg';
 import OpenRouterLogo from '@/renderer/assets/logos/openrouter.svg';
+import PortkeyLogo from '@/renderer/assets/logos/portkey.svg';
 import XaiLogo from '@/renderer/assets/logos/xai.svg';
 
 // Hidden provider logos (kept for reference, uncomment to re-enable)
@@ -76,7 +82,7 @@ export const MODEL_PLATFORMS: PlatformConfig[] = [
   {
     name: 'Azure AI Foundry',
     value: 'AzureAIFoundry',
-    logo: null,
+    logo: AzureLogo,
     platform: 'custom',
     requiresBaseUrl: true,
     baseUrlPlaceholder: 'https://{resource}.services.ai.azure.com/api/projects/{project}/openai/v1',
@@ -85,7 +91,7 @@ export const MODEL_PLATFORMS: PlatformConfig[] = [
   {
     name: 'Azure OpenAI',
     value: 'AzureOpenAI',
-    logo: null,
+    logo: AzureLogo,
     platform: 'custom',
     requiresBaseUrl: true,
     baseUrlPlaceholder: 'https://{resource}.openai.azure.com/openai/v1',
@@ -101,7 +107,7 @@ export const MODEL_PLATFORMS: PlatformConfig[] = [
   {
     name: 'AgentGateway',
     value: 'AgentGateway',
-    logo: null,
+    logo: AgentGatewayLogo,
     platform: 'custom',
     requiresBaseUrl: true,
     baseUrlPlaceholder: 'http://gateway-host:3000/v1',
@@ -110,7 +116,7 @@ export const MODEL_PLATFORMS: PlatformConfig[] = [
   {
     name: 'Envoy AI Gateway',
     value: 'EnvoyAI',
-    logo: null,
+    logo: EnvoyLogo,
     platform: 'custom',
     requiresBaseUrl: true,
     baseUrlPlaceholder: 'http://envoy-host:10000/v1',
@@ -119,7 +125,7 @@ export const MODEL_PLATFORMS: PlatformConfig[] = [
   {
     name: 'Kong AI Gateway',
     value: 'KongAI',
-    logo: null,
+    logo: KongLogo,
     platform: 'custom',
     requiresBaseUrl: true,
     baseUrlPlaceholder: 'http://kong-host:8000/ai',
@@ -128,7 +134,7 @@ export const MODEL_PLATFORMS: PlatformConfig[] = [
   {
     name: 'LiteLLM',
     value: 'LiteLLM',
-    logo: null,
+    logo: LiteLLMLogo,
     platform: 'custom',
     baseUrl: 'http://localhost:4000/v1',
     baseUrlPlaceholder: 'http://your-litellm-host:4000/v1',
@@ -137,7 +143,7 @@ export const MODEL_PLATFORMS: PlatformConfig[] = [
   {
     name: 'Portkey',
     value: 'Portkey',
-    logo: null,
+    logo: PortkeyLogo,
     platform: 'custom',
     baseUrl: 'https://api.portkey.ai/v1',
     defaultHeaders: { 'x-portkey-api-key': '', 'x-portkey-provider': '' },
