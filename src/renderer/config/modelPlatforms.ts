@@ -5,10 +5,8 @@
  */
 
 /**
- * 模型平台配置模块
  * Model Platform Configuration Module
  *
- * 集中管理所有模型平台的配置信息，便于扩展和维护
  * Centralized management of all model platform configurations for extensibility and maintainability
  */
 
@@ -67,7 +65,6 @@ export interface PlatformConfig {
 }
 
 /**
- * 模型平台选项列表
  * Model Platform options list
  *
  * Order: Providers alphabetically, then Custom last.
@@ -168,10 +165,9 @@ export const MODEL_PLATFORMS: PlatformConfig[] = [
   // { name: 'Zhipu', value: 'Zhipu', logo: ZhipuLogo, platform: 'custom', baseUrl: 'https://open.bigmodel.cn/api/paas/v4' },
 ];
 
-// ============ 工具函数 / Utility Functions ============
+// ============ Utility Functions ============
 
 /**
- * 根据 value 获取平台配置
  * Get platform config by value
  */
 export const getPlatformByValue = (value: string): PlatformConfig | undefined => {
@@ -179,7 +175,6 @@ export const getPlatformByValue = (value: string): PlatformConfig | undefined =>
 };
 
 /**
- * 获取所有预设供应商（有 baseUrl 的）
  * Get all preset providers (with baseUrl)
  */
 export const getPresetProviders = (): PlatformConfig[] => {
@@ -187,7 +182,6 @@ export const getPresetProviders = (): PlatformConfig[] => {
 };
 
 /**
- * 获取官方 Gemini 平台
  * Get official Gemini platforms
  */
 export const getGeminiPlatforms = (): PlatformConfig[] => {
@@ -195,7 +189,6 @@ export const getGeminiPlatforms = (): PlatformConfig[] => {
 };
 
 /**
- * 检查平台是否为 Gemini 类型
  * Check if platform is Gemini type
  */
 export const isGeminiPlatform = (platform: PlatformType): boolean => {
@@ -203,7 +196,6 @@ export const isGeminiPlatform = (platform: PlatformType): boolean => {
 };
 
 /**
- * 检查是否为自定义选项（无预设 baseUrl）
  * Check if it's custom option (no preset baseUrl)
  */
 export const isCustomOption = (value: string): boolean => {
@@ -212,7 +204,6 @@ export const isCustomOption = (value: string): boolean => {
 };
 
 /**
- * 根据名称搜索平台（不区分大小写）
  * Search platforms by name (case-insensitive)
  */
 export const searchPlatformsByName = (keyword: string): PlatformConfig[] => {
