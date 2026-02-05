@@ -37,7 +37,7 @@ const GlobalModels: React.FC = () => {
   const [editingModel, setEditingModel] = useState<GlobalModel | null>(null);
   const [message, messageContext] = Message.useMessage();
 
-  // Fetch models
+  // Fetch models - no dependencies to prevent infinite loop
   const fetchModels = useCallback(async () => {
     try {
       setLoading(true);
@@ -48,15 +48,15 @@ const GlobalModels: React.FC = () => {
       if (data.success) {
         setModels(data.models);
       } else {
-        message.error(data.error || 'Failed to fetch models');
+        Message.error(data.error || 'Failed to fetch models');
       }
     } catch (error) {
       console.error('Failed to fetch global models:', error);
-      message.error('Failed to fetch global models');
+      Message.error('Failed to fetch global models');
     } finally {
       setLoading(false);
     }
-  }, [message]);
+  }, []);
 
   useEffect(() => {
     void fetchModels();

@@ -150,21 +150,41 @@ body[arco-theme='dark'] .arco-tag-checked.arco-tag-gray {
   background: linear-gradient(90deg, #ffdddb 0%, #fff3f0 100%) !important;
 }
 
-/* Dark mode */
+/* Dark mode - solid backgrounds with proper contrast */
 body[arco-theme='dark'] .arco-message-success {
-  background: linear-gradient(270deg, rgba(249, 255, 242, 0.3) 0%, rgba(210, 255, 217, 0.3) 100%) !important;
+  background: linear-gradient(270deg, #1a3a1a 0%, #1f4a25 100%) !important;
+  color: #b7f5b7 !important;
+}
+
+body[arco-theme='dark'] .arco-message-success .arco-message-content {
+  color: #b7f5b7 !important;
 }
 
 body[arco-theme='dark'] .arco-message-warning {
-  background: linear-gradient(90deg, rgba(255, 243, 220, 0.3) 0%, rgba(255, 248, 222, 0.3) 100%) !important;
+  background: linear-gradient(90deg, #3d3520 0%, #4a4025 100%) !important;
+  color: #ffd699 !important;
+}
+
+body[arco-theme='dark'] .arco-message-warning .arco-message-content {
+  color: #ffd699 !important;
 }
 
 body[arco-theme='dark'] .arco-message-info {
-  background: linear-gradient(90deg, rgba(232, 243, 255, 0.3) 0%, rgba(248, 248, 255, 0.3) 49.52%) !important;
+  background: linear-gradient(90deg, #1a2a3d 0%, #202d40 100%) !important;
+  color: #99ccff !important;
+}
+
+body[arco-theme='dark'] .arco-message-info .arco-message-content {
+  color: #99ccff !important;
 }
 
 body[arco-theme='dark'] .arco-message-error {
-  background: linear-gradient(90deg, rgba(255, 221, 219, 0.3) 0%, rgba(255, 243, 240, 0.3) 100%) !important;
+  background: linear-gradient(90deg, #3d1a1a 0%, #4a2020 100%) !important;
+  color: #ffb3b3 !important;
+}
+
+body[arco-theme='dark'] .arco-message-error .arco-message-content {
+  color: #ffb3b3 !important;
 }
 
 /* Workspace tree selection styles - use text color instead of background */
