@@ -87,8 +87,9 @@ module.exports = {
     executableName: 'AionUi',
     // Disable macOS code signing for local development (no Apple Developer cert)
     // Set APPLE_CODESIGN=1 to enable signing when credentials are available
-    osxSign: process.env.APPLE_CODESIGN === '1' ? {} : null,
-    osxNotarize: null, // Notarization requires Apple Developer account
+    ...(process.env.APPLE_CODESIGN === '1' ? { osxSign: {} } : {}),
+    // Notarization requires Apple Developer account - only enable explicitly
+    ...(process.env.APPLE_NOTARIZE === '1' ? { osxNotarize: {} } : {}),
     out: path.resolve(__dirname, 'out'),
     tmpdir: path.resolve(__dirname, '../AionUi-tmp'),
     extraResource: [path.resolve(__dirname, 'public')],
