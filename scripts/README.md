@@ -178,6 +178,7 @@ Simple wrapper to start Electron Forge:
 **One-time migration script** — i18n removal was completed in v1.8.2.
 
 This script was used to:
+
 - Replace `t('key')` calls with hardcoded English strings
 - Remove `useTranslation` hooks and imports
 - Handle interpolation patterns

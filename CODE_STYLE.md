@@ -50,6 +50,12 @@ The project has Git hooks configured to ensure code quality:
 1. **pre-commit**: Automatically runs lint-staged before commit
 2. **commit-msg**: Validates commit message format
 
+### Language
+
+- **All user-facing strings**: Hardcoded English only (i18n was removed in v1.8.2)
+- **Code comments**: English
+- **Commit messages**: English
+
 ### Commit Message Format
 
 Commit messages must follow this format:

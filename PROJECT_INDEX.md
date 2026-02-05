@@ -1,6 +1,6 @@
 # Project Index: AionUI
 
-> v1.8.1 | Electron + React + TypeScript | Apache-2.0
+> v1.8.2 | Electron + React + TypeScript | Apache-2.0 | English only
 
 **Purpose**: Transform CLI AI agents (Claude, Gemini, Codex) into a modern chat interface.
 

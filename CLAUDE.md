@@ -4,9 +4,10 @@
 
 **AionUi** is a unified AI agent graphical interface that transforms command-line AI agents into a modern, efficient chat interface. It supports multiple CLI AI tools including Gemini CLI, Claude Code, CodeX, Qwen Code, and more.
 
-- **Version**: 1.8.1
+- **Version**: 1.8.2
 - **License**: Apache-2.0
-- **Platform**: Cross-platform (macOS, Windows, Linux)
+- **Platform**: Cross-platform (macOS, Windows, Linux, Docker)
+- **Language**: English only (i18n removed in v1.8.2)
 
 ## Tech Stack
 
@@ -20,8 +21,9 @@
 ### Build Tools
 
 - **Webpack 6.x** - Module bundler (via @electron-forge/plugin-webpack)
-- **Electron Forge 7.8.x** - Build tooling
-- **Electron Builder 26.x** - Application packaging
+- **Electron Forge 7.8.x** - Build tooling (development)
+- **Electron Builder 26.x** - Application packaging (production)
+- **mise-en-place** - Tool version management (Node.js 22, npm 11)
 
 ### UI & Styling
 
@@ -39,10 +41,11 @@
 ### Authentication
 
 - **openid-client 5.7.1** - OIDC/OAuth2 client for SSO integration
+- **better-auth** - JWT token management
 
 ### Data & Storage
 
-- **Better SQLite3** - Local database
+- **Better SQLite3** - Local database (schema v15)
 - **Zod** - Data validation
 
 ## Project Structure
@@ -55,28 +58,37 @@ src/
 │   ├── pages/               # Page components
 │   │   ├── conversation/    # Chat interface (main feature)
 │   │   ├── settings/        # Settings management
+│   │   ├── admin/           # Admin pages (UserManagement, GroupMappings)
 │   │   ├── cron/            # Scheduled tasks
 │   │   └── login/           # Authentication
 │   ├── components/          # Reusable UI components
 │   ├── hooks/               # React hooks
 │   ├── context/             # Global state (React Context)
+│   ├── config/              # Model platforms, capabilities
 │   ├── services/            # Client-side services
-│   ├── i18n/                # Internationalization
+│   ├── assets/              # Static assets (logos, images)
 │   └── utils/               # Utility functions
 ├── process/                 # Main process services
-│   ├── database/            # SQLite operations
-│   ├── bridge/              # IPC communication
-│   └── services/            # Backend services
-│       ├── mcpServices/     # MCP protocol (multi-agent)
-│       └── cron/            # Task scheduling
+│   ├── database/            # SQLite operations, schema, migrations
+│   ├── bridge/              # IPC communication (24+ bridges)
+│   ├── services/            # Backend services
+│   │   ├── mcpServices/     # MCP protocol (multi-agent)
+│   │   └── cron/            # Task scheduling
+│   └── task/                # Agent task managers
 ├── webserver/               # Web server for remote access
 │   ├── routes/              # HTTP routes
 │   ├── websocket/           # Real-time communication
-│   └── auth/                # Authentication
+│   └── auth/                # Authentication (OIDC, JWT, RBAC)
 ├── worker/                  # Background task workers
-├── channels/                # Agent communication system
+├── channels/                # Agent communication system (Telegram, Lark)
 ├── common/                  # Shared utilities & types
+│   ├── adapters/            # API protocol converters
+│   ├── constants/           # Provider definitions
+│   └── presets/             # Assistant presets
 └── agent/                   # AI agent implementations
+    ├── acp/                 # Claude Code agent
+    ├── codex/               # OpenAI Codex agent
+    └── gemini/              # Google Gemini agent
 
 deploy/                      # Deployment configurations
 └── docker/                  # Docker containerization
@@ -88,25 +100,35 @@ deploy/                      # Deployment configurations
 ## Development Commands
 
 ```bash
-# Development
-npm start              # Start dev environment
-npm run webui          # Start WebUI server
+# Development (with mise - recommended)
+mise run dev               # Start dev environment
+mise run webui             # Start WebUI server
+mise run info              # Print environment info
+
+# Development (with npm)
+npm start                  # Start dev environment
+npm run webui              # Start WebUI server
 
 # Code Quality
-npm run lint           # Run ESLint
-npm run lint:fix       # Auto-fix lint issues
-npm run format         # Format with Prettier
+npm run lint               # Run ESLint
+npm run lint:fix           # Auto-fix lint issues
+npm run format             # Format with Prettier
 
 # Testing
-npm test               # Run all tests
-npm run test:watch     # Watch mode
-npm run test:coverage  # Coverage report
+npm test                   # Run all tests
+npm run test:watch         # Watch mode
+npm run test:coverage      # Coverage report
 
 # Building
-npm run build          # Full build (macOS arm64 + x64)
-npm run dist:mac       # macOS build
-npm run dist:win       # Windows build
-npm run dist:linux     # Linux build
+npm run build              # Full build (macOS arm64 + x64)
+npm run dist:mac           # macOS build
+npm run dist:win           # Windows build
+npm run dist:linux         # Linux build
+
+# Docker
+mise run docker:build      # Build Docker image
+mise run docker:up         # Start container
+mise run docker:down       # Stop container
 ```
 
 ## Code Conventions
@@ -136,10 +158,12 @@ npm run dist:linux     # Linux build
 - UnoCSS atomic classes preferred
 - CSS modules for component-specific styles: `*.module.css`
 - Use Arco Design semantic colors
+- Use CSS variables for theming: `var(--bg-1)`, `var(--text-primary)`
 
-### Comments
+### Comments & Language
 
-- English for code comments
+- All user-facing strings: hardcoded English (no i18n)
+- Code comments: English
 - JSDoc for function documentation
 
 ## Git Conventions
@@ -149,6 +173,8 @@ npm run dist:linux     # Linux build
 - **Language**: English
 - **Format**: `<type>(<scope>): <subject>`
 - **Types**: feat, fix, refactor, chore, docs, test, style, perf
+
+**Note**: Project has a git hook that only accepts these commit types.
 
 Examples:
 
@@ -170,12 +196,12 @@ Do not add `🤖 Generated with Claude` or similar signatures to commits.
 - **Local Admin Account**: Fallback authentication with bcrypt password hashing
 - **RBAC**: Role-based access control with three tiers (admin, user, viewer)
 - **Data Isolation**: Conversation and session data scoped by user
-- **Token Management**: JWT access tokens with refresh token rotation and blacklist support
+- **Token Management**: JWT access tokens (15min) with refresh token rotation (7d) and blacklist support
 
 ### Admin Features
 
-- **User Management**: Admin page for user CRUD and role assignment (`src/renderer/pages/settings/UserManagement.tsx`)
-- **Group Mappings**: Map OIDC groups to application roles (`src/renderer/pages/settings/GroupMappings.tsx`)
+- **User Management**: Admin page for user CRUD and role assignment (`src/renderer/pages/admin/UserManagement.tsx`)
+- **Group Mappings**: Map OIDC groups to application roles (`src/renderer/pages/admin/GroupMappings.tsx`)
 - **Profile Page**: User profile with password change capability (`src/renderer/pages/settings/ProfilePage.tsx`)
 
 ### Middleware Stack
@@ -207,14 +233,16 @@ Do not add `🤖 Generated with Claude` or similar signatures to commits.
 
 ### IPC Communication
 
-- Secure contextBridge isolation
+- Secure contextBridge isolation via `@office-ai/platform` bridge system
+- Never use raw `ipcMain`/`ipcRenderer` — always use bridge pattern
 - Type-safe message system in `src/renderer/messages/`
 
 ### WebUI Server
 
 - Express + WebSocket
-- JWT authentication
+- JWT authentication with refresh token rotation
 - Supports remote network access
+- Works in Docker with headless Electron (Xvfb)
 
 ### Cron System
 
@@ -231,50 +259,48 @@ Do not add `🤖 Generated with Claude` or similar signatures to commits.
 - Iflow
 - Custom agents via MCP protocol
 
-## Internationalization
+## LLM Gateway Support
 
-Supported languages: English (en-US), Chinese Simplified (zh-CN), Chinese Traditional (zh-TW), Japanese (ja-JP), Korean (ko-KR)
+Supports routing through proxy providers:
 
-Translation files: `src/renderer/i18n/locales/*.json`
+- LiteLLM
+- Azure OpenAI / Azure AI Foundry
+- Portkey
+- Kong AI Gateway
+- AgentGateway
+- Envoy AI Gateway
 
 ---
 
-## Skills Index
-
-Detailed rules and guidelines are organized into Skills for better modularity:
-
-| Skill    | Purpose                                                              | Triggers                                               |
-| -------- | -------------------------------------------------------------------- | ------------------------------------------------------ |
-| **i18n** | Key naming, sync checking, hardcoded detection, translation workflow | Adding user-facing text, creating components with text |
-
-> Skills are located in `.claude/skills/` and loaded automatically when relevant.
-
 ## Key Configuration Files
 
-| File               | Purpose                     |
-| ------------------ | --------------------------- |
-| `tsconfig.json`    | TypeScript compiler options |
-| `forge.config.ts`  | Electron Forge build config |
-| `uno.config.ts`    | UnoCSS styling config       |
-| `.eslintrc.json`   | Linting rules               |
-| `.prettierrc.json` | Code formatting             |
-| `jest.config.js`   | Test configuration          |
+| File                   | Purpose                             |
+| ---------------------- | ----------------------------------- |
+| `tsconfig.json`        | TypeScript compiler options         |
+| `forge.config.ts`      | Electron Forge build config         |
+| `electron-builder.yml` | Electron Builder packaging config   |
+| `uno.config.ts`        | UnoCSS styling config               |
+| `eslint.config.mjs`    | Linting rules (flat config)         |
+| `.prettierrc.json`     | Code formatting                     |
+| `jest.config.js`       | Test configuration                  |
+| `mise.toml`            | Tool versions, tasks, env vars      |
+| `mise.lock`            | Pinned tool versions with checksums |
 
 ## Testing
 
 - **Framework**: Jest + ts-jest
 - **Structure**: `tests/unit/`, `tests/integration/`, `tests/contract/`
-- Run with `npm test`
+- Run with `npm test` or `mise run test`
 
 ## Native Modules
 
 The following require special handling during build:
 
 - `better-sqlite3` - Database
-- `node-pty` - Terminal emulation
-- `tree-sitter` - Code parsing
+- `node-pty` - Terminal emulation (uses prebuilt binaries)
+- `web-tree-sitter` - Code parsing (WASM)
 
-These are configured as externals in Webpack.
+These are configured as externals in Webpack and unpacked from asar.
 
 ## AI Context Tools
 
@@ -305,8 +331,8 @@ Use these exact parameter names when calling Serena tools to avoid validation er
 Key commands:
 
 ```bash
-drift status             # Pattern health (84/100, 379+ approved)
-drift memory status      # Cortex memory health (30+ memories)
+drift status             # Pattern health (85/100, 390+ approved)
+drift memory status      # Cortex memory health (51+ memories)
 drift memory why "area"  # Get context before working on a feature area
 drift env secrets        # Audit sensitive env var access
 drift boundaries check   # Verify data access boundaries

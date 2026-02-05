@@ -1,20 +1,21 @@
 {
   "name": "AionUI",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "description": "Transform CLI AI agents into a modern chat interface",
   "license": "Apache-2.0",
-  "generated": "2026-02-02",
+  "generated": "2026-02-05",
   "stats": {
     "typescript_files": 465,
     "test_files": 4,
-    "languages": ["en-US", "zh-CN", "zh-TW", "ja-JP", "ko-KR"]
+    "language": "en-US"
   },
   "tech_stack": {
     "framework": ["Electron 37", "React 19", "TypeScript 5.8"],
     "ui": ["Arco Design", "UnoCSS", "Monaco Editor"],
     "database": ["better-sqlite3", "Zod"],
     "ai_sdks": ["@anthropic-ai/sdk", "@google/genai", "openai"],
-    "server": ["Express 5", "ws"]
+    "server": ["Express 5", "ws"],
+    "auth": ["openid-client", "better-auth", "jsonwebtoken"]
   },
   "entry_points": {
     "main": "src/index.ts",
@@ -54,23 +55,27 @@
       },
       "database": {
         "path": "src/process/database/",
-        "purpose": "SQLite operations, schema, migrations"
+        "purpose": "SQLite operations, schema v15, migrations"
       },
       "websocket": {
         "path": "src/webserver/websocket/WebSocketManager.ts",
         "class": "WebSocketManager",
         "purpose": "Real-time communication"
+      },
+      "auth": {
+        "path": "src/webserver/auth/",
+        "purpose": "OIDC/SSO, JWT tokens, RBAC"
       }
     },
     "channels": {
       "path": "src/channels/",
       "core": ["ChannelManager", "SessionManager"],
       "gateway": ["ActionExecutor", "PluginManager"],
-      "plugins": ["TelegramPlugin"]
+      "plugins": ["TelegramPlugin", "LarkPlugin"]
     },
     "renderer": {
       "path": "src/renderer/",
-      "pages": ["conversation", "settings", "cron", "login"],
+      "pages": ["conversation", "settings", "admin", "cron", "login"],
       "context": ["AuthContext", "ConversationContext", "ThemeContext", "LayoutContext"]
     }
   },
@@ -78,6 +83,7 @@
     "types": "src/common/chatLib.ts",
     "ipc": "src/common/ipcBridge.ts",
     "constants": "src/common/constants.ts",
+    "providers": "src/common/constants/providers.ts",
     "database_schema": "src/process/database/schema.ts"
   },
   "path_aliases": {
@@ -87,20 +93,22 @@
     "@worker/*": "src/worker/*"
   },
   "scripts": {
-    "dev": "npm start",
+    "dev": "mise run dev",
     "webui": "npm run webui",
-    "test": "npm test",
-    "build": "npm run build",
-    "lint": "npm run lint"
+    "test": "mise run test",
+    "build": "mise run build",
+    "lint": "mise run lint",
+    "docker:build": "mise run docker:build",
+    "docker:up": "mise run docker:up"
   },
   "directories": {
     "src": {
       "adapter": "Platform adapters",
       "agent": "AI agent implementations (acp, codex, gemini)",
-      "channels": "External messaging (Telegram)",
-      "common": "Shared utilities and types",
+      "channels": "External messaging (Telegram, Lark)",
+      "common": "Shared utilities, types, adapters, presets",
       "process": "Main process services (database, bridge, cron, mcp)",
-      "renderer": "React UI (pages, components, hooks, context)",
+      "renderer": "React UI (pages, components, hooks, context, assets)",
       "webserver": "WebUI server (auth, routes, websocket)",
       "worker": "Background AI workers"
     },
