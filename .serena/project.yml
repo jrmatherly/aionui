@@ -136,7 +136,7 @@ initial_prompt: |
   ## Key Conventions
   1. **UI Components:** Use Arco Design components (Button, Modal, Form, etc.)
   2. **IPC Communication:** Follow existing patterns in src/preload.ts
-  3. **Internationalization:** ALL user-facing strings use i18n keys via t() function
+  3. **Strings:** All user-facing strings are hardcoded English (i18n removed in v1.8.2)
   4. **Native Modules:** better-sqlite3, node-pty, tree-sitter are webpack externals
   5. **Path Aliases:** Use @/* (src root), @renderer/*, @process/*, @worker/*
   6. **Error Handling:** Use structured error types, never silent failures
@@ -146,13 +146,12 @@ initial_prompt: |
   - Never use direct require() for native modules in renderer — must be externals
   - Avoid circular imports between src/process/initStorage.ts and src/process/utils.ts
   - Docker builds require asar unpacking for native modules (see scripts/afterPack.js)
-  - All strings rendered to users MUST use i18n keys (no hardcoded English)
+  - i18n was removed in v1.8.2 — all strings are hardcoded English, do not use t() or i18next
 
   ## Project Memories
   Detailed documentation is stored in .serena/memories/:
   - project-architecture.md — Multi-process architecture and services
   - branding-and-release-configuration.md — Branding customization guide
-  - i18n-configuration.md — i18n setup and workflow
   - docker-packaging-constraints.md — Build system and native module handling
   - auth-system.md — Multi-user authentication and RBAC
   - code-patterns.md — IPC, worker, component, and database patterns

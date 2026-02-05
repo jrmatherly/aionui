@@ -6,7 +6,6 @@
 
 import { getChannelManager } from '@/channels';
 import { app } from 'electron';
-import './i18n'; // Initialize i18n for main process
 import './initBridge';
 import initStorage from './initStorage';
 

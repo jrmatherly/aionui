@@ -40,11 +40,11 @@ export function needsHomePage() {
 }
 ```
 
-## i18n
+## Strings
 
-### Never hardcode user-facing strings
+### i18n was removed in v1.8.2
 
-ALL text must use `t('key.path')`. Supported: en-US, zh-CN, zh-TW, ja-JP, ko-KR.
+The project no longer uses i18n. All user-facing strings are hardcoded English. Do not import or reference `i18next`, `react-i18next`, `t()`, or any locale files.
 
 ## TypeScript
 

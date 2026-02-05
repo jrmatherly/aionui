@@ -440,7 +440,7 @@ via `drift memory feedback <id> confirm` also boosts confidence.
 
 ```bash
 # Convention everyone should know
-drift memory add tribal "Always use i18n keys via t() for user-facing strings" --topic "i18n"
+drift memory add tribal "All user-facing strings are hardcoded English (i18n removed v1.8.2)" --topic "strings"
 
 # Why something is the way it is
 drift memory add pattern_rationale "We use Express for WebUI because..." --topic "WebUI"
@@ -582,7 +582,6 @@ Serena stores detailed documentation in `.serena/memories/`:
 |--------|----------|
 | `project-architecture.md` | Multi-process architecture and services |
 | `branding-and-release-configuration.md` | Branding customization |
-| `i18n-configuration.md` | i18n setup and workflow |
 | `docker-packaging-constraints.md` | Build system and native modules |
 | `auth-system.md` | Multi-user authentication and RBAC |
 | `code-patterns.md` | IPC, worker, component, database patterns |

@@ -66,11 +66,11 @@ The version displayed in the About page (`v1.8.1`) comes from:
 
 ## UI Brand Name Locations
 
-| File                    | Line | Current Value                               |
-| ----------------------- | ---- | ------------------------------------------- |
-| `layout.tsx`            | 223  | `AionUi` (sidebar)                          |
-| `AboutModalContent.tsx` | 82   | `AionUi` (about title)                      |
-| `Titlebar/index.tsx`    | 18   | `t('app.name', { defaultValue: 'AionUi' })` |
+| File                    | Line | Current Value          |
+| ----------------------- | ---- | ---------------------- |
+| `layout.tsx`            | 223  | `AionUi` (sidebar)     |
+| `AboutModalContent.tsx` | 82   | `AionUi` (about title) |
+| `Titlebar/index.tsx`    | 18   | `AionUi` (hardcoded)   |
 
 ---
 
