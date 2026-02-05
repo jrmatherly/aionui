@@ -12,6 +12,9 @@ import { hasSpecificModelCapability } from '@/renderer/utils/modelCapabilities';
 import { Button, Dropdown, Empty, Input, Menu, Message, Spin, Tooltip } from '@arco-design/web-react';
 import { CheckOne, CloseOne, Copy, Delete, Down, Refresh } from '@icon-park/react';
 import React, { useCallback, useEffect, useState } from 'react';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('TelegramConfigForm');
 /**
  * Get available primary models for a provider (supports function calling)
  */
@@ -105,7 +108,7 @@ const TelegramConfigForm: React.FC<TelegramConfigFormProps> = ({ pluginStatus, m
         setPendingPairings(result.data);
       }
     } catch (error) {
-      console.error('[ChannelSettings] Failed to load pending pairings:', error);
+      log.error({ err: error }, 'Failed to load pending pairings');
     } finally {
       setPairingLoading(false);
     }
@@ -120,7 +123,7 @@ const TelegramConfigForm: React.FC<TelegramConfigFormProps> = ({ pluginStatus, m
         setAuthorizedUsers(result.data);
       }
     } catch (error) {
-      console.error('[ChannelSettings] Failed to load authorized users:', error);
+      log.error({ err: error }, 'Failed to load authorized users');
     } finally {
       setUsersLoading(false);
     }
@@ -209,7 +212,7 @@ const TelegramConfigForm: React.FC<TelegramConfigFormProps> = ({ pluginStatus, m
         }
       }
     } catch (error: any) {
-      console.error('[ChannelSettings] Auto-enable failed:', error);
+      log.error({ err: error }, 'Auto-enable failed');
     }
   };
 
@@ -231,7 +234,7 @@ const TelegramConfigForm: React.FC<TelegramConfigFormProps> = ({ pluginStatus, m
       });
       Message.success('Model saved');
     } catch (error) {
-      console.error('[ChannelSettings] Failed to save model:', error);
+      log.error({ err: error }, 'Failed to save model');
       Message.error('Failed to save model');
     }
   };
@@ -332,7 +335,7 @@ const TelegramConfigForm: React.FC<TelegramConfigFormProps> = ({ pluginStatus, m
                           className={selectedModel?.id + selectedModel?.useModel === provider.id + modelName ? '!bg-fill-2' : ''}
                           onClick={() => {
                             handleModelSelect(provider, modelName).catch((error) => {
-                              console.error('Failed to select model:', error);
+                              log.error({ err: error }, 'Failed to select model');
                             });
                           }}
                         >
