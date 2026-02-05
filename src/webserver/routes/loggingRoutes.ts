@@ -23,6 +23,8 @@ import tls from 'tls';
 interface ILoggingConfig {
   id?: string;
   log_level: string;
+  log_format: string;
+  log_file?: string;
   retention_days: number;
   max_size_mb: number;
   destinations: string;
@@ -30,6 +32,7 @@ interface ILoggingConfig {
   otel_endpoint?: string;
   otel_protocol?: string;
   otel_service_name?: string;
+  otel_log_level?: string;
   syslog_enabled: number;
   syslog_host?: string;
   syslog_port?: number;
@@ -61,6 +64,8 @@ export function registerLoggingRoutes(app: Express): void {
           success: true,
           config: {
             log_level: 'info',
+            log_format: 'json',
+            log_file: null,
             retention_days: 30,
             max_size_mb: 500,
             destinations: ['stdout'],
@@ -68,6 +73,7 @@ export function registerLoggingRoutes(app: Express): void {
             otel_endpoint: 'http://localhost:4318',
             otel_protocol: 'http',
             otel_service_name: 'aionui',
+            otel_log_level: 'info',
             syslog_enabled: false,
             syslog_host: 'localhost',
             syslog_port: 514,
@@ -86,6 +92,8 @@ export function registerLoggingRoutes(app: Express): void {
       // Sanitize config (hide secret keys)
       const sanitized = {
         log_level: config.log_level,
+        log_format: config.log_format,
+        log_file: config.log_file,
         retention_days: config.retention_days,
         max_size_mb: config.max_size_mb,
         destinations,
@@ -93,6 +101,7 @@ export function registerLoggingRoutes(app: Express): void {
         otel_endpoint: config.otel_endpoint,
         otel_protocol: config.otel_protocol,
         otel_service_name: config.otel_service_name,
+        otel_log_level: config.otel_log_level,
         syslog_enabled: config.syslog_enabled === 1,
         syslog_host: config.syslog_host,
         syslog_port: config.syslog_port,
@@ -121,6 +130,8 @@ export function registerLoggingRoutes(app: Express): void {
       const userId = req.user!.id;
       const updates = req.body as Partial<{
         log_level: string;
+        log_format: string;
+        log_file: string;
         retention_days: number;
         max_size_mb: number;
         destinations: string[];
@@ -128,6 +139,7 @@ export function registerLoggingRoutes(app: Express): void {
         otel_endpoint: string;
         otel_protocol: string;
         otel_service_name: string;
+        otel_log_level: string;
         syslog_enabled: boolean;
         syslog_host: string;
         syslog_port: number;
@@ -145,6 +157,14 @@ export function registerLoggingRoutes(app: Express): void {
         res.status(400).json({ success: false, error: `Invalid log level. Must be one of: ${VALID_LEVELS.join(', ')}` });
         return;
       }
+      if (updates.log_format && !['json', 'pretty'].includes(updates.log_format)) {
+        res.status(400).json({ success: false, error: 'Invalid log format. Must be json or pretty' });
+        return;
+      }
+      if (updates.otel_log_level && !['debug', 'info', 'warn', 'error'].includes(updates.otel_log_level)) {
+        res.status(400).json({ success: false, error: 'Invalid OTEL log level. Must be debug, info, warn, or error' });
+        return;
+      }
 
       const db = getDatabase().getRawDb();
 
@@ -155,6 +175,14 @@ export function registerLoggingRoutes(app: Express): void {
       if (updates.log_level !== undefined) {
         fields.push('log_level = ?');
         values.push(updates.log_level);
+      }
+      if (updates.log_format !== undefined) {
+        fields.push('log_format = ?');
+        values.push(updates.log_format);
+      }
+      if (updates.log_file !== undefined) {
+        fields.push('log_file = ?');
+        values.push(updates.log_file || null);
       }
       if (updates.retention_days !== undefined) {
         fields.push('retention_days = ?');
@@ -183,6 +211,10 @@ export function registerLoggingRoutes(app: Express): void {
       if (updates.otel_service_name !== undefined) {
         fields.push('otel_service_name = ?');
         values.push(updates.otel_service_name);
+      }
+      if (updates.otel_log_level !== undefined) {
+        fields.push('otel_log_level = ?');
+        values.push(updates.otel_log_level);
       }
       if (updates.syslog_enabled !== undefined) {
         fields.push('syslog_enabled = ?');

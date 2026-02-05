@@ -43,6 +43,15 @@ function envToConfig(): Record<string, string | number> {
     if (!isNaN(v) && v >= 10) cfg.max_size_mb = v;
   }
 
+  const format = (process.env.LOG_FORMAT || '').toLowerCase();
+  if (format === 'json' || format === 'pretty') {
+    cfg.log_format = format;
+  }
+
+  if (process.env.LOG_FILE) {
+    cfg.log_file = process.env.LOG_FILE;
+  }
+
   // Destinations — derive from what's enabled
   const dests: string[] = ['stdout'];
   if (process.env.LOG_FILE) dests.push('file');
@@ -57,6 +66,10 @@ function envToConfig(): Record<string, string | number> {
   if (process.env.OTEL_EXPORTER_OTLP_ENDPOINT) cfg.otel_endpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT;
   if (process.env.OTEL_EXPORTER_OTLP_PROTOCOL) cfg.otel_protocol = process.env.OTEL_EXPORTER_OTLP_PROTOCOL;
   if (process.env.OTEL_SERVICE_NAME) cfg.otel_service_name = process.env.OTEL_SERVICE_NAME;
+  const otelLogLevel = (process.env.OTEL_LOG_LEVEL || '').toLowerCase();
+  if (['debug', 'info', 'warn', 'error'].includes(otelLogLevel)) {
+    cfg.otel_log_level = otelLogLevel;
+  }
 
   // Syslog
   if (process.env.SYSLOG_ENABLED !== undefined) {

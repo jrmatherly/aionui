@@ -10,6 +10,7 @@ import { migrate_v14_add_user_api_keys } from './migrations/v14_add_user_api_key
 import { migrate_v15_add_organizations_and_user_directories, rollback_v15 } from './migrations/v15_add_organizations_and_user_directories';
 import { migrate_v16_add_global_models } from './migrations/v16_add_global_models';
 import { migrate_v17_add_logging_config } from './migrations/v17_add_logging_config';
+import { migrate_v18_add_logging_config_columns } from './migrations/v18_add_logging_config_columns';
 
 /**
  * Migration script definition
@@ -628,9 +629,27 @@ const migration_v17: IMigration = {
 };
 
 /**
+ * Migration v17 -> v18: Add missing logging_config columns
+ * Adds log_format, log_file, otel_log_level
+ */
+const migration_v18: IMigration = {
+  version: 18,
+  name: 'Add log_format, log_file, otel_log_level to logging_config',
+  up: (db) => {
+    migrate_v18_add_logging_config_columns(db);
+  },
+  down: (db) => {
+    // SQLite doesn't support DROP COLUMN before 3.35.0 — recreate table
+    // For simplicity, just drop and let v17 recreate on next up-migration
+    db.exec(`DROP TABLE IF EXISTS logging_config;`);
+    log.info({ version: 18 }, 'Rolled back: Dropped logging_config (v17 will recreate)');
+  },
+};
+
+/**
  * All migrations in order
  */
-export const ALL_MIGRATIONS: IMigration[] = [migration_v1, migration_v2, migration_v3, migration_v4, migration_v5, migration_v6, migration_v7, migration_v8, migration_v9, migration_v10, migration_v11, migration_v12, migration_v13, migration_v14, migration_v15, migration_v16, migration_v17];
+export const ALL_MIGRATIONS: IMigration[] = [migration_v1, migration_v2, migration_v3, migration_v4, migration_v5, migration_v6, migration_v7, migration_v8, migration_v9, migration_v10, migration_v11, migration_v12, migration_v13, migration_v14, migration_v15, migration_v16, migration_v17, migration_v18];
 
 /**
  * Get migrations needed to upgrade from one version to another

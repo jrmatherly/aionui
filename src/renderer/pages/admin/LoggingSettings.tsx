@@ -21,6 +21,8 @@ const Col = Grid.Col;
 
 interface LoggingConfig {
   log_level: string;
+  log_format: string;
+  log_file?: string;
   retention_days: number;
   max_size_mb: number;
   destinations: string[];
@@ -28,6 +30,7 @@ interface LoggingConfig {
   otel_endpoint?: string;
   otel_protocol?: string;
   otel_service_name?: string;
+  otel_log_level?: string;
   syslog_enabled: boolean;
   syslog_host?: string;
   syslog_port?: number;
@@ -42,8 +45,10 @@ interface LoggingConfig {
 }
 
 const LOG_LEVELS = ['trace', 'debug', 'info', 'warn', 'error', 'fatal', 'silent'];
+const LOG_FORMATS = ['json', 'pretty'];
 const SYSLOG_PROTOCOLS = ['udp', 'tcp', 'tls'];
 const OTEL_PROTOCOLS = ['http', 'grpc'];
+const OTEL_LOG_LEVELS = ['debug', 'info', 'warn', 'error'];
 
 /** Shared gutter for all grid rows */
 const GUTTER = 20;
@@ -167,12 +172,15 @@ const LoggingSettings: React.FC = () => {
         layout='vertical'
         initialValues={{
           log_level: 'info',
+          log_format: 'json',
+          log_file: '',
           retention_days: 30,
           max_size_mb: 500,
           otel_enabled: false,
           otel_endpoint: 'http://localhost:4318',
           otel_protocol: 'http',
           otel_service_name: 'aionui',
+          otel_log_level: 'info',
           syslog_enabled: false,
           syslog_host: 'localhost',
           syslog_port: 514,
@@ -186,14 +194,33 @@ const LoggingSettings: React.FC = () => {
         <Row gutter={GUTTER} style={{ marginBottom: '20px' }}>
           <Col xs={24} md={12}>
             <Card title='Core Logging' bordered style={{ height: '100%' }}>
-              <FormItem label='Log Level' field='log_level' rules={[{ required: true, message: 'Log level is required' }]}>
-                <Select placeholder='Select log level' disabled={loading}>
-                  {LOG_LEVELS.map((level) => (
-                    <Option key={level} value={level}>
-                      {level.toUpperCase()}
-                    </Option>
-                  ))}
-                </Select>
+              <Row gutter={GUTTER}>
+                <Col span={12}>
+                  <FormItem label='Log Level' field='log_level' rules={[{ required: true, message: 'Log level is required' }]}>
+                    <Select placeholder='Select log level' disabled={loading}>
+                      {LOG_LEVELS.map((level) => (
+                        <Option key={level} value={level}>
+                          {level.toUpperCase()}
+                        </Option>
+                      ))}
+                    </Select>
+                  </FormItem>
+                </Col>
+                <Col span={12}>
+                  <FormItem label='Log Format' field='log_format' rules={[{ required: true, message: 'Log format is required' }]}>
+                    <Select placeholder='Select format' disabled={loading}>
+                      {LOG_FORMATS.map((fmt) => (
+                        <Option key={fmt} value={fmt}>
+                          {fmt.toUpperCase()}
+                        </Option>
+                      ))}
+                    </Select>
+                  </FormItem>
+                </Col>
+              </Row>
+
+              <FormItem label='Log File Path' field='log_file' extra='Optional — writes JSON to file with rotation. Leave blank for stdout only.'>
+                <Input placeholder='/var/log/aionui/app.log' disabled={loading} allowClear />
               </FormItem>
 
               <Row gutter={GUTTER}>
@@ -253,11 +280,21 @@ const LoggingSettings: React.FC = () => {
                           </FormItem>
                         </Col>
                         <Col span={12}>
-                          <FormItem label='Service Name' field='otel_service_name'>
-                            <Input placeholder='aionui' disabled={loading || !otelEnabled} />
+                          <FormItem label='Diagnostic Log Level' field='otel_log_level'>
+                            <Select placeholder='Log level' disabled={loading || !otelEnabled}>
+                              {OTEL_LOG_LEVELS.map((level) => (
+                                <Option key={level} value={level}>
+                                  {level.toUpperCase()}
+                                </Option>
+                              ))}
+                            </Select>
                           </FormItem>
                         </Col>
                       </Row>
+
+                      <FormItem label='Service Name' field='otel_service_name'>
+                        <Input placeholder='aionui' disabled={loading || !otelEnabled} />
+                      </FormItem>
                     </>
                   );
                 }}
