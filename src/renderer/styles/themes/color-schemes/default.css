@@ -67,7 +67,38 @@
   --text-white: #ffffff; /* Pure White Text */
   --fill-0: #ffffff; /* Fill Color 0 */
   --fill-white-to-black: #ffffff; /* White to Black Fill */
-  --border-special: var(--bg-3); /* Special Border Color */
+  --border-special: var(--primary); /* Special Border Color - accent */
+
+  /* Card & Panel Elevation System - Light Mode */
+  --card-bg: #ffffff;
+  --card-border: rgba(0, 0, 0, 0.08);
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --card-shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 24px rgba(0, 0, 0, 0.1);
+  --card-hover-bg: #fafafa;
+  --card-hover-border: rgba(0, 0, 0, 0.12);
+
+  /* Input Field Enhancement - Light Mode */
+  --input-bg: #ffffff;
+  --input-border: rgba(0, 0, 0, 0.12);
+  --input-border-hover: rgba(22, 93, 255, 0.4);
+  --input-border-focus: rgba(22, 93, 255, 0.6);
+  --input-focus-ring: rgba(22, 93, 255, 0.12);
+
+  /* Sidebar Active State - Light Mode */
+  --sidebar-active-bg: rgba(22, 93, 255, 0.08);
+  --sidebar-active-border: #165dff;
+  --sidebar-hover-bg: rgba(0, 0, 0, 0.04);
+
+  /* Button Enhancement - Light Mode */
+  --btn-secondary-bg: #f2f3f5;
+  --btn-secondary-border: rgba(0, 0, 0, 0.08);
+  --btn-secondary-hover-bg: #e5e6eb;
+  --btn-ghost-hover-bg: rgba(0, 0, 0, 0.04);
+
+  /* Elevated Surface - Light Mode */
+  --surface-elevated: #ffffff;
+  --surface-elevated-border: rgba(0, 0, 0, 0.06);
+  --surface-elevated-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 /* Dark Mode */

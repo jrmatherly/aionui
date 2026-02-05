@@ -485,13 +485,29 @@ body,
  * Sidebar Active State Enhancement
  * ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Enhanced active state for sidebar items */
+/* Enhanced active state for sidebar items - Dark Mode */
 [data-theme='dark'] .chat-history__item.active,
 [data-theme='dark'] .settings-sider__item.active,
 [data-theme='dark'] .conversation-item.active {
   background: var(--sidebar-active-bg, rgba(99, 102, 241, 0.12)) !important;
   border-left: 3px solid var(--sidebar-active-border, #6366f1) !important;
   margin-left: -3px;
+}
+
+/* Enhanced active state for sidebar items - Light Mode */
+:root .chat-history__item.active,
+:root .settings-sider__item.active,
+:root .conversation-item.active {
+  background: var(--sidebar-active-bg, rgba(22, 93, 255, 0.08)) !important;
+  border-left: 3px solid var(--sidebar-active-border, #165dff) !important;
+  margin-left: -3px;
+}
+
+/* Sidebar hover state - Light Mode */
+:root .chat-history__item:hover,
+:root .settings-sider__item:hover,
+:root .conversation-item:hover {
+  background: var(--sidebar-hover-bg, rgba(0, 0, 0, 0.04)) !important;
 }
 
 /* Section headers in sidebar */
@@ -509,7 +525,7 @@ body,
  * Toggle Switch Enhancement
  * ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Enabled toggle - use brand gradient */
+/* Enabled toggle - use brand gradient - Dark Mode */
 [data-theme='dark'] .arco-switch-checked {
   background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
 }
@@ -518,31 +534,63 @@ body,
   background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%) !important;
 }
 
-/* Disabled toggle - muted background */
+/* Disabled toggle - muted background - Dark Mode */
 [data-theme='dark'] .arco-switch:not(.arco-switch-checked) {
   background: var(--bg-4) !important;
 }
 
-/* Focus ring for accessibility */
+/* Focus ring for accessibility - Dark Mode */
 [data-theme='dark'] .arco-switch:focus-visible {
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25) !important;
+}
+
+/* Enabled toggle - use brand gradient - Light Mode */
+:root .arco-switch-checked {
+  background: linear-gradient(135deg, #165dff 0%, #4080ff 100%) !important;
+}
+
+:root .arco-switch-checked:hover {
+  background: linear-gradient(135deg, #0e4fd6 0%, #2563eb 100%) !important;
+}
+
+/* Disabled toggle - muted background - Light Mode */
+:root .arco-switch:not(.arco-switch-checked) {
+  background: #c9cdd4 !important;
+}
+
+/* Focus ring for accessibility - Light Mode */
+:root .arco-switch:focus-visible {
+  box-shadow: 0 0 0 3px rgba(22, 93, 255, 0.2) !important;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
  * Modal & Dialog Enhancements
  * ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Enhanced modal backdrop */
+/* Enhanced modal backdrop - Dark Mode */
 [data-theme='dark'] .arco-modal-mask {
   background: rgba(0, 0, 0, 0.75) !important;
   backdrop-filter: blur(4px);
 }
 
-/* Modal content */
+/* Modal content - Dark Mode */
 [data-theme='dark'] .arco-modal-content {
   background: var(--bg-1) !important;
   border: 1px solid var(--card-border, rgba(255, 255, 255, 0.06)) !important;
   box-shadow: var(--card-shadow-lg) !important;
+}
+
+/* Enhanced modal backdrop - Light Mode */
+:root .arco-modal-mask {
+  background: rgba(0, 0, 0, 0.45) !important;
+  backdrop-filter: blur(4px);
+}
+
+/* Modal content - Light Mode */
+:root .arco-modal-content {
+  background: #ffffff !important;
+  border: 1px solid var(--card-border, rgba(0, 0, 0, 0.08)) !important;
+  box-shadow: var(--card-shadow-lg, 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 24px rgba(0, 0, 0, 0.1)) !important;
 }
 
 /* Modal title enhancement */
@@ -582,7 +630,7 @@ body,
  * Table Enhancements
  * ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Table header styling */
+/* Table header styling - Dark Mode */
 [data-theme='dark'] .arco-table-th {
   background: var(--bg-2) !important;
   border-bottom: 1px solid var(--border-visible) !important;
@@ -593,9 +641,30 @@ body,
   color: var(--text-secondary) !important;
 }
 
-/* Table row hover */
+/* Table row hover - Dark Mode */
 [data-theme='dark'] .arco-table-tr:hover .arco-table-td {
   background: var(--bg-hover) !important;
+}
+
+/* Table header styling - Light Mode */
+:root .arco-table-th {
+  background: #f7f8fa !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-secondary) !important;
+}
+
+/* Table row hover - Light Mode */
+:root .arco-table-tr:hover .arco-table-td {
+  background: rgba(0, 0, 0, 0.02) !important;
+}
+
+/* Table borders - Light Mode */
+:root .arco-table-border .arco-table-container {
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -636,13 +705,22 @@ body,
  * Settings Page Card Enhancement
  * ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Apply elevation to settings cards (bg-2 with border-radius) */
+/* Apply elevation to settings cards (bg-2 with border-radius) - Dark Mode */
 [data-theme='dark'] .bg-2[class*='rd-'],
 [data-theme='dark'] .bg-2[class*='rounded-'],
 [data-theme='dark'] .bg-fill-2[class*='rd-'],
 [data-theme='dark'] .bg-fill-2[class*='rounded-'] {
   border: 1px solid var(--card-border, rgba(255, 255, 255, 0.06));
   box-shadow: var(--card-shadow, 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2));
+}
+
+/* Apply elevation to settings cards (bg-2 with border-radius) - Light Mode */
+:root .bg-2[class*='rd-'],
+:root .bg-2[class*='rounded-'],
+:root .bg-fill-2[class*='rd-'],
+:root .bg-fill-2[class*='rounded-'] {
+  border: 1px solid var(--card-border, rgba(0, 0, 0, 0.08));
+  box-shadow: var(--card-shadow, 0 1px 3px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04));
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

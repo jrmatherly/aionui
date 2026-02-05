@@ -226,3 +226,137 @@ body[arco-theme='dark'] .arco-message-error .arco-message-content {
     background: var(--color-primary);
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * Light Mode Visibility Enhancements
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Chat input card - enhanced border visibility in light mode */
+:root .b-3,
+:root [class*='b-aou-2'],
+:root [class*='border-border-2'] {
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Dashed borders - more visible in light mode */
+:root .b-dashed,
+:root [class*='border-dashed'] {
+  border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Fill backgrounds - better contrast in light mode */
+:root .bg-fill-0 {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+:root .bg-fill-1 {
+  background: rgba(0, 0, 0, 0.03) !important;
+}
+
+:root .bg-fill-2 {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Quick action buttons - better visibility in light mode */
+:root .bg-fill-0:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Sidebar left panel - subtle background in light mode */
+:root .layout-sider {
+  background: #fafafa !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Input area - enhanced styling for light mode */
+:root .bg-dialog-fill-0 {
+  background: #ffffff !important;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+/* Model selector pill - better contrast in light mode */
+:root .rd-100px[class*='bg-'] {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Secondary text - ensure readable contrast */
+:root .text-t-secondary {
+  color: #4e5969 !important;
+}
+
+:root .text-t-tertiary {
+  color: #6b7785 !important;
+}
+
+/* Collapse/Accordion borders - more visible in light mode */
+:root .arco-collapse {
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+:root .arco-collapse-item {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+
+:root .arco-collapse-item:last-child {
+  border-bottom: none !important;
+}
+
+/* Input fields - enhanced visibility in light mode */
+:root .arco-input-wrapper,
+:root .arco-textarea-wrapper,
+:root .arco-select-view {
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  background: #ffffff !important;
+}
+
+:root .arco-input-wrapper:hover,
+:root .arco-textarea-wrapper:hover,
+:root .arco-select-view:hover {
+  border-color: rgba(22, 93, 255, 0.4) !important;
+}
+
+:root .arco-input-wrapper:focus-within,
+:root .arco-textarea-wrapper:focus-within,
+:root .arco-select-view.arco-select-view-focus {
+  border-color: rgba(22, 93, 255, 0.6) !important;
+  box-shadow: 0 0 0 2px rgba(22, 93, 255, 0.1) !important;
+}
+
+/* Buttons - enhanced styling in light mode */
+:root .arco-btn-secondary {
+  background: #f2f3f5 !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+:root .arco-btn-secondary:hover {
+  background: #e5e6eb !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Primary button gradient - consistent with dark mode */
+:root .arco-btn-primary {
+  background: linear-gradient(135deg, #165dff 0%, #4080ff 100%) !important;
+  border: none !important;
+}
+
+:root .arco-btn-primary:hover {
+  background: linear-gradient(135deg, #0e4fd6 0%, #2563eb 100%) !important;
+}
+
+/* Tags - better contrast in light mode */
+:root .arco-tag {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+:root .arco-tag-arcoblue {
+  background: rgba(22, 93, 255, 0.1) !important;
+  color: #165dff !important;
+  border-color: rgba(22, 93, 255, 0.2) !important;
+}
+
+/* Dividers - more visible in light mode */
+:root .arco-divider {
+  background-color: rgba(0, 0, 0, 0.08) !important;
+}
