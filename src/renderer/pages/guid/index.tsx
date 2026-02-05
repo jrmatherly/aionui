@@ -28,6 +28,9 @@ import { useBranding } from '@/renderer/hooks/useBranding';
 import { useCompositionInput } from '@/renderer/hooks/useCompositionInput';
 import { useDragUpload } from '@/renderer/hooks/useDragUpload';
 import { useGeminiGoogleAuthModels } from '@/renderer/hooks/useGeminiGoogleAuthModels';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('GuidPage');
 import { useInputFocusRing } from '@/renderer/hooks/useInputFocusRing';
 import { usePasteService } from '@/renderer/hooks/usePasteService';
 import { useConversationTabs } from '@/renderer/pages/conversation/context/ConversationTabsContext';
@@ -206,7 +209,7 @@ const Guid: React.FC = () => {
           window.open(url, '_blank', 'noopener,noreferrer');
         }
       } catch (error) {
-        console.error('Failed to open external link:', error);
+        log.error({ err: error }, 'Failed to open external link:');
         window.open(url, '_blank', 'noopener,noreferrer');
       }
     },
@@ -271,7 +274,7 @@ const Guid: React.FC = () => {
     _setSelectedAgentKey(key);
     // Save selection to storage
     ConfigStorage.set('guid.lastSelectedAgent', key).catch((error) => {
-      console.error('Failed to save selected agent:', error);
+      log.error({ err: error }, 'Failed to save selected agent:');
     });
   }, []);
   const [availableAgents, setAvailableAgents] = useState<
@@ -356,7 +359,7 @@ const Guid: React.FC = () => {
     // Track latest selected key to prevent incorrect reset after list refresh
     selectedModelKeyRef.current = buildModelKey(modelInfo.id, modelInfo.useModel);
     await ConfigStorage.set('gemini.defaultModel', { id: modelInfo.id, useModel: modelInfo.useModel }).catch((error) => {
-      console.error('Failed to save default model:', error);
+      log.error({ err: error }, 'Failed to save default model:');
     });
     _setCurrentModel(modelInfo);
   };
@@ -557,7 +560,7 @@ const Guid: React.FC = () => {
           }
         }
       } catch (error) {
-        console.error('Failed to load last selected agent:', error);
+        log.error({ err: error }, 'Failed to load last selected agent:');
       }
     };
 
@@ -576,7 +579,7 @@ const Guid: React.FC = () => {
         setCustomAgents(agents || []);
       })
       .catch((error) => {
-        console.error('Failed to load custom agents:', error);
+        log.error({ err: error }, 'Failed to load custom agents:');
       });
     return () => {
       isActive = false;
@@ -631,7 +634,7 @@ const Guid: React.FC = () => {
           locale: localeKey,
         });
       } catch (error) {
-        console.warn(`Failed to load rules for ${customAgentId}:`, error);
+        log.warn({ err: error, customAgentId }, 'Failed to load rules');
       }
 
       // 2. Load skills
@@ -657,7 +660,7 @@ const Guid: React.FC = () => {
                 rules = await ipcBridge.fs.readBuiltinRule.invoke({ fileName: ruleFile });
               }
             } catch (e) {
-              console.warn(`Failed to load builtin rules for ${customAgentId}:`, e);
+              log.warn({ err: e, customAgentId }, 'Failed to load builtin rules');
             }
           }
           // Fallback for skills
@@ -714,7 +717,7 @@ const Guid: React.FC = () => {
       await ipcBridge.acpConversation.refreshCustomAgents.invoke();
       await mutate('acp.agents.available');
     } catch (error) {
-      console.error('Failed to refresh custom agents:', error);
+      log.error({ err: error }, 'Failed to refresh custom agents:');
     }
   }, []);
 
@@ -805,7 +808,7 @@ const Guid: React.FC = () => {
         // Navigate immediately for instant page transition
         void navigate(`/conversation/${conversation.id}`);
       } catch (error: unknown) {
-        console.error('Failed to create or send Gemini message:', error);
+        log.error({ err: error }, 'Failed to create or send Gemini message:');
         const errorMessage = error instanceof Error ? error.message : String(error);
         alert(`Failed to create Gemini conversation: ${errorMessage}`);
         throw error; // Re-throw to prevent input clearing
@@ -928,12 +931,12 @@ const Guid: React.FC = () => {
         // Then navigate to conversation page
         await navigate(`/conversation/${conversation.id}`);
       } catch (error: unknown) {
-        console.error('Failed to create ACP conversation:', error);
+        log.error({ err: error }, 'Failed to create ACP conversation:');
 
         // Check if it's an authentication error
         const errorMessage = error instanceof Error ? error.message : String(error);
         if (errorMessage.includes('[ACP-AUTH-')) {
-          console.error('ACP authentication error details:', errorMessage);
+          log.error({ errorMessage }, 'ACP authentication error details');
           const confirmed = window.confirm(`ACP ${selectedAgent} authentication failed:
 
 ${errorMessage}
@@ -963,7 +966,7 @@ Would you like to go to settings page to configure now?`);
         setDir('');
       })
       .catch((error) => {
-        console.error('Failed to send message:', error);
+        log.error({ err: error }, 'Failed to send message:');
         // Keep the input content when there's an error
       })
       .finally(() => {
@@ -1082,7 +1085,7 @@ Would you like to go to settings page to configure now?`);
   };
   useEffect(() => {
     setDefaultModel().catch((error) => {
-      console.error('Failed to set default model:', error);
+      log.error({ err: error }, 'Failed to set default model:');
     });
   }, [modelList]);
 
@@ -1257,7 +1260,7 @@ Would you like to go to settings page to configure now?`);
                               }
                             })
                             .catch((error) => {
-                              console.error('Failed to open file dialog:', error);
+                              log.error({ err: error }, 'Failed to open file dialog:');
                             });
                         } else if (key === 'workspace') {
                           ipcBridge.dialog.showOpen
@@ -1268,7 +1271,7 @@ Would you like to go to settings page to configure now?`);
                               }
                             })
                             .catch((error) => {
-                              console.error('Failed to open directory dialog:', error);
+                              log.error({ err: error }, 'Failed to open directory dialog:');
                             });
                         }
                       }}
@@ -1343,7 +1346,7 @@ Would you like to go to settings page to configure now?`);
                                                 className={currentModel?.id + currentModel?.useModel === provider.id + subModel.value ? '!bg-2' : ''}
                                                 onClick={() => {
                                                   setCurrentModel({ ...provider, useModel: subModel.value }).catch((error) => {
-                                                    console.error('Failed to set current model:', error);
+                                                    log.error({ err: error }, 'Failed to set current model:');
                                                   });
                                                 }}
                                               >
@@ -1361,7 +1364,7 @@ Would you like to go to settings page to configure now?`);
                                           className={currentModel?.id + currentModel?.useModel === provider.id + modelName ? '!bg-2' : ''}
                                           onClick={() => {
                                             setCurrentModel({ ...provider, useModel: modelName }).catch((error) => {
-                                              console.error('Failed to set current model:', error);
+                                              log.error({ err: error }, 'Failed to set current model:');
                                             });
                                           }}
                                         >
@@ -1445,7 +1448,7 @@ Would you like to go to settings page to configure now?`);
                   icon={<ArrowUp theme='outline' size='14' fill='white' strokeWidth={2} />}
                   onClick={() => {
                     handleSend().catch((error) => {
-                      console.error('Failed to send message:', error);
+                      log.error({ err: error }, 'Failed to send message:');
                     });
                   }}
                 />

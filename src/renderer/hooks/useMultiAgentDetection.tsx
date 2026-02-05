@@ -3,8 +3,11 @@
  */
 
 import { ipcBridge } from '@/common';
+import { createLogger } from '@/renderer/utils/logger';
 import { Message } from '@arco-design/web-react';
 import { useEffect } from 'react';
+
+const log = createLogger('useMultiAgentDetection');
 export const useMultiAgentDetection = () => {
   const [message, contextHolder] = Message.useMessage();
 
@@ -31,12 +34,12 @@ export const useMultiAgentDetection = () => {
         }
       } catch (error) {
         // Silently handle errors to avoid affecting application startup
-        console.log('Multi-agent detection failed:', error);
+        log.debug({ err: error }, 'Multi-agent detection failed');
       }
     };
 
     checkMultiAgentMode().catch((error) => {
-      console.error('Multi-agent detection failed:', error);
+      log.error({ err: error }, 'Multi-agent detection failed');
     });
   }, []); // Empty dependency array ensures this runs only once on component initialization
 

@@ -4,7 +4,10 @@
  */
 
 import { uuid } from '@/common/utils';
+import { createLogger } from '@/renderer/utils/logger';
 import { useCallback, useEffect, useRef, useState } from 'react';
+
+const log = createLogger('useInitialMessage');
 
 type InitialMessageState = 'idle' | 'waiting_auth' | 'sending' | 'sent' | 'failed';
 
@@ -66,7 +69,7 @@ export const useInitialMessage = (conversationId: string, acpStatus: string | nu
 
   useEffect(() => {
     processInitialMessage().catch((error) => {
-      console.error('Failed to process initial message:', error);
+      log.error({ err: error, conversationId }, 'Failed to process initial message');
     });
   }, [processInitialMessage]);
 
@@ -77,7 +80,7 @@ export const useInitialMessage = (conversationId: string, acpStatus: string | nu
       processedRef.current = false;
       setError(null);
       processInitialMessage().catch((error) => {
-        console.error('Failed to retry initial message:', error);
+        log.error({ err: error, conversationId }, 'Failed to retry initial message');
       });
     },
   };

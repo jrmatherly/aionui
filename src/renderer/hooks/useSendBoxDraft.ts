@@ -1,9 +1,12 @@
 import type { TChatConversation } from '@/common/storage';
 import type { FileOrFolderItem } from '@/renderer/types/files';
+import { createLogger } from '@/renderer/utils/logger';
 import { useCallback } from 'react';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 export type { FileOrFolderItem } from '@/renderer/types/files';
+
+const log = createLogger('useSendBoxDraft');
 
 type Draft =
   | {
@@ -106,7 +109,7 @@ export const getSendBoxDraftHook = <K extends TChatConversation['type']>(type: K
             { revalidate: false }
           )
           .catch((error) => {
-            console.error('Failed to mutate draft:', error);
+            log.error({ err: error, conversation_id, type }, 'Failed to mutate draft');
           });
       },
       [conversation_id]

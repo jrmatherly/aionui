@@ -9,7 +9,10 @@ import { joinPath } from '@/common/chatLib';
 import type { PreviewContentType } from '@/common/types/preview';
 import { useConversationContextSafe } from '@/renderer/context/ConversationContext';
 import { usePreviewContext } from '@/renderer/pages/conversation/preview';
+import { createLogger } from '@/renderer/utils/logger';
 import { useCallback, useState } from 'react';
+
+const log = createLogger('usePreviewLauncher');
 
 /**
  * Preview launch options
@@ -135,7 +138,7 @@ export const usePreviewLauncher = () => {
           }
         }
       } catch (error) {
-        console.error('[usePreviewLauncher] Failed to open preview:', error);
+        log.error({ err: error, resolvedPath, contentType }, 'Failed to open preview');
       } finally {
         setLoading(false);
       }

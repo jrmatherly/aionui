@@ -1,7 +1,10 @@
 import { mcpService } from '@/common/ipcBridge';
 import type { IMcpServer } from '@/common/storage';
+import { createLogger } from '@/renderer/utils/logger';
 import { useCallback, useState } from 'react';
 import { globalMessageQueue } from './messageQueue';
+
+const log = createLogger('useMcpConnection');
 
 /**
  * Truncate long error messages to keep them readable
@@ -35,7 +38,7 @@ export const useMcpConnection = (
         try {
           await saveMcpServers((prevServers) => prevServers.map((s) => (s.id === server.id ? { ...s, status, updatedAt: Date.now(), ...additionalData } : s)));
         } catch (error) {
-          console.error('Failed to update server status:', error);
+          log.error({ err: error, serverId: server.id, status }, 'Failed to update server status');
         }
       };
 

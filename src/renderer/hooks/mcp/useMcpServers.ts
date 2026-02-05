@@ -1,6 +1,9 @@
 import type { IMcpServer } from '@/common/storage';
 import { ConfigStorage } from '@/common/storage';
+import { createLogger } from '@/renderer/utils/logger';
 import { useCallback, useEffect, useState } from 'react';
+
+const log = createLogger('useMcpServers');
 
 /**
  * MCP Server State Management Hook
@@ -18,7 +21,7 @@ export const useMcpServers = () => {
         }
       })
       .catch((error) => {
-        console.error('[useMcpServers] Failed to load MCP config:', error);
+        log.error({ err: error }, 'Failed to load MCP config');
       });
   }, []);
 
@@ -34,7 +37,7 @@ export const useMcpServers = () => {
           ConfigStorage.set('mcp.config', newServers)
             .then(() => resolve())
             .catch((error) => {
-              console.error('Failed to save MCP servers:', error);
+              log.error({ err: error }, 'Failed to save MCP servers');
               reject(error);
             });
         });

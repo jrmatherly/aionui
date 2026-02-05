@@ -5,9 +5,12 @@
  */
 
 import { removeStack } from '@/renderer/utils/common';
+import { createLogger } from '@/renderer/utils/logger';
 import classNames from 'classnames';
 import type { CSSProperties } from 'react';
 import React, { useCallback, useState } from 'react';
+
+const log = createLogger('useResizableSplit');
 
 const addWindowEventListener = <K extends keyof WindowEventMap>(key: K, handler: (e: WindowEventMap[K]) => void): (() => void) => {
   if (typeof window === 'undefined') {
@@ -47,7 +50,7 @@ export const useResizableSplit = (options: UseResizableSplitOptions = {}) => {
         }
       }
     } catch (error) {
-      console.error('Failed to read split ratio from localStorage:', error);
+      log.error({ err: error, storageKey }, 'Failed to read split ratio from localStorage');
     }
     return defaultWidth;
   };
@@ -70,7 +73,7 @@ export const useResizableSplit = (options: UseResizableSplitOptions = {}) => {
         try {
           localStorage.setItem(storageKey, ratio.toString());
         } catch (error) {
-          console.error('Failed to save split ratio to localStorage:', error);
+          log.error({ err: error, storageKey, ratio }, 'Failed to save split ratio to localStorage');
         }
       }
     },

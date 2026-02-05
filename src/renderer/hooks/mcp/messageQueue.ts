@@ -8,6 +8,11 @@
  * - When batch testing MCP connections
  * - When performing multiple sync/remove operations simultaneously
  */
+
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('MessageQueue');
+
 class MessageQueue {
   private static instance: MessageQueue;
   private queue: Array<() => void> = [];
@@ -34,7 +39,7 @@ class MessageQueue {
   async add(showMessageFn: () => void): Promise<void> {
     // Check queue length, discard new message if limit exceeded (not old ones)
     if (this.queue.length >= this.maxQueueSize) {
-      console.warn(`Message queue size exceeded ${this.maxQueueSize}, dropping new message`);
+      log.warn({ queueLength: this.queue.length, maxQueueSize: this.maxQueueSize }, 'Message queue size exceeded, dropping new message');
       return;
     }
     this.queue.push(showMessageFn);

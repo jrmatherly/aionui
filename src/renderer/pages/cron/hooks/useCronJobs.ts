@@ -7,7 +7,10 @@
 import { ipcBridge } from '@/common';
 import type { ICronJob } from '@/common/ipcBridge';
 import { emitter } from '@/renderer/utils/emitter';
+import { createLogger } from '@/renderer/utils/logger';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
+const log = createLogger('useCronJobs');
 
 /**
  * Common cron job actions
@@ -176,7 +179,7 @@ export function useAllCronJobs() {
       const allJobs = await ipcBridge.cron.listJobs.invoke();
       setJobs(allJobs || []);
     } catch (err) {
-      console.error('[useAllCronJobs] Failed to fetch jobs:', err);
+      log.error({ err }, 'Failed to fetch jobs in useAllCronJobs');
     } finally {
       setLoading(false);
     }
@@ -285,7 +288,7 @@ export function useCronJobsMap() {
 
       setJobsMap(map);
     } catch (err) {
-      console.error('[useCronJobsMap] Failed to fetch jobs:', err);
+      log.error({ err }, 'Failed to fetch jobs in useCronJobsMap');
     } finally {
       setLoading(false);
     }
@@ -311,7 +314,7 @@ export function useCronJobsMap() {
           return newMap;
         });
         // Refresh conversation list to update sorting (modifyTime was updated)
-        console.log('[useCronJobsMap] onJobCreated, triggering chat.history.refresh');
+        log.debug('onJobCreated, triggering chat.history.refresh');
         emitter.emit('chat.history.refresh');
       },
       onJobUpdated: (job: ICronJob) => {
@@ -333,7 +336,7 @@ export function useCronJobsMap() {
             });
           }
           // Refresh conversation list to update sorting (modifyTime was updated after execution)
-          console.log('[useCronJobsMap] onJobUpdated with new execution, triggering chat.history.refresh');
+          log.debug('onJobUpdated with new execution, triggering chat.history.refresh');
           emitter.emit('chat.history.refresh');
         }
 

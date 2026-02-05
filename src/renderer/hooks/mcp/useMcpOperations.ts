@@ -1,8 +1,11 @@
 import { acpConversation, mcpService } from '@/common/ipcBridge';
 import type { IMcpServer } from '@/common/storage';
 import { ConfigStorage } from '@/common/storage';
+import { createLogger } from '@/renderer/utils/logger';
 import { useCallback } from 'react';
 import { globalMessageQueue } from './messageQueue';
+
+const log = createLogger('useMcpOperations');
 
 /**
  * Truncate long error messages to keep them readable
@@ -119,7 +122,7 @@ export const useMcpOperations = (mcpServers: IMcpServer[], message: ReturnType<t
         await handleMcpOperationResult(syncResponse, 'sync', undefined, skipRecheck);
       } else {
         // Fix: Handle case when no agents are available, show user-friendly error message
-        console.error('[useMcpOperations] Failed to get available agents:', agentsResponse.msg);
+        log.error({ msg: agentsResponse.msg }, 'Failed to get available agents');
         await globalMessageQueue.add(() => {
           message.error('No available agents detected, unable to sync MCP configuration');
         });
