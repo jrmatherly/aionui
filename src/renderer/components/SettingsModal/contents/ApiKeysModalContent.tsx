@@ -14,6 +14,9 @@ import { Alert, Button, Collapse, Empty, Form, Input, Message, Modal, Popconfirm
 import { Delete, Key, Link, Plus, Save } from '@icon-park/react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSettingsViewMode } from '../settingsViewContext';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('ApiKeysModalContent');
 
 interface StoredKey {
   provider: string;
@@ -42,7 +45,7 @@ const ApiKeysModalContent: React.FC = () => {
       const keys = await userApiKeys.get.invoke({});
       setStoredKeys(keys || []);
     } catch (error) {
-      console.error('[ApiKeys] Failed to load keys:', error);
+      log.error({ err: error }, 'Failed to load keys');
     } finally {
       setLoading(false);
     }
@@ -68,7 +71,7 @@ const ApiKeysModalContent: React.FC = () => {
       setApiKeyInput('');
       await loadKeys();
     } catch (error) {
-      console.error('[ApiKeys] Failed to save key:', error);
+      log.error({ err: error }, 'Failed to save key');
       message.error('Failed to save API key');
     } finally {
       setSaving(false);
@@ -82,7 +85,7 @@ const ApiKeysModalContent: React.FC = () => {
       message.success('API key deleted');
       await loadKeys();
     } catch (error) {
-      console.error('[ApiKeys] Failed to delete key:', error);
+      log.error({ err: error }, 'Failed to delete key');
       message.error('Failed to delete API key');
     }
   };

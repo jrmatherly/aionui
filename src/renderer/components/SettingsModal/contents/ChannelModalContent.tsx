@@ -21,6 +21,9 @@ import ChannelItem from './channels/ChannelItem';
 import type { ChannelConfig } from './channels/types';
 import LarkConfigForm from './LarkConfigForm';
 import TelegramConfigForm from './TelegramConfigForm';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('ChannelModalContent');
 
 /**
  * Get available primary models for a provider (supports function calling)
@@ -124,7 +127,7 @@ const ChannelModalContent: React.FC = () => {
         setLarkPluginStatus(larkPlugin || null);
       }
     } catch (error) {
-      console.error('[ChannelSettings] Failed to load plugin status:', error);
+      log.error({ err: error }, 'Failed to load plugin status');
     } finally {
       setLoading(false);
     }
@@ -159,7 +162,7 @@ const ChannelModalContent: React.FC = () => {
           }
         }
       } catch (error) {
-        console.error('[ChannelSettings] Failed to load saved model:', error);
+        log.error({ err: error }, 'Failed to load saved model');
       }
     };
 

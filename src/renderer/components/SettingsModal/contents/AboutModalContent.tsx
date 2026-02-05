@@ -12,6 +12,9 @@ import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
 import packageJson from '../../../../../package.json';
 import { useSettingsViewMode } from '../settingsViewContext';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('AboutModalContent');
 
 const AboutModalContent: React.FC = () => {
   const viewMode = useSettingsViewMode();
@@ -41,7 +44,7 @@ const AboutModalContent: React.FC = () => {
         window.open(url, '_blank', 'noopener,noreferrer');
       }
     } catch (error) {
-      console.log('Failed to open link:', error);
+      log.error({ err: error }, 'Failed to open link');
       // Fallback to window.open
       window.open(url, '_blank', 'noopener,noreferrer');
     }
@@ -93,7 +96,7 @@ const AboutModalContent: React.FC = () => {
             <Typography.Text className='text-14px text-t-secondary mb-12px text-center'>{'Free, local, open-source GUI app for Gemini CLI'}</Typography.Text>
             <div className='flex items-center justify-center gap-8px mb-16px'>
               <span className='px-10px py-4px rd-6px text-13px bg-fill-2 text-t-primary font-500'>v{packageJson.version}</span>
-              <div className='text-t-primary cursor-pointer hover:text-t-secondary transition-colors p-4px' onClick={() => openLink(branding.github.repo).catch((error) => console.error('Failed to open link:', error))}>
+              <div className='text-t-primary cursor-pointer hover:text-t-secondary transition-colors p-4px' onClick={() => openLink(branding.github.repo).catch((error) => log.error({ err: error }, 'Failed to open link'))}>
                 <Github theme='outline' size='20' />
               </div>
             </div>
@@ -124,7 +127,7 @@ const AboutModalContent: React.FC = () => {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  openLink(item.url).catch((error) => console.error('Failed to open link:', error));
+                  openLink(item.url).catch((error) => log.error({ err: error }, 'Failed to open link'));
                 }}
               >
                 <Typography.Text className='text-14px text-t-primary'>{item.title}</Typography.Text>
