@@ -1,5 +1,6 @@
 import type { AuthType } from '@office-ai/aioncli-core';
 import { ApiKeyManager } from './ApiKeyManager';
+import { modelLogger as log } from '@/common/logger';
 
 // Unified interface for chat completion across different providers
 export interface UnifiedChatCompletionParams {
@@ -75,7 +76,7 @@ export abstract class RotatingApiClient<T> {
       try {
         this.client = this.createClientFn(apiKey);
       } catch (error) {
-        console.error('[RotatingApiClient] Client initialization failed:', error);
+        log.error({ err: error }, 'Client initialization failed');
         throw error;
       }
     }
