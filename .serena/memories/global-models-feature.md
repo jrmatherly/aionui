@@ -76,6 +76,25 @@ Key methods:
   - Visual distinction: Planet icon, "Shared" tag, blue tint header
   - Actions: Hide (PreviewCloseOne icon), Copy to local (Copy icon)
 
+## Chat Integration
+
+Global models appear automatically in the chat model selector for WebUI users:
+
+- **modelBridge.ts**: `getModelConfig` IPC handler calls `GlobalModelService.getEffectiveModels()` when `__webUiUserId` is present
+- **WebSocket adapter**: Injects `__webUiUserId` into IPC params for all web mode calls
+- **Desktop mode**: Unaffected — no userId means local-only models
+- **`isGlobal` flag**: Added to `IProvider` interface; used to filter global models out of "Your Models" edit controls while keeping them visible in chat
+
+### Data flow
+
+```
+Admin creates model → encrypted API key in DB
+→ getEffectiveModels() decrypts + merges local + global
+→ getModelConfig IPC returns full IProvider[] (with isGlobal flag)
+→ Chat stores TProviderWithModel at conversation creation
+→ Messages use stored provider config directly
+```
+
 ## Model Resolution Chain
 
 When displaying models to a user:
@@ -88,12 +107,22 @@ Users can:
 - Hide any global model (still works if already in use)
 - Copy global model to local (creates personal copy for customization)
 
+## Shared Components
+
+Model forms use shared components from `src/renderer/components/shared/`:
+
+- **ProviderLogo.tsx**: `ProviderLogo`, `renderPlatformOption`, `getProviderLogo` — single source of truth for all provider logo rendering
+- **PlatformSelect.tsx**: Reusable alphabetically-sorted provider dropdown with logos
+- **GlobalModelForm.tsx**: Uses `useModeModeList` SWR hook for dynamic model fetching (same pattern as `AddPlatformModal`)
+
 ## Security
 
 - API keys stored encrypted (never exposed to frontend)
 - Only `apiKeyHint` (last 4 chars) shown in admin UI
 - Admin role required for all management operations
 - Users can only manage their own hide/unhide overrides
+- Global models filtered from "Your Models" edit/delete controls via `isGlobal` flag
+- Decrypted keys included in IProvider for chat functionality but never shown in settings UI
 
 ## Files
 

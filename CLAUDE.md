@@ -43,9 +43,16 @@
 - **openid-client 5.7.1** - OIDC/OAuth2 client for SSO integration
 - **better-auth** - JWT token management
 
+### Logging & Observability
+
+- **Pino 10.x** - Structured JSON logging with child loggers
+- **OpenTelemetry** - Distributed tracing (auto-instrumentation)
+- **Langfuse** - LLM observability (optional)
+- **Syslog** - RFC 5424 SIEM forwarding (optional)
+
 ### Data & Storage
 
-- **Better SQLite3** - Local database (schema v16)
+- **Better SQLite3** - Local database (schema v17)
 - **Zod** - Data validation
 
 ## Project Structure
@@ -58,10 +65,11 @@ src/
 │   ├── pages/               # Page components
 │   │   ├── conversation/    # Chat interface (main feature)
 │   │   ├── settings/        # Settings management
-│   │   ├── admin/           # Admin pages (UserManagement, GroupMappings)
+│   │   ├── admin/           # Admin pages (UserManagement, GroupMappings, GlobalModels, LoggingSettings)
 │   │   ├── cron/            # Scheduled tasks
 │   │   └── login/           # Authentication
 │   ├── components/          # Reusable UI components
+│   │   └── shared/          # Cross-page shared (ProviderLogo, PlatformSelect)
 │   ├── hooks/               # React hooks
 │   ├── context/             # Global state (React Context)
 │   ├── config/              # Model platforms, capabilities
@@ -75,8 +83,12 @@ src/
 │   │   ├── mcpServices/     # MCP protocol (multi-agent)
 │   │   └── cron/            # Task scheduling
 │   └── task/                # Agent task managers
+├── process/
+│   └── telemetry/
+│       └── otel.ts          # OpenTelemetry bootstrap (must be first import)
 ├── webserver/               # Web server for remote access
-│   ├── routes/              # HTTP routes
+│   ├── routes/              # HTTP routes (incl. loggingRoutes.ts)
+│   ├── middleware/           # correlationId, auth, CSRF
 │   ├── websocket/           # Real-time communication
 │   └── auth/                # Authentication (OIDC, JWT, RBAC)
 ├── worker/                  # Background task workers
@@ -84,6 +96,7 @@ src/
 ├── common/                  # Shared utilities & types
 │   ├── adapters/            # API protocol converters
 │   ├── constants/           # Provider definitions
+│   ├── logger.ts            # Pino structured logging (root + child loggers)
 │   └── presets/             # Assistant presets
 └── agent/                   # AI agent implementations
     ├── acp/                 # Claude Code agent
@@ -203,6 +216,7 @@ Do not add `🤖 Generated with Claude` or similar signatures to commits.
 - **User Management**: Admin page for user CRUD and role assignment (`src/renderer/pages/admin/UserManagement.tsx`)
 - **Group Mappings**: Map OIDC groups to application roles (`src/renderer/pages/admin/GroupMappings.tsx`)
 - **Global Models**: Shared model configurations available to all users (`src/renderer/pages/admin/GlobalModels.tsx`)
+- **Logging Settings**: Runtime logging, OTEL, syslog, Langfuse configuration (`src/renderer/pages/admin/LoggingSettings.tsx`)
 - **Profile Page**: User profile with password change capability (`src/renderer/pages/settings/ProfilePage.tsx`)
 
 ### Middleware Stack

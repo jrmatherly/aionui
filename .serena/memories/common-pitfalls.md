@@ -118,6 +118,34 @@ Upgrading breaks the Docker build pipeline. Renovate config disables updates for
 
 Listed as dependency but never imported. Removed Feb 2026. Renovate config disables updates for it.
 
+## CSS / Theming
+
+### `:root` matches ALL themes — use `[data-theme='light']`
+
+Never use `:root .class` for light-mode-specific CSS. Since `data-theme` is set on `<html>`, and `:root` matches `<html>`, `:root .class` selectors apply in BOTH dark and light mode. Always use `[data-theme='light'] .class` for light-mode rules. This caused a 52-selector dark mode regression in Feb 2026.
+
+### Inline SVG in CSS `url()` breaks webpack
+
+Webpack's unplugin loader parses data URIs as modules. Use CSS-only techniques (gradients, `repeating-conic-gradient()`) or external files instead of inline SVG in `background-image`.
+
+## Express
+
+### Static routes must come before parameterized routes
+
+Routes like `/global/hidden` must be defined BEFORE `/global/:id`, otherwise `:id` captures "hidden" as a parameter. Route ordering: `/api/models/global` → `/global/hidden` → `/global/:id` → `/global/:id/hide`.
+
+## Arco Design
+
+### `Message.useMessage()` creates new reference each render
+
+Don't put `message` from `Message.useMessage()` in useCallback/useEffect dependencies — causes infinite re-render loops. Use static `Message.error()` / `Message.success()` for callbacks in dependency arrays.
+
+## Data Mapping
+
+### Snake_case vs camelCase across layers
+
+`IGlobalModel` (DB entity) uses `base_url`, `api_key`; `IProvider` (frontend) uses `baseUrl`, `apiKey`. Always check interface definitions when mapping between layers.
+
 ## Database
 
 ### Use CURRENT_DB_VERSION for migrations
