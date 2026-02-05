@@ -15,6 +15,9 @@ import { QRCodeSVG } from 'qrcode.react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSettingsViewMode } from '../settingsViewContext';
 import ChannelModalContent from './ChannelModalContent';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('WebuiModalContent');
 
 /**
  * Preference row component
@@ -128,7 +131,7 @@ const WebuiModalContent: React.FC = () => {
         );
       }
     } catch (error) {
-      console.error('[WebuiModal] Failed to load WebUI status:', error);
+      log.error({ err: error }, 'Failed to load WebUI status');
     } finally {
       setLoading(false);
     }
@@ -261,10 +264,10 @@ const WebuiModalContent: React.FC = () => {
         // Update UI immediately, stop server async
         setStatus((prev) => (prev ? { ...prev, running: false } : null));
         Message.success('WebUI stopped');
-        webui.stop.invoke().catch((err) => console.error('WebUI stop error:', err));
+        webui.stop.invoke().catch((err) => log.error({ err }, 'WebUI stop error'));
       }
     } catch (error) {
-      console.error('Toggle WebUI error:', error);
+      log.error({ err: error }, 'Toggle WebUI error');
       Message.error('Operation failed');
     } finally {
       setStartLoading(false);
@@ -284,7 +287,7 @@ const WebuiModalContent: React.FC = () => {
         try {
           await Promise.race([webui.stop.invoke(), new Promise((resolve) => setTimeout(resolve, 1500))]);
         } catch (err) {
-          console.error('WebUI stop error:', err);
+          log.error({ err }, 'WebUI stop error');
         }
 
         // 2. Restart immediately (server stops quickly)
@@ -334,7 +337,7 @@ const WebuiModalContent: React.FC = () => {
           }
         }
       } catch (error) {
-        console.error('[WebuiModal] Restart error:', error);
+        log.error({ err: error }, 'Restart error');
         Message.error('Operation failed');
       } finally {
         setStartLoading(false);
@@ -424,7 +427,7 @@ const WebuiModalContent: React.FC = () => {
         Message.error(result.msg || 'Failed to change password');
       }
     } catch (error) {
-      console.error('Set new password error:', error);
+      log.error({ err: error }, 'Set new password error');
       Message.error('Failed to change password');
     } finally {
       setPasswordLoading(false);
@@ -462,11 +465,11 @@ const WebuiModalContent: React.FC = () => {
           4 * 60 * 1000
         );
       } else {
-        console.error('Generate QR code failed:', result?.msg);
+        log.error({ msg: result?.msg }, 'Generate QR code failed');
         Message.error('Failed to generate QR code');
       }
     } catch (error) {
-      console.error('Generate QR code error:', error);
+      log.error({ err: error }, 'Generate QR code error');
       Message.error('Failed to generate QR code');
     } finally {
       setQrLoading(false);
@@ -554,7 +557,7 @@ const WebuiModalContent: React.FC = () => {
             {status?.running && (
               <PreferenceRow label={'Access URL'}>
                 <div className='flex items-center gap-8px'>
-                  <button className='text-14px text-primary font-mono hover:underline cursor-pointer bg-transparent border-none p-0' onClick={() => shell.openExternal.invoke(getDisplayUrl()).catch(console.error)}>
+                  <button className='text-14px text-primary font-mono hover:underline cursor-pointer bg-transparent border-none p-0' onClick={() => shell.openExternal.invoke(getDisplayUrl()).catch((err) => log.error({ err }, 'Failed to open URL'))}>
                     {getDisplayUrl()}
                   </button>
                   <Tooltip content={'Copy'}>
@@ -573,7 +576,7 @@ const WebuiModalContent: React.FC = () => {
                 <>
                   {'Use remote software/server for secure remote access'}
                   {'  '}
-                  <button className='text-primary hover:underline cursor-pointer bg-transparent border-none p-0 text-12px' onClick={() => shell.openExternal.invoke(branding.docs.remoteAccess).catch(console.error)}>
+                  <button className='text-primary hover:underline cursor-pointer bg-transparent border-none p-0 text-12px' onClick={() => shell.openExternal.invoke(branding.docs.remoteAccess).catch((err) => log.error({ err }, 'Failed to open docs'))}>
                     {'View Guide'}
                   </button>
                 </>
