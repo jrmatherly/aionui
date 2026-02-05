@@ -12,6 +12,9 @@ import { hasSpecificModelCapability } from '@/renderer/utils/modelCapabilities';
 import { Button, Dropdown, Empty, Input, Menu, Message, Spin, Tooltip } from '@arco-design/web-react';
 import { CheckOne, CloseOne, Copy, Delete, Down, Refresh } from '@icon-park/react';
 import React, { useCallback, useEffect, useState } from 'react';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('LarkConfigForm');
 /**
  * Get available primary models for a provider (supports function calling)
  */
@@ -96,7 +99,7 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
         setPendingPairings(result.data.filter((p) => p.platformType === 'lark'));
       }
     } catch (error) {
-      console.error('[LarkConfig] Failed to load pending pairings:', error);
+      log.error({ err: error }, 'Failed to load pending pairings');
     } finally {
       setPairingLoading(false);
     }
@@ -112,7 +115,7 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
         setAuthorizedUsers(result.data.filter((u) => u.platformType === 'lark'));
       }
     } catch (error) {
-      console.error('[LarkConfig] Failed to load authorized users:', error);
+      log.error({ err: error }, 'Failed to load authorized users');
     } finally {
       setUsersLoading(false);
     }
@@ -194,7 +197,7 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
   // Auto-enable plugin after successful test
   const handleAutoEnable = async () => {
     try {
-      console.log('[LarkConfig] Auto-enabling plugin with credentials...');
+      log.info('Auto-enabling plugin with credentials');
       const result = await channel.enablePlugin.invoke({
         pluginId: 'lark_default',
         config: {
@@ -205,24 +208,24 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
         },
       });
 
-      console.log('[LarkConfig] enablePlugin result:', result);
+      log.info({ success: result.success }, 'enablePlugin result');
 
       if (result.success) {
         Message.success('Lark bot enabled');
         const statusResult = await channel.getPluginStatus.invoke();
-        console.log('[LarkConfig] getPluginStatus result:', statusResult);
+        log.info({ success: statusResult.success }, 'getPluginStatus result');
         if (statusResult.success && statusResult.data) {
           const larkPlugin = statusResult.data.find((p) => p.type === 'lark');
-          console.log('[LarkConfig] Lark plugin status:', larkPlugin);
+          log.info({ pluginFound: !!larkPlugin }, 'Lark plugin status');
           onStatusChange(larkPlugin || null);
         }
       } else {
         // Show error to user when enable fails
-        console.error('[LarkConfig] enablePlugin failed:', result.msg);
+        log.error({ msg: result.msg }, 'enablePlugin failed');
         Message.error(result.msg || 'Failed to enable Lark plugin');
       }
     } catch (error: any) {
-      console.error('[LarkConfig] Auto-enable failed:', error);
+      log.error({ err: error }, 'Auto-enable failed');
       Message.error(error.message || 'Failed to enable Lark plugin');
     }
   };
@@ -243,7 +246,7 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
       });
       Message.success('Model saved');
     } catch (error) {
-      console.error('[LarkConfig] Failed to save model:', error);
+      log.error({ err: error }, 'Failed to save model');
       Message.error('Failed to save model');
     }
   };
@@ -414,7 +417,7 @@ const LarkConfigForm: React.FC<LarkConfigFormProps> = ({ pluginStatus, modelList
                           className={selectedModel?.id + selectedModel?.useModel === provider.id + modelName ? '!bg-fill-2' : ''}
                           onClick={() => {
                             handleModelSelect(provider, modelName).catch((error) => {
-                              console.error('Failed to select model:', error);
+                              log.error({ err: error }, 'Failed to select model');
                             });
                           }}
                         >
