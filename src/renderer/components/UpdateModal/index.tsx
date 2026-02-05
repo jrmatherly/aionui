@@ -11,6 +11,9 @@ import AionModal from '@/renderer/components/base/AionModal';
 import { Button, Progress } from '@arco-design/web-react';
 import { CheckOne, CloseOne, Download, FolderOpen, Refresh } from '@icon-park/react';
 import React, { useEffect, useMemo, useState } from 'react';
+import { createLogger } from '@/renderer/utils/logger';
+
+const log = createLogger('UpdateModal');
 type UpdateStatus = 'checking' | 'upToDate' | 'available' | 'downloading' | 'success' | 'error';
 
 type UpdateInfo = UpdateReleaseInfo;
@@ -56,7 +59,7 @@ const UpdateModal: React.FC = () => {
       setStatus('upToDate');
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.error('Update check failed:', err);
+      log.error({ err }, 'Update check failed');
       setErrorMsg(msg);
       setStatus('error');
     }
@@ -83,7 +86,7 @@ const UpdateModal: React.FC = () => {
       setDownloadPath(res.data.filePath);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.error('Download failed:', err);
+      log.error({ err }, 'Download failed');
       setErrorMsg(msg);
       setStatus('error');
     }
@@ -154,14 +157,14 @@ const UpdateModal: React.FC = () => {
   const openFile = () => {
     if (!downloadPath) return;
     void ipcBridge.shell.openFile.invoke(downloadPath).catch((error) => {
-      console.error('Failed to open file:', error);
+      log.error({ err: error }, 'Failed to open file');
     });
   };
 
   const showInFolder = () => {
     if (!downloadPath) return;
     void ipcBridge.shell.showItemInFolder.invoke(downloadPath).catch((error) => {
-      console.error('Failed to show item in folder:', error);
+      log.error({ err: error }, 'Failed to show item in folder');
     });
   };
 
