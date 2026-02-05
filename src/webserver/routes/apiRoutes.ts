@@ -87,6 +87,27 @@ export function registerApiRoutes(app: Express): void {
   });
 
   /**
+   * Get a single global model's details (for copy-to-local)
+   * GET /api/models/global/:id
+   *
+   * Returns the global model metadata (no decrypted API key for security).
+   */
+  app.get('/api/models/global/:id', apiRateLimiter, validateApiAccess, scopeToUser, (req: Request, res: Response) => {
+    try {
+      const service = GlobalModelService.getInstance();
+      const model = service.getGlobalModel(req.params.id);
+      if (!model) {
+        res.status(404).json({ success: false, error: 'Global model not found' });
+        return;
+      }
+      res.json({ success: true, model });
+    } catch (error) {
+      console.error('[API] Get global model detail error:', error);
+      res.status(500).json({ success: false, error: 'Failed to get global model details' });
+    }
+  });
+
+  /**
    * Hide a global model for the current user
    * POST /api/models/global/:id/hide
    */

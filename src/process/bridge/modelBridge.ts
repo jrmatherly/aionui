@@ -11,6 +11,7 @@ import { isGoogleApisHost } from '@/common/utils/urlValidation';
 import OpenAI from 'openai';
 import { ipcBridge } from '../../common';
 import { ProcessConfig } from '../initStorage';
+import { GlobalModelService } from '../services/GlobalModelService';
 
 /**
  * Common path patterns for OpenAI-compatible APIs
@@ -198,33 +199,49 @@ export function initModelBridge(): void {
       });
   });
 
-  ipcBridge.mode.getModelConfig.provider(() => {
+  ipcBridge.mode.getModelConfig.provider((params?: any) => {
     return ProcessConfig.get('model.config')
       .then((data) => {
-        if (!data) return [];
+        let localModels: IProvider[] = [];
 
-        // Handle migration from old IModel format to new IProvider format
-        return data.map((v: any, _index: number) => {
-          // Check if this is old format (has 'selectedModel' field) vs new format (has 'useModel')
-          if ('selectedModel' in v && !('useModel' in v)) {
-            // Migrate from old format
+        if (data) {
+          // Handle migration from old IModel format to new IProvider format
+          localModels = data.map((v: any, _index: number) => {
+            // Check if this is old format (has 'selectedModel' field) vs new format (has 'useModel')
+            if ('selectedModel' in v && !('useModel' in v)) {
+              // Migrate from old format
+              return {
+                ...v,
+                useModel: v.selectedModel, // Rename selectedModel to useModel
+                id: v.id || uuid(),
+                capabilities: v.capabilities || [], // Add missing capabilities field
+                contextLimit: v.contextLimit, // Keep existing contextLimit if present
+              };
+              // Note: we don't delete selectedModel here as this is read-only migration
+            }
+
+            // Already in new format or unknown format, just ensure ID exists
             return {
               ...v,
-              useModel: v.selectedModel, // Rename selectedModel to useModel
               id: v.id || uuid(),
-              capabilities: v.capabilities || [], // Add missing capabilities field
-              contextLimit: v.contextLimit, // Keep existing contextLimit if present
+              useModel: v.useModel || v.selectedModel || '', // Fallback for edge cases
             };
-            // Note: we don't delete selectedModel here as this is read-only migration
-          }
+          });
+        }
 
-          // Already in new format or unknown format, just ensure ID exists
-          return {
-            ...v,
-            id: v.id || uuid(),
-            useModel: v.useModel || v.selectedModel || '', // Fallback for edge cases
-          };
-        });
+        // In web mode, merge global models with local models
+        // __webUiUserId is injected by the WebSocket adapter for authenticated web users
+        const userId = params?.__webUiUserId;
+        if (userId) {
+          try {
+            const globalModelService = GlobalModelService.getInstance();
+            return globalModelService.getEffectiveModels(userId, localModels);
+          } catch {
+            // GlobalModelService not initialized (e.g., desktop mode) — return local only
+          }
+        }
+
+        return localModels;
       })
       .catch(() => {
         return [] as IProvider[];
