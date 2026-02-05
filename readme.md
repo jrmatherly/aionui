@@ -3,17 +3,11 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/v/release/iOfficeAI/AionUi?style=flat-square&color=32CD32" alt="Version">
+  <img src="https://img.shields.io/github/v/release/jrmatherly/aionui?style=flat-square&color=32CD32" alt="Version">
   &nbsp;
   <img src="https://img.shields.io/badge/license-Apache--2.0-32CD32?style=flat-square&logo=apache&logoColor=white" alt="License">
   &nbsp;
   <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-6C757D?style=flat-square&logo=linux&logoColor=white" alt="Platform">
-</p>
-
-<p align="center">
-  <a href="https://trendshift.io/repositories/15423" target="_blank">
-    <img src="https://trendshift.io/api/badge/repositories/15423" alt="GitHub Trending" height="80">
-  </a>
 </p>
 
 ---
@@ -24,17 +18,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/iOfficeAI/AionUi/releases">
+  <a href="https://github.com/jrmatherly/aionui/releases">
     <img src="https://img.shields.io/badge/⬇️%20Download%20Now-Latest%20Release-32CD32?style=for-the-badge&logo=github&logoColor=white" alt="Download Latest Release" height="50">
   </a>
-</p>
-
-<p align="center">
-  <strong>English</strong> | <a href="./readme_ch.md">简体中文</a> | <a href="./readme_tw.md">繁體中文</a> | <a href="./readme_jp.md">日本語</a> | <a href="./readme_ko.md">한국어</a> | <a href="./readme_es.md">Español</a> | <a href="./readme_pt.md">Português</a> | <a href="https://www.aionui.com" target="_blank">Official Website</a> | <a href="https://twitter.com/AionUI" target="_blank">Twitter</a>
-</p>
-
-<p align="center">
-  <strong>💬 Community:</strong> <a href="https://discord.gg/2QAwJn7Egx" target="_blank">Discord (English)</a> | <a href="./resources/wx.png" target="_blank">微信 (中文群)</a>
 </p>
 
 ---
@@ -258,33 +244,6 @@ A: All conversation data is stored in a local SQLite database and will not be up
 
 ---
 
-## 🎬 See How People Use AionUi
-
-_Watch how content creators review and use AionUi in real-world scenarios_
-
-<p align="center">
-  <a href="https://www.youtube.com/watch?v=yUU5E-U5B3M" target="_blank">
-    <img src="https://img.youtube.com/vi/yUU5E-U5B3M/maxresdefault.jpg" alt="WorldofAI Review" width="400">
-  </a>
-  &nbsp;&nbsp;
-  <a href="https://www.youtube.com/watch?v=enQnkKfth10" target="_blank">
-    <img src="https://img.youtube.com/vi/enQnkKfth10/maxresdefault.jpg" alt="Julian Goldie SEO Review" width="400">
-  </a>
-</p>
-<p align="center">
-  <em>🎬 WorldofAI (200K subscribers)</em> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <em>🎬 Julian Goldie SEO (318K subscribers)</em>
-</p>
-
-### 📰 Community Articles
-
-- [🔥 Explosive! Open-source free version of Cowork, full model integration + autonomous file operations, redefining AI office work.](https://mp.weixin.qq.com/s/F3f-CCsVPaK3lK00jXhOOg) — Open Source AI Project Landing
-- [Making ordinary people use Claude Code like an APP, what is the ACP protocol](https://mp.weixin.qq.com/s/TsMojSbkUUFvsd-HQCazZg) — Lazy Cat Loves Fishing
-- [5500 Stars: How Open Source Breaks Anthropic's AI Tool Moat](https://mp.weixin.qq.com/s/saEk49cYV6MqBgw19Lw6Gw) — AI Silicon Moment
-
-> 💡 **Have you made a video about AionUi?** [Let us know on X](https://x.com/AionUi) and we'll feature it here! We value your feedback and will continue to improve based on your suggestions.
-
----
-
 ## ✨ Core Features
 
 ### 💬 **Multi-Session Chat**
@@ -364,16 +323,10 @@ _Watch how content creators review and use AionUi in real-world scenarios_
 ### 📥 Download
 
 <p>
-  <a href="https://github.com/iOfficeAI/AionUi/releases">
+  <a href="https://github.com/jrmatherly/aionui/releases">
     <img src="https://img.shields.io/badge/Download-Latest%20Release-32CD32?style=for-the-badge&logo=github&logoColor=white" alt="Download Latest Release" height="50">
   </a>
 </p>
-
-### 🍺 Install via Homebrew (macOS)
-
-```bash
-brew install aionui
-```
 
 ### 🔧 Simple Installation
 
@@ -391,19 +344,8 @@ brew install aionui
 
 **💡 Your ideas matter!** We highly value every user's suggestions and feedback. Whether it's feature ideas, user experience, or issues you encounter, feel free to contact us anytime!
 
-<p align="center">
-  <a href="https://x.com/AionUi" target="_blank">
-    <img src="./resources/contactus-x.png" alt="Contact Us on X" width="600">
-  </a>
-</p>
-
-- [💬 GitHub Discussions](https://github.com/iOfficeAI/AionUi/discussions) - **Share ideas, make suggestions, exchange usage tips**
-- [🐛 Report Issues](https://github.com/iOfficeAI/AionUi/issues) - Report bugs or feature requests
-- [📦 Release Updates](https://github.com/iOfficeAI/AionUi/releases) - Get the latest version
-- [💬 Discord Community](https://discord.gg/2QAwJn7Egx) - **Join our English Discord community**
-- [💬 WeChat (Chinese Group)](./resources/wx.png) - **Click to view QR code**
-- [💬 Discord Community](https://discord.gg/2QAwJn7Egx) - **Join our English Discord community**
-- [💬 WeChat (Chinese Group)](./resources/wx.png) - **Click to view QR code**
+- [🐛 Report Issues](https://github.com/jrmatherly/aionui/issues) - Report bugs or feature requests
+- [📦 Release Updates](https://github.com/jrmatherly/aionui/releases) - Get the latest version
 
 ### 🤝 Contributing
 
@@ -422,29 +364,3 @@ Welcome to submit Issues and Pull Requests!
 This project is licensed under [Apache-2.0](LICENSE).
 
 ---
-
-## 👥 Contributors
-
-Thanks to all developers who have contributed to AionUi!
-
-<p align="center">
-  <a href="https://github.com/iOfficeAI/AionUi/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=iOfficeAI/AionUi&max=50" alt="Contributors" />
-  </a>
-</p>
-
-## 📊 Star History
-
-<p align="center">
-  <a href="https://www.star-history.com/#iOfficeAI/aionui&Date" target="_blank">
-    <img src="https://api.star-history.com/svg?repos=iOfficeAI/aionui&type=Date" alt="GitHub Star Trends" width="600">
-  </a>
-</p>
-
-<div align="center">
-
-**⭐ If you like it, give us a star**
-
-[Report Bug](https://github.com/iOfficeAI/AionUi/issues) · [Request Feature](https://github.com/iOfficeAI/AionUi/issues)
-
-</div>
