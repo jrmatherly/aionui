@@ -11,7 +11,42 @@
  */
 
 import type Database from 'better-sqlite3';
+import crypto from 'crypto';
 import { dbLogger as log } from '@/common/logger';
+
+/**
+ * Environment variable schema for global models
+ * GLOBAL_MODELS = JSON array of model configs
+ *
+ * Example:
+ * GLOBAL_MODELS='[
+ *   {
+ *     "platform": "openai",
+ *     "name": "OpenAI GPT-4",
+ *     "api_key": "sk-xxx",
+ *     "models": ["gpt-4", "gpt-4-turbo"],
+ *     "base_url": "https://api.openai.com/v1"
+ *   },
+ *   {
+ *     "platform": "anthropic",
+ *     "name": "Anthropic Claude",
+ *     "api_key": "sk-ant-xxx",
+ *     "models": ["claude-3-opus-20240229", "claude-3-sonnet-20240229"]
+ *   }
+ * ]'
+ */
+export interface GlobalModelEnvConfig {
+  platform: string;
+  name: string;
+  api_key?: string;
+  models: string[];
+  base_url?: string;
+  capabilities?: string[];
+  context_limit?: number;
+  custom_headers?: Record<string, string>;
+  enabled?: boolean;
+  priority?: number;
+}
 
 export function migrate_v16_add_global_models(db: Database.Database): void {
   log.info('Migration v16: Adding global_models and user_model_overrides tables...');
@@ -68,4 +103,130 @@ export function migrate_v16_add_global_models(db: Database.Database): void {
   `);
 
   log.info('Migration v16: Global models tables created');
+}
+
+/**
+ * Encryption helpers for env var sync (mirrors GlobalModelService)
+ */
+function deriveEncryptionKey(jwtSecret: string): Buffer {
+  const masterKey = crypto.createHash('sha256').update(jwtSecret).digest();
+  return crypto.createHmac('sha256', masterKey).update('global_models').digest();
+}
+
+function encryptApiKey(plaintext: string, jwtSecret: string): string {
+  const key = deriveEncryptionKey(jwtSecret);
+  const iv = crypto.randomBytes(12);
+  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+  const encrypted = Buffer.concat([cipher.update(plaintext, 'utf8'), cipher.final()]);
+  const authTag = cipher.getAuthTag();
+  return `${iv.toString('base64')}:${authTag.toString('base64')}:${encrypted.toString('base64')}`;
+}
+
+/**
+ * Sync global models from GLOBAL_MODELS environment variable
+ *
+ * Called on every startup to ensure env-configured models exist in DB.
+ * Uses upsert logic: creates new models, updates existing ones (by name match).
+ * Does NOT delete models that aren't in the env var.
+ *
+ * @param db - Database instance
+ * @param jwtSecret - JWT secret for API key encryption
+ */
+export function syncGlobalModelsFromEnv(db: Database.Database, jwtSecret: string): void {
+  const envValue = process.env.GLOBAL_MODELS;
+  if (!envValue || !envValue.trim()) {
+    log.debug('GLOBAL_MODELS env var not set, skipping sync');
+    return;
+  }
+
+  let models: GlobalModelEnvConfig[];
+  try {
+    models = JSON.parse(envValue) as GlobalModelEnvConfig[];
+    if (!Array.isArray(models)) {
+      throw new Error('GLOBAL_MODELS must be a JSON array');
+    }
+  } catch (err) {
+    log.error({ err }, 'Failed to parse GLOBAL_MODELS env var');
+    return;
+  }
+
+  if (models.length === 0) {
+    log.debug('GLOBAL_MODELS is empty array, skipping sync');
+    return;
+  }
+
+  log.info({ count: models.length }, 'Syncing global models from environment');
+
+  const now = Math.floor(Date.now() / 1000);
+  const systemUserId = 'system'; // Models created via env are attributed to 'system'
+
+  // Prepare statements
+  const findByName = db.prepare('SELECT id FROM global_models WHERE name = ?');
+  const insertModel = db.prepare(`
+    INSERT INTO global_models (
+      id, platform, name, base_url, encrypted_api_key, models,
+      capabilities, context_limit, custom_headers, enabled, priority,
+      created_by, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `);
+  const updateModel = db.prepare(`
+    UPDATE global_models SET
+      platform = ?,
+      base_url = ?,
+      encrypted_api_key = COALESCE(?, encrypted_api_key),
+      models = ?,
+      capabilities = ?,
+      context_limit = ?,
+      custom_headers = ?,
+      enabled = ?,
+      priority = ?,
+      updated_at = ?
+    WHERE id = ?
+  `);
+
+  for (const config of models) {
+    // Validate required fields
+    if (!config.platform || !config.name || !config.models || !Array.isArray(config.models)) {
+      log.warn({ config }, 'Skipping invalid global model config (missing platform, name, or models)');
+      continue;
+    }
+
+    try {
+      const existing = findByName.get(config.name) as { id: string } | undefined;
+
+      const encryptedKey = config.api_key ? encryptApiKey(config.api_key, jwtSecret) : null;
+      const modelsJson = JSON.stringify(config.models);
+      const capabilitiesJson = config.capabilities ? JSON.stringify(config.capabilities) : null;
+      const headersJson = config.custom_headers ? JSON.stringify(config.custom_headers) : null;
+      const enabled = config.enabled !== false ? 1 : 0;
+      const priority = config.priority ?? 0;
+
+      if (existing) {
+        // Update existing model (don't overwrite API key if not provided in env)
+        updateModel.run(
+          config.platform,
+          config.base_url || '',
+          encryptedKey, // null if not provided, COALESCE keeps existing
+          modelsJson,
+          capabilitiesJson,
+          config.context_limit ?? null,
+          headersJson,
+          enabled,
+          priority,
+          now,
+          existing.id
+        );
+        log.info({ name: config.name, id: existing.id }, 'Updated global model from env');
+      } else {
+        // Create new model
+        const id = `gm_${crypto.randomUUID()}`;
+        insertModel.run(id, config.platform, config.name, config.base_url || '', encryptedKey, modelsJson, capabilitiesJson, config.context_limit ?? null, headersJson, enabled, priority, systemUserId, now, now);
+        log.info({ name: config.name, id }, 'Created global model from env');
+      }
+    } catch (err) {
+      log.error({ err, name: config.name }, 'Failed to sync global model from env');
+    }
+  }
+
+  log.info({ count: models.length }, 'Global models sync from env complete');
 }

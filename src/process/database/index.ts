@@ -13,6 +13,7 @@ import BetterSqlite3 from 'better-sqlite3';
 import fs from 'fs';
 import path from 'path';
 import { runMigrations as executeMigrations } from './migrations';
+import { syncGlobalModelsFromEnv } from './migrations/v16_add_global_models';
 import { syncLoggingConfigFromEnv } from './migrations/v17_add_logging_config';
 import { CURRENT_DB_VERSION, getDatabaseVersion, initSchema, setDatabaseVersion } from './schema';
 import type { IConversationRow, IMessageRow, IOrgDirectories, IOrgMember, IOrganization, IPaginatedResult, IQueryResult, ITeam, ITeamDirectories, ITeamMember, IUser, IUserDirectories, MemberRole, TChatConversation, TMessage } from './types';
@@ -89,9 +90,10 @@ export class AionUIDatabase {
 
       this.ensureSystemUser();
 
-      // Sync logging_config from environment variables on every startup
+      // Sync configs from environment variables on every startup
       // so .env / docker-compose changes are reflected in the admin UI.
       this.syncLoggingEnv();
+      this.syncGlobalModelsEnv();
     } catch (error) {
       log.error({ err: error }, 'Initialization failed');
       throw error;
@@ -109,6 +111,21 @@ export class AionUIDatabase {
     } catch (error) {
       // Non-fatal — table may not exist on very old DBs being migrated
       log.warn({ err: error }, 'Could not sync logging config from env');
+    }
+  }
+
+  /** Sync global_models from GLOBAL_MODELS env var (runs every startup). */
+  private syncGlobalModelsEnv(): void {
+    try {
+      const jwtSecret = process.env.JWT_SECRET || process.env.BETTER_AUTH_SECRET;
+      if (!jwtSecret) {
+        log.warn('JWT_SECRET not set, skipping global models env sync');
+        return;
+      }
+      syncGlobalModelsFromEnv(this.db, jwtSecret);
+    } catch (error) {
+      // Non-fatal — table may not exist on very old DBs being migrated
+      log.warn({ err: error }, 'Could not sync global models from env');
     }
   }
 
