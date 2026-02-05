@@ -6,6 +6,7 @@
 
 import type { CodexAgentManager } from '@/agent/codex';
 import { GeminiAgent, GeminiApprovalStore } from '@/agent/gemini';
+import { conversationLogger as log } from '@/common/logger';
 import type { TChatConversation } from '@/common/storage';
 import { getDatabase } from '@process/database';
 import { cronService } from '@process/services/cron/CronService';
@@ -42,7 +43,7 @@ export function initConversationBridge(): void {
         const db = getDatabase();
         db.updateConversationUserId(result.conversation.id, __webUiUserId);
       } catch (err) {
-        console.warn('[conversationBridge] Failed to set conversation userId:', err);
+        log.warn({ err, conversationId: result.conversation.id, userId: __webUiUserId }, 'Failed to set conversation userId');
       }
     }
 
@@ -105,7 +106,7 @@ export function initConversationBridge(): void {
       // Filter by workspace
       return allConversations.filter((item) => item.extra?.workspace === currentConversation.extra.workspace);
     } catch (error) {
-      console.error('[conversationBridge] Failed to get associate conversations:', error);
+      log.error({ err: error, conversationId: conversation_id }, 'Failed to get associate conversations');
       return [];
     }
   });
@@ -120,7 +121,7 @@ export function initConversationBridge(): void {
       const db = getDatabase();
       const result = db.createConversation(conversation);
       if (!result.success) {
-        console.error('[conversationBridge] Failed to create conversation in database:', result.error);
+        log.error({ err: result.error, conversationId: conversation.id }, 'Failed to create conversation in database');
       }
 
       // Migrate messages if sourceConversationId is provided
@@ -161,25 +162,28 @@ export function initConversationBridge(): void {
             // ON DELETE CASCADE will handle message deletion
             const deleteResult = db.deleteConversation(sourceConversationId);
             if (deleteResult.success) {
-              console.log(`[conversationBridge] Successfully migrated and deleted source conversation ${sourceConversationId}`);
+              log.info({ sourceConversationId, newConversationId: conversation.id }, 'Successfully migrated and deleted source conversation');
             } else {
-              console.error(`[conversationBridge] Failed to delete source conversation ${sourceConversationId}: ${deleteResult.error}`);
+              log.error({ err: deleteResult.error, sourceConversationId }, 'Failed to delete source conversation');
             }
           } else {
-            console.error('[conversationBridge] Migration integrity check failed: Message counts do not match.', {
-              source: sourceMessages.total,
-              new: newMessages.total,
-            });
+            log.error(
+              {
+                sourceTotal: sourceMessages.total,
+                newTotal: newMessages.total,
+              },
+              'Migration integrity check failed: Message counts do not match'
+            );
             // Do not delete source if verification fails
           }
         } catch (msgError) {
-          console.error('[conversationBridge] Failed to copy messages during migration:', msgError);
+          log.error({ err: msgError, sourceConversationId, newConversationId: conversation.id }, 'Failed to copy messages during migration');
         }
       }
 
       return Promise.resolve(conversation);
     } catch (error) {
-      console.error('[conversationBridge] Failed to create conversation with conversation:', error);
+      log.error({ err: error, conversationId: conversation.id }, 'Failed to create conversation with conversation');
       return Promise.resolve(conversation);
     }
   });
@@ -204,7 +208,7 @@ export function initConversationBridge(): void {
           ipcBridge.cron.onJobRemoved.emit({ jobId: job.id });
         }
       } catch (cronError) {
-        console.warn('[conversationBridge] Failed to cleanup cron jobs:', cronError);
+        log.warn({ err: cronError, conversationId: id }, 'Failed to cleanup cron jobs');
         // Continue with deletion even if cron cleanup fails
       }
 
@@ -216,10 +220,10 @@ export function initConversationBridge(): void {
           const channelManager = getChannelManager();
           if (channelManager.isInitialized()) {
             await channelManager.cleanupConversation(id);
-            console.log(`[conversationBridge] Cleaned up channel resources for ${source} conversation ${id}`);
+            log.info({ source, conversationId: id }, 'Cleaned up channel resources');
           }
         } catch (cleanupError) {
-          console.warn('[conversationBridge] Failed to cleanup channel resources:', cleanupError);
+          log.warn({ err: cleanupError, source, conversationId: id }, 'Failed to cleanup channel resources');
           // Continue with deletion even if cleanup fails
         }
       }
@@ -227,13 +231,13 @@ export function initConversationBridge(): void {
       // Delete conversation from database (will cascade delete messages due to foreign key)
       const result = db.deleteConversation(id);
       if (!result.success) {
-        console.error('[conversationBridge] Failed to delete conversation from database:', result.error);
+        log.error({ err: result.error, conversationId: id }, 'Failed to delete conversation from database');
         return false;
       }
 
       return true;
     } catch (error) {
-      console.error('[conversationBridge] Failed to remove conversation:', error);
+      log.error({ err: error, conversationId: id }, 'Failed to remove conversation');
       return false;
     }
   });
@@ -273,7 +277,7 @@ export function initConversationBridge(): void {
 
       return result.success;
     } catch (error) {
-      console.error('[conversationBridge] Failed to update conversation:', error);
+      log.error({ err: error, conversationId: id }, 'Failed to update conversation');
       return false;
     }
   });
@@ -317,7 +321,7 @@ export function initConversationBridge(): void {
 
       return undefined;
     } catch (error) {
-      console.error('[conversationBridge] Failed to get conversation:', error);
+      log.error({ err: error, conversationId: id }, 'Failed to get conversation');
       return undefined;
     }
   });
@@ -348,7 +352,7 @@ export function initConversationBridge(): void {
     } catch (error) {
       // Catch abort errors to avoid unhandled rejection
       if (error instanceof Error && error.message.includes('aborted')) {
-        console.log('[Workspace] Read directory aborted:', error.message);
+        log.debug({ message: error.message }, 'Read directory aborted');
         return [];
       }
       throw error;
@@ -367,21 +371,21 @@ export function initConversationBridge(): void {
 
   // Generic sendMessage implementation - automatically dispatches based on conversation type
   ipcBridge.conversation.sendMessage.provider(async ({ conversation_id, files, ...other }) => {
-    console.log(`[conversationBridge] sendMessage called: conversation_id=${conversation_id}, msg_id=${other.msg_id}`);
+    log.debug({ conversationId: conversation_id, msgId: other.msg_id }, 'sendMessage called');
 
     let task: GeminiAgentManager | AcpAgentManager | CodexAgentManager | undefined;
     try {
       task = (await WorkerManage.getTaskByIdRollbackBuild(conversation_id)) as GeminiAgentManager | AcpAgentManager | CodexAgentManager | undefined;
     } catch (err) {
-      console.log(`[conversationBridge] sendMessage: failed to get/build task: ${conversation_id}`, err);
+      log.debug({ err, conversationId: conversation_id }, 'sendMessage: failed to get/build task');
       return { success: false, msg: err instanceof Error ? err.message : 'conversation not found' };
     }
 
     if (!task) {
-      console.log(`[conversationBridge] sendMessage: conversation not found: ${conversation_id}`);
+      log.debug({ conversationId: conversation_id }, 'sendMessage: conversation not found');
       return { success: false, msg: 'conversation not found' };
     }
-    console.log(`[conversationBridge] sendMessage: found task type=${task.type}, status=${task.status}`);
+    log.debug({ conversationId: conversation_id, taskType: task.type, status: task.status }, 'sendMessage: found task');
 
     // Copy files to workspace (unified for all agents)
     const workspaceFiles = await copyFilesToDirectory(task.workspace, files, false);
