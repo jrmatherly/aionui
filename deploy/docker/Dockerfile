@@ -53,9 +53,17 @@ COPY . .
 # modules against Electron's Node ABI. Do NOT set CI=true — that would skip
 # native module rebuilding (rebuildConfig.onlyModules: [] in forge.config.ts).
 # Increase Node heap for webpack — default 2GB is insufficient for full rebuild.
+#
+# Cache mounts:
+#   - /root/.cache/electron: Electron binary download (~100-250MB per arch).
+#     Persisted across builds so Electron doesn't re-download every time.
+#   - /app/.webpack-cache: Webpack 5 filesystem cache for incremental rebuilds.
+#     Only changed modules are recompiled, cutting webpack time dramatically.
 ARG TARGETARCH=arm64
 ENV NODE_OPTIONS="--max-old-space-size=4096"
-RUN npm exec electron-forge -- package --platform=linux --arch=${TARGETARCH}
+RUN --mount=type=cache,target=/root/.cache/electron,sharing=locked \
+    --mount=type=cache,target=/app/.webpack-cache,sharing=locked \
+    npm exec electron-forge -- package --platform=linux --arch=${TARGETARCH}
 
 # Ensure .webpack output is at the expected location for electron-builder.
 # Forge may output to .webpack/{arch}/ — normalize to .webpack/main & .webpack/renderer
