@@ -113,6 +113,8 @@ services:
       - aionui_data:/home/aionui/.config/AionUi
       # OIDC group→role mappings (file-based, see GROUP_MAPPINGS_FILE in .env)
       - ./group-mappings.json:/etc/aionui/group-mappings.json:ro
+      # Global models config (file-based, see GLOBAL_MODELS_FILE in .env)
+      - ./global-models.json:/etc/aionui/global-models.json:ro
       # Optional: Mount custom skills (read-only)
       # - ./custom-skills:/app/resources/skills:ro
       # Optional: Mount CLI auth/config for OAuth-based CLIs (multi-agent mode)

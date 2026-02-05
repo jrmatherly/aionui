@@ -12,14 +12,18 @@
 
 import type Database from 'better-sqlite3';
 import crypto from 'crypto';
+import fs from 'fs';
 import { dbLogger as log } from '@/common/logger';
 
 /**
- * Environment variable schema for global models
- * GLOBAL_MODELS = JSON array of model configs
+ * Global models configuration schema
  *
- * Example:
- * GLOBAL_MODELS='[
+ * Priority (same pattern as GROUP_MAPPINGS):
+ *   1. File at GLOBAL_MODELS_FILE (default /etc/aionui/global-models.json)
+ *   2. GLOBAL_MODELS env var (JSON string)
+ *
+ * Example JSON:
+ * [
  *   {
  *     "platform": "openai",
  *     "name": "OpenAI GPT-4",
@@ -123,35 +127,65 @@ function encryptApiKey(plaintext: string, jwtSecret: string): string {
 }
 
 /**
- * Sync global models from GLOBAL_MODELS environment variable
+ * Load global models from file or environment variable
  *
- * Called on every startup to ensure env-configured models exist in DB.
+ * Priority (same pattern as GROUP_MAPPINGS):
+ *   1. File at GLOBAL_MODELS_FILE (default /etc/aionui/global-models.json)
+ *   2. GLOBAL_MODELS env var (JSON string)
+ *   3. Empty array (no pre-configured models)
+ */
+function loadGlobalModelsConfig(): GlobalModelEnvConfig[] {
+  // 1. Try file (only when explicitly configured or default path exists)
+  const configPath = process.env.GLOBAL_MODELS_FILE || '/etc/aionui/global-models.json';
+  try {
+    const content = fs.readFileSync(configPath, 'utf-8');
+    const models = JSON.parse(content) as GlobalModelEnvConfig[];
+    if (!Array.isArray(models)) {
+      throw new Error('Global models config must be a JSON array');
+    }
+    log.info({ count: models.length, configPath }, 'Loaded global models from file');
+    return models;
+  } catch (error) {
+    // File doesn't exist or isn't readable — fall through to env var check
+    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+      log.error({ err: error, configPath }, 'Failed to load global models from file');
+    }
+  }
+
+  // 2. Try env var
+  const envValue = process.env.GLOBAL_MODELS;
+  if (envValue && envValue.trim()) {
+    try {
+      const models = JSON.parse(envValue) as GlobalModelEnvConfig[];
+      if (!Array.isArray(models)) {
+        throw new Error('GLOBAL_MODELS must be a JSON array');
+      }
+      log.info({ count: models.length }, 'Loaded global models from GLOBAL_MODELS env var');
+      return models;
+    } catch (err) {
+      log.error({ err }, 'Failed to parse GLOBAL_MODELS env var');
+    }
+  }
+
+  // 3. No config
+  return [];
+}
+
+/**
+ * Sync global models from file or environment variable
+ *
+ * Called on every startup to ensure configured models exist in DB.
  * Uses upsert logic: creates new models, updates existing ones (by name match).
- * Does NOT delete models that aren't in the env var.
+ * Does NOT delete models that aren't in the config.
  *
  * @param db - Database instance
  * @param jwtSecret - JWT secret for API key encryption
  */
 export function syncGlobalModelsFromEnv(db: Database.Database, jwtSecret: string): void {
-  const envValue = process.env.GLOBAL_MODELS;
-  if (!envValue || !envValue.trim()) {
-    log.debug('GLOBAL_MODELS env var not set, skipping sync');
-    return;
-  }
-
-  let models: GlobalModelEnvConfig[];
-  try {
-    models = JSON.parse(envValue) as GlobalModelEnvConfig[];
-    if (!Array.isArray(models)) {
-      throw new Error('GLOBAL_MODELS must be a JSON array');
-    }
-  } catch (err) {
-    log.error({ err }, 'Failed to parse GLOBAL_MODELS env var');
-    return;
-  }
+  const models = loadGlobalModelsConfig();
 
   if (models.length === 0) {
-    log.debug('GLOBAL_MODELS is empty array, skipping sync');
+    log.debug('No global models configured, skipping sync');
     return;
   }
 
