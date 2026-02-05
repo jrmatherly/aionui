@@ -23,14 +23,9 @@
       "args": [
         "@playwright/mcp@latest"
       ]
-    },
-    "sqlite": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sqlite",
-        "~/.config/AionUi/aionui.db"
-      ]
     }
+  },
+  "_comments": {
+    "sqlite": "SQLite MCP disabled - DB lives inside Docker volume (aionui_data). For local Electron dev, use: npx -y @modelcontextprotocol/server-sqlite ~/.config/AionUi/aionui.db"
   }
 }
