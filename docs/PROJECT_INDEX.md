@@ -148,11 +148,17 @@ src/
 ├── shims/                      # Module shims
 └── utils/                      # Global utilities
 
+skills/                         # Python skills
+├── lance/                      # RAG/Knowledge Base scripts
+├── crawl4ai/                   # Web scraping skill
+└── requirements.txt            # Shared Python dependencies
+
 deploy/                         # Deployment configurations
 └── docker/                     # Docker containerization
     ├── Dockerfile              # Multi-stage build
     ├── docker-compose.yml      # Container orchestration
-    └── docker-entrypoint.sh    # Container startup script
+    ├── docker-entrypoint.sh    # Container startup script
+    └── nginx.conf              # HTTPS reverse proxy config
 ```
 
 ---
@@ -199,7 +205,11 @@ webuiResetPassword()               // Reset password
 | ProfilePage | `src/renderer/pages/settings/ProfilePage.tsx` | User profile and password change |
 | Cron | `src/renderer/pages/cron/` | Scheduled task management |
 | Login | `src/renderer/pages/login/` | Authentication UI (OIDC + local) |
+| Admin | `src/renderer/pages/admin/` | User management, logging settings |
+| Profile | `src/renderer/pages/profile/` | User profile |
 | Guide | `src/renderer/pages/guid/` | Onboarding guide |
+
+Settings sub-pages include: KnowledgeBase, PythonEnvironment, LoggingSettings (admin).
 
 #### Context Providers
 
@@ -282,6 +292,14 @@ src/webserver/auth/
 | `/api/admin/users/:id/role` | PUT | Update user role |
 | `/api/admin/group-mappings` | GET | Get OIDC group mappings |
 | `/api/admin/group-mappings` | PUT | Update group mappings |
+
+**Knowledge Base Routes**:
+
+| Route | Location | Endpoints |
+|-------|----------|-----------|
+| Knowledge Base | `routes/knowledgeRoutes.ts` | status, documents, search, ingest, delete, reindex |
+| Logging Admin | `routes/loggingRoutes.ts` | get/patch config, runtime level, test syslog |
+| Python | `routes/pythonRoutes.ts` | status, packages, version, install, reset |
 
 ---
 
@@ -378,12 +396,13 @@ class GeminiAgent {
 
 **Location**: `src/channels/`
 
-The channel system enables external messaging platforms (Telegram, etc.) to interact with AI agents.
+The channel system enables external messaging platforms (Telegram, Lark, etc.) to interact with AI agents.
 
 ```text
 ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
 │   Plugin    │────►│   Channel   │────►│   Action    │
-│  (Telegram) │     │   Manager   │     │  Executor   │
+│ (Telegram,  │     │   Manager   │     │  Executor   │
+│  Lark)      │     │             │     │             │
 └─────────────┘     └─────────────┘     └─────────────┘
        │                   │                   │
        ▼                   ▼                   ▼
@@ -422,6 +441,12 @@ class TelegramPlugin extends BasePlugin {
   editMessage(chatId, msgId, text)
 }
 ```
+
+#### LarkPlugin
+
+**Location**: `src/channels/plugins/lark/`
+
+Lark (Feishu) messaging integration following the same BasePlugin pattern as TelegramPlugin.
 
 ### Message Types
 
@@ -548,6 +573,51 @@ class McpService {
   isCliAvailable(cliPath: string): boolean
 }
 ```
+
+### KnowledgeBaseService
+
+**Location**: `src/process/services/KnowledgeBaseService.ts`
+
+LanceDB-based RAG pipeline for document search and retrieval.
+
+- Document ingestion (PDF, text, code) via Python scripts
+- Hybrid search (vector + FTS with RRF reranking)
+- Embedding via configurable model (OpenAI, Azure, Global Models)
+- Key files: `skills/lance/ingest.py`, `skills/lance/search.py`, `skills/lance/manage.py`
+
+### GlobalModelService
+
+**Location**: `src/process/services/GlobalModelService.ts`
+
+Admin-managed shared model configurations.
+
+- Group-based access control
+- AES-256-GCM API key encryption
+- User hide/unhide/copy overrides
+
+### DirectoryService
+
+**Location**: `src/process/services/DirectoryService.ts`
+
+Per-user workspace directory isolation.
+
+- Resolution chain: user → team → org → global
+
+### MiseEnvironmentService
+
+**Location**: `src/process/services/MiseEnvironmentService.ts`
+
+Per-user Python virtual environment management.
+
+- Template venv copy for fast onboarding (~1s vs ~113s)
+
+### LangfuseService
+
+**Location**: `src/process/services/LangfuseService.ts`
+
+LLM observability and tracing.
+
+- Generation tracking with token usage
 
 ### WebSocketManager
 
@@ -678,6 +748,37 @@ Configured in `tsconfig.json`:
 | `AIONUI_PORT` | WebUI server port | `25808` |
 | `WEBUI_ALLOW_REMOTE` | Allow remote network access | `false` |
 | `JWT_SECRET` | JWT signing secret | auto-generated |
+
+**HTTPS Configuration**:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `AIONUI_HTTPS` | Enable HTTPS mode | `false` |
+| `AIONUI_TRUST_PROXY` | Trust reverse proxy headers | `false` |
+
+**Knowledge Base / Embedding**:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `EMBEDDING_MODEL` | Embedding model name | - |
+| `EMBEDDING_API_KEY` | API key for embedding provider | - |
+| `EMBEDDING_BASE_URL` | Base URL for embedding API | - |
+| `EMBEDDING_DIMENSIONS` | Embedding vector dimensions | - |
+
+**Branding**:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `AIONUI_BRAND_NAME` | Custom brand name | `AionUI` |
+
+**Logging / Observability**:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `LOG_LEVEL` | Application log level | `info` |
+| `OTEL_ENABLED` | Enable OpenTelemetry export | `false` |
+| `SYSLOG_ENABLED` | Enable syslog transport | `false` |
+| `LANGFUSE_ENABLED` | Enable Langfuse tracing | `false` |
 
 ---
 
@@ -820,7 +921,7 @@ npm run test:integration
 - **CSRF Protection**: Token-based authentication prevents CSRF attacks
 - **Input Validation**: Zod schemas validate all API inputs
 - **SQL Injection Prevention**: Parameterized queries via better-sqlite3
-- **Rate Limiting**: Consider adding rate limiting for production deployments
+- **Rate Limiting**: Per-endpoint rate limiting via express-rate-limit (auth: 5/min, API: 100/min, file ops: 30/min)
 
 **Group Mapping**:
 

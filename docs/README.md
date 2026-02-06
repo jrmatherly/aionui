@@ -7,8 +7,8 @@ Welcome to the AionUI documentation. This documentation provides comprehensive g
 ```text
 docs/
 ├── README.md                              # This file
+├── BLOCKED_UPGRADES.md                    # Pinned/blocked dependency upgrades
 ├── PROJECT_INDEX.md                       # Quick project reference (compact)
-├── logging-infrastructure.md              # Pino + OTEL + Syslog + Langfuse logging stack
 ├── api/
 │   ├── index.html                         # Interactive API playground (Swagger UI)
 │   ├── openapi.yaml                       # OpenAPI 3.0 specification
@@ -16,11 +16,11 @@ docs/
 ├── architecture/
 │   └── ARCHITECTURE.md                    # System architecture documentation
 └── guides/
-    ├── GETTING_STARTED.md                 # User getting started guide
+    ├── AI_CONTEXT_GUIDE.md                # Drift Detect + Serena setup
     ├── DEVELOPER_GUIDE.md                 # Developer contribution guide
-    ├── PER_USER_API_KEY_ISOLATION.md      # API key isolation architecture
-    ├── DEPENDENCY_UPGRADE_ANALYSIS.md     # Dependency upgrade analysis
-    └── MAJOR_DEPENDENCY_UPGRADE_ANALYSIS.md  # Major version upgrade analysis
+    ├── GETTING_STARTED.md                 # User getting started guide
+    ├── LOGGING_GUIDE.md                   # Logging & observability guide
+    └── PER_USER_API_KEY_ISOLATION.md      # API key isolation architecture
 ```
 
 ## Quick Links
@@ -29,12 +29,15 @@ docs/
 
 - **[Getting Started](./guides/GETTING_STARTED.md)** - Installation, setup, and basic usage
 - **[WebUI Guide](../WEBUI_GUIDE.md)** - Remote access via web browser
+- **[Logging & Observability](./guides/LOGGING_GUIDE.md)** - Pino + OTEL + Syslog + Langfuse logging stack
 
 ### For Developers
 
 - **[Developer Guide](./guides/DEVELOPER_GUIDE.md)** - Development setup, patterns, and contribution
 - **[Architecture](./architecture/ARCHITECTURE.md)** - System design and component relationships
 - **[IPC Reference](./api/IPC_REFERENCE.md)** - Inter-process communication API
+- **[Blocked Upgrades](./BLOCKED_UPGRADES.md)** - Pinned/blocked dependency upgrades
+- **[AI Context Guide](./guides/AI_CONTEXT_GUIDE.md)** - Drift Detect + Serena setup
 
 ### API Documentation
 
@@ -72,6 +75,10 @@ The WebUI server exposes a REST API for:
 - Directory operations
 - WebSocket token management
 - QR code login
+- Knowledge Base (RAG search, ingestion)
+- Logging configuration
+- Python environment management
+- Global Models administration
 
 #### IPC API (IPC_REFERENCE.md)
 
@@ -112,28 +119,9 @@ For contributors:
 - Adding channel plugins
 - Testing practices
 
-## Generating Documentation
+## Viewing Documentation
 
-### Update API Docs
-
-If the API changes, regenerate the OpenAPI spec:
-
-```bash
-# The openapi.yaml is manually maintained
-# Update docs/api/openapi.yaml as needed
-```
-
-### View Documentation Locally
-
-```bash
-# Serve the docs directory
-npx serve docs
-
-# Or use Python
-python -m http.server 8080 -d docs
-```
-
-Then open http://localhost:8080 in your browser.
+These docs are standard Markdown files. View them on GitHub, in your IDE, or any Markdown reader. The API playground (`docs/api/index.html`) can be opened directly in a browser.
 
 ## Documentation Standards
 
@@ -168,6 +156,6 @@ function example(param: string): ReturnType {
 
 ## Version
 
-Documentation version: 1.8.2
+Documentation version: 1.8.2 (pre-v2.0.0)
 
 Last updated: 2026-02-05
