@@ -264,19 +264,88 @@ docker run --rm -v aionui_data:/data -v $(pwd):/backup \
 
 5. **Secrets Management** — Use Docker secrets or encrypted environment files; never commit `.env`
 
-#### Reverse Proxy Example (nginx)
+#### HTTPS Deployment (Reverse Proxy)
+
+AionUI runs HTTP internally and supports HTTPS via a reverse proxy that handles SSL
+termination. A production-ready nginx config and Docker Compose overlay are provided.
+
+**Quick Start:**
+
+```bash
+# 1. Create SSL directory and add your certificates
+mkdir -p deploy/docker/ssl
+cp /path/to/fullchain.pem deploy/docker/ssl/
+cp /path/to/privkey.pem deploy/docker/ssl/
+
+# 2. Edit nginx.conf — replace 'your-domain.example.com' with your hostname
+vi deploy/docker/nginx.conf
+
+# 3. Set HTTPS env vars in .env
+AIONUI_HTTPS=true
+AIONUI_TRUST_PROXY=1
+
+# 4. If using OIDC (SSO), update the redirect URI to use https://
+OIDC_REDIRECT_URI=https://your-domain.example.com/api/auth/oidc/callback
+
+# 5. Start with the HTTPS overlay
+docker compose -f docker-compose.yml -f docker-compose.https.yml up -d
+```
+
+**What `AIONUI_HTTPS=true` enables:**
+
+- `Secure` flag on all cookies (browser only sends them over HTTPS)
+- `Strict-Transport-Security` header (HSTS — forces browsers to use HTTPS for 1 year)
+- `SameSite=strict` on cookies (strongest cross-site protection)
+
+**What `AIONUI_TRUST_PROXY` enables:**
+
+- `req.protocol` correctly returns `https` (reads `X-Forwarded-Proto` from nginx)
+- `req.ip` returns the real client IP (reads `X-Forwarded-For` from nginx)
+- Rate limiting counts by client IP instead of the proxy's IP
+
+**For Let's Encrypt (free automated certificates):**
+
+```bash
+# Initial certificate (stop nginx first)
+mkdir -p deploy/docker/certbot
+docker run --rm -p 80:80 \
+  -v ./deploy/docker/ssl:/etc/letsencrypt \
+  -v ./deploy/docker/certbot:/var/www/certbot \
+  certbot/certbot certonly --standalone -d your-domain.example.com
+
+# Renewal (nginx running — uses webroot challenge)
+docker run --rm \
+  -v ./deploy/docker/ssl:/etc/letsencrypt \
+  -v ./deploy/docker/certbot:/var/www/certbot \
+  certbot/certbot renew --webroot -w /var/www/certbot
+```
+
+**Provided files:**
+
+| File                       | Purpose                                                                        |
+| -------------------------- | ------------------------------------------------------------------------------ |
+| `nginx.conf`               | Full nginx config — SSL, WebSocket upgrade, proxy headers, ACME challenge      |
+| `docker-compose.https.yml` | Compose overlay — adds nginx, sets HTTPS env vars, removes direct port binding |
+
+**Architecture:**
+
+```
+Client → nginx:443 (TLS) → aionui:25808 (HTTP, Docker internal network)
+         nginx:80  → 301 redirect to HTTPS
+```
+
+#### Reverse Proxy Example (standalone nginx)
+
+If you already have an nginx instance (not using the provided Compose overlay):
 
 ```nginx
 server {
-    listen 443 ssl http2;
+    listen 443 ssl;
     server_name aionui.company.com;
 
     ssl_certificate /etc/ssl/certs/aionui.crt;
     ssl_certificate_key /etc/ssl/private/aionui.key;
-
-    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    add_header X-Content-Type-Options "nosniff" always;
+    ssl_protocols TLSv1.2 TLSv1.3;
 
     location / {
         proxy_pass http://aionui:25808;
@@ -285,10 +354,13 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
 
-        # WebSocket support (required for real-time chat)
+        # WebSocket support (required for real-time chat streaming)
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
+
+        # Disable buffering for streaming responses
+        proxy_buffering off;
     }
 }
 ```

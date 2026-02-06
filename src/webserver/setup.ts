@@ -65,6 +65,19 @@ const CSRF_SECRET = getCsrfSecret();
  * Configure basic middleware for Express app
  */
 export function setupBasicMiddleware(app: Express): void {
+  // Trust proxy — required when deployed behind a reverse proxy (nginx, Traefik, Caddy).
+  // Without this, Express ignores X-Forwarded-Proto/X-Forwarded-For headers, so
+  // req.protocol always returns 'http', req.ip returns the proxy's IP, and
+  // secure cookies may not be set correctly even with AIONUI_HTTPS=true.
+  // Values: true (trust all), number (hop count), string (trusted subnets), false (disabled).
+  const trustProxy = process.env.AIONUI_TRUST_PROXY;
+  if (trustProxy && trustProxy !== 'false') {
+    // If it's a number (hop count), parse it; otherwise pass the string value directly
+    const parsed = Number(trustProxy);
+    app.set('trust proxy', !isNaN(parsed) ? parsed : trustProxy === 'true' ? true : trustProxy);
+    initLogger.info({ trustProxy: app.get('trust proxy') }, 'Express trust proxy enabled');
+  }
+
   // Correlation ID (must be early for downstream middleware/logging)
   app.use(correlationIdMiddleware);
 

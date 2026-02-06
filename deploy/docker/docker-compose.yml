@@ -82,6 +82,7 @@ services:
       - JWT_SECRET=${JWT_SECRET}
       - AIONUI_ADMIN_PASSWORD=${AIONUI_ADMIN_PASSWORD:-}
       # - AIONUI_HTTPS=${AIONUI_HTTPS:-false}
+      # - AIONUI_TRUST_PROXY=${AIONUI_TRUST_PROXY:-}
       # OIDC / EntraID SSO (optional)
       - OIDC_ENABLED=${OIDC_ENABLED:-false}
       - OIDC_ISSUER=${OIDC_ISSUER:-}
