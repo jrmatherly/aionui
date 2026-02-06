@@ -49,8 +49,10 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
     description: '',
     subject: '',
   });
+  // Pending KB notification — stored on kb_ready, emitted as chat message on stream finish
+  const pendingKbNotification = useRef<{ msgId: string; content: string } | null>(null);
   const [ingestionProgress, setIngestionProgress] = useState<{
-    status: 'start' | 'ingesting' | 'success' | 'error' | 'complete' | 'stage';
+    status: 'start' | 'ingesting' | 'success' | 'error' | 'complete' | 'stage' | 'kb_ready';
     current?: number;
     total: number;
     fileName?: string;
@@ -172,6 +174,18 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
         case 'finish':
           throttledSetThought(message.data as ThoughtData);
           setAiProcessing(false);
+          // Display pending KB notification AFTER agent response completes
+          if (pendingKbNotification.current) {
+            const pending = pendingKbNotification.current;
+            pendingKbNotification.current = null;
+            const kbMsg = transformMessage({
+              type: 'content',
+              conversation_id,
+              msg_id: pending.msgId,
+              data: pending.content,
+            });
+            addOrUpdateMessage(kbMsg);
+          }
           break;
         case 'content':
         case 'codex_permission': {
@@ -192,8 +206,13 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
           break;
         }
         case 'ingest_progress': {
-          const progress = message.data as typeof ingestionProgress;
-          if (progress?.status === 'complete') {
+          const progress = message.data as typeof ingestionProgress & { fileNames?: string[]; kbMsgId?: string; kbContent?: string };
+          if (progress?.status === 'kb_ready') {
+            pendingKbNotification.current = {
+              msgId: progress.kbMsgId || uuid(),
+              content: progress.kbContent || '',
+            };
+          } else if (progress?.status === 'complete') {
             setIngestionProgress(progress);
             setTimeout(() => setIngestionProgress(null), 1500);
           } else {

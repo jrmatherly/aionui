@@ -589,22 +589,35 @@ export function initConversationBridge(): void {
       sendResult = { success: false, msg: err instanceof Error ? err.message : String(err) };
     }
 
-    // Emit KB notification AFTER agent response so the agent's answer appears first
+    // Send KB notification data to frontend — it will display AFTER the response stream finishes.
+    // We can't emit a chat message here because sendMessage() resolves before the CLI
+    // response stream completes (Gemini/ACP write to stdin and return immediately).
     if (ingestedFileNames.length > 0) {
       const fileList = ingestedFileNames.map((f) => `- ${f}`).join('\n');
-      const completionContent = `📚 **Knowledge Base Updated**\n\nThe following file(s) have been added to your Knowledge Base:\n${fileList}\n\nThis content is now stored and available across all conversations. You can ask follow-up questions anytime.`;
+      const kbContent = `📚 **Knowledge Base Updated**\n\nThe following file(s) have been added to your Knowledge Base:\n${fileList}\n\nThis content is now stored and available across all conversations. You can ask follow-up questions anytime.`;
 
-      const completionMsg = {
+      // Persist to DB so it's visible when user returns to this conversation
+      const kbMsgId = uuid();
+      const kbMsg = transformMessage({
         type: 'content' as const,
         conversation_id,
-        msg_id: uuid(),
-        data: completionContent,
-      };
-      // Persist to DB so it's visible when user returns
-      const tMessage = transformMessage(completionMsg);
-      if (tMessage) addMessage(conversation_id, tMessage);
-      // Emit to frontend for immediate display
-      ipcBridge.conversation.responseStream.emit(completionMsg);
+        msg_id: kbMsgId,
+        data: kbContent,
+      });
+      if (kbMsg) addMessage(conversation_id, kbMsg);
+
+      // Tell frontend to display this message AFTER the agent response stream ends
+      ipcBridge.conversation.responseStream.emit({
+        type: 'ingest_progress',
+        conversation_id,
+        msg_id: other.msg_id || '',
+        data: {
+          status: 'kb_ready',
+          fileNames: ingestedFileNames,
+          kbMsgId,
+          kbContent,
+        },
+      });
     }
 
     return sendResult;

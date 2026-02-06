@@ -33,6 +33,8 @@ const useAcpSendBoxDraft = getSendBoxDraftHook('acp', {
 const useAcpMessage = (conversation_id: string) => {
   const addOrUpdateMessage = useAddOrUpdateMessage();
   const [running, setRunning] = useState(false);
+  // Pending KB notification — stored on kb_ready, emitted as chat message on stream finish
+  const pendingKbNotification = useRef<{ msgId: string; content: string } | null>(null);
   const [thought, setThought] = useState<ThoughtData>({
     description: '',
     subject: '',
@@ -40,7 +42,7 @@ const useAcpMessage = (conversation_id: string) => {
   const [acpStatus, setAcpStatus] = useState<'connecting' | 'connected' | 'authenticated' | 'session_active' | 'disconnected' | 'error' | null>(null);
   const [aiProcessing, setAiProcessing] = useState(false); // New loading state for AI response
   const [ingestionProgress, setIngestionProgress] = useState<{
-    status: 'start' | 'ingesting' | 'success' | 'error' | 'complete' | 'stage';
+    status: 'start' | 'ingesting' | 'success' | 'error' | 'complete' | 'stage' | 'kb_ready';
     current?: number;
     total: number;
     fileName?: string;
@@ -116,6 +118,18 @@ const useAcpMessage = (conversation_id: string) => {
           setRunning(false);
           setAiProcessing(false);
           setThought({ subject: '', description: '' });
+          // Display pending KB notification AFTER agent response completes
+          if (pendingKbNotification.current) {
+            const pending = pendingKbNotification.current;
+            pendingKbNotification.current = null;
+            const kbMsg = transformMessage({
+              type: 'content',
+              conversation_id,
+              msg_id: pending.msgId,
+              data: pending.content,
+            });
+            addOrUpdateMessage(kbMsg);
+          }
           break;
         case 'content':
           // Clear thought when final answer arrives
@@ -150,8 +164,14 @@ const useAcpMessage = (conversation_id: string) => {
           addOrUpdateMessage(transformedMessage);
           break;
         case 'ingest_progress': {
-          const progress = message.data as typeof ingestionProgress;
-          if (progress?.status === 'complete') {
+          const progress = message.data as typeof ingestionProgress & { fileNames?: string[] };
+          if (progress?.status === 'kb_ready') {
+            // Store for display after agent response stream finishes
+            pendingKbNotification.current = {
+              msgId: (progress as any).kbMsgId || uuid(),
+              content: (progress as any).kbContent || '',
+            };
+          } else if (progress?.status === 'complete') {
             setIngestionProgress(progress);
             setTimeout(() => setIngestionProgress(null), 1500);
           } else {

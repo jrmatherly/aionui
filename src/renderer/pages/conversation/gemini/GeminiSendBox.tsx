@@ -45,8 +45,10 @@ const useGeminiMessage = (conversation_id: string, onError?: (message: IResponse
     subject: '',
   });
   const [tokenUsage, setTokenUsage] = useState<TokenUsageData | null>(null);
+  // Pending KB notification — stored on kb_ready, emitted as chat message on stream finish
+  const pendingKbNotification = useRef<{ msgId: string; content: string } | null>(null);
   const [ingestionProgress, setIngestionProgress] = useState<{
-    status: 'start' | 'ingesting' | 'success' | 'error' | 'complete' | 'stage';
+    status: 'start' | 'ingesting' | 'success' | 'error' | 'complete' | 'stage' | 'kb_ready';
     current?: number;
     total: number;
     fileName?: string;
@@ -161,13 +163,22 @@ const useGeminiMessage = (conversation_id: string, onError?: (message: IResponse
         case 'finish':
           {
             setStreamRunning(false);
-            // 只有当没有活跃工具时才清除等待状态和 thought
             // Only clear waiting state and thought when no active tools
-            // 当有工具在执行时，工具完成后后端还需要继续向模型发送请求
-            // When tools are active, backend needs to continue sending requests to model after tool completion
             if (!hasActiveToolsRef.current) {
               setWaitingResponse(false);
               setThought({ subject: '', description: '' });
+            }
+            // Display pending KB notification AFTER agent response completes
+            if (pendingKbNotification.current && !hasActiveToolsRef.current) {
+              const pending = pendingKbNotification.current;
+              pendingKbNotification.current = null;
+              const kbMsg = transformMessage({
+                type: 'content',
+                conversation_id,
+                msg_id: pending.msgId,
+                data: pending.content,
+              });
+              addOrUpdateMessage(kbMsg);
             }
           }
           break;
@@ -258,8 +269,13 @@ const useGeminiMessage = (conversation_id: string, onError?: (message: IResponse
           }
           break;
         case 'ingest_progress': {
-          const progress = message.data as typeof ingestionProgress;
-          if (progress?.status === 'complete') {
+          const progress = message.data as typeof ingestionProgress & { fileNames?: string[]; kbMsgId?: string; kbContent?: string };
+          if (progress?.status === 'kb_ready') {
+            pendingKbNotification.current = {
+              msgId: progress.kbMsgId || uuid(),
+              content: progress.kbContent || '',
+            };
+          } else if (progress?.status === 'complete') {
             setIngestionProgress(progress);
             setTimeout(() => setIngestionProgress(null), 1500);
           } else {
