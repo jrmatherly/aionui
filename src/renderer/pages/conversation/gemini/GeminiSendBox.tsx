@@ -46,12 +46,15 @@ const useGeminiMessage = (conversation_id: string, onError?: (message: IResponse
   });
   const [tokenUsage, setTokenUsage] = useState<TokenUsageData | null>(null);
   const [ingestionProgress, setIngestionProgress] = useState<{
-    status: 'start' | 'ingesting' | 'success' | 'error' | 'complete';
+    status: 'start' | 'ingesting' | 'success' | 'error' | 'complete' | 'stage';
     current?: number;
     total: number;
     fileName?: string;
     successCount?: number;
     failedCount?: number;
+    stage?: string;
+    detail?: string;
+    percent?: number;
   } | null>(null);
   // 当前活跃的消息 ID，用于过滤旧请求的事件（防止 abort 后的事件干扰新请求）
   // Current active message ID to filter out events from old requests (prevents aborted request events from interfering with new ones)
@@ -596,12 +599,18 @@ const GeminiSendBox: React.FC<{
 
       {ingestionProgress && (
         <div className='px-3 py-2 flex items-center gap-2 text-sm' style={{ color: 'var(--color-text-2)' }}>
-          <Progress percent={ingestionProgress.status === 'complete' ? 100 : Math.round(((ingestionProgress.current || 0) / ingestionProgress.total) * 100)} status={ingestionProgress.status === 'error' ? 'error' : 'normal'} size='small' style={{ flex: 1 }} />
-          <span className='whitespace-nowrap'>
-            {ingestionProgress.status === 'start' && `Adding ${ingestionProgress.total} file(s) to Knowledge Base...`}
-            {ingestionProgress.status === 'ingesting' && `Processing ${ingestionProgress.fileName} for Knowledge Base...`}
+          <Progress percent={ingestionProgress.status === 'complete' ? 100 : ingestionProgress.status === 'stage' && ingestionProgress.percent ? ingestionProgress.percent : Math.round(((ingestionProgress.current || 0) / Math.max(ingestionProgress.total, 1)) * 100)} status={ingestionProgress.status === 'error' ? 'error' : 'normal'} size='small' style={{ flex: 1 }} />
+          <span className='whitespace-nowrap text-xs'>
+            {ingestionProgress.status === 'start' && `Preparing to index ${ingestionProgress.total} file(s)...`}
+            {ingestionProgress.status === 'stage' && ingestionProgress.stage === 'extracting' && `📄 Extracting text from ${ingestionProgress.fileName || 'document'}...`}
+            {ingestionProgress.status === 'stage' && ingestionProgress.stage === 'setup' && '🔌 Connecting to embedding service...'}
+            {ingestionProgress.status === 'stage' && ingestionProgress.stage === 'chunking' && `✂️ ${ingestionProgress.detail || 'Splitting document into chunks...'}`}
+            {ingestionProgress.status === 'stage' && ingestionProgress.stage === 'embedding' && `🧠 ${ingestionProgress.detail || 'Generating embeddings...'}`}
+            {ingestionProgress.status === 'stage' && ingestionProgress.stage === 'indexing' && `💾 ${ingestionProgress.detail || 'Building search index...'}`}
+            {ingestionProgress.status === 'stage' && ingestionProgress.stage === 'complete' && '✅ Indexing complete'}
+            {ingestionProgress.status === 'ingesting' && `Processing ${ingestionProgress.fileName}...`}
             {ingestionProgress.status === 'success' && `Added ${ingestionProgress.fileName} to Knowledge Base`}
-            {ingestionProgress.status === 'complete' && `Added ${ingestionProgress.successCount} file(s) to Knowledge Base`}
+            {ingestionProgress.status === 'complete' && `✅ Indexed ${ingestionProgress.successCount} file(s)`}
           </span>
         </div>
       )}

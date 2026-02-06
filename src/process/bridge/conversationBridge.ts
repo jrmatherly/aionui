@@ -47,7 +47,7 @@ function isBinaryFile(filePath: string): boolean {
  * @param onProgress - Optional callback for progress events
  * @returns Counts of successful and failed ingestions
  */
-async function autoIngestFilesToKnowledgeBase(userId: string, files: string[], onProgress?: (event: { current: number; total: number; fileName: string; status: 'ingesting' | 'success' | 'error' }) => void): Promise<{ success: number; failed: number }> {
+async function autoIngestFilesToKnowledgeBase(userId: string, files: string[], onProgress?: (event: { current: number; total: number; fileName: string; status: 'ingesting' | 'success' | 'error' }) => void, onStageProgress?: (event: { fileName: string; stage: string; detail?: string; percent: number; current?: number; total?: number }) => void): Promise<{ success: number; failed: number }> {
   // Filter to files that should be ingested (large, supported types)
   const filesToIngest = getFilesForAutoIngest(files);
 
@@ -73,13 +73,20 @@ async function autoIngestFilesToKnowledgeBase(userId: string, files: string[], o
 
         let result;
 
+        // Use progress-aware methods when a stage callback is provided
+        const stageCallback = onStageProgress
+          ? (progress: { stage: string; detail?: string; percent: number; current?: number; total?: number }) => {
+              onStageProgress({ fileName, ...progress });
+            }
+          : undefined;
+
         if (isBinaryFile(filePath)) {
           // Binary files (PDF, etc.): use ingestFile which passes path to Python for extraction
-          result = await kbService.ingestFile(userId, filePath);
+          result = stageCallback ? await kbService.ingestFileWithProgress(userId, filePath, stageCallback) : await kbService.ingestFile(userId, filePath);
         } else {
           // Text files: read as UTF-8 and pass content directly
           const content = await fs.promises.readFile(filePath, 'utf-8');
-          result = await kbService.ingest(userId, fileName, content);
+          result = stageCallback ? await kbService.ingestWithProgress(userId, fileName, content, stageCallback) : await kbService.ingest(userId, fileName, content);
         }
 
         if (result.success) {
@@ -492,14 +499,34 @@ export function initConversationBridge(): void {
             data: { status: 'start', total: getFilesForAutoIngest(workspaceFiles).length },
           });
 
-          const { success: successCount, failed: failedCount } = await autoIngestFilesToKnowledgeBase(__webUiUserId as string, workspaceFiles, (event) => {
-            ipcBridge.conversation.responseStream.emit({
-              type: 'ingest_progress',
-              conversation_id,
-              msg_id: other.msg_id || '',
-              data: { status: event.status, current: event.current, total: event.total, fileName: event.fileName },
-            });
-          });
+          const { success: successCount, failed: failedCount } = await autoIngestFilesToKnowledgeBase(
+            __webUiUserId as string,
+            workspaceFiles,
+            (event) => {
+              ipcBridge.conversation.responseStream.emit({
+                type: 'ingest_progress',
+                conversation_id,
+                msg_id: other.msg_id || '',
+                data: { status: event.status, current: event.current, total: event.total, fileName: event.fileName },
+              });
+            },
+            (stageEvent) => {
+              ipcBridge.conversation.responseStream.emit({
+                type: 'ingest_progress',
+                conversation_id,
+                msg_id: other.msg_id || '',
+                data: {
+                  status: 'stage',
+                  stage: stageEvent.stage,
+                  detail: stageEvent.detail,
+                  percent: stageEvent.percent,
+                  current: stageEvent.current,
+                  total: stageEvent.total,
+                  fileName: stageEvent.fileName,
+                },
+              });
+            }
+          );
 
           // Emit complete event
           ipcBridge.conversation.responseStream.emit({

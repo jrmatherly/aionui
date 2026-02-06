@@ -54,6 +54,17 @@ export interface KBIngestResult {
 }
 
 /**
+ * Stage-level progress event from ingest.py
+ */
+export interface KBIngestProgress {
+  stage: 'extracting' | 'setup' | 'chunking' | 'embedding' | 'indexing' | 'complete';
+  detail?: string;
+  percent: number;
+  current?: number;
+  total?: number;
+}
+
+/**
  * Approximate tokens per character (conservative estimate)
  */
 const TOKENS_PER_CHAR = 0.25;
@@ -107,6 +118,120 @@ class KnowledgeBaseService {
       log.error({ err: error, scriptName, args }, 'Failed to run lance script');
       return { success: false, error: message };
     }
+  }
+
+  /**
+   * Run a lance Python script with streaming progress via stderr.
+   *
+   * ingest.py emits JSON progress lines to stderr while the final result goes to stdout.
+   * This method spawns the process, reads stderr line-by-line for progress callbacks,
+   * then parses stdout for the final JSON result.
+   */
+  private async runLanceScriptWithProgress(scriptName: string, args: string[], workspaceDir: string, env: Record<string, string> | undefined, onProgress: (progress: KBIngestProgress) => void): Promise<{ success: boolean; data?: Record<string, unknown>; error?: string }> {
+    const { spawn } = await import('child_process');
+    const miseService = getMiseEnvironmentService();
+
+    if (!miseService.isMiseAvailable()) {
+      return { success: false, error: 'Python environment not available' };
+    }
+
+    const skillsDir = getSkillsDir();
+    const scriptPath = path.join(skillsDir, 'lance', 'scripts', scriptName);
+    const fullArgs = ['exec', '--', 'python', scriptPath, ...args];
+
+    return new Promise((resolve) => {
+      const proc = spawn(miseService.getMiseCmd(), fullArgs, {
+        cwd: workspaceDir,
+        env: {
+          ...process.env,
+          ...miseService.getBaseMiseEnv(),
+          ...env,
+        },
+      });
+
+      let stdout = '';
+      let stderrBuffer = '';
+
+      proc.stdout.on('data', (data: Buffer) => {
+        stdout += data.toString();
+      });
+
+      proc.stderr.on('data', (data: Buffer) => {
+        stderrBuffer += data.toString();
+
+        // Process complete lines from stderr
+        const lines = stderrBuffer.split('\n');
+        // Keep the last (potentially incomplete) line in the buffer
+        stderrBuffer = lines.pop() || '';
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed) continue;
+
+          try {
+            const parsed = JSON.parse(trimmed) as Record<string, unknown>;
+            if (parsed.progress) {
+              onProgress({
+                stage: parsed.stage as KBIngestProgress['stage'],
+                detail: parsed.detail as string | undefined,
+                percent: (parsed.percent as number) || 0,
+                current: parsed.current as number | undefined,
+                total: parsed.total as number | undefined,
+              });
+            }
+          } catch {
+            // Not a JSON progress line — log for debugging
+            log.debug({ line: trimmed }, 'Non-progress stderr from ingest.py');
+          }
+        }
+      });
+
+      proc.on('close', (code) => {
+        // Process any remaining stderr
+        if (stderrBuffer.trim()) {
+          try {
+            const parsed = JSON.parse(stderrBuffer.trim()) as Record<string, unknown>;
+            if (parsed.progress) {
+              onProgress({
+                stage: parsed.stage as KBIngestProgress['stage'],
+                detail: parsed.detail as string | undefined,
+                percent: (parsed.percent as number) || 0,
+                current: parsed.current as number | undefined,
+                total: parsed.total as number | undefined,
+              });
+            }
+          } catch {
+            // ignore
+          }
+        }
+
+        if (code !== 0) {
+          resolve({ success: false, error: `Script exited with code ${code}` });
+          return;
+        }
+
+        try {
+          const result = JSON.parse(stdout) as Record<string, unknown>;
+          if (result.status === 'error') {
+            resolve({ success: false, error: (result.error as string) || 'Unknown error' });
+          } else {
+            resolve({ success: true, data: result });
+          }
+        } catch {
+          resolve({ success: false, error: `Failed to parse output: ${stdout.slice(0, 200)}` });
+        }
+      });
+
+      proc.on('error', (err) => {
+        resolve({ success: false, error: err.message });
+      });
+
+      // Kill after 5 minutes (large files)
+      setTimeout(() => {
+        proc.kill('SIGTERM');
+        resolve({ success: false, error: 'Ingestion timed out after 5 minutes' });
+      }, 300_000);
+    });
   }
 
   /**
@@ -247,6 +372,72 @@ class KnowledgeBaseService {
     log.info({ userId, filePath }, 'Ingesting file to knowledge base');
 
     const result = await this.runLanceScript('ingest.py', args, workspaceDir, env);
+
+    if (!result.success) {
+      return { success: false, chunksAdded: 0, error: result.error };
+    }
+
+    return {
+      success: true,
+      chunksAdded: (result.data?.chunks_added as number) || 0,
+      version: result.data?.version as number | undefined,
+    };
+  }
+
+  /**
+   * Ingest a file with stage-level progress reporting.
+   *
+   * Uses streaming stderr from ingest.py to provide real-time progress
+   * through extraction → chunking → embedding → indexing stages.
+   */
+  public async ingestFileWithProgress(userId: string, filePath: string, onProgress: (progress: KBIngestProgress) => void, options?: { chunkSize?: number; overlap?: number }): Promise<KBIngestResult> {
+    const workspaceDir = this.getWorkspaceDir(userId);
+    const sourceFile = path.basename(filePath);
+    const args = [workspaceDir, sourceFile, '--file', filePath];
+
+    if (options?.chunkSize) {
+      args.push('--chunk-size', String(options.chunkSize));
+    }
+    if (options?.overlap) {
+      args.push('--overlap', String(options.overlap));
+    }
+
+    const env = this.getEmbeddingEnv();
+
+    log.info({ userId, filePath }, 'Ingesting file to knowledge base (with progress)');
+
+    const result = await this.runLanceScriptWithProgress('ingest.py', args, workspaceDir, env, onProgress);
+
+    if (!result.success) {
+      return { success: false, chunksAdded: 0, error: result.error };
+    }
+
+    return {
+      success: true,
+      chunksAdded: (result.data?.chunks_added as number) || 0,
+      version: result.data?.version as number | undefined,
+    };
+  }
+
+  /**
+   * Ingest text content with stage-level progress reporting.
+   */
+  public async ingestWithProgress(userId: string, sourceFile: string, textContent: string, onProgress: (progress: KBIngestProgress) => void, options?: { chunkSize?: number; overlap?: number }): Promise<KBIngestResult> {
+    const workspaceDir = this.getWorkspaceDir(userId);
+    const args = [workspaceDir, sourceFile, '--text', textContent];
+
+    if (options?.chunkSize) {
+      args.push('--chunk-size', String(options.chunkSize));
+    }
+    if (options?.overlap) {
+      args.push('--overlap', String(options.overlap));
+    }
+
+    const env = this.getEmbeddingEnv();
+
+    log.info({ userId, sourceFile, textLength: textContent.length }, 'Ingesting document to knowledge base (with progress)');
+
+    const result = await this.runLanceScriptWithProgress('ingest.py', args, workspaceDir, env, onProgress);
 
     if (!result.success) {
       return { success: false, chunksAdded: 0, error: result.error };

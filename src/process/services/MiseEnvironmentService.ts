@@ -163,6 +163,20 @@ export class MiseEnvironmentService {
   }
 
   /**
+   * Get the mise command path (for spawning child processes)
+   */
+  getMiseCmd(): string {
+    return this.miseCmd;
+  }
+
+  /**
+   * Get base environment variables for mise commands
+   */
+  getBaseMiseEnv(): Record<string, string> {
+    return { ...this.baseMiseEnv };
+  }
+
+  /**
    * Get mise version string
    */
   getMiseVersion(): string | null {

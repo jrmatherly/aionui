@@ -10,11 +10,12 @@ Usage:
 Options:
     --chunk-size <int>    Maximum tokens per chunk (default: 500)
     --overlap <int>       Overlap between chunks (default: 100)
-    --model <str>         Embedding model (default: text-embedding-3-small)
+    --model <str>         Embedding model (default: EMBEDDING_MODEL env or text-embedding-3-small)
 
 Note: --file supports PDF extraction via pypdf. Install with: pip install pypdf
 
-Output: JSON with ingestion status
+Output: JSON with ingestion status (stdout)
+Progress: JSON progress lines (stderr) for stage-based UI updates
 """
 
 import argparse
@@ -24,6 +25,24 @@ import sys
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
+
+# Embedding batch size — controls how many chunks are embedded per API call
+EMBED_BATCH_SIZE = 20
+
+
+def emit_progress(stage: str, detail: str | None = None, current: int = 0, total: int = 0, percent: int = 0):
+    """Emit a progress event to stderr as a JSON line.
+
+    The Node.js service reads stderr line-by-line for progress updates
+    while stdout is reserved for the final JSON result.
+    """
+    event = {"progress": True, "stage": stage, "percent": percent}
+    if detail:
+        event["detail"] = detail
+    if total > 0:
+        event["current"] = current
+        event["total"] = total
+    print(json.dumps(event), file=sys.stderr, flush=True)
 
 
 def extract_text_from_file(file_path: str) -> tuple[str, list[dict]]:
@@ -135,6 +154,9 @@ def ingest_document(
     }
 
     try:
+        # --- Stage 1: Setup embedding ---
+        emit_progress("setup", "Connecting to embedding service...", percent=5)
+
         # Get embedding configuration from environment
         # Supports custom OpenAI-compatible endpoints (Azure, LiteLLM, etc.)
         api_key = os.environ.get("EMBEDDING_API_KEY") or os.environ.get("OPENAI_API_KEY")
@@ -194,31 +216,78 @@ def ingest_document(
                 # Log but don't fail - FTS is optional enhancement
                 result["fts_index_warning"] = f"FTS index creation failed: {fts_err}"
 
-        # Chunk the text
+        # --- Stage 2: Chunking ---
+        emit_progress("chunking", "Splitting document into chunks...", percent=10)
+
         chunks = chunk_text(text_content, max_words=chunk_size, overlap=overlap)
 
         if not chunks:
             return {"status": "error", "error": "No content to ingest"}
 
-        # Prepare records
+        emit_progress("chunking", f"Created {len(chunks)} chunks", percent=15)
+
+        # --- Stage 3: Embedding (the slow part — batch with progress) ---
+        # Manually embed in batches so we can report per-batch progress.
+        # Without this, table.add() auto-embeds all at once with no visibility.
         now = datetime.now(timezone.utc).isoformat()
-        records = []
+        all_records = []
+        total_batches = (len(chunks) + EMBED_BATCH_SIZE - 1) // EMBED_BATCH_SIZE
 
-        for i, chunk in enumerate(chunks):
-            record = {
-                "id": str(uuid.uuid4()),
-                "text": chunk,
-                "source_file": file_path,
-                "page": 1,  # Default to page 1; caller can extract actual page numbers
-                "chunk_index": i,
-                "created_at": now,
-            }
-            records.append(record)
+        for batch_idx in range(total_batches):
+            start = batch_idx * EMBED_BATCH_SIZE
+            end = min(start + EMBED_BATCH_SIZE, len(chunks))
+            batch_chunks = chunks[start:end]
 
-        # Add to table (embeddings generated automatically)
-        table.add(records)
+            # Progress: embedding takes 15% to 90% of total time
+            batch_percent = 15 + int((batch_idx / total_batches) * 75)
+            emit_progress(
+                "embedding",
+                f"Generating embeddings ({batch_idx + 1}/{total_batches} batches)...",
+                current=batch_idx + 1,
+                total=total_batches,
+                percent=batch_percent,
+            )
 
-        result["chunks_added"] = len(records)
+            # Generate embeddings for this batch
+            vectors = embed_func.generate_embeddings(batch_chunks)
+
+            for i, (chunk, vector) in enumerate(zip(batch_chunks, vectors)):
+                chunk_index = start + i
+                record = {
+                    "id": str(uuid.uuid4()),
+                    "text": chunk,
+                    "vector": vector,
+                    "source_file": file_path,
+                    "page": 1,  # Default; caller can extract actual page numbers
+                    "chunk_index": chunk_index,
+                    "created_at": now,
+                }
+                all_records.append(record)
+
+        # --- Stage 4: Indexing ---
+        emit_progress("indexing", "Writing to knowledge base...", percent=92)
+
+        # Add all records with pre-computed vectors (bypasses auto-embed)
+        table.add(all_records)
+
+        emit_progress("indexing", "Updating search index...", percent=96)
+
+        # Rebuild FTS index to include new data
+        try:
+            table.create_fts_index(
+                "text",
+                language="English",
+                stem=True,
+                remove_stop_words=True,
+                replace=True,
+            )
+        except Exception:
+            # Non-fatal — FTS may already be current
+            pass
+
+        emit_progress("complete", "Done", percent=100)
+
+        result["chunks_added"] = len(all_records)
         result["version"] = table.version
         result["total_rows"] = table.count_rows()
 
@@ -244,12 +313,13 @@ def main():
 
     args = parser.parse_args()
 
-    # Get text content from one of the sources
+    # --- Stage 0: Text extraction ---
     text_content = None
     if args.text:
         text_content = args.text
     elif args.text_file:
         try:
+            emit_progress("extracting", "Reading text file...", percent=2)
             with open(args.text_file, "r", encoding="utf-8") as f:
                 text_content = f.read()
         except Exception as e:
@@ -257,7 +327,9 @@ def main():
             sys.exit(1)
     elif args.source_file:
         try:
+            emit_progress("extracting", f"Extracting text from {Path(args.source_file).name}...", percent=2)
             text_content, _ = extract_text_from_file(args.source_file)
+            emit_progress("extracting", "Text extraction complete", percent=8)
         except Exception as e:
             print(json.dumps({"status": "error", "error": f"Failed to extract text from file: {e}"}))
             sys.exit(1)
