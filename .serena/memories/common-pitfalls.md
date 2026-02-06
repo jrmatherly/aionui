@@ -288,3 +288,48 @@ PDFs, DOCX, and other binary formats cannot be read with `fs.readFile(path, 'utf
 
 1. **For ingestion**: `kbService.ingestFile()` with `--file` flag to Python
 2. **Python extraction**: `extract_text_from_file()` in `ingest.py` uses pypdf
+
+### Hybrid search requires FTS index (Added 2026-02-06)
+
+Without `create_fts_index("text")`, hybrid search silently uses only vector search. FTS index must be created **after** table creation:
+
+```python
+table = db.create_table("knowledge", schema=DocumentChunk)
+table.create_fts_index("text", language="English", stem=True, remove_stop_words=True)
+```
+
+### LanceDB API changes (v0.27+)
+
+Two breaking changes in newer LanceDB:
+
+1. **`table_names()` → `list_tables()`**: Deprecated method removed
+2. **`list_versions()` returns dicts**: Was objects with `.version` attribute, now `v["version"]`
+
+Handle both formats for compatibility:
+
+```python
+for v in table.list_versions():
+    version = v.get("version") if isinstance(v, dict) else v.version
+```
+
+### LanceDB embedding registry rejects api_key kwargs
+
+For security, LanceDB doesn't allow `get_registry().get("openai").create(api_key=key)`. Must set via environment:
+
+```python
+os.environ["OPENAI_API_KEY"] = api_key  # Required
+os.environ["OPENAI_API_BASE"] = api_base  # Optional
+embed_func = get_registry().get("openai").create(name=model)
+```
+
+### Vector dimension mismatch breaks ingestion
+
+Once a table is created with a specific dimension (e.g., 1536), you cannot ingest vectors of different dimensions (e.g., 3072). Must clear KB and reinitialize with correct `EMBEDDING_DIMENSIONS`.
+
+### pandas required for LanceDB DataFrame operations
+
+LanceDB's `to_pandas()` requires pandas. Add to `skills/requirements.txt`:
+
+```
+pandas>=2.0.0
+```

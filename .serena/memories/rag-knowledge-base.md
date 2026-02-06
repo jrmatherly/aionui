@@ -130,6 +130,83 @@ RAG is integrated into all agent managers:
 | `view.py`   | View/list indexed documents                      |
 | `manage.py` | Delete, reindex, versions, restore, stats, clear |
 
+## Search & Indexing (Updated 2026-02-06)
+
+Based on LanceDB documentation review (`.local_docs/lancedb/`), the following optimizations were implemented:
+
+### Full-Text Search (FTS) Index
+
+FTS index is **required** for hybrid search to work. Created automatically on table initialization:
+
+```python
+# ingest.py / manage.py
+table.create_fts_index(
+    "text",
+    language="English",    # Enable English stemming
+    stem=True,             # "running" matches "run"
+    remove_stop_words=True # Ignore "the", "a", etc.
+)
+```
+
+### Hybrid Search with RRF Reranking
+
+Uses Reciprocal Rank Fusion (RRF) for optimal vector + FTS result combination:
+
+```python
+# search.py - hybrid search
+from lancedb.rerankers import RRFReranker
+
+reranker = RRFReranker()
+results = (
+    table.search(query_vector, query_type="hybrid", fts_columns="text")
+    .rerank(reranker)
+    .limit(limit)
+    .to_pandas()
+)
+```
+
+### Score Handling
+
+Different search types return different score columns:
+
+| Search Type | Column             | Interpretation        |
+| ----------- | ------------------ | --------------------- |
+| Hybrid+RRF  | `_relevance_score` | Higher = better       |
+| FTS         | `_score`           | BM25, higher = better |
+| Vector      | `_distance`        | Lower = better        |
+
+Score normalization for vector search (cosine distance):
+
+```python
+# Cosine distance ranges 0-2 (0 = identical, 2 = opposite)
+score = max(0, 1.0 - (distance / 2.0))
+```
+
+### LanceDB API Compatibility
+
+Handles both old and new LanceDB API formats:
+
+```python
+# list_tables() (new) instead of table_names() (deprecated)
+if "knowledge" not in db.list_tables():
+
+# list_versions() returns dicts in new API
+for v in table.list_versions():
+    if isinstance(v, dict):
+        version = v.get("version")
+    else:
+        version = v.version  # Old object format
+```
+
+### Environment Variables
+
+| Variable               | Default                     | Description                      |
+| ---------------------- | --------------------------- | -------------------------------- |
+| `EMBEDDING_API_KEY`    | (required)                  | API key for embeddings           |
+| `EMBEDDING_API_BASE`   | `https://api.openai.com/v1` | Custom endpoint (Azure, LiteLLM) |
+| `EMBEDDING_MODEL`      | `text-embedding-3-small`    | Model name                       |
+| `EMBEDDING_DIMENSIONS` | (auto-detect)               | Vector dimensions (1536 or 3072) |
+
 ## Configuration
 
 ### Embedding Model (Global Models Integration)
@@ -274,6 +351,9 @@ def extract_text_from_file(file_path: str) -> tuple[str, list[dict]]:
 5. **Graceful fallback**: RAG failure doesn't block messages
 6. **KB init on login**: Ensures KB is ready before any document interaction
 7. **Large file threshold**: Prevents context window overflow (40KB limit)
+8. **FTS + Vector hybrid**: Combines keyword precision with semantic understanding
+9. **RRF reranking**: Better result fusion than simple score averaging
+10. **English stemming**: Improves text matching for English documents
 
 ## Future Enhancements
 
