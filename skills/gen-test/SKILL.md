@@ -23,14 +23,22 @@ If no path given, suggest priority targets:
 
 ### 1. Analyze source
 
-Read the target file. Identify all exported functions, classes, and their dependencies.
+Read the target file. Identify:
+
+- All exported functions, classes, and types
+- Constructor dependencies and injected services
+- External module imports that need mocking
+- Error handling paths and edge cases
 
 ### 2. Determine test location
 
 Mirror the source path under `tests/unit/`:
 
-- `src/process/database/schema.ts` -> `tests/unit/process/database/schema.test.ts`
-- `src/webserver/auth/service/AuthService.ts` -> `tests/unit/webserver/auth/service/AuthService.test.ts`
+| Source                                      | Test                                                    |
+| ------------------------------------------- | ------------------------------------------------------- |
+| `src/process/database/schema.ts`            | `tests/unit/process/database/schema.test.ts`            |
+| `src/webserver/auth/service/AuthService.ts` | `tests/unit/webserver/auth/service/AuthService.test.ts` |
+| `src/common/adapters/openai.ts`             | `tests/unit/common/adapters/openai.test.ts`             |
 
 Create intermediate directories as needed.
 
@@ -38,48 +46,92 @@ Create intermediate directories as needed.
 
 Follow these conventions:
 
-- **Format**: `describe`/`it` blocks with descriptive names
+- **Format**: `describe`/`it` blocks grouped by function or method name
 - **Extension**: `.test.ts`
-- **Path aliases**: `@/*`, `@process/*`, `@renderer/*`, `@worker/*` (configured in `jest.config.js`)
+- **Path aliases** (from `jest.config.js`): `@/*`, `@process/*`, `@renderer/*`, `@worker/*`, `@mcp/*`
 - **Mocking**: Use `jest.mock()` for external dependencies
+- **Reset**: `jest.clearAllMocks()` in `beforeEach`
 
-**Required mocks** (these modules don't work in test env):
+**Required mocks** (add at top of every test file as needed):
 
 ```typescript
-// better-sqlite3
-jest.mock('better-sqlite3');
+// Electron (always mock if source imports electron)
+jest.mock('electron', () => ({
+  app: { getPath: jest.fn(() => '/tmp/test'), getName: jest.fn(() => 'test') },
+  ipcMain: { handle: jest.fn(), on: jest.fn() },
+  BrowserWindow: jest.fn(),
+}));
 
-// Pino logger (avoid file I/O)
+// better-sqlite3 (always mock for database modules)
+jest.mock('better-sqlite3', () => {
+  const mockDb = {
+    prepare: jest.fn(() => ({ run: jest.fn(), get: jest.fn(), all: jest.fn(() => []) })),
+    exec: jest.fn(),
+    pragma: jest.fn(),
+    close: jest.fn(),
+  };
+  return jest.fn(() => mockDb);
+});
+
+// Pino logger (always mock to avoid file I/O)
 jest.mock('@/common/logger', () => ({
+  logger: {
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    debug: jest.fn(),
+    child: jest.fn(() => ({ info: jest.fn(), error: jest.fn(), warn: jest.fn(), debug: jest.fn() })),
+  },
   dbLogger: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
   webLogger: { info: jest.fn(), warn: jest.fn(), error: jest.fn(), debug: jest.fn() },
 }));
 
-// electron (not available in Node test env)
-jest.mock('electron', () => ({
-  app: { getPath: jest.fn(() => '/tmp/test') },
-  ipcMain: { handle: jest.fn(), on: jest.fn() },
+// node-pty (mock if source uses terminal)
+jest.mock('node-pty', () => ({
+  spawn: jest.fn(() => ({ onData: jest.fn(), write: jest.fn(), kill: jest.fn() })),
 }));
 ```
 
-**Test structure**:
+**Test patterns**:
+
+- Test each exported function/method independently
+- Assert return values, thrown errors, and side effects (mock calls)
+- For async code, use `async/await` in test functions
+- For classes, test construction and each public method
+
+**Example skeleton**:
 
 ```typescript
-import { functionUnderTest } from '@/path/to/module';
+import { MyService } from '@/path/to/module';
 
-describe('functionUnderTest', () => {
+jest.mock('better-sqlite3');
+jest.mock('@/common/logger', () => ({
+  logger: {
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    debug: jest.fn(),
+    child: jest.fn(() => ({ info: jest.fn(), error: jest.fn(), warn: jest.fn(), debug: jest.fn() })),
+  },
+}));
+
+describe('MyService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should handle normal input', () => {
-    /* ... */
-  });
-  it('should handle edge case', () => {
-    /* ... */
-  });
-  it('should throw on invalid input', () => {
-    /* ... */
+  describe('methodName', () => {
+    it('should return expected result for valid input', () => {
+      // arrange, act, assert
+    });
+
+    it('should throw on invalid input', () => {
+      expect(() => service.methodName(null)).toThrow();
+    });
+
+    it('should handle empty array gracefully', () => {
+      expect(service.methodName([])).toEqual([]);
+    });
   });
 });
 ```
@@ -97,10 +149,10 @@ Include tests for:
 npm test -- --testPathPattern=<test-file-path>
 ```
 
-Fix any failures before presenting the result.
+Fix any failures before presenting the result. Do not modify source code to make tests pass — fix the tests instead.
 
 ## Configuration
 
 - Jest config: `jest.config.js` (ts-jest preset)
-- Setup file: `tests/jest.setup.ts`
+- Setup file: `tests/jest.setup.ts` (mocks `electronAPI` on global)
 - Test timeout: 10000ms
