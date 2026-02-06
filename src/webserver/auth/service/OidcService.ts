@@ -15,6 +15,7 @@ import { Issuer } from 'openid-client';
 import { GROUP_MAPPINGS, resolveRoleFromGroups } from '../config/groupMappings';
 import { OIDC_CONFIG } from '../config/oidcConfig';
 import { UserRepository } from '../repository/UserRepository';
+import AuthService from './AuthService';
 import { oidcLogger as log } from '@/common/logger';
 
 interface StateEntry {
@@ -203,6 +204,9 @@ export class OidcService {
       }
 
       UserRepository.updateLastLogin(user.id);
+
+      // Initialize user workspace (non-blocking)
+      AuthService.postLoginInit(user.id);
 
       return {
         success: true,

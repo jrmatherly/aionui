@@ -132,6 +132,9 @@ export function registerAuthRoutes(app: Express): void {
       // Update last login
       UserRepository.updateLastLogin(user.id);
 
+      // Initialize user workspace (non-blocking)
+      AuthService.postLoginInit(user.id);
+
       // Set access token cookie (short-lived, used for API auth)
       res.cookie(AUTH_CONFIG.COOKIE.NAME, accessToken, {
         ...getCookieOptions(),

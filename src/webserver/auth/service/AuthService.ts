@@ -624,6 +624,30 @@ export class AuthService {
 
     return result;
   }
+
+  /**
+   * Post-login initialization tasks (runs async, non-blocking)
+   * Initializes user's Python workspace for skill execution
+   *
+   * @param userId - User ID for workspace initialization
+   */
+  public static postLoginInit(userId: string): void {
+    // Fire-and-forget: don't block login response
+    void (async () => {
+      try {
+        const { getMiseEnvironmentService } = await import('@process/services/MiseEnvironmentService');
+        const miseService = getMiseEnvironmentService();
+
+        if (miseService.isMiseAvailable()) {
+          await miseService.initUserWorkspace(userId);
+          log.info({ userId }, 'Initialized Python workspace on login');
+        }
+      } catch (e) {
+        // Non-fatal: log but don't fail login
+        log.warn({ userId, err: e }, 'Failed to initialize Python workspace on login (non-fatal)');
+      }
+    })();
+  }
 }
 
 export default AuthService;
