@@ -6,16 +6,25 @@
     "source.organizeImports": "explicit"
   },
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
-  "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.preferences.importModuleSpecifier": "shortest",
   "typescript.suggest.autoImports": true,
   "typescript.updateImportsOnFileMove.enabled": "always",
   "files.associations": {
-    "*.tsx": "typescriptreact",
-    "*.ts": "typescript",
     "*.dockerignore": "ignore"
   },
   "emmet.includeLanguages": {
     "typescript": "html",
     "typescriptreact": "html"
-  }
+  },
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.ruff": "explicit",
+      "source.organizeImports.ruff": "explicit"
+    }
+  },
+  "[toml]": {
+    "editor.defaultFormatter": "tamasfe.even-better-toml"
+  },
+  "css.validate": false
 }
