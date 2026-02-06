@@ -21,7 +21,7 @@ How to use skills:
 
 id: x-recruiter
 name: X Recruiter
-triggers: x, twitter, publish to x, publish to twitter, post on x, 发布到推特, 发布到X
+triggers: x, twitter, publish to x, publish to twitter, post on x
 
 ---
 

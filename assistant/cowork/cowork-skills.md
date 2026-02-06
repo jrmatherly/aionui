@@ -21,7 +21,7 @@ How to use skills:
 
 id: skill-creator
 name: Guide for Creating Effective Skills
-triggers: create skill, new skill, skill template, define skill, 创建技能, 新技能
+triggers: create skill, new skill, skill template, define skill
 
 ---
 
@@ -133,7 +133,7 @@ For recalculating formulas in existing spreadsheets, use the recalc script:
 ```bash
 # Recalculate all formulas in an Excel file using LibreOffice
 # This is useful after modifying cell values programmatically
-python skills/xlsx/recalc.py <input.xlsx> <output.xlsx>
+python skills/xlsx/scripts/recalc.py <input.xlsx> <output.xlsx>
 ```
 
 **Python Quick Reference**:
@@ -168,7 +168,7 @@ df.to_excel('output.xlsx', index=False)
 
 id: pptx
 name: PowerPoint Presentation Generator
-triggers: PowerPoint, presentation, .pptx, slides, slide deck, pitch deck, ppt, slideshow, deck, keynote, 演示文稿, 幻灯片
+triggers: PowerPoint, presentation, .pptx, slides, slide deck, pitch deck, ppt, slideshow, deck, keynote
 
 ---
 
@@ -433,7 +433,7 @@ with pdfplumber.open("document.pdf") as pdf:
 
 id: docx
 name: Word Document Handler
-triggers: Word, document, .docx, report, letter, memo, manuscript, essay, paper, article, writeup, documentation, doc file, word文档, 文档
+triggers: Word, document, .docx, report, letter, memo, manuscript, essay, paper, article, writeup, documentation, doc file
 
 ---
 
@@ -531,13 +531,13 @@ For editing existing documents or working with tracked changes, use the DOCX scr
 pandoc --track-changes=all <input.docx> -o output.md
 
 # Unpack a document to access raw XML
-python skills/docx/ooxml/scripts/unpack.py <input.docx> <output_directory>
+python skills/docx/scripts/office/unpack.py <input.docx> <output_directory>
 
 # Pack modified XML back to DOCX
-python skills/docx/ooxml/scripts/pack.py <input_directory> <output.docx>
+python skills/docx/scripts/office/pack.py <input_directory> <output.docx>
 
 # Validate DOCX structure
-python skills/docx/ooxml/scripts/validate.py <file.docx>
+python skills/docx/scripts/office/validate.py <file.docx>
 ```
 
 **Python Document Library for Tracked Changes**:
@@ -580,7 +580,7 @@ doc.save()
 
 id: task-orchestrator
 name: Multi-Step Task Planning
-triggers: complex task, multi-step, plan, organize, breakdown, orchestrate, project plan, workflow, 任务规划, 多步骤
+triggers: complex task, multi-step, plan, organize, breakdown, orchestrate, project plan, workflow
 
 ---
 
@@ -657,7 +657,7 @@ Phase X: [Phase Name]
 
 id: error-recovery
 name: Error Handling & Recovery
-triggers: error, failed, broken, not working, issue, problem, bug, exception, crash, 错误, 失败
+triggers: error, failed, broken, not working, issue, problem, bug, exception, crash
 
 ---
 
@@ -717,7 +717,7 @@ After 3 failed attempts, escalate to user with:
 
 id: parallel-ops
 name: Parallel File Operations
-triggers: multiple files, batch, parallel, concurrent, all files, bulk, mass, 批量, 并行
+triggers: multiple files, batch, parallel, concurrent, all files, bulk, mass
 
 ---
 
