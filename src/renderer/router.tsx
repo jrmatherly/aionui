@@ -14,6 +14,7 @@ import About from './pages/settings/About';
 import AgentSettings from './pages/settings/AgentSettings';
 import ApiKeysSettings from './pages/settings/ApiKeysSettings';
 import DisplaySettings from './pages/settings/DisplaySettings';
+import KnowledgeBase from './pages/settings/KnowledgeBase';
 import PythonEnvironment from './pages/settings/PythonEnvironment';
 import GeminiSettings from './pages/settings/GeminiSettings';
 import ModeSettings from './pages/settings/ModeSettings';
@@ -62,6 +63,7 @@ const PanelRoute: React.FC<{ layout: React.ReactElement }> = ({ layout }) => {
           <Route path='/settings/display' element={<DisplaySettings />} />
           <Route path='/settings/apikeys' element={<ApiKeysSettings />} />
           <Route path='/settings/python' element={<PythonEnvironment />} />
+          <Route path='/settings/knowledge' element={<KnowledgeBase />} />
           <Route path='/settings/webui' element={<WebuiSettings />} />
           <Route path='/settings/system' element={<SystemSettings />} />
           <Route path='/settings/about' element={<About />} />
