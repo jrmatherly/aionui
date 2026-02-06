@@ -447,6 +447,35 @@ AionUI provides per-user knowledge bases using **LanceDB**, an embedded vector d
 - **Time-travel**: Query historical versions, rollback changes
 - **Search test**: Built-in search panel in settings UI
 
+### Auto-RAG (Chat Integration)
+
+RAG context is automatically injected into chat messages when:
+
+1. **Pattern matching**: Message contains document-related queries like:
+   - "summarize the document", "explain the contract"
+   - "according to the file", "based on the PDF"
+   - "find/search/look up", "key points/terms"
+
+2. **File context**: Large files (>40KB) attached to messages are auto-ingested
+
+**Implementation files:**
+
+| File                 | Purpose                           |
+| -------------------- | --------------------------------- |
+| `RagUtils.ts`        | RAG trigger detection patterns    |
+| `agentUtils.ts`      | `prepareMessageWithRAGContext()`  |
+| `AcpAgentManager`    | RAG injection for Claude/OpenCode |
+| `GeminiAgentManager` | RAG injection for Gemini          |
+| `CodexAgentManager`  | RAG injection for Codex           |
+
+**Flow:**
+
+1. User sends message with potential document query
+2. `shouldSearchKnowledgeBase()` checks patterns
+3. `KnowledgeBaseService.searchForContext()` retrieves relevant chunks
+4. Context injected before user message: `<knowledge_base_context>...</knowledge_base_context>`
+5. Agent receives enriched context for response generation
+
 ---
 
 ## Key Configuration Files

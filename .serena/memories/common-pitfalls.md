@@ -191,16 +191,19 @@ Pino transports run in worker threads via `thread-stream`. Workers use `require(
 Client-side branding (HTML title, React defaults) must be set at **build time** via `AIONUI_BRAND_NAME` env var. Setting it only at runtime causes a "flash of default brand" before React hydrates.
 
 **Build-time** (webpack DefinePlugin + BrandingInjectorPlugin):
+
 - HTML `<title>` tag
 - `useBranding()` hook default value
 - React component initial renders
 
 **Runtime** (`getBrandName()` reads env):
+
 - Telegram/Lark bot messages
 - HTTP User-Agent headers
 - Server startup banner
 
 **Fix:** Always set `AIONUI_BRAND_NAME` before building:
+
 ```bash
 mise run build:branded --brand "Enterprise AI"
 # or
@@ -208,3 +211,47 @@ export AIONUI_BRAND_NAME="Enterprise AI" && npm run build
 ```
 
 See `.serena/memories/branding-and-release-configuration.md` for full details.
+
+## RAG / Knowledge Base
+
+### RAG requires userId through the IPC chain
+
+For RAG to work, `userId` must be passed through the entire message chain:
+
+1. WebSocket adapter injects `__webUiUserId` into IPC params
+2. `conversationBridge.ts` extracts and passes to `WorkerManage.getTaskByIdRollbackBuild()`
+3. Agent managers receive `userId` in their options
+4. `prepareMessageWithRAGContext()` uses userId to access per-user KB
+
+**Fix:** Added `__webUiUserId` to `ISendMessageParams` interface in `ipcBridge.ts`.
+
+### RAG failure should not block messages
+
+The Auto-RAG pattern uses try-catch with graceful fallback:
+
+```typescript
+try {
+  const ragResult = await prepareMessageWithRAGContext(...);
+  if (ragResult.ragUsed) contentToSend = ragResult.content;
+} catch {
+  // Continue without RAG - don't block the message
+}
+```
+
+### Auto-ingestion is fire-and-forget
+
+Large file ingestion doesn't block message sending:
+
+```typescript
+void autoIngestFilesToKnowledgeBase(userId, files).catch((err) => {
+  log.warn({ err }, 'Auto-ingest failed (non-fatal)');
+});
+```
+
+### LanceDB requires OPENAI_API_KEY
+
+The embedding registry uses OpenAI's `text-embedding-3-small`. Without `OPENAI_API_KEY`, ingestion fails silently. Document in `.env.example`.
+
+### text-embedding-3-large has lower similarity scores
+
+From MEMORY.md: Don't use `score_threshold=0.5` — typical relevant scores are 0.2-0.4. Use `score_threshold=0.2` for this model.

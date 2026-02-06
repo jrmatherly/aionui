@@ -64,6 +64,73 @@ SQLite with schema versioning (v18) and migrations in `src/process/database/`
 
 - v16: `global_models`, `user_model_overrides` (admin-managed shared models)
 - v17: `logging_config` (logging/OTEL/syslog/Langfuse settings)
+- v18: `allowed_groups` column for group-based model access control
+
+## Knowledge Base (RAG)
+
+Per-user embedded vector database for document storage and retrieval.
+
+### Components
+
+| Component                | Location                       | Purpose                     |
+| ------------------------ | ------------------------------ | --------------------------- |
+| `KnowledgeBaseService`   | `src/process/services/`        | Backend RAG operations      |
+| `knowledgeRoutes.ts`     | `src/webserver/routes/`        | REST API `/api/knowledge/*` |
+| `KnowledgeBase.tsx`      | `src/renderer/pages/settings/` | Settings UI                 |
+| `skills/lance/scripts/*` | Python scripts                 | LanceDB operations          |
+| `RagUtils.ts`            | `src/process/task/`            | RAG trigger detection       |
+
+### Storage
+
+```
+/workspace/
+├── .lance/                    # LanceDB database
+│   └── knowledge/             # Vectors + metadata
+└── documents/                 # Original files
+```
+
+### Auto-RAG Integration
+
+Automatic context injection in chat pipeline:
+
+1. **Trigger Detection** (`RagUtils.shouldSearchKnowledgeBase`)
+   - Pattern matching: "summarize", "explain", "according to", etc.
+   - File attachment detection
+
+2. **Context Injection** (`agentUtils.prepareMessageWithRAGContext`)
+   - Searches user's knowledge base
+   - Injects `<knowledge_base_context>` before user query
+
+3. **Auto-Ingestion** (`conversationBridge.autoIngestFilesToKnowledgeBase`)
+   - Large files (>40KB) auto-ingested on upload
+   - Fire-and-forget pattern
+
+4. **Agent Integration**
+   - `AcpAgentManager`, `GeminiAgentManager`, `CodexAgentManager`
+   - RAG injected after skills index, before sending to CLI agent
+
+## Per-User Python Workspaces
+
+Multi-tenant Python environment isolation using mise.
+
+### Components
+
+| Component                 | Location                       | Purpose                     |
+| ------------------------- | ------------------------------ | --------------------------- |
+| `MiseEnvironmentService`  | `src/main/services/`           | mise/venv management        |
+| `pythonRoutes.ts`         | `src/webserver/routes/`        | REST API `/api/python/*`    |
+| `PythonEnvironment.tsx`   | `src/renderer/pages/settings/` | Settings UI                 |
+| `skills/requirements.txt` | Aggregated dependencies        | Auto-installed on workspace |
+
+### Workspace Structure
+
+```
+/users/<user-id>/workspace/
+├── mise.toml              # Per-user mise config
+├── .venv/                 # Python virtual environment
+│   └── .skills-installed  # Marker file
+└── .lance/                # Knowledge base
+```
 
 ## Environment Variable Configuration
 
