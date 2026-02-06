@@ -224,15 +224,19 @@ Configs that sync from env vars to DB on startup (allows deployment-time config)
 
 Project-specific Claude Code automation in the repo:
 
-### Skills (`skills/<name>/SKILL.md`)
+### Developer Skills (`.claude/skills/<name>/SKILL.md`)
 
-**Project-Specific Skills:**
+These are **development-only** skills for AI coding assistants working on the AionUI codebase. They are NOT bundled with the product.
 
 | Skill         | Purpose                                                     |
 | ------------- | ----------------------------------------------------------- |
 | `/release`    | Automate version bump, changelog generation, tag, and push  |
 | `/gen-test`   | Scaffold Jest unit tests following project conventions      |
 | `/db-migrate` | Scaffold SQLite migration files following existing patterns |
+
+### User-Facing Skills (`skills/<name>/SKILL.md`)
+
+These skills ship with the application and are available to end users.
 
 **Office Document Skills (Anthropic-aligned):**
 

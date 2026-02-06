@@ -235,52 +235,13 @@ private hasGroupAccess(userGroups: string[] | null, userRole: UserRole, allowedG
 - `types.ts` — `allowed_groups` in interfaces
 - `express.d.ts` — Groups in Request.user
 
-## Embedding Model Integration
+## Embedding Model Integration (Removed)
 
-**Added:** 2026-02-06 (commits: `b09dad7a`, `885f2dca`)
+**Previously:** Global Models could auto-detect embedding providers via `getEmbeddingModelFromGlobalModels()`.
 
-Global Models now serve as the source of truth for **Knowledge Base embeddings**, eliminating the need for separate `OPENAI_API_KEY` configuration.
+**Current state:** Removed to prevent model/dimension mismatches. The Knowledge Base now uses **`EMBEDDING_*` environment variables** exclusively. See `rag-knowledge-base.md` for current embedding configuration.
 
-### How It Works
-
-`KnowledgeBaseService.getEmbeddingModelFromGlobalModels()` searches for embedding providers:
-
-1. **Capability match**: Models with `embedding` in capabilities array
-2. **Name match**: Models with `embedding` in model name (e.g., `text-embedding-3-small`)
-
-### Configuration Example
-
-Add an embedding model to Global Models:
-
-| Field    | Value                    |
-| -------- | ------------------------ |
-| Platform | `openai`                 |
-| Name     | `Embeddings`             |
-| Models   | `text-embedding-3-small` |
-| API Key  | Your key (encrypted)     |
-| Base URL | Gateway URL (optional)   |
-
-### Resolution Priority
-
-1. Global Model with embedding capability/name
-2. Environment variables (`OPENAI_API_KEY`, `OPENAI_BASE_URL`)
-3. Default: `text-embedding-3-small` (requires valid API key)
-
-### Gateway Support
-
-Works with any OpenAI-compatible endpoint:
-
-- Azure OpenAI
-- Portkey
-- LiteLLM
-- Kong AI Gateway
-
-Set `base_url` in the Global Model configuration to use custom endpoints.
-
-### Related Files
-
-- `KnowledgeBaseService.ts` — `getEmbeddingModelFromGlobalModels()`
-- `skills/lance/scripts/ingest.py` — `get_embedding_config()`
+Original commits: `b09dad7a`, `885f2dca` (added), later removed.
 
 ## Security
 

@@ -82,8 +82,9 @@ POST /api/admin/logging/test-syslog # Test syslog connectivity
 
 ### Migration Progress
 
-- **20+ files migrated** from console.\* to Pino structured logging
-- **~629 console.\* calls remaining** (primarily in agent task managers, workers, and utility files)
+- **96% migration complete** (985 → 43 intentional console.\* calls)
+- **~58 console.\* references remaining** in source (includes intentional startup banners and dev tooling)
+- Previous doc sweep confirmed 43 intentional console.\* calls remaining after migration
 - All new code uses Pino loggers exclusively
 - Startup banners intentionally kept as console.log
 

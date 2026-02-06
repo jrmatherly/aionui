@@ -135,7 +135,7 @@ Both main and renderer webpack configs use `cache: { type: 'filesystem' }`:
 
 ## docker-compose vs docker build Image Naming
 
-- **docker-compose auto-names images** as `<project>-<service>` (e.g., `docker-aionui`) when using `build:` without `image:`
+- **docker compose auto-names images** as `<project>-<service>` (e.g., `docker-aionui`) when using `build:` without `image:`
 - **`docker build -t aionui:latest`** creates a DIFFERENT image that compose won't use
 - **Always add `image: aionui:latest`** alongside `build:` in docker-compose.yml so both commands use the same tag
 - **Symptom of mismatch**: Compose runs old code even after fresh `docker build` — check `docker images` for two different image names
