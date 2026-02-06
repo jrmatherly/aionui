@@ -390,18 +390,16 @@ export class AcpAgent {
 
       if (resolvedPath) {
         try {
-          // Check file size first - skip large files to prevent context window overflow
-          // Large files should use RAG (auto-ingested to knowledge base)
+          // Read file in a single operation, then check size (avoids TOCTOU race
+          // where file could be swapped between stat() and readFile())
           const LARGE_FILE_THRESHOLD = 40_000; // ~10K tokens
-          const stats = await fs.stat(resolvedPath);
+          const fileContent = await fs.readFile(resolvedPath, 'utf-8');
 
-          if (stats.size > LARGE_FILE_THRESHOLD) {
-            log.info({ atPath, sizeBytes: stats.size }, 'Skipping large file (use Knowledge Base for RAG)');
+          if (Buffer.byteLength(fileContent, 'utf-8') > LARGE_FILE_THRESHOLD) {
+            log.info({ atPath, sizeBytes: Buffer.byteLength(fileContent, 'utf-8') }, 'Skipping large file (use Knowledge Base for RAG)');
             continue;
           }
 
-          // Try to read as text file
-          const fileContent = await fs.readFile(resolvedPath, 'utf-8');
           resolvedFiles.set(atPath, fileContent);
         } catch (error) {
           // Binary files (images, etc.) cannot be read as text

@@ -231,14 +231,17 @@ export class MiseEnvironmentService {
           // cpSync with recursive: true does a deep copy (Node 16.7+)
           cpSync(TEMPLATE_VENV_PATH, venvDir, { recursive: true });
 
-          // Fix pyvenv.cfg to point to the correct home directory
+          // Fix pyvenv.cfg to point to the correct home directory.
+          // Read-then-write in a single try block (avoids TOCTOU race with existsSync).
           const pyvenvCfg = path.join(venvDir, 'pyvenv.cfg');
-          if (existsSync(pyvenvCfg)) {
+          try {
             let cfg = readFileSync(pyvenvCfg, 'utf-8');
             // The template venv's home path needs to stay as-is (points to mise Python)
             // But we need to update any absolute path references to the venv itself
             cfg = cfg.replace(/\/mise\/template-venv/g, venvDir);
             writeFileSync(pyvenvCfg, cfg);
+          } catch {
+            // pyvenv.cfg may not exist in the template — non-fatal
           }
 
           // Write marker to indicate this was copied from template
