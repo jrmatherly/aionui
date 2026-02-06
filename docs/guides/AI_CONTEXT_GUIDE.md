@@ -580,13 +580,16 @@ Serena stores detailed documentation in `.serena/memories/`:
 
 | Memory | Contents |
 |--------|----------|
-| `project-architecture.md` | Multi-process architecture and services |
+| `project-architecture.md` | Multi-process architecture, services, skills, and agents |
 | `branding-and-release-configuration.md` | Branding customization |
 | `docker-packaging-constraints.md` | Build system and native modules |
 | `auth-system.md` | Multi-user authentication and RBAC |
 | `code-patterns.md` | IPC, worker, component, database patterns |
 | `common-pitfalls.md` | Known anti-patterns and gotchas |
 | `drift-integration.md` | Drift Detect integration, MCP tools, boundary rules |
+| `changelog-and-release.md` | git-cliff config, release workflow, `/release` skill |
+| `enterprise-logging-research.md` | Logging, OTEL, syslog, Langfuse research |
+| `global-models-feature.md` | Admin-managed shared model configurations |
 
 To add a new memory, create a markdown file in `.serena/memories/` and commit it.
 

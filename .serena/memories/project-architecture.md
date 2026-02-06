@@ -60,7 +60,7 @@ External messaging integration (Telegram, etc.)
 
 ## Database
 
-SQLite with schema versioning (v17) and migrations in `src/process/database/`
+SQLite with schema versioning (v18) and migrations in `src/process/database/`
 
 - v16: `global_models`, `user_model_overrides` (admin-managed shared models)
 - v17: `logging_config` (logging/OTEL/syslog/Langfuse settings)
@@ -117,6 +117,25 @@ Configs that sync from env vars to DB on startup (allows deployment-time config)
 - **compile** runs on CI runner with cached `node_modules` + webpack + Electron
 - **docker** uses `Dockerfile.package` (COPY pre-built app, no compilation)
 - Caches: node_modules (lockfile key), .webpack-cache (source hash key), Electron binary (version key)
+
+## Claude Code Skills & Agents
+
+Project-specific Claude Code automation in the repo:
+
+### Skills (`skills/<name>/SKILL.md`)
+
+| Skill         | Purpose                                                     |
+| ------------- | ----------------------------------------------------------- |
+| `/release`    | Automate version bump, changelog generation, tag, and push  |
+| `/gen-test`   | Scaffold Jest unit tests following project conventions      |
+| `/db-migrate` | Scaffold SQLite migration files following existing patterns |
+
+### Custom Agents (`.claude/agents/<name>.md`)
+
+| Agent               | Purpose                                                              |
+| ------------------- | -------------------------------------------------------------------- |
+| `security-reviewer` | 10-point security checklist (JWT, OIDC, RBAC, CSRF, SQLi, XSS, etc.) |
+| `code-reviewer`     | 26 rules across 9 categories with CRITICAL/WARNING/SUGGESTION output |
 
 ## IPC Communication
 

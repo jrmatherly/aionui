@@ -109,6 +109,18 @@ git push origin main --tags
 - Breaking change `!` suffix enforcement in commit-msg hook
 - npm devDependency for contributors without mise
 
+## Claude Code `/release` Skill
+
+The `/release` skill (`skills/release/SKILL.md`) automates the full release workflow interactively:
+
+1. Determine next version (`git cliff --bumped-version` or user-specified)
+2. Preview unreleased changes and get user confirmation
+3. Update `version` in `package.json`
+4. Regenerate `CHANGELOG.md` via `git cliff -o CHANGELOG.md`
+5. Commit: `chore(release): vX.Y.Z` (no Claude signature)
+6. Tag: `git tag -a vX.Y.Z -m "Release vX.Y.Z"`
+7. Push (with user confirmation): triggers `release.yml`
+
 ## Research Document
 
 Full research and recommendations: `.scratchpad/git-cliff-research-and-recommendations.md`

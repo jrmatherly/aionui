@@ -52,7 +52,7 @@
 
 ### Data & Storage
 
-- **Better SQLite3** - Local database (schema v17)
+- **Better SQLite3** - Local database (schema v18)
 - **Zod** - Data validation
 
 ## Project Structure
@@ -261,7 +261,7 @@ Do not add `🤖 Generated with Claude` or similar signatures to commits.
 
 - **User Management**: Admin page for user CRUD and role assignment (`src/renderer/pages/admin/UserManagement.tsx`)
 - **Group Mappings**: Map OIDC groups to application roles (`src/renderer/pages/admin/GroupMappings.tsx`)
-- **Global Models**: Shared model configurations available to all users (`src/renderer/pages/admin/GlobalModels.tsx`)
+- **Global Models**: Shared model configurations with optional group-based access control (`src/renderer/pages/admin/GlobalModels.tsx`)
 - **Logging Settings**: Runtime logging, OTEL, syslog, Langfuse configuration (`src/renderer/pages/admin/LoggingSettings.tsx`)
 - **Profile Page**: User profile with password change capability (`src/renderer/pages/settings/ProfilePage.tsx`)
 
@@ -284,8 +284,14 @@ Do not add `🤖 Generated with Claude` or similar signatures to commits.
 - **GLOBAL_MODELS**: JSON array to pre-configure shared models (synced to DB on startup)
 
   ```json
-  [{ "platform": "openai", "name": "GPT-4", "api_key": "sk-xxx", "models": ["gpt-4", "gpt-4o"] }]
+  [
+    { "platform": "openai", "name": "Economy", "models": ["gpt-4o-mini"] },
+    { "platform": "openai", "name": "Premium", "models": ["gpt-4o"], "allowed_groups": ["AI-Power-Users"] }
+  ]
   ```
+
+  - `allowed_groups`: Optional array of group names for access control (matches GROUP_MAPPINGS)
+  - No `allowed_groups` = available to everyone; admins bypass all restrictions
 
 ---
 
