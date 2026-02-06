@@ -288,15 +288,27 @@ docker build \
 
 [tasks."docker:up"]
 description = "Start AionUI Docker container (docker-compose)"
-run = "docker-compose -f deploy/docker/docker-compose.yml up -d"
+run = "docker compose -f deploy/docker/docker-compose.yml up -d"
+
+[tasks."docker:up:https"]
+description = "Start AionUI Docker container (docker-compose) with HTTPS"
+run = "docker compose -f deploy/docker/docker-compose.yml --profile https up -d"
 
 [tasks."docker:down"]
 description = "Stop AionUI Docker container"
-run = "docker-compose -f deploy/docker/docker-compose.yml down"
+run = "docker compose -f deploy/docker/docker-compose.yml down"
+
+[tasks."docker:down:https"]
+description = "Stop AionUI Docker container"
+run = "docker compose -f deploy/docker/docker-compose.yml --profile https down"
 
 [tasks."docker:logs"]
 description = "Follow AionUI Docker container logs"
-run = "docker-compose -f deploy/docker/docker-compose.yml logs -f"
+run = "docker compose -f deploy/docker/docker-compose.yml logs -f"
+
+[tasks."docker:logs:https"]
+description = "Follow AionUI Docker container logs"
+run = "docker compose -f deploy/docker/docker-compose.yml --profile https logs -f"
 
 # ─── Drift Detect Tasks ─────────────────────────────────────────────────────
 # Integration with Drift Detect for pattern analysis and code health
