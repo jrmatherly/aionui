@@ -21,7 +21,7 @@ Extract:
 - Requirements (3-5)
 - Compensation (optional)
 - Application method (link/email)
-- Target platforms (X, LinkedIn, BOSS Zhipin, Lagou, Maimai, etc.)
+- Target platforms (X, LinkedIn)
 
 Ask the fewest questions needed. If the user asked for auto-publish, only ask when critical info is missing.
 If no platform is specified, you must ask which platform to publish to and present a list of options before generating platform copy or publish steps.
@@ -50,7 +50,6 @@ If the user provides a short prompt only (e.g., “hire an Agent Designer”), g
 
 - X: within 280 chars.
 - LinkedIn: professional, bullet points.
-- BOSS Zhipin / Lagou / Maimai: recruiting tone with structured bullets.
 - If user only asked for one platform, only output that version.
 
 ### 3) Images
@@ -95,13 +94,6 @@ When using `chrome-devtools`, follow the real form on each platform:
   3. Fill the LinkedIn copy, with line breaks as needed.
   4. Upload the cover or detail image.
   5. Click Post and wait for success.
-
-- BOSS Zhipin / Lagou / Maimai:
-  1. Open the platform publish/recruit page and ensure login.
-  2. Enter the post form and choose an image/job post type if needed.
-  3. Upload the cover + detail images when supported.
-  4. Fill role title, responsibilities, requirements, and application method fields.
-  5. Submit and wait for success.
 
 Before posting, make sure the page is fully loaded, the input is editable, and uploads are complete.
 
