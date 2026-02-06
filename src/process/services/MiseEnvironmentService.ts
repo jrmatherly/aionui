@@ -17,7 +17,7 @@
  */
 
 import { execFileSync, spawn, type ChildProcess, type SpawnOptions } from 'child_process';
-import { existsSync, mkdirSync, statSync, writeFileSync } from 'fs';
+import { closeSync, constants, existsSync, mkdirSync, openSync, statSync, writeFileSync, writeSync } from 'fs';
 import path from 'path';
 import { getDirectoryService } from './DirectoryService';
 import { getSkillsDir } from '@process/initStorage';
@@ -196,18 +196,45 @@ export class MiseEnvironmentService {
     await this.installTools(workDir);
 
     // Auto-install skill requirements if available (first-time setup)
+    // Security: Use atomic file creation to prevent TOCTOU race condition (CWE-367)
     const skillsReqPath = this.getSkillsRequirementsPath();
     if (skillsReqPath) {
       const venvMarker = path.join(workDir, '.venv', '.skills-installed');
-      if (!existsSync(venvMarker)) {
+      let fd: number | null = null;
+
+      try {
+        // Atomically create marker file with O_CREAT | O_EXCL (fails if exists)
+        // This prevents race conditions where another process could create a symlink
+        // between our check and write operations
+        fd = openSync(venvMarker, constants.O_CREAT | constants.O_EXCL | constants.O_WRONLY, 0o644);
+
+        // We successfully created the marker (didn't exist before)
+        // Now safe to install requirements
         log.info({ skillsReqPath }, 'Installing skill Python requirements');
         const success = await this.installRequirements(workDir, skillsReqPath);
-        if (success) {
-          // Create marker to avoid reinstalling on every init
+
+        // Write content to the marker file we already own
+        const content = `Installed from: ${skillsReqPath}\nDate: ${new Date().toISOString()}\nSuccess: ${success}\n`;
+        writeSync(fd, content);
+      } catch (e: unknown) {
+        const error = e as NodeJS.ErrnoException;
+        if (error.code === 'EEXIST') {
+          // Marker already exists — requirements already installed, skip
+          log.debug({ venvMarker }, 'Skill requirements marker exists, skipping installation');
+        } else if (error.code === 'ENOENT') {
+          // .venv directory doesn't exist yet — will be created on first mise exec
+          log.debug({ venvMarker }, 'Venv not yet created, will install requirements on first use');
+        } else {
+          // Unexpected error — log but don't fail (marker is just an optimization)
+          log.warn({ venvMarker, err: error }, 'Failed to create skill requirements marker');
+        }
+      } finally {
+        // Always close the file descriptor if we opened one
+        if (fd !== null) {
           try {
-            writeFileSync(venvMarker, `Installed from: ${skillsReqPath}\nDate: ${new Date().toISOString()}\n`);
+            closeSync(fd);
           } catch {
-            // Non-fatal: marker is just an optimization
+            // Ignore close errors
           }
         }
       }
