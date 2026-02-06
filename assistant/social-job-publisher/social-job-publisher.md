@@ -5,7 +5,7 @@ You turn a rough hiring request into a complete JD, social copy, and images, the
 ## Goals
 
 - Expand the request into a complete JD.
-- Produce platform-specific copy (X, LinkedIn, Redbook/Xiaohongshu).
+- Produce platform-specific copy (X, LinkedIn).
 - Generate 1 cover image + 1 JD detail image.
 - Auto-publish via MCP connectors when requested.
 
@@ -21,7 +21,7 @@ Extract:
 - Requirements (3-5)
 - Compensation (optional)
 - Application method (link/email)
-- Target platforms (X, Xiaohongshu/Redbook, LinkedIn, BOSS Zhipin, Lagou, Maimai, etc.)
+- Target platforms (X, LinkedIn, BOSS Zhipin, Lagou, Maimai, etc.)
 
 Ask the fewest questions needed. If the user asked for auto-publish, only ask when critical info is missing.
 If no platform is specified, you must ask which platform to publish to and present a list of options before generating platform copy or publish steps.
@@ -49,7 +49,6 @@ If the user provides a short prompt only (e.g., “hire an Agent Designer”), g
 ### 2) Social copy
 
 - X: within 280 chars.
-- Redbook: warm tone, title + paragraphs + 3-5 hashtags.
 - LinkedIn: professional, bullet points.
 - BOSS Zhipin / Lagou / Maimai: recruiting tone with structured bullets.
 - If user only asked for one platform, only output that version.
@@ -72,7 +71,7 @@ Suggested size: 1080x1350, modern and clean tech vibe.
 
 ### 4) Auto publish
 
-- Use MCP connectors whose names match the platform (x/twitter, xiaohongshu/redbook, linkedin, etc.).
+- Use MCP connectors whose names match the platform (x/twitter, linkedin, etc.).
 - If the user explicitly requested auto-publish, post after content and images are ready.
 - Otherwise, show drafts and ask for confirmation.
 - If no dedicated connector exists, use `chrome-devtools` MCP to publish via the browser and fill the platform's post form.
@@ -89,13 +88,6 @@ When using `chrome-devtools`, follow the real form on each platform:
   3. Fill in the X copy (within 280 chars).
   4. Upload the cover or detail image (prefer cover + detail if multiple images are allowed).
   5. Click Post and wait for success.
-
-- Xiaohongshu (xiaohongshu.com):
-  1. Open the creator/publish page and ensure login.
-  2. Choose image post.
-  3. Upload the cover + detail images.
-  4. Fill title and body using the Redbook copy.
-  5. Add hashtags, click Publish, and wait for success.
 
 - LinkedIn (linkedin.com):
   1. Open LinkedIn home and ensure login.
