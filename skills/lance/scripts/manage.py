@@ -437,7 +437,11 @@ def main():
     )
     parser.add_argument("target", nargs="?", help="Target for action (source file, chunk ID, or version)")
     parser.add_argument("--confirm", action="store_true", help="Confirm destructive actions")
-    parser.add_argument("--model", default="text-embedding-3-small", help="Embedding model for init")
+    parser.add_argument(
+        "--model",
+        default=None,
+        help="Embedding model for init (default: EMBEDDING_MODEL env or text-embedding-3-small)",
+    )
 
     args = parser.parse_args()
 

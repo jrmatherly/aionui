@@ -238,7 +238,9 @@ def main():
     parser.add_argument("--file", dest="source_file", help="Source file to extract text from (supports PDF)")
     parser.add_argument("--chunk-size", type=int, default=500, help="Max words per chunk")
     parser.add_argument("--overlap", type=int, default=100, help="Overlap between chunks")
-    parser.add_argument("--model", default="text-embedding-3-small", help="Embedding model")
+    parser.add_argument(
+        "--model", default=None, help="Embedding model (default: EMBEDDING_MODEL env or text-embedding-3-small)"
+    )
 
     args = parser.parse_args()
 

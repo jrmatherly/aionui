@@ -538,10 +538,10 @@ export function initConversationBridge(): void {
       }
     }
 
-    // For Gemini: remove large files from workspace after RAG ingestion to prevent
-    // FileDiscoveryService from reading them into context (causing overflow).
+    // Remove large files from workspace after RAG ingestion to prevent
+    // agents from reading them into context (causing overflow).
     // Content is preserved in the knowledge base for RAG retrieval.
-    if (task.type === 'gemini' && hasLargeFiles && workspaceFiles) {
+    if (hasLargeFiles && workspaceFiles) {
       for (const f of workspaceFiles) {
         if (isLargeFile(f)) {
           try {
@@ -554,9 +554,9 @@ export function initConversationBridge(): void {
       }
     }
 
-    // For Gemini: also filter large files from the files array as a safety net
+    // Filter large files from the files array for ALL agent types
     // (they should already be deleted above, but this guards against unlink failures)
-    const filesToSend = task.type === 'gemini' && workspaceFiles ? workspaceFiles.filter((f) => !isLargeFile(f)) : workspaceFiles;
+    const filesToSend = workspaceFiles ? workspaceFiles.filter((f) => !isLargeFile(f)) : workspaceFiles;
 
     try {
       // Call the corresponding sendMessage method based on task type
@@ -565,10 +565,10 @@ export function initConversationBridge(): void {
         await (task as GeminiAgentManager).sendMessage({ ...other, files: filesToSend, hasAutoIngestedFiles: hasLargeFiles });
         return { success: true };
       } else if (task.type === 'acp') {
-        await (task as AcpAgentManager).sendMessage({ content: other.input, files: workspaceFiles, msg_id: other.msg_id, hasAutoIngestedFiles: hasLargeFiles });
+        await (task as AcpAgentManager).sendMessage({ content: other.input, files: filesToSend, msg_id: other.msg_id, hasAutoIngestedFiles: hasLargeFiles });
         return { success: true };
       } else if (task.type === 'codex') {
-        await (task as CodexAgentManager).sendMessage({ content: other.input, files: workspaceFiles, msg_id: other.msg_id, hasAutoIngestedFiles: hasLargeFiles });
+        await (task as CodexAgentManager).sendMessage({ content: other.input, files: filesToSend, msg_id: other.msg_id, hasAutoIngestedFiles: hasLargeFiles });
         return { success: true };
       } else {
         return { success: false, msg: `Unsupported task type: ${task.type}` };
