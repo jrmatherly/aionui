@@ -33,6 +33,7 @@ graph TB
     subgraph "External Services"
         WebUI[WebUI Server<br/>Express + WebSocket]
         Telegram[Telegram Bot]
+        Lark[Lark Bot]
         OIDC[OIDC Provider<br/>SSO Integration]
     end
 
@@ -56,6 +57,7 @@ graph TB
 
     MP --> WebUI
     MP --> Telegram
+    MP --> Lark
 
     WebUI --> OIDC
     WebUI -.-> React
@@ -158,6 +160,7 @@ graph LR
 
     subgraph "Plugins"
         TP[TelegramPlugin]
+        LP[LarkPlugin]
         FP[Future Plugins...]
     end
 
@@ -171,6 +174,7 @@ graph LR
     CM --> SM
     CM --> AE
     PM --> TP
+    PM --> LP
     PM --> FP
     AE --> CA
     AE --> PA
@@ -434,6 +438,40 @@ CREATE TABLE user_model_overrides (
     FOREIGN KEY (global_model_id) REFERENCES global_models(id) ON DELETE CASCADE,
     UNIQUE(user_id, global_model_id)
 );
+
+-- Logging Config - Schema v17
+-- Runtime-configurable logging settings
+CREATE TABLE logging_config (
+    id TEXT PRIMARY KEY DEFAULT 'singleton',
+    pino_level TEXT NOT NULL DEFAULT 'info',
+    pino_file_enabled INTEGER NOT NULL DEFAULT 0,
+    pino_file_path TEXT,
+    pino_file_frequency TEXT DEFAULT 'daily',
+    otel_enabled INTEGER NOT NULL DEFAULT 0,
+    otel_endpoint TEXT,
+    otel_service_name TEXT DEFAULT 'aionui',
+    syslog_enabled INTEGER NOT NULL DEFAULT 0,
+    syslog_host TEXT,
+    syslog_port INTEGER DEFAULT 514,
+    syslog_protocol TEXT DEFAULT 'udp',
+    syslog_facility INTEGER DEFAULT 1,
+    langfuse_enabled INTEGER NOT NULL DEFAULT 0,
+    langfuse_public_key TEXT,
+    langfuse_secret_key TEXT,
+    langfuse_base_url TEXT,
+    updated_at INTEGER NOT NULL
+);
+
+-- Global Model Groups - Schema v18
+-- Group-based access control for global models
+CREATE TABLE global_model_groups (
+    id TEXT PRIMARY KEY,
+    global_model_id TEXT NOT NULL,
+    group_name TEXT NOT NULL,
+    created_at INTEGER NOT NULL,
+    FOREIGN KEY (global_model_id) REFERENCES global_models(id) ON DELETE CASCADE,
+    UNIQUE(global_model_id, group_name)
+);
 ```
 
 ## IPC Communication
@@ -515,7 +553,7 @@ contextBridge.exposeInMainWorld('electron', {
 
 #### Role-Based Access Control (RBAC)
 
-- **Roles**: `admin`, `user`
+- **Roles**: `admin`, `user`, `viewer`
 - **Middleware**: `RoleMiddleware` with route-level enforcement
   - `requireAdmin`: Admin-only endpoints
   - `requireRole(role)`: Specific role requirements

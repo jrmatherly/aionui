@@ -601,10 +601,13 @@ npm run webui
 4. **Debug with logging**:
 
 ```typescript
-// src/webserver/services/OidcService.ts
-console.log('[OIDC] Authorization URL:', authUrl);
-console.log('[OIDC] Token response:', tokenSet);
-console.log('[OIDC] ID token claims:', claims);
+// src/webserver/auth/service/OidcService.ts
+import { webLogger } from '@/common/logger';
+const log = webLogger.child({ module: 'oidc' });
+
+log.debug({ authUrl }, 'Authorization URL generated');
+log.debug('Token response received');
+log.debug({ sub: claims.sub, email: claims.email }, 'ID token claims');
 ```
 
 ### Token Management Patterns
@@ -612,7 +615,7 @@ console.log('[OIDC] ID token claims:', claims);
 #### Token Generation
 
 ```typescript
-// src/webserver/services/AuthService.ts
+// src/webserver/auth/service/AuthService.ts
 import jwt from 'jsonwebtoken';
 
 export class AuthService {
@@ -737,7 +740,7 @@ router.post('/api/auth/refresh', async (req, res) => {
     
     res.json({ success: true, accessToken: newAccessToken });
   } catch (error) {
-    console.error('[Auth] Refresh error:', error);
+    log.error({ err: error }, 'Token refresh failed');
     res.status(401).json({ error: 'Token refresh failed' });
   }
 });
@@ -853,7 +856,7 @@ export function initializeDatabase(dbPath: string): Database {
   // Run pending migrations
   for (const migration of migrations) {
     if (migration.version > currentVersion) {
-      console.log(`[DB] Running migration v${migration.version}`);
+      log.info({ version: migration.version }, 'Running migration');
       migration.up(db);
       db.pragma(`user_version = ${migration.version}`);
     }
@@ -868,7 +871,7 @@ export function initializeDatabase(dbPath: string): Database {
 The `UserRepository` provides database operations for user management:
 
 ```typescript
-// src/webserver/repositories/UserRepository.ts
+// src/webserver/auth/repository/UserRepository.ts
 export class UserRepository {
   // Find user by OIDC subject claim
   findByOidcSubject(subject: string): User | null {
@@ -1173,16 +1176,22 @@ Press `Ctrl+Shift+I` (Windows/Linux) or `Cmd+Option+I` (macOS) to open DevTools.
 ### Worker Processes
 
 ```typescript
-// Add logging to worker
-console.log('[Worker]', message);
+// Add logging to worker using Pino child logger
+import { logger } from '@/common/logger';
+const log = logger.child({ module: 'worker-name' });
+log.info({ message }, 'Worker received message');
 ```
 
 ### Logging
 
 ```typescript
-// Use console with prefix for easy filtering
-console.log('[Module]', 'Message');
-console.error('[Module] Error:', error);
+// Use Pino structured logging with child loggers
+import { logger } from '@/common/logger';
+const log = logger.child({ module: 'MyModule' });
+
+log.info('Operation completed');
+log.error({ err: error }, 'Operation failed');
+log.warn({ userId }, 'Unusual activity detected');
 ```
 
 ## Resources

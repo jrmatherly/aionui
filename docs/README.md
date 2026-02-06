@@ -6,17 +6,21 @@ Welcome to the AionUI documentation. This documentation provides comprehensive g
 
 ```text
 docs/
-├── README.md                    # This file
-├── PROJECT_INDEX.md             # Quick project reference (compact)
+├── README.md                              # This file
+├── PROJECT_INDEX.md                       # Quick project reference (compact)
+├── logging-infrastructure.md              # Pino + OTEL + Syslog + Langfuse logging stack
 ├── api/
-│   ├── index.html               # Interactive API playground (Swagger UI)
-│   ├── openapi.yaml             # OpenAPI 3.0 specification
-│   └── IPC_REFERENCE.md         # IPC API reference
+│   ├── index.html                         # Interactive API playground (Swagger UI)
+│   ├── openapi.yaml                       # OpenAPI 3.0 specification
+│   └── IPC_REFERENCE.md                   # IPC API reference
 ├── architecture/
-│   └── ARCHITECTURE.md          # System architecture documentation
+│   └── ARCHITECTURE.md                    # System architecture documentation
 └── guides/
-    ├── GETTING_STARTED.md       # User getting started guide
-    └── DEVELOPER_GUIDE.md       # Developer contribution guide
+    ├── GETTING_STARTED.md                 # User getting started guide
+    ├── DEVELOPER_GUIDE.md                 # Developer contribution guide
+    ├── PER_USER_API_KEY_ISOLATION.md      # API key isolation architecture
+    ├── DEPENDENCY_UPGRADE_ANALYSIS.md     # Dependency upgrade analysis
+    └── MAJOR_DEPENDENCY_UPGRADE_ANALYSIS.md  # Major version upgrade analysis
 ```
 
 ## Quick Links

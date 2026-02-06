@@ -11,7 +11,7 @@ Scaffold a new database migration for AionUI's Better-SQLite3 schema.
 
 ### 1. Read current version
 
-Read `CURRENT_DB_VERSION` from `src/process/database/schema.ts`. It is currently `17`.
+Read `CURRENT_DB_VERSION` from `src/process/database/schema.ts`. It is currently `18`.
 
 ### 2. Determine next version
 
@@ -40,7 +40,7 @@ If env sync is needed (like v16 global_models or v17 logging_config), also expor
 
 ### 5. Register migration in `src/process/database/migrations.ts`
 
-- Import the migration function at the top (alongside existing v14-v17 imports)
+- Import the migration function at the top (alongside existing v14-v18 imports)
 - Add a `migration_vN` constant with `version`, `name`, `up`, and `down` functions
 - The `down` function should include `DROP TABLE IF EXISTS` or reverse the changes
 - Append `migration_vN` to the `ALL_MIGRATIONS` array

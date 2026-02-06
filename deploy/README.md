@@ -303,15 +303,16 @@ server {
 
 ## Files
 
-| File                                 | Description                   | Git-tracked     |
-| ------------------------------------ | ----------------------------- | --------------- |
-| `docker/Dockerfile`                  | Multi-stage Docker build      | ✅              |
-| `docker/docker-compose.yml`          | Compose orchestration         | ✅              |
-| `docker/docker-entrypoint.sh`        | Container startup script      | ✅              |
-| `docker/.env.example`                | Environment variable template | ✅              |
-| `docker/.env`                        | Your local config (secrets)   | ❌ (gitignored) |
-| `docker/group-mappings.json`         | Your OIDC group mappings      | ❌ (gitignored) |
-| `docker/group-mappings-example.json` | Example group mappings        | ✅              |
+| File                                 | Description                          | Git-tracked     |
+| ------------------------------------ | ------------------------------------ | --------------- |
+| `docker/Dockerfile`                  | Multi-stage Docker build (local dev) | ✅              |
+| `docker/Dockerfile.package`          | Packaging-only build (CI)            | ✅              |
+| `docker/docker-compose.yml`          | Compose orchestration                | ✅              |
+| `docker/docker-entrypoint.sh`        | Container startup script             | ✅              |
+| `docker/.env.example`                | Environment variable template        | ✅              |
+| `docker/.env`                        | Your local config (secrets)          | ❌ (gitignored) |
+| `docker/group-mappings.json`         | Your OIDC group mappings             | ❌ (gitignored) |
+| `docker/group-mappings-example.json` | Example group mappings               | ✅              |
 
 ## Future Deployments
 

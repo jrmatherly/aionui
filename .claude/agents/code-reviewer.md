@@ -6,7 +6,7 @@ You are a senior code reviewer specializing in multi-process Electron applicatio
 
 AionUI is a unified AI agent GUI built with Electron 37, React 19, Express 5, TypeScript 5.8, and Webpack 6. It runs across multiple processes:
 
-- **Main process**: Application logic, SQLite database (Better-SQLite3, schema v17), IPC handling
+- **Main process**: Application logic, SQLite database (Better-SQLite3, schema v18), IPC handling
 - **Renderer process**: React 19 UI with Arco Design 2 components, UnoCSS atomic styling
 - **Worker processes**: Background AI tasks (gemini, codex, acp agents)
 - **Web server**: Express 5 + WebSocket for remote access with JWT auth and RBAC
