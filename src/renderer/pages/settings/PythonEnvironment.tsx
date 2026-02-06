@@ -116,10 +116,28 @@ const PythonEnvironment: React.FC = () => {
   const handleReset = () => {
     Modal.confirm({
       title: 'Reset Python Environment',
+      icon: null,
       content: (
-        <div>
-          <p>This will delete your virtual environment and all installed packages.</p>
-          <p style={{ marginTop: '8px', color: 'var(--color-text-3)' }}>The environment will be recreated on next use with default skill dependencies.</p>
+        <div style={{ padding: '8px 0' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '12px',
+              padding: '16px',
+              background: 'var(--color-fill-2)',
+              borderRadius: '8px',
+              border: '1px solid var(--color-border-2)',
+            }}
+          >
+            <Delete style={{ fontSize: '24px', color: 'rgb(var(--danger-6))', flexShrink: 0, marginTop: '2px' }} />
+            <div>
+              <Typography.Text style={{ display: 'block', fontWeight: 500, marginBottom: '8px' }}>This will delete your virtual environment and all installed packages.</Typography.Text>
+              <Typography.Text type='secondary' style={{ fontSize: '13px' }}>
+                The environment will be recreated on next use with default skill dependencies.
+              </Typography.Text>
+            </div>
+          </div>
         </div>
       ),
       okButtonProps: { status: 'danger' },
