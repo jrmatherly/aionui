@@ -3,6 +3,49 @@
   "category": "logging",
   "patterns": [
     {
+      "id": "18f78805cdc7371b",
+      "subcategory": "metrics",
+      "name": "Metrics Detector",
+      "description": "Learns metrics patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "logging/metrics",
+          "patternId": "logging/metrics/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.01,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.77,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 285,
+          "column": 12,
+          "isOutlier": false,
+          "confidence": 0.77
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:05:19.639Z",
+        "source": "auto-detected",
+        "tags": [
+          "logging",
+          "metrics"
+        ],
+        "approvedAt": "2026-02-06T23:05:19.639Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
       "id": "03de11064af0d87d",
       "subcategory": "structured-logging",
       "name": "Structured Logging Detector",
@@ -186,14 +229,14 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 318,
+          "line": 316,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.6533333333333333
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 320,
+          "line": 318,
           "column": 22,
           "isOutlier": false,
           "confidence": 0.6533333333333333
@@ -215,8 +258,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -348,8 +391,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -397,8 +440,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -592,7 +635,7 @@
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 73,
+          "line": 115,
           "column": 17,
           "isOutlier": false,
           "confidence": 0.77
@@ -648,6 +691,13 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
+          "line": 324,
+          "column": 22,
+          "isOutlier": false,
+          "confidence": 0.6699999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
           "line": 326,
           "column": 22,
           "isOutlier": false,
@@ -655,14 +705,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 328,
-          "column": 22,
-          "isOutlier": false,
-          "confidence": 0.6699999999999999
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 181,
+          "line": 179,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.6699999999999999
@@ -796,8 +839,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -852,8 +895,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -918,7 +961,7 @@
         }
       },
       "confidence": {
-        "frequency": 0.9,
+        "frequency": 0.94,
         "consistency": 0.9,
         "age": 0,
         "spread": 12,
@@ -984,31 +1027,45 @@
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 127,
+          "line": 46,
           "column": 6,
           "isOutlier": false,
-          "confidence": 0.6199999999999999
+          "confidence": 0.6533333333333333
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 131,
+          "line": 169,
           "column": 6,
           "isOutlier": false,
-          "confidence": 0.6199999999999999
+          "confidence": 0.6533333333333333
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 137,
+          "line": 173,
+          "column": 6,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 179,
           "column": 17,
           "isOutlier": false,
-          "confidence": 0.6199999999999999
+          "confidence": 0.6533333333333333
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 139,
+          "line": 181,
           "column": 6,
           "isOutlier": false,
-          "confidence": 0.6199999999999999
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 53,
+          "column": 40,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
         },
         {
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
@@ -1026,56 +1083,56 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 127,
+          "line": 125,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.731111111111111
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 128,
+          "line": 126,
           "column": 23,
           "isOutlier": false,
           "confidence": 0.731111111111111
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 146,
+          "line": 144,
           "column": 26,
           "isOutlier": false,
           "confidence": 0.731111111111111
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 153,
+          "line": 151,
           "column": 29,
           "isOutlier": false,
           "confidence": 0.731111111111111
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 178,
+          "line": 176,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.731111111111111
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 179,
+          "line": 177,
           "column": 23,
           "isOutlier": false,
           "confidence": 0.731111111111111
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 306,
+          "line": 304,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.731111111111111
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 307,
+          "line": 305,
           "column": 23,
           "isOutlier": false,
           "confidence": 0.731111111111111
@@ -1244,8 +1301,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.250Z",
-        "lastSeen": "2026-02-06T21:07:12.250Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1286,8 +1343,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.250Z",
-        "lastSeen": "2026-02-06T21:07:12.250Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1328,8 +1385,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.250Z",
-        "lastSeen": "2026-02-06T21:07:12.250Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1412,8 +1469,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1474,7 +1531,7 @@
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 143,
+          "line": 185,
           "column": 25,
           "isOutlier": true,
           "confidence": 0.97,
@@ -1483,8 +1540,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1546,8 +1603,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1580,7 +1637,7 @@
       "locations": [
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 168,
+          "line": 166,
           "column": 70,
           "isOutlier": false,
           "confidence": 0.931111111111111
@@ -1588,8 +1645,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.220Z",
+        "lastSeen": "2026-02-06T23:03:13.220Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1644,8 +1701,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.250Z",
-        "lastSeen": "2026-02-06T21:07:12.250Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1678,7 +1735,7 @@
       "locations": [
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 275,
+          "line": 273,
           "column": 100,
           "isOutlier": false,
           "confidence": 0.8533333333333333
@@ -1714,8 +1771,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.220Z",
+        "lastSeen": "2026-02-06T23:03:13.220Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1827,8 +1884,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.250Z",
-        "lastSeen": "2026-02-06T21:07:12.250Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1981,8 +2038,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -2051,8 +2108,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.220Z",
+        "lastSeen": "2026-02-06T23:03:13.220Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -2100,8 +2157,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -2169,7 +2226,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 339,
+          "line": 337,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.87
@@ -2185,8 +2242,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -2222,14 +2279,14 @@
           "line": 18,
           "column": 19,
           "isOutlier": false,
-          "confidence": 0.82
+          "confidence": 0.8533333333333333
         },
         {
           "file": ".github/CICD_SETUP.md",
           "line": 28,
           "column": 18,
           "isOutlier": false,
-          "confidence": 0.82
+          "confidence": 0.8533333333333333
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -2241,8 +2298,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -2289,10 +2346,10 @@
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 143,
+          "line": 185,
           "column": 4,
           "isOutlier": false,
-          "confidence": 0.82
+          "confidence": 0.8533333333333333
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -2311,8 +2368,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.250Z",
-        "lastSeen": "2026-02-06T21:07:12.250Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -2345,7 +2402,7 @@
       "locations": [
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 275,
+          "line": 273,
           "column": 100,
           "isOutlier": false,
           "confidence": 0.97
@@ -2353,8 +2410,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.220Z",
+        "lastSeen": "2026-02-06T23:03:13.220Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -2402,8 +2459,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.220Z",
+        "lastSeen": "2026-02-06T23:03:13.220Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -2414,6 +2471,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-06T21:07:12.265Z",
-  "checksum": "52fe311bcd4a3165"
+  "lastUpdated": "2026-02-06T23:05:19.786Z",
+  "checksum": "b2636245e97ee2ef"
 }

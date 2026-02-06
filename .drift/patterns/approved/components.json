@@ -3,6 +3,264 @@
   "category": "components",
   "patterns": [
     {
+      "id": "18e8c6447462ee30",
+      "subcategory": "component-structure",
+      "name": "Component Structure Detector",
+      "description": "Learns component structure patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "components/component-structure",
+          "patternId": "components/component-structure/function_call"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.8144444444444444,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 215,
+          "column": 44,
+          "isOutlier": false,
+          "confidence": 0.8144444444444444
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:05:19.432Z",
+        "source": "auto-detected",
+        "tags": [
+          "components",
+          "component-structure"
+        ],
+        "approvedAt": "2026-02-06T23:05:19.432Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "f70687392c0a6f87",
+      "subcategory": "duplicate-detection",
+      "name": "Duplicate Detection Detector",
+      "description": "Learns duplicate component patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "components/duplicate-detection",
+          "patternId": "components/duplicate-detection/function_call"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.8144444444444444,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 215,
+          "column": 44,
+          "isOutlier": false,
+          "confidence": 0.8144444444444444
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:05:19.448Z",
+        "source": "auto-detected",
+        "tags": [
+          "components",
+          "duplicate-detection"
+        ],
+        "approvedAt": "2026-02-06T23:05:19.448Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "0f8d882a9031588e",
+      "subcategory": "near-duplicate",
+      "name": "Near Duplicate Detector",
+      "description": "Learns near-duplicate component patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "components/near-duplicate",
+          "patternId": "components/near-duplicate/conditional"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.7366666666666666,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 46,
+          "column": 47,
+          "isOutlier": false,
+          "confidence": 0.7366666666666666
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:05:19.466Z",
+        "source": "auto-detected",
+        "tags": [
+          "components",
+          "near-duplicate"
+        ],
+        "approvedAt": "2026-02-06T23:05:19.466Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "2c0fb3fbe4365dfb",
+      "subcategory": "near-duplicate",
+      "name": "Near Duplicate Detector",
+      "description": "Learns near-duplicate component patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "components/near-duplicate",
+          "patternId": "components/near-duplicate/function_call"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.7366666666666666,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 215,
+          "column": 44,
+          "isOutlier": false,
+          "confidence": 0.7366666666666666
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:05:19.483Z",
+        "source": "auto-detected",
+        "tags": [
+          "components",
+          "near-duplicate"
+        ],
+        "approvedAt": "2026-02-06T23:05:19.483Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "15bc39655beb0699",
+      "subcategory": "composition",
+      "name": "Composition Detector",
+      "description": "Learns component composition patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "components/composition",
+          "patternId": "components/composition/import"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.7366666666666666,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 686,
+          "column": 32,
+          "isOutlier": false,
+          "confidence": 0.7366666666666666
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:05:19.524Z",
+        "source": "auto-detected",
+        "tags": [
+          "components",
+          "composition"
+        ],
+        "approvedAt": "2026-02-06T23:05:19.524Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "bdfcd54f97f9240c",
+      "subcategory": "composition",
+      "name": "Composition Detector",
+      "description": "Learns component composition patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "components/composition",
+          "patternId": "components/composition/type_annotation"
+        }
+      },
+      "confidence": {
+        "frequency": 0.02,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.7366666666666666,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 740,
+          "column": 71,
+          "isOutlier": false,
+          "confidence": 0.7366666666666666
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:05:19.541Z",
+        "source": "auto-detected",
+        "tags": [
+          "components",
+          "composition"
+        ],
+        "approvedAt": "2026-02-06T23:05:19.541Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
       "id": "eb803ea54e3a8182",
       "subcategory": "duplicate-detection",
       "name": "Duplicate Detection Detector",
@@ -47,8 +305,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.250Z",
-        "lastSeen": "2026-02-06T21:07:12.250Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -89,8 +347,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -485,8 +743,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -596,105 +854,105 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 341,
+          "line": 339,
           "column": 97,
           "isOutlier": false,
           "confidence": 0.6824999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 172,
+          "line": 170,
           "column": 40,
           "isOutlier": false,
           "confidence": 0.6824999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 173,
+          "line": 171,
           "column": 39,
           "isOutlier": false,
           "confidence": 0.6824999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 174,
+          "line": 172,
           "column": 34,
           "isOutlier": false,
           "confidence": 0.6824999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 175,
+          "line": 173,
           "column": 32,
           "isOutlier": false,
           "confidence": 0.6824999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 193,
+          "line": 191,
           "column": 44,
           "isOutlier": false,
           "confidence": 0.6824999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 196,
+          "line": 194,
           "column": 52,
           "isOutlier": false,
           "confidence": 0.6824999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 216,
+          "line": 214,
           "column": 58,
           "isOutlier": false,
           "confidence": 0.6824999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 260,
+          "line": 258,
           "column": 33,
           "isOutlier": false,
           "confidence": 0.6824999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 333,
+          "line": 331,
           "column": 46,
           "isOutlier": false,
           "confidence": 0.6824999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 342,
+          "line": 340,
           "column": 32,
           "isOutlier": false,
           "confidence": 0.6824999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 343,
+          "line": 341,
           "column": 34,
           "isOutlier": false,
           "confidence": 0.6824999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 345,
+          "line": 343,
           "column": 44,
           "isOutlier": false,
           "confidence": 0.6824999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 346,
+          "line": 344,
           "column": 43,
           "isOutlier": false,
           "confidence": 0.6824999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 347,
+          "line": 345,
           "column": 43,
           "isOutlier": false,
           "confidence": 0.6824999999999999
@@ -716,8 +974,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -1113,8 +1371,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -1445,8 +1703,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -1571,8 +1829,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -1747,8 +2005,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -1846,7 +2104,7 @@
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 40,
+          "line": 82,
           "column": 116,
           "isOutlier": true,
           "confidence": 0.77,
@@ -1855,8 +2113,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -1918,8 +2176,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -1959,21 +2217,21 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 319,
+          "line": 317,
           "column": 89,
           "isOutlier": false,
           "confidence": 0.8825
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 219,
+          "line": 217,
           "column": 38,
           "isOutlier": false,
           "confidence": 0.8825
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 270,
+          "line": 268,
           "column": 28,
           "isOutlier": false,
           "confidence": 0.8825
@@ -1981,8 +2239,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.250Z",
-        "lastSeen": "2026-02-06T21:07:12.250Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -2130,8 +2388,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -2201,8 +2459,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -2250,8 +2508,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -2299,8 +2557,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -2456,14 +2714,14 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 95,
+          "line": 93,
           "column": 5,
           "isOutlier": false,
           "confidence": 0.8825
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 171,
+          "line": 169,
           "column": 5,
           "isOutlier": false,
           "confidence": 0.8825
@@ -2478,8 +2736,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -2561,7 +2819,7 @@
       "locations": [
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 102,
+          "line": 100,
           "column": 44,
           "isOutlier": false,
           "confidence": 0.97
@@ -2569,8 +2827,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.220Z",
+        "lastSeen": "2026-02-06T23:03:13.220Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -2653,8 +2911,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.250Z",
-        "lastSeen": "2026-02-06T21:07:12.250Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "components",
@@ -2798,6 +3056,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-06T21:07:12.260Z",
-  "checksum": "2dd77038d75778fb"
+  "lastUpdated": "2026-02-06T23:05:19.781Z",
+  "checksum": "6c9b7d75fcfcc37a"
 }

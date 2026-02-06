@@ -3,6 +3,213 @@
   "category": "structural",
   "patterns": [
     {
+      "id": "66df4937e15e4259",
+      "subcategory": "package-boundaries",
+      "name": "Package Boundaries Detector",
+      "description": "Learns package boundary patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "structural/package-boundaries",
+          "patternId": "structural/package-boundaries/import"
+        }
+      },
+      "confidence": {
+        "frequency": 0.03,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.7949999999999999,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 16,
+          "column": 27,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 130,
+          "column": 27,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 152,
+          "column": 28,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:05:19.389Z",
+        "source": "auto-detected",
+        "tags": [
+          "structural",
+          "package-boundaries"
+        ],
+        "approvedAt": "2026-02-06T23:05:19.389Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "cff8f8cd5e2c999e",
+      "subcategory": "package-boundaries",
+      "name": "Package Boundaries Detector",
+      "description": "Learns package boundary patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "structural/package-boundaries",
+          "patternId": "structural/package-boundaries/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.04,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.7755555555555556,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 160,
+          "column": 61,
+          "isOutlier": false,
+          "confidence": 0.7755555555555556
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 292,
+          "column": 21,
+          "isOutlier": false,
+          "confidence": 0.7755555555555556
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 338,
+          "column": 42,
+          "isOutlier": false,
+          "confidence": 0.7755555555555556
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 363,
+          "column": 49,
+          "isOutlier": false,
+          "confidence": 0.7755555555555556
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-06T23:03:13.220Z",
+        "lastSeen": "2026-02-06T23:05:19.412Z",
+        "source": "auto-detected",
+        "tags": [
+          "structural",
+          "package-boundaries"
+        ],
+        "approvedAt": "2026-02-06T23:05:19.412Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "aed0b2f1037530ab",
+      "subcategory": "module-boundaries",
+      "name": "Module Boundaries Detector",
+      "description": "Learns module boundary patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "structural/module-boundaries",
+          "patternId": "structural/module-boundaries/import"
+        }
+      },
+      "confidence": {
+        "frequency": 0.01,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.8533333333333333,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 783,
+          "column": 21,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:55.875Z",
+        "source": "auto-detected",
+        "tags": [
+          "structural",
+          "module-boundaries"
+        ],
+        "approvedAt": "2026-02-06T23:03:55.875Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "347e25ef4ee92158",
+      "subcategory": "module-boundaries",
+      "name": "Module Boundaries Detector",
+      "description": "Learns module boundary patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "structural/module-boundaries",
+          "patternId": "structural/module-boundaries/property_access"
+        }
+      },
+      "confidence": {
+        "frequency": 0.01,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.8533333333333333,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 876,
+          "column": 8,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:55.897Z",
+        "source": "auto-detected",
+        "tags": [
+          "structural",
+          "module-boundaries"
+        ],
+        "approvedAt": "2026-02-06T23:03:55.897Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
       "id": "1efadff955b1ca60",
       "subcategory": "co-location",
       "name": "Co-Location Detector",
@@ -33,8 +240,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.250Z",
-        "lastSeen": "2026-02-06T21:07:12.250Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -67,7 +274,7 @@
       "locations": [
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 107,
+          "line": 105,
           "column": 3,
           "isOutlier": false,
           "confidence": 0.7755555555555556
@@ -75,8 +282,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.220Z",
+        "lastSeen": "2026-02-06T23:03:13.220Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -382,7 +589,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 277,
+          "line": 275,
           "column": 64,
           "isOutlier": false,
           "confidence": 0.7607894736842105
@@ -481,8 +688,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.217Z",
+        "lastSeen": "2026-02-06T23:03:13.217Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -614,8 +821,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.217Z",
+        "lastSeen": "2026-02-06T23:03:13.217Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -1349,8 +1556,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.217Z",
+        "lastSeen": "2026-02-06T23:03:13.217Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -1433,8 +1640,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.220Z",
+        "lastSeen": "2026-02-06T23:03:13.220Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2083,14 +2290,14 @@
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 137,
+          "line": 179,
           "column": 6,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 146,
+          "line": 144,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.77
@@ -2106,8 +2313,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.217Z",
+        "lastSeen": "2026-02-06T23:03:13.217Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2595,21 +2802,21 @@
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 62,
+          "line": 104,
           "column": 29,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 139,
+          "line": 181,
           "column": 25,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 126,
+          "line": 168,
           "column": 13,
           "isOutlier": false,
           "confidence": 0.77
@@ -2637,7 +2844,7 @@
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 137,
+          "line": 179,
           "column": 6,
           "isOutlier": false,
           "confidence": 0.77
@@ -2672,7 +2879,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 213,
+          "line": 211,
           "column": 24,
           "isOutlier": true,
           "confidence": 0.6199999999999999,
@@ -2680,7 +2887,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 216,
+          "line": 214,
           "column": 21,
           "isOutlier": true,
           "confidence": 0.6199999999999999,
@@ -2688,7 +2895,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 252,
+          "line": 250,
           "column": 30,
           "isOutlier": true,
           "confidence": 0.6199999999999999,
@@ -2696,7 +2903,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 146,
+          "line": 144,
           "column": 15,
           "isOutlier": true,
           "confidence": 0.6199999999999999,
@@ -2713,8 +2920,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.217Z",
+        "lastSeen": "2026-02-06T23:03:13.217Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -2929,7 +3136,7 @@
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 126,
+          "line": 168,
           "column": 13,
           "isOutlier": false,
           "confidence": 0.77
@@ -2950,21 +3157,21 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 213,
+          "line": 211,
           "column": 24,
           "isOutlier": false,
           "confidence": 0.6824999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 216,
+          "line": 214,
           "column": 21,
           "isOutlier": false,
           "confidence": 0.6824999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 252,
+          "line": 250,
           "column": 30,
           "isOutlier": false,
           "confidence": 0.6824999999999999
@@ -2972,8 +3179,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.217Z",
+        "lastSeen": "2026-02-06T23:03:13.217Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3125,28 +3332,28 @@
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 48,
+          "line": 90,
           "column": 20,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 131,
+          "line": 173,
           "column": 40,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 149,
+          "line": 191,
           "column": 5,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 149,
+          "line": 191,
           "column": 51,
           "isOutlier": false,
           "confidence": 0.77
@@ -3182,8 +3389,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3244,14 +3451,14 @@
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 131,
+          "line": 173,
           "column": 49,
           "isOutlier": false,
           "confidence": 0.595
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 152,
+          "line": 194,
           "column": 12,
           "isOutlier": false,
           "confidence": 0.595
@@ -3265,28 +3472,28 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 258,
+          "line": 256,
           "column": 41,
           "isOutlier": false,
           "confidence": 0.5755555555555556
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 267,
+          "line": 265,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.5755555555555556
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 348,
+          "line": 346,
           "column": 45,
           "isOutlier": false,
           "confidence": 0.5755555555555556
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 349,
+          "line": 347,
           "column": 52,
           "isOutlier": false,
           "confidence": 0.5755555555555556
@@ -3294,8 +3501,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3336,8 +3543,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3399,8 +3606,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.250Z",
-        "lastSeen": "2026-02-06T21:07:12.250Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3475,7 +3682,7 @@
       "locations": [
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 201,
+          "line": 199,
           "column": 30,
           "isOutlier": false,
           "confidence": 0.9505555555555556
@@ -3483,8 +3690,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.220Z",
+        "lastSeen": "2026-02-06T23:03:13.220Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3524,7 +3731,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 219,
+          "line": 217,
           "column": 30,
           "isOutlier": false,
           "confidence": 0.8825
@@ -3532,8 +3739,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.250Z",
-        "lastSeen": "2026-02-06T21:07:12.250Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3566,7 +3773,7 @@
       "locations": [
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 201,
+          "line": 199,
           "column": 30,
           "isOutlier": false,
           "confidence": 0.97
@@ -3574,8 +3781,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.220Z",
+        "lastSeen": "2026-02-06T23:03:13.220Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3678,7 +3885,7 @@
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 64,
+          "line": 106,
           "column": 50,
           "isOutlier": false,
           "confidence": 0.7949999999999999
@@ -3707,8 +3914,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.217Z",
+        "lastSeen": "2026-02-06T23:03:13.217Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3763,8 +3970,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.217Z",
+        "lastSeen": "2026-02-06T23:03:13.217Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3881,7 +4088,7 @@
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 73,
+          "line": 115,
           "column": 82,
           "isOutlier": false,
           "confidence": 0.9116666666666666
@@ -3889,8 +4096,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.217Z",
+        "lastSeen": "2026-02-06T23:03:13.217Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3931,8 +4138,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.250Z",
-        "lastSeen": "2026-02-06T21:07:12.250Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -3965,7 +4172,7 @@
       "locations": [
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 130,
+          "line": 172,
           "column": 18,
           "isOutlier": false,
           "confidence": 0.7949999999999999
@@ -3973,8 +4180,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4022,8 +4229,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.250Z",
-        "lastSeen": "2026-02-06T21:07:12.250Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4056,7 +4263,7 @@
       "locations": [
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 219,
+          "line": 217,
           "column": 30,
           "isOutlier": false,
           "confidence": 0.82
@@ -4078,8 +4285,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.220Z",
+        "lastSeen": "2026-02-06T23:03:13.220Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4120,8 +4327,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.250Z",
-        "lastSeen": "2026-02-06T21:07:12.250Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4196,7 +4403,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 340,
+          "line": 338,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.9607894736842105
@@ -4210,245 +4417,245 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 121,
+          "line": 119,
           "column": 5,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 127,
+          "line": 125,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 130,
+          "line": 128,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 136,
+          "line": 134,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 143,
+          "line": 141,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 146,
+          "line": 144,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 149,
+          "line": 147,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 152,
+          "line": 150,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 165,
+          "line": 163,
           "column": 5,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 178,
+          "line": 176,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 181,
+          "line": 179,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 190,
+          "line": 188,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 195,
+          "line": 193,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 198,
+          "line": 196,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 211,
+          "line": 209,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 218,
+          "line": 216,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 227,
+          "line": 225,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 237,
+          "line": 235,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 247,
+          "line": 245,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 252,
+          "line": 250,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 255,
+          "line": 253,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 260,
+          "line": 258,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 267,
+          "line": 265,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 270,
+          "line": 268,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 283,
+          "line": 281,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 286,
+          "line": 284,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 300,
+          "line": 298,
           "column": 5,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 306,
+          "line": 304,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 309,
+          "line": 307,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 312,
+          "line": 310,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 315,
+          "line": 313,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 318,
+          "line": 316,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 326,
+          "line": 324,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 336,
+          "line": 334,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 354,
+          "line": 352,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9607894736842105
@@ -4708,8 +4915,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4757,8 +4964,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.217Z",
+        "lastSeen": "2026-02-06T23:03:13.217Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4855,8 +5062,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.217Z",
+        "lastSeen": "2026-02-06T23:03:13.217Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -4924,7 +5131,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 87,
+          "line": 86,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.82
@@ -4932,8 +5139,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.217Z",
+        "lastSeen": "2026-02-06T23:03:13.217Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -5100,8 +5307,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.249Z",
-        "lastSeen": "2026-02-06T21:07:12.249Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -5183,7 +5390,7 @@
       "locations": [
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 144,
+          "line": 186,
           "column": 4,
           "isOutlier": false,
           "confidence": 0.9116666666666666
@@ -5191,8 +5398,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -5365,119 +5572,119 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 348,
+          "line": 346,
           "column": 17,
           "isOutlier": false,
           "confidence": 0.9505555555555556
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 128,
+          "line": 126,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9505555555555556
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 131,
+          "line": 129,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9505555555555556
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 137,
+          "line": 135,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9505555555555556
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 179,
+          "line": 177,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9505555555555556
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 191,
+          "line": 189,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9505555555555556
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 212,
+          "line": 210,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9505555555555556
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 228,
+          "line": 226,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9505555555555556
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 238,
+          "line": 236,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9505555555555556
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 284,
+          "line": 282,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9505555555555556
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 307,
+          "line": 305,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9505555555555556
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 310,
+          "line": 308,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9505555555555556
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 316,
+          "line": 314,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9505555555555556
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 320,
+          "line": 318,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9505555555555556
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 323,
+          "line": 321,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.9505555555555556
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 328,
+          "line": 326,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9505555555555556
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 337,
+          "line": 335,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.9505555555555556
@@ -5604,8 +5811,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.250Z",
-        "lastSeen": "2026-02-06T21:07:12.250Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -5730,8 +5937,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -5807,8 +6014,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.220Z",
+        "lastSeen": "2026-02-06T23:03:13.220Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -5884,8 +6091,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.220Z",
+        "lastSeen": "2026-02-06T23:03:13.220Z",
         "source": "auto-detected",
         "tags": [
           "structural",
@@ -5896,6 +6103,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-06T21:07:12.259Z",
-  "checksum": "87c6ef346fc3dd9e"
+  "lastUpdated": "2026-02-06T23:05:19.780Z",
+  "checksum": "f0843bebcbd9545e"
 }

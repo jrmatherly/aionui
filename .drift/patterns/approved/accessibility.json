@@ -3,6 +3,381 @@
   "category": "accessibility",
   "patterns": [
     {
+      "id": "f734c007eeb3aeac",
+      "subcategory": "aria-roles",
+      "name": "ARIA Roles Detector",
+      "description": "Learns ARIA roles patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "accessibility/aria-roles",
+          "patternId": "accessibility/aria-roles/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.17,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.5651219512195123,
+        "level": "low"
+      },
+      "locations": [
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 57,
+          "column": 27,
+          "isOutlier": false,
+          "confidence": 0.5651219512195123
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 69,
+          "column": 20,
+          "isOutlier": false,
+          "confidence": 0.5651219512195123
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 115,
+          "column": 39,
+          "isOutlier": false,
+          "confidence": 0.5651219512195123
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 116,
+          "column": 66,
+          "isOutlier": false,
+          "confidence": 0.5651219512195123
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 136,
+          "column": 66,
+          "isOutlier": false,
+          "confidence": 0.5651219512195123
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 146,
+          "column": 48,
+          "isOutlier": false,
+          "confidence": 0.5651219512195123
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 146,
+          "column": 123,
+          "isOutlier": false,
+          "confidence": 0.5651219512195123
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 196,
+          "column": 21,
+          "isOutlier": false,
+          "confidence": 0.5651219512195123
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 196,
+          "column": 31,
+          "isOutlier": false,
+          "confidence": 0.5651219512195123
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 202,
+          "column": 21,
+          "isOutlier": false,
+          "confidence": 0.5651219512195123
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 202,
+          "column": 31,
+          "isOutlier": false,
+          "confidence": 0.5651219512195123
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 203,
+          "column": 24,
+          "isOutlier": false,
+          "confidence": 0.5651219512195123
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 203,
+          "column": 59,
+          "isOutlier": false,
+          "confidence": 0.5651219512195123
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 235,
+          "column": 21,
+          "isOutlier": false,
+          "confidence": 0.5651219512195123
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 235,
+          "column": 31,
+          "isOutlier": false,
+          "confidence": 0.5651219512195123
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 236,
+          "column": 24,
+          "isOutlier": false,
+          "confidence": 0.5651219512195123
+        },
+        {
+          "file": ".github/workflows/gemini-triage.yml",
+          "line": 236,
+          "column": 34,
+          "isOutlier": false,
+          "confidence": 0.5651219512195123
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-04T05:34:32.012Z",
+        "lastSeen": "2026-02-06T23:05:19.727Z",
+        "source": "auto-detected",
+        "tags": [
+          "accessibility",
+          "aria-roles"
+        ],
+        "approvedAt": "2026-02-06T23:05:19.727Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "c0ccaf5764f46f56",
+      "subcategory": "keyboard-nav",
+      "name": "Keyboard Navigation Detector",
+      "description": "Learns keyboard navigation patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "accessibility/keyboard-nav",
+          "patternId": "accessibility/keyboard-nav/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.14,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 3,
+        "score": 0.77,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 416,
+          "column": 12,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 417,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 417,
+          "column": 40,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 436,
+          "column": 36,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 897,
+          "column": 33,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 897,
+          "column": 51,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 1017,
+          "column": 10,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 1017,
+          "column": 27,
+          "isOutlier": false,
+          "confidence": 0.6533333333333333
+        },
+        {
+          "file": ".aionui/FEATURE_CHANNELS_LARK_LARK.md",
+          "line": 49,
+          "column": 39,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_CHANNELS_LARK_LARK.md",
+          "line": 49,
+          "column": 56,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_CHANNELS_LARK_LARK.md",
+          "line": 210,
+          "column": 38,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_CHANNELS_LARK_LARK.md",
+          "line": 211,
+          "column": 39,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".aionui/FEATURE_CHANNELS_LARK_LARK.md",
+          "line": 214,
+          "column": 51,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 5,
+          "column": 22,
+          "isOutlier": false,
+          "confidence": 0.77
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:05:19.740Z",
+        "source": "auto-detected",
+        "tags": [
+          "accessibility",
+          "keyboard-nav"
+        ],
+        "approvedAt": "2026-02-06T23:05:19.740Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "eac5082481c70ba2",
+      "subcategory": "focus-management",
+      "name": "Focus Management Detector",
+      "description": "Learns focus management patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "accessibility/focus-management",
+          "patternId": "accessibility/focus-management/unknown"
+        }
+      },
+      "confidence": {
+        "frequency": 0.01,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.77,
+        "level": "medium"
+      },
+      "locations": [
+        {
+          "file": ".github/CICD_SETUP.md",
+          "line": 5,
+          "column": 22,
+          "isOutlier": false,
+          "confidence": 0.77
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:05:19.754Z",
+        "source": "auto-detected",
+        "tags": [
+          "accessibility",
+          "focus-management"
+        ],
+        "approvedAt": "2026-02-06T23:05:19.754Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
+      "id": "ded34d7c050def89",
+      "subcategory": "keyboard-nav",
+      "name": "Keyboard Navigation Detector",
+      "description": "Learns keyboard navigation patterns from your codebase",
+      "detector": {
+        "type": "regex",
+        "config": {
+          "detectorId": "accessibility/keyboard-nav",
+          "patternId": "accessibility/keyboard-nav/conditional"
+        }
+      },
+      "confidence": {
+        "frequency": 0.01,
+        "consistency": 0.9,
+        "age": 0,
+        "spread": 1,
+        "score": 0.8533333333333333,
+        "level": "high"
+      },
+      "locations": [
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 215,
+          "column": 62,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        }
+      ],
+      "outliers": [],
+      "metadata": {
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:56.173Z",
+        "source": "auto-detected",
+        "tags": [
+          "accessibility",
+          "keyboard-nav"
+        ],
+        "approvedAt": "2026-02-06T23:03:56.173Z"
+      },
+      "severity": "info",
+      "autoFixable": false
+    },
+    {
       "id": "2bc6ff50a850346a",
       "subcategory": "keyboard-nav",
       "name": "Keyboard Navigation Detector",
@@ -47,8 +422,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.250Z",
-        "lastSeen": "2026-02-06T21:07:12.250Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -109,21 +484,21 @@
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 95,
+          "line": 137,
           "column": 59,
           "isOutlier": false,
           "confidence": 0.7
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 96,
+          "line": 138,
           "column": 59,
           "isOutlier": false,
           "confidence": 0.7
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 111,
+          "line": 153,
           "column": 20,
           "isOutlier": false,
           "confidence": 0.7
@@ -131,8 +506,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.250Z",
-        "lastSeen": "2026-02-06T21:07:12.250Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -312,7 +687,7 @@
         },
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 87,
+          "line": 129,
           "column": 21,
           "isOutlier": false,
           "confidence": 0.77
@@ -334,7 +709,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 50,
+          "line": 49,
           "column": 16,
           "isOutlier": true,
           "confidence": 0.595,
@@ -371,8 +746,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.250Z",
-        "lastSeen": "2026-02-06T21:07:12.250Z",
+        "firstSeen": "2026-02-06T23:03:13.218Z",
+        "lastSeen": "2026-02-06T23:03:13.218Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -636,14 +1011,14 @@
       "locations": [
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 262,
+          "line": 260,
           "column": 33,
           "isOutlier": false,
           "confidence": 0.7949999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 262,
+          "line": 260,
           "column": 61,
           "isOutlier": false,
           "confidence": 0.7949999999999999
@@ -658,8 +1033,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.220Z",
+        "lastSeen": "2026-02-06T23:03:13.220Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -861,8 +1236,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.220Z",
+        "lastSeen": "2026-02-06T23:03:13.220Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -1035,14 +1410,14 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 343,
+          "line": 341,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 343,
+          "line": 341,
           "column": 42,
           "isOutlier": false,
           "confidence": 0.97
@@ -1050,8 +1425,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -1084,7 +1459,7 @@
       "locations": [
         {
           "file": ".github/CICD_SETUP.md",
-          "line": 100,
+          "line": 142,
           "column": 38,
           "isOutlier": false,
           "confidence": 0.8999999999999999
@@ -1112,21 +1487,21 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 113,
+          "line": 111,
           "column": 3,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 330,
+          "line": 328,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 330,
+          "line": 328,
           "column": 47,
           "isOutlier": false,
           "confidence": 0.97
@@ -1134,8 +1509,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-06T21:07:12.251Z",
-        "lastSeen": "2026-02-06T21:07:12.251Z",
+        "firstSeen": "2026-02-06T23:03:13.219Z",
+        "lastSeen": "2026-02-06T23:03:13.219Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -1272,6 +1647,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-06T21:07:12.270Z",
-  "checksum": "1c5d5521a874a4f1"
+  "lastUpdated": "2026-02-06T23:05:19.790Z",
+  "checksum": "e619fc85dfeceb9d"
 }

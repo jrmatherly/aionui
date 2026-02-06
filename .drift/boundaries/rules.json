@@ -5,7 +5,8 @@
       "users.password_hash",
       "refresh_tokens.token",
       "token_blacklist.token",
-      "jwks.private_key"
+      "jwks.private_key",
+      "global_models.encrypted_api_key"
     ],
     "sensitive": [
       "users.email",
@@ -62,6 +63,25 @@
       ],
       "allowedPaths": [
         "**/webserver/auth/**",
+        "**/process/database/**"
+      ],
+      "excludePaths": [
+        "**/*.test.ts",
+        "**/*.spec.ts",
+        "**/tests/**"
+      ],
+      "severity": "error",
+      "enabled": true
+    },
+    {
+      "id": "global-models-api-keys",
+      "description": "Encrypted API keys in global_models should only be accessed from GlobalModelService and migrations",
+      "fields": [
+        "global_models.encrypted_api_key"
+      ],
+      "allowedPaths": [
+        "**/process/services/GlobalModelService.ts",
+        "**/process/database/migrations/**",
         "**/process/database/**"
       ],
       "excludePaths": [
