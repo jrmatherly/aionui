@@ -192,8 +192,12 @@ export class MiseEnvironmentService {
     // Trust the config (non-interactive)
     await this.trustConfig(workDir);
 
-    // Install tools (Python, uv) - this also creates venv
+    // Install tools (Python, uv)
     await this.installTools(workDir);
+
+    // Trigger venv creation by running a command
+    // The _.python.venv setting creates venv lazily on first mise exec
+    await this.ensureVenvCreated(workDir);
 
     // Auto-install skill requirements if available (first-time setup)
     // Security: Use atomic file creation to prevent TOCTOU race condition (CWE-367)
@@ -350,6 +354,26 @@ yes = true
     } catch (e) {
       log.error({ workDir, err: e }, 'Failed to install mise tools');
       throw new Error(`Failed to install mise tools: ${e}`);
+    }
+  }
+
+  /**
+   * Ensure the virtualenv is created
+   * The _.python.venv setting creates venv lazily on first mise exec
+   * We run a simple Python version check to trigger venv creation
+   */
+  private async ensureVenvCreated(workDir: string): Promise<void> {
+    try {
+      // Security: Use execFileSync with args array to prevent command injection
+      execFileSync(this.miseCmd, ['exec', '--', 'python', '--version'], {
+        cwd: workDir,
+        stdio: 'pipe',
+        env: { ...process.env, ...this.baseMiseEnv },
+        timeout: 60000, // 1 minute — venv creation can take a moment
+      });
+      log.debug({ workDir }, 'Ensured venv created');
+    } catch (e) {
+      log.warn({ workDir, err: e }, 'Failed to ensure venv creation (non-fatal)');
     }
   }
 
