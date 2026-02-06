@@ -290,9 +290,10 @@ const PythonEnvironment: React.FC = () => {
             rowKey='name'
             loading={loadingPackages}
             pagination={{
-              pageSize: 15,
+              defaultPageSize: 10,
               showTotal: true,
               sizeCanChange: true,
+              sizeOptions: [10, 20, 50, 100],
               pageSizeChangeResetCurrent: true,
             }}
             noDataElement={<Empty icon={<Tool style={{ fontSize: '48px', color: 'var(--color-text-4)' }} />} description={status?.miseAvailable ? 'No packages installed yet' : 'Python environment not available'} />}

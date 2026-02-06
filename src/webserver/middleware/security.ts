@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CSRF_HEADER_NAME } from '@/webserver/config/constants';
+import { CSRF_COOKIE_NAME, CSRF_HEADER_NAME } from '@/webserver/config/constants';
 import type { NextFunction, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
 
@@ -82,6 +82,7 @@ export const authenticatedActionLimiter = rateLimit({
 /**
  * Attach CSRF token to response for client-side usage
  * tiny-csrf provides req.csrfToken() method to generate tokens
+ * Token is set in both header (for SSR) and cookie (for client-side JS)
  */
 export function attachCsrfToken(req: Request, res: Response, next: NextFunction): void {
   // tiny-csrf provides req.csrfToken() method
@@ -89,6 +90,15 @@ export function attachCsrfToken(req: Request, res: Response, next: NextFunction)
     const token = req.csrfToken();
     res.setHeader(CSRF_HEADER_NAME, token);
     res.locals.csrfToken = token;
+
+    // Also set as a cookie so client-side JS can read it via document.cookie
+    // Must NOT be httpOnly so JavaScript can access it
+    res.cookie(CSRF_COOKIE_NAME, token, {
+      httpOnly: false, // Must be readable by client-side JS
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/',
+    });
   }
   next();
 }
