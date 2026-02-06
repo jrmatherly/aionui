@@ -124,11 +124,31 @@ Project-specific Claude Code automation in the repo:
 
 ### Skills (`skills/<name>/SKILL.md`)
 
+**Project-Specific Skills:**
+
 | Skill         | Purpose                                                     |
 | ------------- | ----------------------------------------------------------- |
 | `/release`    | Automate version bump, changelog generation, tag, and push  |
 | `/gen-test`   | Scaffold Jest unit tests following project conventions      |
 | `/db-migrate` | Scaffold SQLite migration files following existing patterns |
+
+**Office Document Skills (Anthropic-aligned):**
+
+| Skill  | Purpose                                                    |
+| ------ | ---------------------------------------------------------- |
+| `docx` | Word document creation, editing, tracked changes, comments |
+| `xlsx` | Excel spreadsheet manipulation with formula recalculation  |
+| `pdf`  | PDF processing, form filling, merging, splitting           |
+| `pptx` | PowerPoint creation and editing with html2pptx workflow    |
+
+**Office Infrastructure (`scripts/office/`):**
+
+Both `docx/` and `xlsx/` use shared Anthropic infrastructure:
+
+- `soffice.py` — Sandbox-compatible LibreOffice wrapper
+- `pack.py` / `unpack.py` — Office file pack/unpack with validation
+- `validate.py` + `validators/` — Schema validation
+- `helpers/` — XML manipulation (merge_runs, simplify_redlines)
 
 ### Custom Agents (`.claude/agents/<name>.md`)
 

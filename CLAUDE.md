@@ -432,6 +432,66 @@ Native modules (better-sqlite3, node-pty, web-tree-sitter) must appear in all th
 
 Missing any one = broken builds.
 
+## Skills Infrastructure
+
+The `skills/` directory contains Claude Code automation skills bundled with the application. These follow the Anthropic Skills format with project-specific extensions.
+
+### Directory Structure
+
+```text
+skills/
+├── docx/                    # Word document manipulation
+│   ├── SKILL.md             # Skill definition and workflows
+│   ├── docx-js.md           # docx-js reference for creating documents
+│   ├── ooxml.md             # OOXML reference for editing documents
+│   ├── ooxml/schemas/       # XML schema definitions
+│   └── scripts/
+│       ├── office/          # Anthropic office infrastructure
+│       │   ├── soffice.py   # Sandbox-compatible LibreOffice wrapper
+│       │   ├── pack.py      # Pack directory to DOCX/PPTX/XLSX
+│       │   ├── unpack.py    # Unpack DOCX/PPTX/XLSX to directory
+│       │   ├── validate.py  # Validate Office XML
+│       │   ├── validators/  # Schema validators
+│       │   └── helpers/     # XML manipulation helpers
+│       ├── accept_changes.py # Accept tracked changes utility
+│       ├── comment.py       # Add comments to documents
+│       ├── document.py      # High-level Document library (project-specific)
+│       ├── utilities.py     # Project utilities
+│       └── templates/       # XML templates for comments
+├── xlsx/                    # Excel spreadsheet manipulation
+│   ├── SKILL.md
+│   └── scripts/
+│       ├── recalc.py        # Formula recalculation via LibreOffice
+│       └── office/          # Shared office infrastructure
+├── pdf/                     # PDF processing
+│   ├── SKILL.md
+│   ├── forms.md             # PDF form filling guide
+│   └── reference.md         # Advanced PDF features
+├── pptx/                    # PowerPoint presentation manipulation
+│   ├── SKILL.md
+│   ├── html2pptx.md         # HTML to PPTX workflow
+│   ├── ooxml.md             # OOXML editing reference
+│   └── scripts/
+├── skill-creator/           # Guide for creating new skills
+├── db-migrate/              # Database migration scaffolding
+├── gen-test/                # Test scaffolding
+├── release/                 # Version bump and release automation
+└── mermaid/                 # Mermaid diagram generation
+```
+
+### Office Infrastructure Pattern
+
+The `scripts/office/` directory is shared infrastructure from Anthropic Skills, providing:
+
+- **soffice.py** — LibreOffice wrapper with sandbox environment support (auto-configures for restricted Unix socket environments)
+- **pack.py** — Pack unpacked directory back to Office format with validation and auto-repair
+- **unpack.py** — Unpack Office files to directory with XML pretty-printing
+- **validate.py** — Validate Office XML against schemas
+- **validators/** — Schema validators for DOCX, PPTX, redlining
+- **helpers/** — XML manipulation utilities (merge_runs, simplify_redlines)
+
+Both `docx/` and `xlsx/` use this shared infrastructure pattern.
+
 ## Files Requiring Explicit Permission to Modify
 
 Before editing these files, always ask the user first:
