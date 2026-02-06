@@ -132,6 +132,22 @@ for v in table.list_versions():
 5. **Medium** - Add vector index creation for large tables
 6. **Low** - Add fuzzy search support
 
+## Source Detail Enhancement (2026-02-06)
+
+`KnowledgeBaseService.searchForContext()` now returns enriched source metadata for UI display:
+
+```typescript
+interface KBSourceDetail {
+  file: string; // Source filename
+  page?: number; // Page number (PDFs)
+  chunkIndex: number; // Chunk position in document
+  score: number; // Relevance score (RRF or distance-based)
+  textPreview: string; // First 150 chars of chunk text
+}
+```
+
+This is emitted via `rag_sources` event from all agent managers and displayed as an expandable accordion in the frontend (`RAGSourcesDisplay.tsx`). Commit: `fc090051`.
+
 ## Test Plan
 
 1. Clear KB and reinitialize with fixes
@@ -140,3 +156,4 @@ for v in table.list_versions():
 4. Test hybrid search returns results
 5. Verify version history works
 6. Test search scoring makes sense (higher = more relevant)
+7. Verify RAG source citations appear in chat after agent response

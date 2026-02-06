@@ -309,6 +309,83 @@ def extract_text_from_file(file_path: str) -> tuple[str, list[dict]]:
         # Extracts text from all pages
 ```
 
+## RAG Source Citations (Updated 2026-02-06)
+
+When the AI uses Knowledge Base context, an expandable accordion appears below the response showing which sources were used.
+
+### Data Flow
+
+```
+KnowledgeBaseService.searchForContext()
+  → returns { content, sources, sourceDetails[], tokenEstimate }
+  → Agent Manager emits 'rag_sources' event via responseStream
+  → SendBox stores in pendingRagSources ref
+  → On 'finish' event: emits as __RAG_SOURCES__-prefixed content message
+  → MessageText intercepts prefix → renders RAGSourcesDisplay component
+```
+
+### Key Components
+
+| Component           | File                                            | Purpose                                      |
+| ------------------- | ----------------------------------------------- | -------------------------------------------- |
+| `KBSourceDetail`    | `src/process/services/KnowledgeBaseService.ts`  | Interface: file, page, chunk, score, preview |
+| `RAGSourcesDisplay` | `src/renderer/components/RAGSourcesDisplay.tsx` | Expandable accordion UI component            |
+| `MessagetText`      | `src/renderer/messages/MessagetText.tsx`        | Intercepts `__RAG_SOURCES__` prefix          |
+
+### `KBSourceDetail` Interface
+
+```typescript
+interface KBSourceDetail {
+  file: string; // Source filename
+  page?: number; // Page number (PDFs)
+  chunkIndex: number; // Chunk position in document
+  score: number; // Relevance score (RRF or distance-based)
+  textPreview: string; // First 150 chars of chunk text
+}
+```
+
+### Display
+
+**Collapsed:** `📚 Sources — 1 document, 14 chunks (3,777 tokens)`
+
+**Expanded:** Per-document breakdown with page numbers, scores, and text previews grouped by file.
+
+### Message Order in Chat
+
+1. User message + file attachment
+2. Ingestion progress bar (📄 → ✂️ → 🧠 → 💾) — if large file upload
+3. Agent response (streaming)
+4. 📚 Sources accordion (collapsed by default)
+5. 📚 Knowledge Base Updated notification (first upload only)
+
+## Stage-Based Ingestion Progress (Updated 2026-02-06)
+
+`ingest.py` emits JSON progress to stderr at each stage:
+
+| Stage      | Percent | Emoji | Description         |
+| ---------- | ------- | ----- | ------------------- |
+| extracting | 2-8%    | 📄    | Text extraction     |
+| setup      | 5%      | ⚙️    | DB/table setup      |
+| chunking   | 10-15%  | ✂️    | Text chunking       |
+| embedding  | 15-90%  | 🧠    | Per-batch (size 20) |
+| indexing   | 92-96%  | 💾    | FTS index creation  |
+| complete   | 100%    | ✅    | Done                |
+
+### Manual Batch Embedding
+
+`ingest.py` uses manual batch embedding (`EMBED_BATCH_SIZE=20`) with `embed_func.generate_embeddings()` per batch, pre-computed vectors passed to `table.add()`. This bypasses LanceDB auto-embed to enable per-batch progress reporting.
+
+### Progress Transport
+
+- `ingest.py` writes JSON lines to **stderr** (progress) and result to **stdout**
+- `KnowledgeBaseService.runLanceScriptWithProgress()` uses `child_process.spawn` to stream stderr line-by-line
+- `conversationBridge.ts` emits `ingest_progress` events with `status: 'stage'` to frontend
+- All three SendBox components render stage-aware progress labels with emoji
+
+### KB Notification Timing
+
+`sendMessage()` resolves before the CLI response stream completes (it writes to stdin and returns). The backend persists the KB notification message to DB immediately but emits a `kb_ready` event. The frontend stores it in `pendingKbNotification` ref and displays it on the `finish` event (stream end). Same pattern used for `pendingRagSources`.
+
 ## Design Decisions
 
 1. **LanceDB over Qdrant for per-user**: Embedded file-based storage inherits workspace isolation
@@ -321,11 +398,15 @@ def extract_text_from_file(file_path: str) -> tuple[str, list[dict]]:
 8. **FTS + Vector hybrid**: Combines keyword precision with semantic understanding
 9. **RRF reranking**: Better result fusion than simple score averaging
 10. **English stemming**: Improves text matching for English documents
+11. **Manual batch embedding**: Enables per-batch progress reporting (bypasses auto-embed)
+12. **Progress via stderr, result via stdout**: Clean separation for streaming progress from Python scripts
+13. **`__RAG_SOURCES__` prefix pattern**: Reuses existing message system for source citations — no new IPC channel needed
+14. **Pending refs + finish event**: Queues KB notification and RAG sources, displays after agent response stream completes
+15. **Read-then-check-size (not stat-then-read)**: Eliminates TOCTOU race in large file detection (CodeQL fix)
 
 ## Future Enhancements
 
 - [ ] UI toggle for enabling/disabling auto-RAG per conversation
-- [ ] Source citations in AI responses
 - [ ] Qdrant integration for shared/team knowledge bases
 - [x] PDF text extraction before ingestion (implemented via pypdf)
 - [x] KB initialization on user login (implemented in AuthService)
@@ -333,3 +414,7 @@ def extract_text_from_file(file_path: str) -> tuple[str, list[dict]]:
 - [x] Embedding `dim` parameter fix for LanceDB OpenAI registry
 - [x] Ingest progress bar in all SendBox components
 - [x] Large file exclusion from Gemini context (use RAG instead)
+- [x] Source citations in AI responses (`fc090051`) — expandable accordion with per-chunk details
+- [x] Stage-based ingestion progress (`1fd64191`) — 6 stages with emoji labels
+- [x] KB notification after agent response (`05da580b`) — pendingKbNotification ref + finish event
+- [x] TOCTOU race fix for large file detection (`7a3cfdda`) — read-then-check instead of stat-then-read

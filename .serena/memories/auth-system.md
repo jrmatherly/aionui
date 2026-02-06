@@ -67,7 +67,13 @@ Multi-user enterprise authentication added February 2026. Supports both local ad
 - CSRF protection via tiny-csrf (exclusions: /login, /logout, /api/auth/refresh, /api/auth/qr-login)
 - Token blacklist persisted in SQLite with in-memory cache
 - Rate limiting per authenticated user (falls back to IP)
-- Security headers: HSTS, Permissions-Policy, CSP, X-Frame-Options
+- Security headers: HSTS (when `AIONUI_HTTPS=true`), Permissions-Policy, CSP, X-Frame-Options
+- Cookie `Secure` flag conditional on `AIONUI_HTTPS=true` (via `getCookieOptions()`)
+- `SameSite=strict` default; relaxed to `lax` in remote HTTP mode (no HTTPS) for cross-site compat
+- Express `trust proxy` configurable via `AIONUI_TRUST_PROXY` env var (required behind reverse proxy)
+  - Without `trust proxy`: `req.protocol` always returns `http`, `req.ip` returns proxy IP
+  - Values: `true` (all), number (hop count), CIDR, `loopback`
+  - Set in `src/webserver/setup.ts` → `setupBasicMiddleware()`
 
 ### OIDC Configuration
 

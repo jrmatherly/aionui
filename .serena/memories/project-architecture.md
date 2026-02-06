@@ -107,18 +107,29 @@ Automatic context injection in chat pipeline:
 
 ### Embedding Configuration
 
-Embeddings auto-configure from Global Models (Feb 6, `b09dad7a`, `885f2dca`):
+Embeddings use **`EMBEDDING_*` environment variables** exclusively (Global Models auto-detection was removed to prevent model/dimension mismatches):
 
-1. **Global Models** (preferred): `KnowledgeBaseService.getEmbeddingModelFromGlobalModels()`
-   - Priority 1: Models with `embedding` capability
-   - Priority 2: Models with `embedding` in name
-2. **Environment fallback**: `OPENAI_API_KEY` + `OPENAI_BASE_URL`
+| Variable               | Required | Default                        | Description                      |
+| ---------------------- | -------- | ------------------------------ | -------------------------------- |
+| `EMBEDDING_API_KEY`    | Yes\*    | Falls back to `OPENAI_API_KEY` | API key for embedding provider   |
+| `EMBEDDING_API_BASE`   | No       | (OpenAI default)               | Custom endpoint (Azure, LiteLLM) |
+| `EMBEDDING_MODEL`      | No       | `text-embedding-3-small`       | Model name                       |
+| `EMBEDDING_DIMENSIONS` | No       | (auto-detect from model)       | Vector dimensions (e.g., 3072)   |
 
-Supports custom endpoints (Azure OpenAI, Portkey, LiteLLM, etc.).
+### RAG Source Citations
 
-4. **Agent Integration**
-   - `AcpAgentManager`, `GeminiAgentManager`, `CodexAgentManager`
-   - RAG injected after skills index, before sending to CLI agent
+When RAG context is used, source details are emitted to the frontend:
+
+- `KnowledgeBaseService.searchForContext()` returns `sourceDetails: KBSourceDetail[]`
+- Agent managers emit `rag_sources` event via responseStream
+- Frontend renders `RAGSourcesDisplay` component (expandable accordion)
+- Uses `__RAG_SOURCES__` prefix pattern in message content, intercepted by `MessagetText.tsx`
+
+### Agent Integration
+
+- `AcpAgentManager`, `GeminiAgentManager`, `CodexAgentManager`
+- RAG injected after skills index, before sending to CLI agent
+- All three emit `rag_sources` and handle `kb_ready` notification events
 
 ## Per-User Python Workspaces
 
@@ -258,6 +269,53 @@ Both `docx/` and `xlsx/` use shared Anthropic infrastructure:
 | ------------------- | -------------------------------------------------------------------- |
 | `security-reviewer` | 10-point security checklist (JWT, OIDC, RBAC, CSRF, SQLi, XSS, etc.) |
 | `code-reviewer`     | 26 rules across 9 categories with CRITICAL/WARNING/SUGGESTION output |
+
+## Deployment & HTTPS
+
+### HTTPS via Reverse Proxy (Compose Profile)
+
+AionUI runs HTTP internally. HTTPS is handled by an nginx reverse proxy using a Docker Compose profile:
+
+```bash
+# HTTP only (default)
+docker compose up -d
+
+# HTTPS via nginx
+docker compose --profile https up -d
+```
+
+**Architecture:**
+
+```
+Client → nginx:443 (TLS) → aionui:25808 (HTTP, Docker internal network)
+         nginx:80  → 301 redirect to HTTPS
+```
+
+### HTTPS-Aware Application Features
+
+| Feature        | Env Var                | Effect                                                |
+| -------------- | ---------------------- | ----------------------------------------------------- |
+| Secure cookies | `AIONUI_HTTPS=true`    | Sets `Secure` flag on all cookies                     |
+| HSTS header    | `AIONUI_HTTPS=true`    | `Strict-Transport-Security: max-age=31536000`         |
+| Trust proxy    | `AIONUI_TRUST_PROXY=1` | Express reads `X-Forwarded-Proto/For` from nginx      |
+| WebSocket      | (auto)                 | `browser.ts` auto-detects `wss://` from page protocol |
+| CSP            | (always)               | `connect-src` includes both `ws:` and `wss:`          |
+
+### Deploy Files
+
+| File                                  | Purpose                                      |
+| ------------------------------------- | -------------------------------------------- |
+| `deploy/docker/docker-compose.yml`    | Main compose with nginx in `https` profile   |
+| `deploy/docker/nginx.conf`            | nginx config: TLS, WebSocket, ACME challenge |
+| `deploy/docker/.env` / `.env.example` | All env vars including HTTPS settings        |
+| `deploy/docker/ssl/`                  | SSL cert mount point (gitignored)            |
+
+### Key Implementation
+
+- `src/webserver/setup.ts` — `trust proxy` set via `AIONUI_TRUST_PROXY` env var
+- `src/webserver/config/constants.ts` — `getCookieOptions()` sets `secure: isHttps`
+- `src/webserver/auth/middleware/AuthMiddleware.ts` — HSTS header when `isHttps`
+- `src/adapter/browser.ts` — WebSocket protocol auto-detection
 
 ## IPC Communication
 

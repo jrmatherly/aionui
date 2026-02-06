@@ -142,13 +142,44 @@ Both main and renderer webpack configs use `cache: { type: 'filesystem' }`:
 
 ## Deployment Configuration Files
 
-| File                                        | Purpose                            | Git           |
-| ------------------------------------------- | ---------------------------------- | ------------- |
-| `deploy/docker/.env.example`                | Full env var documentation         | ✅ Committed  |
-| `deploy/docker/.env`                        | Actual deployment config (secrets) | ❌ Gitignored |
-| `deploy/docker/global-models-example.json`  | Example shared model configs       | ✅ Committed  |
-| `deploy/docker/global-models.json`          | Actual model configs (API keys)    | ❌ Gitignored |
-| `deploy/docker/group-mappings-example.json` | Example OIDC group mappings        | ✅ Committed  |
-| `deploy/docker/group-mappings.json`         | Actual group mappings              | ❌ Gitignored |
+| File                                        | Purpose                                | Git           |
+| ------------------------------------------- | -------------------------------------- | ------------- |
+| `deploy/docker/.env.example`                | Full env var documentation             | ✅ Committed  |
+| `deploy/docker/.env`                        | Actual deployment config (secrets)     | ❌ Gitignored |
+| `deploy/docker/global-models-example.json`  | Example shared model configs           | ✅ Committed  |
+| `deploy/docker/global-models.json`          | Actual model configs (API keys)        | ❌ Gitignored |
+| `deploy/docker/group-mappings-example.json` | Example OIDC group mappings            | ✅ Committed  |
+| `deploy/docker/group-mappings.json`         | Actual group mappings                  | ❌ Gitignored |
+| `deploy/docker/nginx.conf`                  | nginx reverse proxy config (HTTPS/WSS) | ✅ Committed  |
+| `deploy/docker/ssl/`                        | SSL certificates mount point           | ❌ Gitignored |
 
 **JSON env vars** (`GLOBAL_MODELS`, `GROUP_MAPPINGS_JSON`) are passed through via `env_file:` only — NOT in docker-compose `environment:` block. JSON breaks Compose's `${VAR:-default}` interpolation.
+
+## HTTPS Deployment (Compose Profile)
+
+HTTPS is handled by an nginx reverse proxy defined in `docker-compose.yml` under the `https` profile:
+
+```bash
+# HTTP only (default — nginx doesn't start)
+docker compose up -d
+
+# HTTPS (nginx starts alongside aionui)
+docker compose --profile https up -d
+```
+
+**Required env vars for HTTPS:**
+
+| Variable             | Value | Purpose                                        |
+| -------------------- | ----- | ---------------------------------------------- |
+| `AIONUI_HTTPS`       | true  | Enables secure cookies + HSTS header           |
+| `AIONUI_TRUST_PROXY` | 1     | Express reads X-Forwarded-Proto/For from nginx |
+
+**Required files:**
+
+- `deploy/docker/ssl/fullchain.pem` — SSL certificate chain
+- `deploy/docker/ssl/privkey.pem` — Private key
+- Edit `deploy/docker/nginx.conf` — Replace `your-domain.example.com` with actual hostname
+
+**nginx config features:** TLS 1.2/1.3, WebSocket upgrade passthrough, HTTP→HTTPS redirect, ACME challenge path for Let's Encrypt, streaming-friendly (`proxy_buffering off`, 5min timeout).
+
+When OIDC is enabled, `OIDC_REDIRECT_URI` must also be updated to use `https://`.

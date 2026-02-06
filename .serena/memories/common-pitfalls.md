@@ -78,6 +78,49 @@ Config files with secrets (gitignored):
 
 Only exclude endpoints that are cookie-only or use one-time tokens: `/login`, `/logout`, `/api/auth/refresh`, `/api/auth/qr-login`.
 
+### Avoid TOCTOU file system race conditions (CodeQL js/file-system-race)
+
+Never `stat()` then `readFile()` or `existsSync()` then `readFileSync()`. The file can change between check and use.
+
+**Bad (TOCTOU race):**
+
+```typescript
+const stats = await fs.stat(path);
+if (stats.size < limit) {
+  const content = await fs.readFile(path, 'utf-8'); // File may have changed!
+}
+```
+
+**Good (read-then-check):**
+
+```typescript
+const content = await fs.readFile(path, 'utf-8');
+if (Buffer.byteLength(content, 'utf-8') < limit) {
+  // Size check on data already in memory — no race
+}
+```
+
+**Bad (existsSync + readFileSync):**
+
+```typescript
+if (existsSync(path)) {
+  const data = readFileSync(path, 'utf-8'); // File may have been deleted!
+}
+```
+
+**Good (try-catch):**
+
+```typescript
+try {
+  const data = readFileSync(path, 'utf-8');
+  // process data
+} catch {
+  // File doesn't exist or can't be read — handle gracefully
+}
+```
+
+Fixed in `7a3cfdda` — CodeQL high severity alerts #54 and #55.
+
 ## Drift Detect
 
 ### Node version mismatch inside project directory
