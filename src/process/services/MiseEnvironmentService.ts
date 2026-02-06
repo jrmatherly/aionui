@@ -16,8 +16,8 @@
  * installation. See: https://mise.jdx.dev
  */
 
-import { execSync, spawn, type ChildProcess, type SpawnOptions } from 'child_process';
-import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { execFileSync, spawn, type ChildProcess, type SpawnOptions } from 'child_process';
+import { existsSync, mkdirSync, statSync, writeFileSync } from 'fs';
 import path from 'path';
 import { getDirectoryService } from './DirectoryService';
 import { getSkillsDir } from '@process/initStorage';
@@ -79,7 +79,11 @@ export class MiseEnvironmentService {
   private readonly baseMiseEnv: Record<string, string>;
 
   private constructor() {
-    this.miseCmd = process.env.MISE_INSTALL_PATH || '/usr/local/bin/mise';
+    // Validate and set mise command path
+    // Security: Only allow absolute paths to prevent PATH injection
+    const misePathFromEnv = process.env.MISE_INSTALL_PATH || '/usr/local/bin/mise';
+    this.miseCmd = this.validateMisePath(misePathFromEnv);
+
     this.templatePath = process.env.MISE_TEMPLATE_PATH || '/mise/template.toml';
 
     // Environment for non-interactive mise operations
@@ -88,6 +92,38 @@ export class MiseEnvironmentService {
       MISE_EXPERIMENTAL: '1', // Enable prepare feature
       MISE_LOG_LEVEL: 'warn', // Reduce noise
     };
+  }
+
+  /**
+   * Validate mise binary path for security
+   * Only allows absolute paths to existing executables
+   */
+  private validateMisePath(misePath: string): string {
+    // Must be absolute path
+    if (!path.isAbsolute(misePath)) {
+      log.warn({ misePath }, 'MISE_INSTALL_PATH must be absolute, using default');
+      return '/usr/local/bin/mise';
+    }
+
+    // Must not contain shell metacharacters (defense in depth)
+    if (/[;&|`$(){}[\]<>!]/.test(misePath)) {
+      log.error({ misePath }, 'MISE_INSTALL_PATH contains invalid characters');
+      return '/usr/local/bin/mise';
+    }
+
+    // Check if file exists and is executable (best effort)
+    try {
+      const stats = statSync(misePath);
+      if (!stats.isFile()) {
+        log.warn({ misePath }, 'MISE_INSTALL_PATH is not a file, using default');
+        return '/usr/local/bin/mise';
+      }
+    } catch {
+      // File doesn't exist yet (may be created later), allow it
+      log.debug({ misePath }, 'mise binary not found at path (may be created later)');
+    }
+
+    return misePath;
   }
 
   /**
@@ -105,7 +141,8 @@ export class MiseEnvironmentService {
    */
   isMiseAvailable(): boolean {
     try {
-      execSync(`${this.miseCmd} --version`, {
+      // Security: Use execFileSync with args array to prevent command injection
+      execFileSync(this.miseCmd, ['--version'], {
         stdio: 'pipe',
         timeout: 5000,
       });
@@ -120,7 +157,8 @@ export class MiseEnvironmentService {
    */
   getMiseVersion(): string | null {
     try {
-      const output = execSync(`${this.miseCmd} --version`, {
+      // Security: Use execFileSync with args array to prevent command injection
+      const output = execFileSync(this.miseCmd, ['--version'], {
         encoding: 'utf-8',
         stdio: 'pipe',
         timeout: 5000,
@@ -250,7 +288,8 @@ yes = true
    */
   private async trustConfig(workDir: string): Promise<void> {
     try {
-      execSync(`${this.miseCmd} trust -a`, {
+      // Security: Use execFileSync with args array to prevent command injection
+      execFileSync(this.miseCmd, ['trust', '-a'], {
         cwd: workDir,
         stdio: 'pipe',
         env: { ...process.env, ...this.baseMiseEnv },
@@ -273,7 +312,8 @@ yes = true
     }
 
     try {
-      execSync(`${this.miseCmd} install -y`, {
+      // Security: Use execFileSync with args array to prevent command injection
+      execFileSync(this.miseCmd, ['install', '-y'], {
         cwd: workDir,
         stdio: 'pipe',
         env: { ...process.env, ...this.baseMiseEnv },
@@ -303,7 +343,8 @@ yes = true
     }
 
     try {
-      const output = execSync(`${this.miseCmd} env --json`, {
+      // Security: Use execFileSync with args array to prevent command injection
+      const output = execFileSync(this.miseCmd, ['env', '--json'], {
         cwd: workDir,
         encoding: 'utf-8',
         stdio: ['pipe', 'pipe', 'pipe'],
@@ -336,7 +377,8 @@ yes = true
    */
   async getInstalledTools(workDir: string): Promise<MiseToolInfo[]> {
     try {
-      const output = execSync(`${this.miseCmd} ls --json`, {
+      // Security: Use execFileSync with args array to prevent command injection
+      const output = execFileSync(this.miseCmd, ['ls', '--json'], {
         cwd: workDir,
         encoding: 'utf-8',
         stdio: ['pipe', 'pipe', 'pipe'],
@@ -389,7 +431,8 @@ yes = true
    */
   async getInstalledPackages(workDir: string): Promise<string[]> {
     try {
-      const output = execSync(`${this.miseCmd} exec -- uv pip list --format=freeze`, {
+      // Security: Use execFileSync with args array to prevent command injection
+      const output = execFileSync(this.miseCmd, ['exec', '--', 'uv', 'pip', 'list', '--format=freeze'], {
         cwd: workDir,
         encoding: 'utf-8',
         stdio: ['pipe', 'pipe', 'pipe'],
@@ -417,7 +460,9 @@ yes = true
     log.info({ workDir, packageSpec }, 'Installing Python package');
 
     try {
-      execSync(`${this.miseCmd} exec -- uv pip install ${packageSpec}`, {
+      // Security: Use execFileSync with args array to prevent command injection
+      // packageSpec is passed as a single argument, preventing shell interpretation
+      execFileSync(this.miseCmd, ['exec', '--', 'uv', 'pip', 'install', packageSpec], {
         cwd: workDir,
         stdio: 'pipe',
         env: { ...process.env, ...this.baseMiseEnv },
@@ -449,7 +494,9 @@ yes = true
     log.info({ workDir, requirementsPath: fullPath }, 'Installing requirements');
 
     try {
-      execSync(`${this.miseCmd} exec -- uv pip install -r "${fullPath}"`, {
+      // Security: Use execFileSync with args array to prevent command injection
+      // fullPath is passed as a single argument, preventing shell interpretation
+      execFileSync(this.miseCmd, ['exec', '--', 'uv', 'pip', 'install', '-r', fullPath], {
         cwd: workDir,
         stdio: 'pipe',
         env: { ...process.env, ...this.baseMiseEnv },
@@ -473,7 +520,8 @@ yes = true
     }
 
     try {
-      execSync(`${this.miseCmd} prepare`, {
+      // Security: Use execFileSync with args array to prevent command injection
+      execFileSync(this.miseCmd, ['prepare'], {
         cwd: workDir,
         stdio: 'pipe',
         env: { ...process.env, ...this.baseMiseEnv },
@@ -519,7 +567,8 @@ yes = true
   async miseExecSync(command: string, args: string[], workDir: string, env?: Record<string, string>): Promise<string> {
     const fullArgs = ['exec', '--', command, ...args];
 
-    const output = execSync(`${this.miseCmd} ${fullArgs.join(' ')}`, {
+    // Security: Use execFileSync with args array to prevent command injection
+    const output = execFileSync(this.miseCmd, fullArgs, {
       cwd: workDir,
       encoding: 'utf-8',
       stdio: ['pipe', 'pipe', 'pipe'],
