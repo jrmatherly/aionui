@@ -76,7 +76,7 @@ tag_pattern = "v[0-9].*"
 # Skip ALL tags up to and including v1.8.2 — that tag marks the upstream
 # fork point.  Every tag at or before it belongs to the original upstream
 # project and should not appear in this fork's changelog.
-skip_tags = "v(0|1\\.[0-8]\\.|1\\.8\\.[0-2](-|$))"
+skip_tags = "v(0|1\\.[0-7]\\.|1\\.8\\.[01](-|$))"
 
 # Commit parsers — evaluated in order, first match wins
 # HTML comments control group display order (stripped by striptags in template)

@@ -1,5 +1,6 @@
 # =============================================================================
 # AionUI Docker Compose Configuration
+name: aionui
 # Orchestrates AionUI WebUI server with persistent storage
 # =============================================================================
 #

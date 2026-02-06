@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+# --- Drift Detect pattern validation ---
+# Validates code against approved patterns before pushing.
+# Requires Node 25 (Drift's native modules) via mise.
+if command -v drift &>/dev/null; then
+  echo "🔍 Running Drift Detect check..."
+  mise x node@25 -- drift check 2>/dev/null || {
+    echo "❌ Drift violations found. Fix before pushing."
+    exit 1
+  }
+fi
+
+# --- Documentation reminder (advisory only) ---
+# Warns if code changed but no docs were updated in the push.
+COMMITS=$(git log @{push}..HEAD --oneline 2>/dev/null)
+if [ -n "$COMMITS" ]; then
+  CODE_CHANGED=$(git diff --name-only @{push}..HEAD -- 'src/' 'skills/' 'deploy/' 2>/dev/null | head -1)
+  DOCS_CHANGED=$(git diff --name-only @{push}..HEAD -- '.serena/memories/' 'CLAUDE.md' '.claude/rules/' 2>/dev/null | head -1)
+
+  if [ -n "$CODE_CHANGED" ] && [ -z "$DOCS_CHANGED" ]; then
+    echo ""
+    echo "⚠️  Code changed but no documentation updated."
+    echo "   Consider updating .serena/memories/ or .claude/rules/"
+    echo ""
+  fi
+fi
+
+exit 0
