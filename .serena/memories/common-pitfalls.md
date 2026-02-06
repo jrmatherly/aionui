@@ -300,12 +300,22 @@ table.create_fts_index("text", language="English", stem=True, remove_stop_words=
 
 ### LanceDB API changes (v0.27+)
 
-Two breaking changes in newer LanceDB:
+Three breaking changes in newer LanceDB:
 
 1. **`table_names()` → `list_tables()`**: Deprecated method removed
-2. **`list_versions()` returns dicts**: Was objects with `.version` attribute, now `v["version"]`
+2. **`list_tables()` returns `ListTablesResponse`**: NOT a list! Must access `.tables` attribute:
 
-Handle both formats for compatibility:
+   ```python
+   # Wrong - returns ListTablesResponse object
+   if "knowledge" in db.list_tables():
+
+   # Correct - access .tables attribute
+   if "knowledge" in db.list_tables().tables:
+   ```
+
+3. **`list_versions()` returns dicts**: Was objects with `.version` attribute, now `v["version"]`
+
+Handle version format compatibility:
 
 ```python
 for v in table.list_versions():
