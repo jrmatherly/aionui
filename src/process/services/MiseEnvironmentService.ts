@@ -20,6 +20,7 @@ import { execSync, spawn, type ChildProcess, type SpawnOptions } from 'child_pro
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import path from 'path';
 import { getDirectoryService } from './DirectoryService';
+import { getSkillsDir } from '@process/initStorage';
 import { miseLogger as log } from '@/common/logger';
 
 /**
@@ -156,7 +157,42 @@ export class MiseEnvironmentService {
     // Install tools (Python, uv) - this also creates venv
     await this.installTools(workDir);
 
+    // Auto-install skill requirements if available (first-time setup)
+    const skillsReqPath = this.getSkillsRequirementsPath();
+    if (skillsReqPath) {
+      const venvMarker = path.join(workDir, '.venv', '.skills-installed');
+      if (!existsSync(venvMarker)) {
+        log.info({ skillsReqPath }, 'Installing skill Python requirements');
+        const success = await this.installRequirements(workDir, skillsReqPath);
+        if (success) {
+          // Create marker to avoid reinstalling on every init
+          try {
+            writeFileSync(venvMarker, `Installed from: ${skillsReqPath}\nDate: ${new Date().toISOString()}\n`);
+          } catch {
+            // Non-fatal: marker is just an optimization
+          }
+        }
+      }
+    }
+
     log.info({ userId, workDir }, 'Initialized mise workspace');
+  }
+
+  /**
+   * Get path to aggregated skill requirements file
+   * Checks skills/requirements.txt in the application's skills directory
+   */
+  private getSkillsRequirementsPath(): string | null {
+    try {
+      const skillsDir = getSkillsDir();
+      const reqPath = path.join(skillsDir, 'requirements.txt');
+      if (existsSync(reqPath)) {
+        return reqPath;
+      }
+    } catch {
+      // Skills dir may not be initialized yet
+    }
+    return null;
   }
 
   /**

@@ -2,7 +2,7 @@ import FlexFullContainer from '@/renderer/components/FlexFullContainer';
 import { createLogger } from '@/renderer/utils/logger';
 import { isElectronDesktop } from '@/renderer/utils/platform';
 import { Tooltip } from '@arco-design/web-react';
-import { Computer, Earth, Gemini, Info, Key, LinkCloud, Robot, System, Toolkit } from '@icon-park/react';
+import { Code, Computer, Earth, Gemini, Info, Key, LinkCloud, Robot, System, Toolkit } from '@icon-park/react';
 import classNames from 'classnames';
 import React, { useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -47,6 +47,11 @@ const SettingsSider: React.FC<{ collapsed?: boolean }> = ({ collapsed = false })
         label: 'API Keys',
         icon: <Key />,
         path: 'apikeys',
+      },
+      {
+        label: 'Python',
+        icon: <Code />,
+        path: 'python',
       },
     ];
 

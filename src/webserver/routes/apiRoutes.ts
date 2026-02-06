@@ -12,6 +12,7 @@ import { TokenMiddleware } from '@/webserver/auth/middleware/TokenMiddleware';
 import type { Express, Request, Response } from 'express';
 import directoryApi from '../directoryApi';
 import { apiRateLimiter } from '../middleware/security';
+import pythonRoutes from './pythonRoutes';
 
 /**
  * Register API routes
@@ -169,6 +170,24 @@ export function registerApiRoutes(app: Express): void {
       res.status(500).json({ success: false, error: 'Failed to unhide global model' });
     }
   });
+
+  /* ================================================================== */
+  /*  PYTHON ENVIRONMENT API                                            */
+  /* ================================================================== */
+
+  /**
+   * Python Environment API
+   * /api/python/*
+   *
+   * Endpoints for managing per-user Python environments via mise.
+   * - GET /status - Workspace status (Python version, venv, packages)
+   * - GET /packages - List installed packages
+   * - GET /version - Get mise/Python version info
+   * - POST /install - Install a package
+   * - POST /install-requirements - Install from requirements.txt
+   * - POST /reset - Reset Python environment
+   */
+  app.use('/api/python', apiRateLimiter, validateApiAccess, scopeToUser, pythonRoutes);
 
   /**
    * Generic API endpoint
