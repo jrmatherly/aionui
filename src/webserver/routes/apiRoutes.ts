@@ -12,6 +12,7 @@ import { TokenMiddleware } from '@/webserver/auth/middleware/TokenMiddleware';
 import type { Express, Request, Response } from 'express';
 import directoryApi from '../directoryApi';
 import { apiRateLimiter } from '../middleware/security';
+import knowledgeRoutes from './knowledgeRoutes';
 import pythonRoutes from './pythonRoutes';
 
 /**
@@ -188,6 +189,23 @@ export function registerApiRoutes(app: Express): void {
    * - POST /reset - Reset Python environment
    */
   app.use('/api/python', apiRateLimiter, validateApiAccess, scopeToUser, pythonRoutes);
+
+  /**
+   * Knowledge Base API
+   * /api/knowledge/*
+   *
+   * Endpoints for managing per-user LanceDB knowledge bases.
+   * - GET /status - Knowledge base status (docs, chunks, storage)
+   * - GET /documents - List indexed documents
+   * - GET /search - Search knowledge base (vector/fts/hybrid)
+   * - POST /ingest - Ingest a document
+   * - DELETE /document/:source - Delete document by source
+   * - POST /reindex - Rebuild indexes
+   * - GET /versions - List version history
+   * - POST /restore - Restore to a specific version
+   * - POST /clear - Clear all data (requires confirmation)
+   */
+  app.use('/api/knowledge', apiRateLimiter, validateApiAccess, scopeToUser, knowledgeRoutes);
 
   /**
    * Generic API endpoint
