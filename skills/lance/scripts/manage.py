@@ -1,0 +1,347 @@
+#!/usr/bin/env python3
+"""
+Manage the user's LanceDB knowledge base.
+
+Usage:
+    python manage.py <workspace_path> <action> [options]
+
+Actions:
+    delete <source_file>    Delete all chunks from a document
+    delete-id <chunk_id>    Delete a specific chunk by ID
+    reindex                 Rebuild all indexes (FTS and vector)
+    versions                List version history
+    restore <version>       Restore to a specific version
+    stats                   Show storage statistics
+    clear                   Clear all data (with confirmation)
+
+Output: JSON with operation result
+"""
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+
+def delete_by_source(workspace_path: str, source_file: str) -> dict:
+    """Delete all chunks from a source file."""
+    try:
+        import lancedb
+    except ImportError:
+        return {"status": "error", "error": "lancedb not installed"}
+
+    lance_dir = Path(workspace_path) / ".lance"
+    if not lance_dir.exists():
+        return {"status": "error", "error": "Knowledge base not initialized"}
+
+    try:
+        db = lancedb.connect(str(lance_dir))
+        if "knowledge" not in db.table_names():
+            return {"status": "error", "error": "No knowledge table"}
+
+        table = db.open_table("knowledge")
+        before_count = table.count_rows()
+
+        # Delete by source file
+        table.delete(f"source_file = '{source_file}'")
+
+        after_count = table.count_rows()
+        deleted = before_count - after_count
+
+        return {
+            "status": "ok",
+            "action": "delete",
+            "source_file": source_file,
+            "deleted_chunks": deleted,
+            "version": table.version,
+            "remaining_chunks": after_count,
+        }
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+def delete_by_id(workspace_path: str, chunk_id: str) -> dict:
+    """Delete a specific chunk by ID."""
+    try:
+        import lancedb
+    except ImportError:
+        return {"status": "error", "error": "lancedb not installed"}
+
+    lance_dir = Path(workspace_path) / ".lance"
+    if not lance_dir.exists():
+        return {"status": "error", "error": "Knowledge base not initialized"}
+
+    try:
+        db = lancedb.connect(str(lance_dir))
+        if "knowledge" not in db.table_names():
+            return {"status": "error", "error": "No knowledge table"}
+
+        table = db.open_table("knowledge")
+        before_count = table.count_rows()
+
+        table.delete(f"id = '{chunk_id}'")
+
+        after_count = table.count_rows()
+        deleted = before_count - after_count
+
+        return {
+            "status": "ok",
+            "action": "delete",
+            "chunk_id": chunk_id,
+            "deleted": deleted > 0,
+            "version": table.version,
+        }
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+def reindex(workspace_path: str) -> dict:
+    """Rebuild all indexes."""
+    try:
+        import lancedb
+    except ImportError:
+        return {"status": "error", "error": "lancedb not installed"}
+
+    lance_dir = Path(workspace_path) / ".lance"
+    if not lance_dir.exists():
+        return {"status": "error", "error": "Knowledge base not initialized"}
+
+    try:
+        db = lancedb.connect(str(lance_dir))
+        if "knowledge" not in db.table_names():
+            return {"status": "error", "error": "No knowledge table"}
+
+        table = db.open_table("knowledge")
+
+        # Optimize/compact the table
+        table.optimize()
+
+        # Recreate FTS index if text column exists
+        try:
+            table.create_fts_index("text", replace=True)
+            fts_created = True
+        except Exception:
+            fts_created = False
+
+        return {
+            "status": "ok",
+            "action": "reindex",
+            "optimized": True,
+            "fts_index_created": fts_created,
+            "version": table.version,
+            "row_count": table.count_rows(),
+        }
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+def list_versions(workspace_path: str) -> dict:
+    """List version history."""
+    try:
+        import lancedb
+    except ImportError:
+        return {"status": "error", "error": "lancedb not installed"}
+
+    lance_dir = Path(workspace_path) / ".lance"
+    if not lance_dir.exists():
+        return {"status": "error", "error": "Knowledge base not initialized"}
+
+    try:
+        db = lancedb.connect(str(lance_dir))
+        if "knowledge" not in db.table_names():
+            return {"status": "error", "error": "No knowledge table"}
+
+        table = db.open_table("knowledge")
+        versions = table.list_versions()
+
+        version_list = []
+        for v in versions:
+            version_list.append(
+                {
+                    "version": v.version,
+                    "timestamp": str(v.timestamp) if hasattr(v, "timestamp") else None,
+                    "metadata": v.metadata if hasattr(v, "metadata") else None,
+                }
+            )
+
+        return {
+            "status": "ok",
+            "action": "versions",
+            "current_version": table.version,
+            "versions": version_list,
+            "total_versions": len(version_list),
+        }
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+def restore_version(workspace_path: str, version: int) -> dict:
+    """Restore to a specific version."""
+    try:
+        import lancedb
+    except ImportError:
+        return {"status": "error", "error": "lancedb not installed"}
+
+    lance_dir = Path(workspace_path) / ".lance"
+    if not lance_dir.exists():
+        return {"status": "error", "error": "Knowledge base not initialized"}
+
+    try:
+        db = lancedb.connect(str(lance_dir))
+        if "knowledge" not in db.table_names():
+            return {"status": "error", "error": "No knowledge table"}
+
+        table = db.open_table("knowledge")
+        before_version = table.version
+
+        # Restore creates a new version from the specified historical version
+        table.restore(version)
+
+        return {
+            "status": "ok",
+            "action": "restore",
+            "restored_from": version,
+            "previous_version": before_version,
+            "new_version": table.version,
+            "row_count": table.count_rows(),
+        }
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+def get_stats(workspace_path: str) -> dict:
+    """Get storage statistics."""
+    try:
+        import lancedb
+    except ImportError:
+        return {"status": "error", "error": "lancedb not installed"}
+
+    lance_dir = Path(workspace_path) / ".lance"
+    if not lance_dir.exists():
+        return {"status": "ok", "initialized": False, "size_bytes": 0}
+
+    try:
+        # Calculate directory size
+        total_size = 0
+        for path in lance_dir.rglob("*"):
+            if path.is_file():
+                total_size += path.stat().st_size
+
+        db = lancedb.connect(str(lance_dir))
+        tables = db.table_names()
+
+        stats = {
+            "status": "ok",
+            "action": "stats",
+            "initialized": True,
+            "path": str(lance_dir),
+            "size_bytes": total_size,
+            "size_mb": round(total_size / (1024 * 1024), 2),
+            "tables": tables,
+        }
+
+        if "knowledge" in tables:
+            table = db.open_table("knowledge")
+            stats["knowledge"] = {
+                "version": table.version,
+                "row_count": table.count_rows(),
+            }
+
+            # Get source file breakdown
+            try:
+                df = table.search().select(["source_file"]).limit(100000).to_pandas()
+                source_counts = df["source_file"].value_counts().to_dict()
+                stats["knowledge"]["sources"] = [
+                    {"file": file, "chunks": count}
+                    for file, count in sorted(source_counts.items(), key=lambda x: -x[1])
+                ]
+                stats["knowledge"]["unique_sources"] = len(source_counts)
+            except Exception:
+                pass
+
+        return stats
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+def clear_knowledge(workspace_path: str, confirm: bool = False) -> dict:
+    """Clear all knowledge base data."""
+    if not confirm:
+        return {"status": "error", "error": "Must pass --confirm to clear data"}
+
+    try:
+        import lancedb
+    except ImportError:
+        return {"status": "error", "error": "lancedb not installed"}
+
+    lance_dir = Path(workspace_path) / ".lance"
+    if not lance_dir.exists():
+        return {"status": "ok", "message": "Nothing to clear"}
+
+    try:
+        db = lancedb.connect(str(lance_dir))
+
+        if "knowledge" in db.table_names():
+            db.drop_table("knowledge")
+
+        return {
+            "status": "ok",
+            "action": "clear",
+            "message": "Knowledge base cleared",
+        }
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Manage LanceDB knowledge base")
+    parser.add_argument("workspace_path", help="Path to user workspace")
+    parser.add_argument("action", choices=["delete", "delete-id", "reindex", "versions", "restore", "stats", "clear"])
+    parser.add_argument("target", nargs="?", help="Target for action (source file, chunk ID, or version)")
+    parser.add_argument("--confirm", action="store_true", help="Confirm destructive actions")
+
+    args = parser.parse_args()
+
+    if args.action == "delete":
+        if not args.target:
+            print(json.dumps({"status": "error", "error": "Must specify source file"}))
+            sys.exit(1)
+        result = delete_by_source(args.workspace_path, args.target)
+
+    elif args.action == "delete-id":
+        if not args.target:
+            print(json.dumps({"status": "error", "error": "Must specify chunk ID"}))
+            sys.exit(1)
+        result = delete_by_id(args.workspace_path, args.target)
+
+    elif args.action == "reindex":
+        result = reindex(args.workspace_path)
+
+    elif args.action == "versions":
+        result = list_versions(args.workspace_path)
+
+    elif args.action == "restore":
+        if not args.target:
+            print(json.dumps({"status": "error", "error": "Must specify version number"}))
+            sys.exit(1)
+        try:
+            version = int(args.target)
+        except ValueError:
+            print(json.dumps({"status": "error", "error": "Version must be a number"}))
+            sys.exit(1)
+        result = restore_version(args.workspace_path, version)
+
+    elif args.action == "stats":
+        result = get_stats(args.workspace_path)
+
+    elif args.action == "clear":
+        result = clear_knowledge(args.workspace_path, confirm=args.confirm)
+
+    else:
+        result = {"status": "error", "error": f"Unknown action: {args.action}"}
+
+    print(json.dumps(result, indent=2, default=str))
+
+
+if __name__ == "__main__":
+    main()
