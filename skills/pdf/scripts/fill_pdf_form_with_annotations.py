@@ -32,10 +32,9 @@ try:
 
     from pypdf import PdfReader, PdfWriter
     from reportlab.lib.colors import HexColor
-    from reportlab.lib.pagesizes import letter
     from reportlab.pdfgen import canvas
 except ImportError as e:
-    print(f"Error: Required library missing. Install with: pip install pypdf reportlab")
+    print("Error: Required library missing. Install with: pip install pypdf reportlab")
     print(f"Details: {e}")
     sys.exit(1)
 
@@ -90,8 +89,6 @@ def fill_form_with_annotations(
                     # Convert image coordinates to PDF coordinates
                     # Note: PDF y=0 is at bottom, image y=0 is at top
                     left = entry_box[0] * scale_x
-                    top = entry_box[1] * scale_y
-                    right = entry_box[2] * scale_x
                     bottom = entry_box[3] * scale_y
 
                     # PDF y is from bottom
