@@ -105,6 +105,17 @@ Automatic context injection in chat pipeline:
    - Large files (>40KB) auto-ingested on upload
    - Fire-and-forget pattern
 
+### Embedding Configuration
+
+Embeddings auto-configure from Global Models (Feb 6, `b09dad7a`, `885f2dca`):
+
+1. **Global Models** (preferred): `KnowledgeBaseService.getEmbeddingModelFromGlobalModels()`
+   - Priority 1: Models with `embedding` capability
+   - Priority 2: Models with `embedding` in name
+2. **Environment fallback**: `OPENAI_API_KEY` + `OPENAI_BASE_URL`
+
+Supports custom endpoints (Azure OpenAI, Portkey, LiteLLM, etc.).
+
 4. **Agent Integration**
    - `AcpAgentManager`, `GeminiAgentManager`, `CodexAgentManager`
    - RAG injected after skills index, before sending to CLI agent

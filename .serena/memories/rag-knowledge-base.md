@@ -132,17 +132,82 @@ RAG is integrated into all agent managers:
 
 ## Configuration
 
-### Embedding Model
+### Embedding Model (Global Models Integration)
 
-Uses OpenAI `text-embedding-3-small` via LanceDB's embedding registry:
+**Added:** 2026-02-06 (commits: `b09dad7a`, `885f2dca`)
+
+The Knowledge Base automatically uses your **Global Models** configuration for embeddings, eliminating the need for separate embedding API keys.
+
+#### Resolution Chain
+
+1. **Check Global Models** for embedding providers:
+   - First: models with `embedding` capability
+   - Then: models with `embedding` in name (e.g., `text-embedding-3-small`)
+2. **Fall back to env vars** if no embedding model found:
+   - `OPENAI_API_KEY` + `OPENAI_BASE_URL` (optional)
+
+#### Global Models Setup (Admin → Global Models)
+
+| Field    | Example                                      |
+| -------- | -------------------------------------------- |
+| Platform | `openai` (or your gateway)                   |
+| Name     | `Embeddings`                                 |
+| Base URL | Your gateway URL (or leave empty for OpenAI) |
+| API Key  | Your API key                                 |
+| Models   | `text-embedding-3-small`                     |
+
+#### Implementation Details
 
 ```python
-embed_func = get_registry().get("openai").create(
-    name="text-embedding-3-small"
-)
+# ingest.py - get_embedding_config()
+def get_embedding_config() -> tuple[str, str, str]:
+    """Returns (api_key, base_url, model) from Global Models or env vars."""
+
+    # 1. Try Global Models
+    kb_service = KnowledgeBaseService.getInstance()
+    embedding_config = kb_service.getEmbeddingModelFromGlobalModels()
+
+    if embedding_config:
+        return (
+            embedding_config['api_key'],
+            embedding_config['base_url'],
+            embedding_config['model']
+        )
+
+    # 2. Fallback to env vars
+    return (
+        os.environ.get('OPENAI_API_KEY'),
+        os.environ.get('OPENAI_BASE_URL', 'https://api.openai.com/v1'),
+        'text-embedding-3-small'
+    )
 ```
 
-Requires `OPENAI_API_KEY` environment variable.
+```typescript
+// KnowledgeBaseService.ts
+getEmbeddingModelFromGlobalModels(): EmbeddingConfig | null {
+  const globalModels = GlobalModelService.getInstance().getAllGlobalModels();
+
+  // Priority 1: Models with embedding capability
+  const withCapability = globalModels.find(m =>
+    m.capabilities?.includes('embedding')
+  );
+  if (withCapability) return extractConfig(withCapability);
+
+  // Priority 2: Models with "embedding" in name
+  const byName = globalModels.find(m =>
+    m.models.some(name => name.toLowerCase().includes('embedding'))
+  );
+  if (byName) return extractConfig(byName);
+
+  return null;
+}
+```
+
+#### Benefits
+
+- **Single source of truth**: Same API keys for chat and embeddings
+- **Gateway support**: Works with Azure OpenAI, Portkey, LiteLLM, etc.
+- **No extra config**: Just add embedding model to Global Models
 
 ### Chunking Parameters
 
@@ -217,3 +282,4 @@ def extract_text_from_file(file_path: str) -> tuple[str, list[dict]]:
 - [ ] Qdrant integration for shared/team knowledge bases
 - [x] PDF text extraction before ingestion (implemented via pypdf)
 - [x] KB initialization on user login (implemented in AuthService)
+- [x] Global Models integration for embeddings (`b09dad7a`, `885f2dca`)
