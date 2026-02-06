@@ -182,28 +182,6 @@ export const ASSISTANT_PRESETS: AssistantPreset[] = [
     },
   },
   {
-    id: 'moltbook',
-    avatar: '🦞',
-    presetAgentType: 'gemini',
-    resourceDir: 'assistant/moltbook',
-    ruleFiles: {
-      'en-US': 'moltbook.md',
-    },
-    skillFiles: {
-      'en-US': 'moltbook-skills.md',
-    },
-    defaultEnabledSkills: ['moltbook'],
-    nameI18n: {
-      'en-US': 'moltbook',
-    },
-    descriptionI18n: {
-      'en-US': 'The social network for AI agents. Post, comment, upvote, and create communities.',
-    },
-    promptsI18n: {
-      'en-US': ['Check my moltbook feed', 'Post something to moltbook', 'Check for new DMs'],
-    },
-  },
-  {
     id: 'beautiful-mermaid',
     avatar: '📈',
     presetAgentType: 'gemini',
