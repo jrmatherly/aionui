@@ -41,7 +41,7 @@ def delete_by_source(workspace_path: str, source_file: str) -> dict:
 
     try:
         db = lancedb.connect(str(lance_dir))
-        if "knowledge" not in db.list_tables():
+        if "knowledge" not in db.list_tables().tables:
             return {"status": "error", "error": "No knowledge table"}
 
         table = db.open_table("knowledge")
@@ -78,7 +78,7 @@ def delete_by_id(workspace_path: str, chunk_id: str) -> dict:
 
     try:
         db = lancedb.connect(str(lance_dir))
-        if "knowledge" not in db.list_tables():
+        if "knowledge" not in db.list_tables().tables:
             return {"status": "error", "error": "No knowledge table"}
 
         table = db.open_table("knowledge")
@@ -113,7 +113,7 @@ def reindex(workspace_path: str) -> dict:
 
     try:
         db = lancedb.connect(str(lance_dir))
-        if "knowledge" not in db.list_tables():
+        if "knowledge" not in db.list_tables().tables:
             return {"status": "error", "error": "No knowledge table"}
 
         table = db.open_table("knowledge")
@@ -159,7 +159,7 @@ def list_versions(workspace_path: str) -> dict:
 
     try:
         db = lancedb.connect(str(lance_dir))
-        if "knowledge" not in db.list_tables():
+        if "knowledge" not in db.list_tables().tables:
             return {"status": "error", "error": "No knowledge table"}
 
         table = db.open_table("knowledge")
@@ -209,7 +209,7 @@ def restore_version(workspace_path: str, version: int) -> dict:
 
     try:
         db = lancedb.connect(str(lance_dir))
-        if "knowledge" not in db.list_tables():
+        if "knowledge" not in db.list_tables().tables:
             return {"status": "error", "error": "No knowledge table"}
 
         table = db.open_table("knowledge")
@@ -249,7 +249,7 @@ def get_stats(workspace_path: str) -> dict:
                 total_size += path.stat().st_size
 
         db = lancedb.connect(str(lance_dir))
-        tables = db.list_tables()
+        tables = db.list_tables().tables
 
         stats = {
             "status": "ok",
@@ -322,7 +322,7 @@ def init_knowledge_base(
     if lance_dir.exists():
         try:
             db = lancedb.connect(str(lance_dir))
-            if "knowledge" in db.list_tables():
+            if "knowledge" in db.list_tables().tables:
                 return {
                     "status": "ok",
                     "action": "init",
@@ -415,7 +415,7 @@ def clear_knowledge(workspace_path: str, confirm: bool = False) -> dict:
     try:
         db = lancedb.connect(str(lance_dir))
 
-        if "knowledge" in db.list_tables():
+        if "knowledge" in db.list_tables().tables:
             db.drop_table("knowledge")
 
         return {

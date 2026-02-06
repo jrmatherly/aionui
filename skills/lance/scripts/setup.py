@@ -40,9 +40,9 @@ def setup_knowledge_base(workspace_path: str) -> dict:
     if lance_dir.exists():
         try:
             db = lancedb.connect(str(lance_dir))
-            tables = db.list_tables()
+            tables = db.list_tables().tables
             result["initialized"] = True
-            result["tables"] = tables
+            result["tables"] = list(tables)  # Convert to list for JSON serialization
 
             if "knowledge" in tables:
                 table = db.open_table("knowledge")
