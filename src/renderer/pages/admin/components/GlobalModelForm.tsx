@@ -27,6 +27,13 @@ export interface GlobalModelFormData {
   models: string[];
   enabled?: boolean;
   priority?: number;
+  allowed_groups?: string[];
+}
+
+export interface GroupMapping {
+  groupId: string;
+  groupName: string;
+  role: string;
 }
 
 interface GlobalModelFormProps {
@@ -39,12 +46,14 @@ interface GlobalModelFormProps {
     enabled: boolean;
     priority: number;
     apiKeyHint?: string;
+    allowed_groups?: string[];
   };
+  groupMappings?: GroupMapping[];
   onSubmit: (data: GlobalModelFormData) => void;
   onCancel: () => void;
 }
 
-const GlobalModelForm: React.FC<GlobalModelFormProps> = ({ initialData, onSubmit, onCancel }) => {
+const GlobalModelForm: React.FC<GlobalModelFormProps> = ({ initialData, groupMappings = [], onSubmit, onCancel }) => {
   const [form] = Form.useForm<GlobalModelFormData>();
   const isEdit = !!initialData;
 
@@ -122,11 +131,13 @@ const GlobalModelForm: React.FC<GlobalModelFormProps> = ({ initialData, onSubmit
               enabled: initialData.enabled,
               priority: initialData.priority,
               api_key: '', // Don't prefill API key for security
+              allowed_groups: initialData.allowed_groups || [],
             }
           : {
               enabled: true,
               priority: 0,
               models: [],
+              allowed_groups: [],
             }
       }
     >
@@ -213,6 +224,21 @@ const GlobalModelForm: React.FC<GlobalModelFormProps> = ({ initialData, onSubmit
           <InputNumber min={0} max={100} placeholder='0' style={{ width: '100%' }} />
         </FormItem>
       </div>
+
+      <FormItem label='Allowed Groups' field='allowed_groups' extra={<span className='text-11px text-t-tertiary'>{groupMappings.length > 0 ? 'Leave empty to allow all users. Select groups to restrict access.' : 'No group mappings configured. All users will have access.'}</span>}>
+        <Select
+          mode='multiple'
+          placeholder='All users (no restrictions)'
+          allowClear
+          showSearch
+          disabled={groupMappings.length === 0}
+          options={groupMappings.map((g) => ({
+            label: `${g.groupName} (${g.role})`,
+            value: g.groupName,
+          }))}
+          filterOption={(inputValue, option) => (option as { label?: string })?.label?.toLowerCase().includes(inputValue.toLowerCase()) ?? false}
+        />
+      </FormItem>
 
       <FormItem className='mb-0 mt-24px'>
         <Space className='w-full justify-end'>

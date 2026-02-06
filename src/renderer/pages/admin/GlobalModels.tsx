@@ -12,7 +12,7 @@ import { Button, Message, Modal, Popconfirm, Space, Switch, Table, Tag, Tooltip 
 import type { ColumnProps } from '@arco-design/web-react/es/Table';
 import { AddOne, Delete, Edit, Server, Sort } from '@icon-park/react';
 import React, { useCallback, useEffect, useState } from 'react';
-import GlobalModelForm, { type GlobalModelFormData } from './components/GlobalModelForm';
+import GlobalModelForm, { type GlobalModelFormData, type GroupMapping } from './components/GlobalModelForm';
 
 const log = createLogger('GlobalModels');
 
@@ -31,14 +31,32 @@ interface GlobalModel {
   created_at: number;
   updated_at: number;
   apiKeyHint?: string;
+  allowed_groups?: string[] | null;
 }
 
 const GlobalModels: React.FC = () => {
   const [models, setModels] = useState<GlobalModel[]>([]);
+  const [groupMappings, setGroupMappings] = useState<GroupMapping[]>([]);
   const [loading, setLoading] = useState(true);
   const [formVisible, setFormVisible] = useState(false);
   const [editingModel, setEditingModel] = useState<GlobalModel | null>(null);
   const [message, messageContext] = Message.useMessage();
+
+  // Fetch group mappings for access control dropdown
+  const fetchGroupMappings = useCallback(async () => {
+    try {
+      const response = await fetch('/api/admin/group-mappings', {
+        credentials: 'include',
+      });
+      const data = await response.json();
+      if (data.success && data.mappings) {
+        setGroupMappings(data.mappings);
+      }
+    } catch (error) {
+      log.warn({ err: error }, 'Failed to fetch group mappings (OIDC may not be configured)');
+      // Non-fatal: group-based access control won't be available
+    }
+  }, []);
 
   // Fetch models - no dependencies to prevent infinite loop
   const fetchModels = useCallback(async () => {
@@ -63,7 +81,8 @@ const GlobalModels: React.FC = () => {
 
   useEffect(() => {
     void fetchModels();
-  }, [fetchModels]);
+    void fetchGroupMappings();
+  }, [fetchModels, fetchGroupMappings]);
 
   // Toggle enabled
   const handleToggle = async (model: GlobalModel, enabled: boolean) => {
@@ -201,6 +220,36 @@ const GlobalModels: React.FC = () => {
       render: (hint: string) => <span className='font-mono text-12px text-t-secondary'>{hint || '—'}</span>,
     },
     {
+      title: 'Access',
+      dataIndex: 'allowed_groups',
+      width: 140,
+      render: (groups: string[] | null | undefined) => {
+        if (!groups || groups.length === 0) {
+          return (
+            <Tag size='small' color='green'>
+              All Users
+            </Tag>
+          );
+        }
+        return (
+          <Tooltip
+            content={
+              <div>
+                <div className='font-500 mb-4px'>Restricted to:</div>
+                {groups.map((g, i) => (
+                  <div key={i}>• {g}</div>
+                ))}
+              </div>
+            }
+          >
+            <Tag size='small' color='orange'>
+              {groups.length} group{groups.length !== 1 ? 's' : ''}
+            </Tag>
+          </Tooltip>
+        );
+      },
+    },
+    {
       title: 'Priority',
       dataIndex: 'priority',
       width: 80,
@@ -293,7 +342,15 @@ const GlobalModels: React.FC = () => {
         unmountOnExit
       >
         <GlobalModelForm
-          initialData={editingModel || undefined}
+          initialData={
+            editingModel
+              ? {
+                  ...editingModel,
+                  allowed_groups: editingModel.allowed_groups || [],
+                }
+              : undefined
+          }
+          groupMappings={groupMappings}
           onSubmit={handleSave}
           onCancel={() => {
             setFormVisible(false);
