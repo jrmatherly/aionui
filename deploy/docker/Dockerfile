@@ -179,6 +179,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     # Python skill dependencies
     poppler-utils \
+    # Python build dependencies for lxml (xml/xslt processing)
+    libxml2-dev \
+    libxslt-dev \
+    # Build tools for Python C extensions
+    gcc \
+    python3-dev \
     # LibreOffice for office document conversion (docx, pptx, xlsx skills)
     libreoffice-core \
     libreoffice-writer \
@@ -224,6 +230,17 @@ RUN /usr/local/bin/mise use -g python@3.14 uv@latest \
 RUN /usr/local/bin/mise exec -- pip install playwright \
     && /usr/local/bin/mise exec -- playwright install chromium \
     && echo "✅ Playwright Chromium installed"
+
+# -----------------------------------------------------------------------------
+# Skill Python Dependencies
+# Pre-install skill dependencies so they're immediately available.
+# This includes: lancedb (RAG), pypdf (PDF extraction), crawl4ai, etc.
+# See skills/requirements.txt for full list.
+# -----------------------------------------------------------------------------
+COPY skills/requirements.txt /tmp/skills-requirements.txt
+RUN /usr/local/bin/mise exec -- pip install -r /tmp/skills-requirements.txt \
+    && rm /tmp/skills-requirements.txt \
+    && echo "✅ Skill Python dependencies installed"
 
 # Copy mise template for user workspaces
 COPY deploy/docker/mise-template.toml /mise/template.toml
@@ -272,10 +289,10 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 # /tmp/.X11-unix — needed by Xvfb (avoids _XSERVTransmkdir error when running as non-root)
 # /run/dbus — needed for D-Bus system bus (avoids Electron dbus/bus.cc errors)
 # /data/users — per-user workspaces (Python venvs, skills, etc.)
-# /mise/state — mise state needs to be writable for per-user trust state
+# /mise — mise state, cache, and shims need to be writable for per-user operations
 RUN mkdir -p /home/aionui/.config/AionUi /tmp/.X11-unix /run/dbus /var/log/aionui /data/users \
     && chmod 1777 /tmp/.X11-unix \
-    && chown -R aionui:aionui /home/aionui /app /var/log/aionui /data/users /mise/state /mise/cache
+    && chown -R aionui:aionui /home/aionui /app /var/log/aionui /data/users /mise
 
 # Switch to non-root user
 USER aionui
