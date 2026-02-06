@@ -9,7 +9,7 @@
 
 import { createLogger } from '@/renderer/utils/logger';
 import { withCsrfToken } from '@/webserver/middleware/csrfClient';
-import { Button, Card, Empty, Input, Message, Modal, Space, Spin, Table, Tag, Typography } from '@arco-design/web-react';
+import { Button, Card, Empty, Input, Message, Modal, Progress, Space, Spin, Table, Tag, Typography } from '@arco-design/web-react';
 import type { ColumnProps } from '@arco-design/web-react/es/Table';
 import { Delete, Download, Refresh, Tool } from '@icon-park/react';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -40,6 +40,12 @@ const PythonEnvironment: React.FC = () => {
   const [loadingPackages, setLoadingPackages] = useState(true);
   const [installing, setInstalling] = useState(false);
   const [resetting, setResetting] = useState(false);
+  const [resetProgress, setResetProgress] = useState<{ visible: boolean; step: number; status: 'normal' | 'success' | 'error'; message: string }>({
+    visible: false,
+    step: 0,
+    status: 'normal',
+    message: '',
+  });
   const [packageInput, setPackageInput] = useState('');
   const [searchFilter, setSearchFilter] = useState('');
 
@@ -113,6 +119,58 @@ const PythonEnvironment: React.FC = () => {
     }
   };
 
+  const resetSteps = [
+    { label: 'Removing existing environment...', percent: 20 },
+    { label: 'Recreating virtual environment...', percent: 50 },
+    { label: 'Installing skill dependencies...', percent: 80 },
+    { label: 'Finalizing...', percent: 95 },
+  ];
+
+  const executeReset = async () => {
+    setResetProgress({ visible: true, step: 0, status: 'normal', message: resetSteps[0].label });
+    setResetting(true);
+
+    // Simulate progress through steps (the actual API call is atomic)
+    const progressInterval = setInterval(() => {
+      setResetProgress((prev) => {
+        if (prev.step < resetSteps.length - 1) {
+          const nextStep = prev.step + 1;
+          return { ...prev, step: nextStep, message: resetSteps[nextStep].label };
+        }
+        return prev;
+      });
+    }, 300);
+
+    try {
+      const response = await fetch('/api/python/reset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(withCsrfToken({})),
+      });
+      const data = await response.json();
+
+      clearInterval(progressInterval);
+
+      if (data.success) {
+        setResetProgress({ visible: true, step: resetSteps.length, status: 'success', message: 'Environment reset complete!' });
+        await Promise.all([fetchStatus(), fetchPackages()]);
+        // Auto-close after success
+        setTimeout(() => {
+          setResetProgress((prev) => ({ ...prev, visible: false }));
+        }, 1500);
+      } else {
+        setResetProgress({ visible: true, step: resetSteps.length - 1, status: 'error', message: data.error || 'Reset failed' });
+      }
+    } catch (error) {
+      clearInterval(progressInterval);
+      log.error({ err: error }, 'Failed to reset environment');
+      setResetProgress({ visible: true, step: resetSteps.length - 1, status: 'error', message: 'Failed to reset environment' });
+    } finally {
+      setResetting(false);
+    }
+  };
+
   const handleReset = () => {
     Modal.confirm({
       title: 'Reset Python Environment',
@@ -134,7 +192,7 @@ const PythonEnvironment: React.FC = () => {
             <div>
               <Typography.Text style={{ display: 'block', fontWeight: 500, marginBottom: '8px' }}>This will delete your virtual environment and all installed packages.</Typography.Text>
               <Typography.Text type='secondary' style={{ fontSize: '13px' }}>
-                The environment will be recreated on next use with default skill dependencies.
+                The environment will be recreated with default skill dependencies.
               </Typography.Text>
             </div>
           </div>
@@ -142,28 +200,8 @@ const PythonEnvironment: React.FC = () => {
       ),
       okButtonProps: { status: 'danger' },
       okText: 'Reset Environment',
-      onOk: async () => {
-        setResetting(true);
-        try {
-          const response = await fetch('/api/python/reset', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify(withCsrfToken({})),
-          });
-          const data = await response.json();
-          if (data.success) {
-            Message.success('Environment reset successfully');
-            await Promise.all([fetchStatus(), fetchPackages()]);
-          } else {
-            Message.error(data.error || 'Failed to reset environment');
-          }
-        } catch (error) {
-          log.error({ err: error }, 'Failed to reset environment');
-          Message.error('Failed to reset environment');
-        } finally {
-          setResetting(false);
-        }
+      onOk: () => {
+        void executeReset();
       },
     });
   };
@@ -300,6 +338,33 @@ const PythonEnvironment: React.FC = () => {
           />
         </Card>
       </div>
+
+      {/* Reset Progress Modal */}
+      <Modal
+        visible={resetProgress.visible}
+        title={null}
+        footer={
+          resetProgress.status === 'error' ? (
+            <Button type='primary' onClick={() => setResetProgress((prev) => ({ ...prev, visible: false }))}>
+              Close
+            </Button>
+          ) : null
+        }
+        closable={resetProgress.status === 'error'}
+        maskClosable={false}
+        escToExit={resetProgress.status === 'error'}
+        style={{ width: '420px' }}
+      >
+        <div style={{ padding: '24px 0', textAlign: 'center' }}>
+          <Typography.Title heading={5} style={{ marginBottom: '24px' }}>
+            {resetProgress.status === 'success' ? '✓ Reset Complete' : resetProgress.status === 'error' ? '✗ Reset Failed' : 'Resetting Environment'}
+          </Typography.Title>
+
+          <Progress percent={resetProgress.status === 'success' ? 100 : resetProgress.status === 'error' ? resetSteps[resetProgress.step]?.percent || 0 : resetSteps[resetProgress.step]?.percent || 0} status={resetProgress.status} animation style={{ marginBottom: '16px' }} />
+
+          <Typography.Text type={resetProgress.status === 'error' ? 'error' : resetProgress.status === 'success' ? 'success' : 'secondary'}>{resetProgress.message}</Typography.Text>
+        </div>
+      </Modal>
     </SettingsPageWrapper>
   );
 };
