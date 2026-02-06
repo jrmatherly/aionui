@@ -4,17 +4,27 @@
 # =============================================================================
 #
 # Usage (from project root):
-#   docker-compose -f deploy/docker/docker-compose.yml up -d
-#   docker-compose -f deploy/docker/docker-compose.yml logs -f
-#   docker-compose -f deploy/docker/docker-compose.yml down
-#   docker-compose -f deploy/docker/docker-compose.yml up -d --build
+#   docker compose -f deploy/docker/docker-compose.yml up -d
+#   docker compose -f deploy/docker/docker-compose.yml logs -f
+#   docker compose -f deploy/docker/docker-compose.yml down
+#   docker compose -f deploy/docker/docker-compose.yml up -d --build
 #
 # Or from deploy/docker directory:
-#   cd deploy/docker && docker-compose up -d
+#   cd deploy/docker && docker compose up -d
 #
 # Access:
-#   http://localhost:25808            # Local access
-#   http://<host-ip>:25808            # Network access
+#   http://localhost:25808            # Local access (HTTP)
+#   http://<host-ip>:25808            # Network access (HTTP)
+#
+# HTTPS (via nginx reverse proxy):
+#   docker compose --profile https up -d
+#   https://<your-domain>              # HTTPS access
+#
+#   Prerequisites:
+#     1. Place SSL certs in ./ssl/ (fullchain.pem, privkey.pem)
+#     2. Edit nginx.conf — replace 'your-domain.example.com'
+#     3. Set in .env: AIONUI_HTTPS=true, AIONUI_TRUST_PROXY=1
+#     4. If using OIDC: update OIDC_REDIRECT_URI to https://
 #
 # =============================================================================
 
@@ -36,7 +46,9 @@ services:
     container_name: aionui
     restart: unless-stopped
 
-    # Port mapping
+    # Port mapping (HTTP direct access)
+    # When using --profile https, you can disable this by setting AIONUI_PORT
+    # to an empty value or binding to localhost only (127.0.0.1:25808:25808)
     ports:
       - '${AIONUI_PORT:-25808}:25808'
 
@@ -81,8 +93,8 @@ services:
       # Security (set in .env for production)
       - JWT_SECRET=${JWT_SECRET}
       - AIONUI_ADMIN_PASSWORD=${AIONUI_ADMIN_PASSWORD:-}
-      # - AIONUI_HTTPS=${AIONUI_HTTPS:-false}
-      # - AIONUI_TRUST_PROXY=${AIONUI_TRUST_PROXY:-}
+      - AIONUI_HTTPS=${AIONUI_HTTPS:-false}
+      - AIONUI_TRUST_PROXY=${AIONUI_TRUST_PROXY:-}
       # OIDC / EntraID SSO (optional)
       - OIDC_ENABLED=${OIDC_ENABLED:-false}
       - OIDC_ISSUER=${OIDC_ISSUER:-}
@@ -164,6 +176,41 @@ services:
     security_opt:
       - no-new-privileges:true
 
+  # ---------------------------------------------------------------------------
+  # nginx reverse proxy — SSL termination for HTTPS
+  # Only starts when the 'https' profile is active:
+  #   docker compose --profile https up -d
+  # ---------------------------------------------------------------------------
+  nginx:
+    image: nginx:alpine
+    container_name: aionui-nginx
+    restart: unless-stopped
+    profiles:
+      - https
+    ports:
+      - "${HTTPS_PORT:-443}:443"
+      - "${HTTP_PORT:-80}:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - ./certbot:/var/www/certbot:ro
+    depends_on:
+      aionui:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+    security_opt:
+      - no-new-privileges:true
+
 # Named volumes for data persistence
 volumes:
   aionui_data:
@@ -180,9 +227,9 @@ volumes:
 #
 # 1. Set JWT_SECRET environment variable for consistent auth tokens
 #
-# 2. For HTTPS, deploy behind a reverse proxy (nginx/Traefik):
-#    - Configure SSL termination at the proxy
-#    - Set AIONUI_HTTPS=true
+# 2. For HTTPS, use the built-in nginx profile:
+#      docker compose --profile https up -d
+#    See the header comment for prerequisites (SSL certs, nginx.conf, .env)
 #
 # 3. For multi-instance deployment, ensure unique JWT_SECRET per instance
 #    or use a shared secret for session portability

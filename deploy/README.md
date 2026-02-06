@@ -287,8 +287,8 @@ AIONUI_TRUST_PROXY=1
 # 4. If using OIDC (SSO), update the redirect URI to use https://
 OIDC_REDIRECT_URI=https://your-domain.example.com/api/auth/oidc/callback
 
-# 5. Start with the HTTPS overlay
-docker compose -f docker-compose.yml -f docker-compose.https.yml up -d
+# 5. Start with the HTTPS profile
+docker compose --profile https up -d
 ```
 
 **What `AIONUI_HTTPS=true` enables:**
@@ -322,10 +322,10 @@ docker run --rm \
 
 **Provided files:**
 
-| File                       | Purpose                                                                        |
-| -------------------------- | ------------------------------------------------------------------------------ |
-| `nginx.conf`               | Full nginx config — SSL, WebSocket upgrade, proxy headers, ACME challenge      |
-| `docker-compose.https.yml` | Compose overlay — adds nginx, sets HTTPS env vars, removes direct port binding |
+| File                 | Purpose                                                                   |
+| -------------------- | ------------------------------------------------------------------------- |
+| `nginx.conf`         | Full nginx config — SSL, WebSocket upgrade, proxy headers, ACME challenge |
+| `docker-compose.yml` | Single compose file — nginx service activated via `--profile https`       |
 
 **Architecture:**
 
