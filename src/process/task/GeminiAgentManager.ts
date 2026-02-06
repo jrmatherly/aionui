@@ -191,7 +191,7 @@ export class GeminiAgentManager extends BaseAgentManager<
     }
   }
 
-  async sendMessage(data: { input: string; msg_id: string; files?: string[] }) {
+  async sendMessage(data: { input: string; msg_id: string; files?: string[]; hasAutoIngestedFiles?: boolean }) {
     const message: TMessage = {
       id: data.msg_id,
       type: 'text',
@@ -211,6 +211,7 @@ export class GeminiAgentManager extends BaseAgentManager<
       try {
         const ragResult = await prepareMessageWithRAGContext(data.input, this.userId, {
           attachedFiles: data.files,
+          hasAutoIngestedFiles: data.hasAutoIngestedFiles,
         });
         if (ragResult.ragUsed) {
           messageData = { ...data, input: ragResult.content };

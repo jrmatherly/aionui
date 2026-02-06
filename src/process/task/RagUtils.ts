@@ -83,10 +83,19 @@ export function shouldSearchKnowledgeBase(
     attachedFiles?: string[];
     /** Whether knowledge base has any documents */
     hasKnowledgeBase?: boolean;
+    /** Whether large files were auto-ingested this turn (forces RAG) */
+    hasAutoIngestedFiles?: boolean;
   }
 ): boolean {
   // Explicit force flag
   if (options?.force) {
+    return true;
+  }
+
+  // Large files were auto-ingested to KB and removed from workspace —
+  // the ONLY way the agent can access their content is through RAG
+  if (options?.hasAutoIngestedFiles) {
+    log.debug('RAG forced: large files were auto-ingested to knowledge base');
     return true;
   }
 

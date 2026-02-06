@@ -114,6 +114,14 @@ const getTaskByIdRollbackBuild = async (id: string, options?: BuildConversationO
   if (!options?.skipCache) {
     const task = taskList.find((item) => item.id === id)?.task;
     if (task) {
+      // Inject userId into cached task if provided but missing (safety net for
+      // tasks built before userId was available, e.g. createWithConversation)
+      if (options?.userId && task.type === 'gemini') {
+        const geminiTask = task as GeminiAgentManager;
+        if (!geminiTask.userId) {
+          geminiTask.userId = options.userId;
+        }
+      }
       log.debug({ id }, 'Found existing task in memory');
       return Promise.resolve(task);
     }

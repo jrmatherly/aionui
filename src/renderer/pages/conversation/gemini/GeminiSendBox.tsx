@@ -598,10 +598,10 @@ const GeminiSendBox: React.FC<{
         <div className='px-3 py-2 flex items-center gap-2 text-sm' style={{ color: 'var(--color-text-2)' }}>
           <Progress percent={ingestionProgress.status === 'complete' ? 100 : Math.round(((ingestionProgress.current || 0) / ingestionProgress.total) * 100)} status={ingestionProgress.status === 'error' ? 'error' : 'normal'} size='small' style={{ flex: 1 }} />
           <span className='whitespace-nowrap'>
-            {ingestionProgress.status === 'start' && `Indexing ${ingestionProgress.total} file(s)...`}
-            {ingestionProgress.status === 'ingesting' && `Indexing ${ingestionProgress.fileName}...`}
-            {ingestionProgress.status === 'success' && `Indexed ${ingestionProgress.fileName}`}
-            {ingestionProgress.status === 'complete' && `Indexed ${ingestionProgress.successCount} file(s)`}
+            {ingestionProgress.status === 'start' && `Adding ${ingestionProgress.total} file(s) to Knowledge Base...`}
+            {ingestionProgress.status === 'ingesting' && `Processing ${ingestionProgress.fileName} for Knowledge Base...`}
+            {ingestionProgress.status === 'success' && `Added ${ingestionProgress.fileName} to Knowledge Base`}
+            {ingestionProgress.status === 'complete' && `Added ${ingestionProgress.successCount} file(s) to Knowledge Base`}
           </span>
         </div>
       )}

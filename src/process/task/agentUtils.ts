@@ -155,6 +155,8 @@ export interface RAGPrepareOptions {
   forceSearch?: boolean;
   /** Files attached to the message */
   attachedFiles?: string[];
+  /** Whether large files were auto-ingested to KB this turn */
+  hasAutoIngestedFiles?: boolean;
 }
 
 /**
@@ -196,6 +198,7 @@ export async function prepareMessageWithRAGContext(content: string, userId: stri
       force: options?.forceSearch,
       attachedFiles: options?.attachedFiles,
       hasKnowledgeBase: true,
+      hasAutoIngestedFiles: options?.hasAutoIngestedFiles,
     });
 
     if (!shouldSearch) {

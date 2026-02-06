@@ -88,8 +88,8 @@ export class ConversationService {
         conversation.source = params.source;
       }
 
-      // Register with WorkerManage
-      WorkerManage.buildConversation(conversation);
+      // Register with WorkerManage (pass userId for per-user RAG)
+      WorkerManage.buildConversation(conversation, { userId: params.userId });
 
       // Save to database
       const db = getDatabase();
@@ -156,8 +156,8 @@ export class ConversationService {
         conversation.source = source;
       }
 
-      // Register with WorkerManage
-      const task = WorkerManage.buildConversation(conversation);
+      // Register with WorkerManage (pass userId for per-user RAG)
+      const task = WorkerManage.buildConversation(conversation, { userId });
       if (task.type === 'acp') {
         void (task as AcpAgentManager).initAgent();
       }

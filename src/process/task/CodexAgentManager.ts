@@ -169,7 +169,7 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
     }
   }
 
-  async sendMessage(data: { content: string; files?: string[]; msg_id?: string }) {
+  async sendMessage(data: { content: string; files?: string[]; msg_id?: string; hasAutoIngestedFiles?: boolean }) {
     cronBusyGuard.setProcessing(this.conversation_id, true);
     try {
       await this.bootstrap;
@@ -206,6 +206,7 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
         if (this.options.userId) {
           const ragResult = await prepareMessageWithRAGContext(processedContent, this.options.userId, {
             attachedFiles: data.files,
+            hasAutoIngestedFiles: data.hasAutoIngestedFiles,
           });
           if (ragResult.ragUsed) {
             processedContent = ragResult.content;
@@ -225,6 +226,7 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
         if (this.options.userId) {
           const ragResult = await prepareMessageWithRAGContext(processedContent, this.options.userId, {
             attachedFiles: data.files,
+            hasAutoIngestedFiles: data.hasAutoIngestedFiles,
           });
           if (ragResult.ragUsed) {
             processedContent = ragResult.content;

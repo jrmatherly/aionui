@@ -231,7 +231,7 @@ class AcpAgentManager extends BaseAgentManager<AcpAgentManagerData, AcpPermissio
     return this.bootstrap;
   }
 
-  async sendMessage(data: { content: string; files?: string[]; msg_id?: string }): Promise<{
+  async sendMessage(data: { content: string; files?: string[]; msg_id?: string; hasAutoIngestedFiles?: boolean }): Promise<{
     success: boolean;
     msg?: string;
     message?: string;
@@ -259,6 +259,7 @@ class AcpAgentManager extends BaseAgentManager<AcpAgentManagerData, AcpPermissio
         if (this.options.userId) {
           const ragResult = await prepareMessageWithRAGContext(contentToSend, this.options.userId, {
             attachedFiles: data.files,
+            hasAutoIngestedFiles: data.hasAutoIngestedFiles,
           });
           if (ragResult.ragUsed) {
             contentToSend = ragResult.content;
