@@ -37,6 +37,10 @@ function validatePackageSpec(spec: string): boolean {
  * Get Python workspace status for current user
  */
 router.get('/status', async (req: Request, res: Response) => {
+  // Prevent caching — status can change after reset/install
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+  res.set('Pragma', 'no-cache');
+
   try {
     const userId = req.scopedUserId;
     if (!userId) {
@@ -75,6 +79,10 @@ router.get('/status', async (req: Request, res: Response) => {
  * List installed packages in user's venv
  */
 router.get('/packages', async (req: Request, res: Response) => {
+  // Prevent caching — packages can change after reset/install
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+  res.set('Pragma', 'no-cache');
+
   try {
     const userId = req.scopedUserId;
     if (!userId) {
