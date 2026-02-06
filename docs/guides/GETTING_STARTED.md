@@ -245,7 +245,7 @@ For local authentication deployments:
 - The initial password is displayed in application logs
 - Change this password immediately after first login
 
-For more details on WebUI authentication setup, see [WEBUI_GUIDE.md](../../WEBUI_GUIDE.md).
+For more details on WebUI authentication setup, see [WEBUI_GUIDE.md](./WEBUI_GUIDE.md).
 
 ### Application Settings
 
@@ -394,7 +394,7 @@ Configure MCP servers for extended capabilities:
    - Use your local admin credentials
 
 2. **Password reset**:
-   - See [WEBUI_GUIDE.md - Reset Admin Password](../../WEBUI_GUIDE.md#reset-admin-password)
+   - See [WEBUI_GUIDE.md - Reset Admin Password](./WEBUI_GUIDE.md#reset-admin-password)
    - Note: Password reset only applies to local authentication users, not OIDC users
 
 ### Getting Help

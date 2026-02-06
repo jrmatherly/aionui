@@ -231,3 +231,4 @@ mise.local.lock
 deploy/docker/group-mappings.json
 deploy/docker/global-models.json
 # Note: .dockerignore is intentionally tracked
+STYLING-PLAYBOOK.md

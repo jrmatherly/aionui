@@ -855,7 +855,7 @@ drift dna mutations --gene <gene>   # Filter mutations by gene
 drift dna mutations --impact high   # Filter by impact level
 drift dna mutations --suggest       # Include resolution suggestions
 drift dna gene <gene-id> --examples # Detailed gene analysis with code examples
-drift dna playbook                  # Generate STYLING-PLAYBOOK.md (gitignored)
+drift dna playbook                  # Generate STYLING-PLAYBOOK.md (gitignored, generated on demand)
 drift dna playbook --stdout         # Output playbook to stdout
 drift dna export --format ai-context --compact  # AI-optimized DNA summary
 ```

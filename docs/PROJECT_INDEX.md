@@ -946,7 +946,7 @@ See [AI Context Guide](guides/AI_CONTEXT_GUIDE.md) for setup and usage.
 - [CLAUDE.md](../CLAUDE.md) - Project guide for AI assistants
 - [AI Context Guide](guides/AI_CONTEXT_GUIDE.md) - Drift + Serena setup and workflows
 - [Database README](../src/process/database/README.md) - Database documentation
-- [WEBUI_GUIDE.md](../WEBUI_GUIDE.md) - WebUI setup guide
+- [WEBUI_GUIDE.md](./guides/WEBUI_GUIDE.md) - WebUI setup guide
 
 ---
 

@@ -44,7 +44,6 @@ on:
       - "tests/**"
       # Misc non-build files
       - "workflows/**"
-      - "PROJECT_INDEX.json"
       - "scripts/remove-i18n.py"
   pull_request:
     branches: [main]
@@ -89,7 +88,6 @@ on:
       - "tests/**"
       # Misc non-build files
       - "workflows/**"
-      - "PROJECT_INDEX.json"
       - "scripts/remove-i18n.py"
   workflow_dispatch:
     inputs:

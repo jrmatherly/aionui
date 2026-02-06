@@ -28,7 +28,7 @@ docs/
 ### For Users
 
 - **[Getting Started](./guides/GETTING_STARTED.md)** - Installation, setup, and basic usage
-- **[WebUI Guide](../WEBUI_GUIDE.md)** - Remote access via web browser
+- **[WebUI Guide](./guides/WEBUI_GUIDE.md)** - Remote access via web browser
 - **[Logging & Observability](./guides/LOGGING_GUIDE.md)** - Pino + OTEL + Syslog + Langfuse logging stack
 
 ### For Developers

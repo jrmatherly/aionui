@@ -372,25 +372,28 @@ Run AionUI WebUI as a containerized server using Docker. This is ideal for serve
 ### Quick Start
 
 ```bash
-# From project root
-docker-compose -f deploy/docker/docker-compose.yml up -d
+# From project root (using mise tasks — preferred)
+mise run docker:up
+
+# Or using docker compose v2 directly
+docker compose -f deploy/docker/docker-compose.yml up -d
 
 # View logs
-docker-compose -f deploy/docker/docker-compose.yml logs -f
+docker compose -f deploy/docker/docker-compose.yml logs -f
 
 # Stop
-docker-compose -f deploy/docker/docker-compose.yml down
+docker compose -f deploy/docker/docker-compose.yml down
 ```
 
 ### Build from Source
 
 ```bash
 # Clone the repository
-git clone https://github.com/iOfficeAI/AionUi.git
+git clone https://github.com/jrmatherly/aionui.git
 cd AionUi
 
 # Build and start
-docker-compose -f deploy/docker/docker-compose.yml up -d --build
+docker compose -f deploy/docker/docker-compose.yml up -d --build
 ```
 
 ### Access the WebUI
@@ -403,7 +406,7 @@ docker-compose -f deploy/docker/docker-compose.yml up -d --build
 On first startup, check container logs for the initial admin password:
 
 ```bash
-docker-compose -f deploy/docker/docker-compose.yml logs | grep -A5 "Initial Admin"
+docker compose -f deploy/docker/docker-compose.yml logs | grep -A5 "Initial Admin"
 ```
 
 - **Username:** `admin`
@@ -447,10 +450,10 @@ docker run --rm -v aionui_data:/data -v $(pwd):/backup \
 
 1. **Set JWT_SECRET** - Use a strong, random secret
 2. **Use HTTPS** - Deploy behind nginx/Traefik with SSL
-3. **Configure resource limits** - Adjust in docker-compose.yml
+3. **Configure resource limits** - Adjust in `docker-compose.yml`
 4. **Regular backups** - Backup the data volume
 
-For detailed Docker documentation, see [`deploy/README.md`](./deploy/README.md).
+For detailed Docker documentation, see [`deploy/README.md`](../../deploy/README.md).
 
 ---
 
@@ -462,7 +465,7 @@ For detailed Docker documentation, see [`deploy/README.md`](./deploy/README.md).
 >
 > **Original Tutorial**: [Running AionUi WebUI on Android via Termux + Proot Ubuntu](https://gist.github.com/Manamama/b4f903c279b5e73bdad4c2c0a58d5ddd)
 >
-> **Related Issues**: [#217 - Android Support Discussion](https://github.com/iOfficeAI/AionUi/issues/217)
+> **Related Issues**: [#217 - Android Support Discussion](https://github.com/jrmatherly/aionui/issues/217)
 
 ### Prerequisites
 
@@ -523,11 +526,11 @@ apt install -y \
 
 ```bash
 # Download the ARM64 .deb package (replace VERSION with the actual version)
-# Check latest version at: https://github.com/iOfficeAI/AionUi/releases
-wget https://github.com/iOfficeAI/AionUi/releases/download/vVERSION/AionUi_VERSION_arm64.deb
+# Check latest version at: https://github.com/jrmatherly/aionui/releases
+wget https://github.com/jrmatherly/aionui/releases/download/vVERSION/AionUi_VERSION_arm64.deb
 
 # Example (replace VERSION with the release tag, e.g. v1.5.2):
-wget https://github.com/iOfficeAI/AionUi/releases/download/vVERSION/AionUi_VERSION_arm64.deb
+wget https://github.com/jrmatherly/aionui/releases/download/vVERSION/AionUi_VERSION_arm64.deb
 
 # Install the package
 apt install -y ./AionUi_*.deb
@@ -656,7 +659,7 @@ proot-distro login ubuntu -- bash -c "AionUi --no-sandbox --webui --remote"
 If you encounter issues or have suggestions for improving Android support:
 
 1. Check the [original community guide](https://gist.github.com/Manamama/b4f903c279b5e73bdad4c2c0a58d5ddd)
-2. Report issues at [GitHub Issues #217](https://github.com/iOfficeAI/AionUi/issues/217)
+2. Report issues at [GitHub Issues #217](https://github.com/jrmatherly/aionui/issues/217)
 3. Share your experience to help other Android users!
 
 ---
@@ -915,8 +918,8 @@ npm run --resetpass username
 
 ## Additional Resources
 
-- [Main README](./readme.md)
-- [GitHub Issues](https://github.com/iOfficeAI/AionUi/issues)
+- [Main README](../../readme.md)
+- [GitHub Issues](https://github.com/jrmatherly/aionui/issues)
 
 ---
 
@@ -925,8 +928,8 @@ npm run --resetpass username
 If you encounter any issues:
 
 1. Check the [Troubleshooting](#troubleshooting) section
-2. Search [existing issues](https://github.com/iOfficeAI/AionUi/issues)
-3. Create a [new issue](https://github.com/iOfficeAI/AionUi/issues/new) with:
+2. Search [existing issues](https://github.com/jrmatherly/aionui/issues)
+3. Create a [new issue](https://github.com/jrmatherly/aionui/issues/new) with:
    - Your OS and version
    - AionUi version
    - Steps to reproduce
