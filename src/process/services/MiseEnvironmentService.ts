@@ -401,6 +401,7 @@ yes = true
 
   /**
    * Get list of installed tools in a workspace
+   * Note: `mise ls --json` returns { toolName: [versions...] } format
    */
   async getInstalledTools(workDir: string): Promise<MiseToolInfo[]> {
     try {
@@ -412,7 +413,23 @@ yes = true
         env: { ...process.env, ...this.baseMiseEnv },
         timeout: 10000,
       });
-      return JSON.parse(output) as MiseToolInfo[];
+
+      // Parse the keyed format: { "python": [{version, ...}], "uv": [{version, ...}] }
+      const parsed = JSON.parse(output) as Record<string, Array<{ version: string; requested_version: string; install_path: string }>>;
+      const tools: MiseToolInfo[] = [];
+
+      for (const [name, versions] of Object.entries(parsed)) {
+        for (const v of versions) {
+          tools.push({
+            name,
+            version: v.version,
+            requested: v.requested_version,
+            install_path: v.install_path,
+          });
+        }
+      }
+
+      return tools;
     } catch {
       return [];
     }
@@ -435,22 +452,65 @@ yes = true
       venvPath: existsSync(venvPath) ? venvPath : undefined,
     };
 
-    if (status.initialized && status.miseAvailable) {
-      const tools = await this.getInstalledTools(workDir);
+    if (status.miseAvailable) {
+      if (status.initialized) {
+        // Workspace initialized — get user's installed tools
+        const tools = await this.getInstalledTools(workDir);
+        const pythonTool = tools.find((t) => t.name === 'python');
+        const uvTool = tools.find((t) => t.name === 'uv');
+        status.pythonVersion = pythonTool?.version;
+        status.uvVersion = uvTool?.version;
 
-      const pythonTool = tools.find((t) => t.name === 'python');
-      const uvTool = tools.find((t) => t.name === 'uv');
-
-      status.pythonVersion = pythonTool?.version;
-      status.uvVersion = uvTool?.version;
-
-      // Get installed packages if venv exists
-      if (status.venvExists) {
-        status.installedPackages = await this.getInstalledPackages(workDir);
+        // Get installed packages if venv exists
+        if (status.venvExists) {
+          status.installedPackages = await this.getInstalledPackages(workDir);
+        }
+      } else {
+        // Workspace not initialized — check global tools
+        const globalTools = await this.getGlobalTools();
+        const pythonTool = globalTools.find((t) => t.name === 'python');
+        const uvTool = globalTools.find((t) => t.name === 'uv');
+        status.pythonVersion = pythonTool?.version;
+        status.uvVersion = uvTool?.version;
       }
     }
 
     return status;
+  }
+
+  /**
+   * Get list of globally installed mise tools
+   * Note: `mise ls -g --json` returns { toolName: [versions...] } format
+   */
+  async getGlobalTools(): Promise<MiseToolInfo[]> {
+    try {
+      // Security: Use execFileSync with args array to prevent command injection
+      const output = execFileSync(this.miseCmd, ['ls', '-g', '--json'], {
+        encoding: 'utf-8',
+        stdio: ['pipe', 'pipe', 'pipe'],
+        env: { ...process.env, ...this.baseMiseEnv },
+        timeout: 10000,
+      });
+
+      // Parse the keyed format: { "python": [{version, ...}], "uv": [{version, ...}] }
+      const parsed = JSON.parse(output) as Record<string, Array<{ version: string; requested_version: string; install_path: string }>>;
+      const tools: MiseToolInfo[] = [];
+
+      for (const [name, versions] of Object.entries(parsed)) {
+        for (const v of versions) {
+          tools.push({
+            name,
+            version: v.version,
+            requested: v.requested_version,
+            install_path: v.install_path,
+          });
+        }
+      }
+
+      return tools;
+    } catch {
+      return [];
+    }
   }
 
   /**

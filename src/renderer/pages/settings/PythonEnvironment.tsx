@@ -8,6 +8,7 @@
  */
 
 import { createLogger } from '@/renderer/utils/logger';
+import { withCsrfToken } from '@/webserver/middleware/csrfClient';
 import { Button, Card, Empty, Input, Message, Modal, Space, Spin, Table, Tag, Typography } from '@arco-design/web-react';
 import type { ColumnProps } from '@arco-design/web-react/es/Table';
 import { Delete, Download, Refresh, Tool } from '@icon-park/react';
@@ -94,7 +95,7 @@ const PythonEnvironment: React.FC = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ package: trimmedInput }),
+        body: JSON.stringify(withCsrfToken({ package: trimmedInput })),
       });
       const data = await response.json();
       if (data.success) {
@@ -128,7 +129,9 @@ const PythonEnvironment: React.FC = () => {
         try {
           const response = await fetch('/api/python/reset', {
             method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
+            body: JSON.stringify(withCsrfToken({})),
           });
           const data = await response.json();
           if (data.success) {
