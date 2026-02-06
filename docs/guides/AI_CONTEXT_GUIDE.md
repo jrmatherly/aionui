@@ -106,6 +106,23 @@ AionUI uses [mise](https://mise.jdx.dev) to manage tool versions, environment va
 - This ensures Docker builds use the exact same tool versions as local development
 - `docker-compose.yml` also accepts these as environment variables: `NODE_VERSION=24.13.0 docker-compose build`
 - Docker tasks: `docker:build` (with `--arch`, `--no-cache`, `--tag` flags), `docker:up`, `docker:down`, `docker:logs`
+- HTTPS Docker tasks: `docker:up:https`, `docker:down:https`, `docker:logs:https` (start/stop/logs with nginx HTTPS proxy)
+
+**Drift Detect mise tasks:**
+
+- `mise run drift:check` — Validate patterns
+- `mise run drift:scan` — Full scan
+- `mise run drift:health` — Health summary
+- `mise run drift:export` — Export AI context
+- `mise run drift:status` — Pattern status
+- `mise run drift:memory` — Cortex memory health
+- `mise run drift:memory:why` — Memory reasoning for a feature area
+- `mise run drift:env` — Audit sensitive env var access
+- `mise run drift:boundaries` — Verify data access boundaries
+- `mise run drift:dna` — Check style consistency (DNA mutations)
+- `mise run drift:approve` — Approve high-confidence patterns
+- `mise run drift:audit` — Audit report
+- `mise run drift:dashboard` — Open Drift dashboard
 
 **Troubleshooting:**
 

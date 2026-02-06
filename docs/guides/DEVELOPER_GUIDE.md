@@ -64,6 +64,9 @@ mise run info              # Print environment information
 # ─── Code Quality ────────────────────────────────────────────
 mise run lint              # Run ESLint (alias: mise lint)
 mise run lint:fix          # Run ESLint with auto-fix
+mise run lint:python       # Lint Python scripts with ruff
+mise run lint:python:fix   # Lint and auto-fix Python scripts with ruff
+mise run typecheck         # TypeScript type checking (no emit)
 mise run format            # Format code with Prettier
 mise run format:check      # Check formatting (CI)
 mise run ci                # Run full CI checks (lint + format + test)
@@ -82,18 +85,37 @@ mise run build:win         # Windows distribution
 mise run build:linux       # Linux distribution
 mise run clean             # Clean build artifacts
 
+# ─── Release & Changelog ─────────────────────────────────────
+mise run release               # Interactive release workflow (bump, changelog, tag, push)
+mise run changelog             # Generate CHANGELOG.md from git history
+mise run changelog:unreleased  # Preview unreleased changes
+mise run changelog:latest      # Show latest release notes
+mise run changelog:bump        # Show next version bump
+
 # ─── Docker ───────────────────────────────────────────────────
 mise run docker:build      # Build image (versions from mise.lock)
 mise run docker:build -- --arch amd64  # Build for amd64
 mise run docker:up         # Start container (docker-compose)
 mise run docker:down       # Stop container
 mise run docker:logs       # Follow container logs
+mise run docker:up:https   # Start with HTTPS nginx proxy
+mise run docker:down:https # Stop HTTPS stack
+mise run docker:logs:https # Follow HTTPS stack logs
 
 # ─── Drift Detect (Code Health) ──────────────────────────────
 mise run drift:check       # Validate patterns
 mise run drift:scan        # Full scan
 mise run drift:health      # Health summary
 mise run drift:export      # Export AI context
+mise run drift:status      # Pattern status
+mise run drift:memory      # Cortex memory health
+mise run drift:memory:why  # Memory reasoning for a feature area
+mise run drift:env         # Audit sensitive env var access
+mise run drift:boundaries  # Verify data access boundaries
+mise run drift:dna         # Check style consistency (DNA mutations)
+mise run drift:approve     # Approve high-confidence patterns
+mise run drift:audit       # Audit report
+mise run drift:dashboard   # Open Drift dashboard
 ```
 
 > **npm scripts still work.** The mise tasks wrap npm scripts, so `npm start`, `npm test`, etc. continue to work as before. mise tasks are preferred because they ensure the correct Node.js version is active.
@@ -154,8 +176,15 @@ src/
 ├── webserver/            # WebUI server
 └── worker/               # Background workers
 
+skills/                   # Python skills (lance, crawl4ai)
+├── lance/                # Knowledge base embedding/search
+├── crawl4ai/             # Web crawling skills
+└── requirements.txt      # Python dependencies
+
 deploy/                   # Deployment configurations
 └── docker/               # Docker containerization
+    ├── nginx.conf        # HTTPS reverse proxy config
+    └── ...
 ```
 
 ## Branding Customization
@@ -1104,10 +1133,12 @@ When executing external commands, use the safe utilities provided:
 ```typescript
 // Good - Use execFileNoThrow for safe command execution
 import { execFileNoThrow } from '../utils/execFileNoThrow.js';
+import { logger } from '@/common/logger';
+const log = logger.child({ module: 'my-module' });
 
 const result = await execFileNoThrow('git', ['status']);
 if (result.status === 0) {
-  console.log(result.stdout);
+  log.info({ stdout: result.stdout }, 'Command completed');
 }
 
 // Avoid - Direct shell execution with string interpolation
@@ -1192,6 +1223,85 @@ const log = logger.child({ module: 'MyModule' });
 log.info('Operation completed');
 log.error({ err: error }, 'Operation failed');
 log.warn({ userId }, 'Unusual activity detected');
+```
+
+## Knowledge Base / RAG Development
+
+AionUI includes a Knowledge Base feature powered by vector search for retrieval-augmented generation (RAG).
+
+### Architecture
+
+- **Vector storage**: [LanceDB](https://lancedb.github.io/lancedb/) — embedded vector database (no external server required)
+- **Embedding/ingestion**: Python scripts in `skills/lance/` handle document processing and embedding
+- **TypeScript service**: `src/process/services/KnowledgeBaseService.ts` orchestrates ingestion and search from the main process
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `src/process/services/KnowledgeBaseService.ts` | Main process service — orchestrates KB operations |
+| `skills/lance/ingest.py` | Document ingestion and embedding pipeline |
+| `skills/lance/search.py` | Vector similarity search |
+| `skills/lance/manage.py` | Database management (list, delete, stats) |
+
+### Environment Variables
+
+| Variable | Purpose | Default |
+|----------|---------|---------|
+| `EMBEDDING_MODEL` | Model name for embeddings | — |
+| `EMBEDDING_API_KEY` | API key for embedding provider | — |
+| `EMBEDDING_BASE_URL` | Base URL for embedding API | — |
+| `EMBEDDING_DIMENSIONS` | Embedding vector dimensions | — |
+
+### Adding New Document Types
+
+To support a new file format for ingestion, extend the `extract_text_from_file()` function in `skills/lance/ingest.py`:
+
+```python
+def extract_text_from_file(file_path: str) -> str:
+    ext = Path(file_path).suffix.lower()
+    if ext == '.mynewformat':
+        return parse_my_format(file_path)
+    # ... existing handlers
+```
+
+## Python Skills Development
+
+Python-based skills extend AionUI with capabilities that benefit from the Python ecosystem (ML, data processing, etc.).
+
+### Overview
+
+- Skills live in the `skills/` directory, organized by feature (e.g., `skills/lance/`, `skills/crawl4ai/`)
+- Dependencies are declared in `skills/requirements.txt`
+- `MiseEnvironmentService` manages per-user isolated Python virtual environments
+- In Docker, a template venv is pre-built during image construction for fast user onboarding
+
+### Linting
+
+```bash
+mise run lint:python       # Check with ruff
+mise run lint:python:fix   # Auto-fix and format with ruff
+```
+
+## HTTPS Development
+
+When running AionUI behind a reverse proxy (e.g., nginx for HTTPS termination):
+
+### Environment Variables
+
+| Variable | Purpose | Default |
+|----------|---------|---------|
+| `AIONUI_TRUST_PROXY` | Enable Express `trust proxy` for correct `req.ip` and `X-Forwarded-*` headers | `false` |
+| `AIONUI_HTTPS` | Enable secure cookies (`Secure` flag) and HSTS headers | `false` |
+
+### nginx Configuration
+
+The HTTPS reverse proxy config lives at `deploy/docker/nginx.conf`. Use the Docker HTTPS tasks to manage the full stack:
+
+```bash
+mise run docker:up:https    # Start AionUI + nginx with HTTPS
+mise run docker:down:https  # Stop the HTTPS stack
+mise run docker:logs:https  # Follow logs for the HTTPS stack
 ```
 
 ## Resources
