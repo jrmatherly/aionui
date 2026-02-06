@@ -182,13 +182,14 @@ Score normalization for vector search (cosine distance):
 score = max(0, 1.0 - (distance / 2.0))
 ```
 
-### LanceDB API Compatibility
+### LanceDB API Compatibility (v0.27+)
 
-Handles both old and new LanceDB API formats:
+Handles breaking changes in newer LanceDB:
 
 ```python
-# list_tables() (new) instead of table_names() (deprecated)
-if "knowledge" not in db.list_tables():
+# list_tables() returns ListTablesResponse, NOT a list
+# Must access .tables attribute:
+if "knowledge" not in db.list_tables().tables:
 
 # list_versions() returns dicts in new API
 for v in table.list_versions():
@@ -197,6 +198,8 @@ for v in table.list_versions():
     else:
         version = v.version  # Old object format
 ```
+
+**Critical:** `db.list_tables()` returns a `ListTablesResponse` object. Using `"name" in db.list_tables()` without `.tables` always returns `False`, causing tables to be re-created and "table already exists" errors on subsequent logins.
 
 ### Environment Variables
 
