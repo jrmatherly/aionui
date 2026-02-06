@@ -215,8 +215,17 @@ export class GeminiAgentManager extends BaseAgentManager<
         });
         if (ragResult.ragUsed) {
           messageData = { ...data, input: ragResult.content };
-          // Note: Using conversationLogger since geminiLogger isn't available in this file
-          // The log will still be useful for debugging
+          // Emit source details to frontend for citation display
+          ipcBridge.geminiConversation.responseStream.emit({
+            type: 'rag_sources',
+            conversation_id: this.conversation_id,
+            msg_id: data.msg_id || '',
+            data: {
+              sources: ragResult.sources,
+              sourceDetails: ragResult.sourceDetails,
+              tokenEstimate: ragResult.tokenEstimate,
+            },
+          });
         }
       } catch {
         // RAG failure should not block the message - continue with original data

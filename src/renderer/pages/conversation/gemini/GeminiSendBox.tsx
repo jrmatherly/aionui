@@ -47,6 +47,8 @@ const useGeminiMessage = (conversation_id: string, onError?: (message: IResponse
   const [tokenUsage, setTokenUsage] = useState<TokenUsageData | null>(null);
   // Pending KB notification — stored on kb_ready, emitted as chat message on stream finish
   const pendingKbNotification = useRef<{ msgId: string; content: string } | null>(null);
+  // Pending RAG sources — stored on rag_sources, displayed after stream finish
+  const pendingRagSources = useRef<{ sources: string[]; sourceDetails: any[]; tokenEstimate: number } | null>(null);
   const [ingestionProgress, setIngestionProgress] = useState<{
     status: 'start' | 'ingesting' | 'success' | 'error' | 'complete' | 'stage' | 'kb_ready';
     current?: number;
@@ -168,6 +170,18 @@ const useGeminiMessage = (conversation_id: string, onError?: (message: IResponse
               setWaitingResponse(false);
               setThought({ subject: '', description: '' });
             }
+            // Display RAG sources after agent response completes
+            if (pendingRagSources.current && !hasActiveToolsRef.current) {
+              const ragData = pendingRagSources.current;
+              pendingRagSources.current = null;
+              const ragMsg = transformMessage({
+                type: 'content',
+                conversation_id,
+                msg_id: uuid(),
+                data: `__RAG_SOURCES__${JSON.stringify(ragData)}`,
+              });
+              addOrUpdateMessage(ragMsg);
+            }
             // Display pending KB notification AFTER agent response completes
             if (pendingKbNotification.current && !hasActiveToolsRef.current) {
               const pending = pendingKbNotification.current;
@@ -268,6 +282,11 @@ const useGeminiMessage = (conversation_id: string, onError?: (message: IResponse
             // 只有 'finish' 事件才应该重置流状态
           }
           break;
+        case 'rag_sources': {
+          const ragData = message.data as { sources: string[]; sourceDetails: any[]; tokenEstimate: number };
+          pendingRagSources.current = ragData;
+          break;
+        }
         case 'ingest_progress': {
           const progress = message.data as typeof ingestionProgress & { fileNames?: string[]; kbMsgId?: string; kbContent?: string };
           if (progress?.status === 'kb_ready') {

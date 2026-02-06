@@ -139,6 +139,8 @@ export interface RAGPrepareResult {
   ragUsed: boolean;
   /** Source files that provided context */
   sources: string[];
+  /** Detailed per-chunk source info for UI display */
+  sourceDetails: Array<{ file: string; page: number; chunkIndex: number; score?: number; textPreview: string }>;
   /** Estimated tokens added by RAG context */
   tokenEstimate: number;
 }
@@ -177,6 +179,7 @@ export async function prepareMessageWithRAGContext(content: string, userId: stri
     content,
     ragUsed: false,
     sources: [],
+    sourceDetails: [],
     tokenEstimate: 0,
   };
 
@@ -236,6 +239,7 @@ export async function prepareMessageWithRAGContext(content: string, userId: stri
       content: enhancedContent,
       ragUsed: true,
       sources: searchResult.sources,
+      sourceDetails: searchResult.sourceDetails,
       tokenEstimate: searchResult.tokenEstimate,
     };
   } catch (error) {

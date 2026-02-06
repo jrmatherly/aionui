@@ -264,6 +264,17 @@ class AcpAgentManager extends BaseAgentManager<AcpAgentManagerData, AcpPermissio
           if (ragResult.ragUsed) {
             contentToSend = ragResult.content;
             log.info({ userId: this.options.userId, sources: ragResult.sources, tokens: ragResult.tokenEstimate }, 'RAG context injected');
+            // Emit source details to frontend for citation display
+            ipcBridge.acpConversation.responseStream.emit({
+              type: 'rag_sources',
+              conversation_id: this.conversation_id,
+              msg_id: data.msg_id || '',
+              data: {
+                sources: ragResult.sources,
+                sourceDetails: ragResult.sourceDetails,
+                tokenEstimate: ragResult.tokenEstimate,
+              },
+            });
           }
         }
 

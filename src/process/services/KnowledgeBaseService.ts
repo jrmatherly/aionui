@@ -54,6 +54,17 @@ export interface KBIngestResult {
 }
 
 /**
+ * Detailed source info for a single RAG chunk used in a response
+ */
+export interface KBSourceDetail {
+  file: string;
+  page: number;
+  chunkIndex: number;
+  score?: number;
+  textPreview: string;
+}
+
+/**
  * Stage-level progress event from ingest.py
  */
 export interface KBIngestProgress {
@@ -480,19 +491,20 @@ class KnowledgeBaseService {
    * Search and format results for inclusion in AI context
    * Returns a formatted string ready to be added to the conversation
    */
-  public async searchForContext(userId: string, query: string, options?: { maxTokens?: number; limit?: number }): Promise<{ context: string; sources: string[]; tokenEstimate: number }> {
+  public async searchForContext(userId: string, query: string, options?: { maxTokens?: number; limit?: number }): Promise<{ context: string; sources: string[]; sourceDetails: KBSourceDetail[]; tokenEstimate: number }> {
     const maxTokens = options?.maxTokens || 4000;
     const limit = options?.limit || 10;
 
     const results = await this.search(userId, query, { type: 'hybrid', limit });
 
     if (results.length === 0) {
-      return { context: '', sources: [], tokenEstimate: 0 };
+      return { context: '', sources: [], sourceDetails: [], tokenEstimate: 0 };
     }
 
     // Build context string, respecting token limit
     const contextParts: string[] = [];
     const sources = new Set<string>();
+    const sourceDetails: KBSourceDetail[] = [];
     let totalChars = 0;
     const maxChars = maxTokens / TOKENS_PER_CHAR;
 
@@ -503,6 +515,13 @@ class KnowledgeBaseService {
       }
       contextParts.push(chunk);
       sources.add(result.source_file);
+      sourceDetails.push({
+        file: result.source_file,
+        page: result.page,
+        chunkIndex: result.chunk_index,
+        score: result.score,
+        textPreview: result.text.substring(0, 120) + (result.text.length > 120 ? '...' : ''),
+      });
       totalChars += chunk.length;
     }
 
@@ -511,6 +530,7 @@ class KnowledgeBaseService {
     return {
       context,
       sources: Array.from(sources),
+      sourceDetails,
       tokenEstimate: this.estimateTokens(context),
     };
   }

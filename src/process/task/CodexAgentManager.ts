@@ -211,6 +211,16 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
           if (ragResult.ragUsed) {
             processedContent = ragResult.content;
             log.info({ userId: this.options.userId, sources: ragResult.sources, tokens: ragResult.tokenEstimate }, 'RAG context injected');
+            ipcBridge.codexConversation.responseStream.emit({
+              type: 'rag_sources',
+              conversation_id: this.conversation_id,
+              msg_id: data.msg_id || '',
+              data: {
+                sources: ragResult.sources,
+                sourceDetails: ragResult.sourceDetails,
+                tokenEstimate: ragResult.tokenEstimate,
+              },
+            });
           }
         }
 
@@ -231,6 +241,16 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
           if (ragResult.ragUsed) {
             processedContent = ragResult.content;
             log.info({ userId: this.options.userId, sources: ragResult.sources, tokens: ragResult.tokenEstimate }, 'RAG context injected');
+            ipcBridge.codexConversation.responseStream.emit({
+              type: 'rag_sources',
+              conversation_id: this.conversation_id,
+              msg_id: data.msg_id || '',
+              data: {
+                sources: ragResult.sources,
+                sourceDetails: ragResult.sourceDetails,
+                tokenEstimate: ragResult.tokenEstimate,
+              },
+            });
           }
         }
         const result = await this.agent.sendPrompt(processedContent);

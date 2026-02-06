@@ -35,6 +35,8 @@ const useAcpMessage = (conversation_id: string) => {
   const [running, setRunning] = useState(false);
   // Pending KB notification — stored on kb_ready, emitted as chat message on stream finish
   const pendingKbNotification = useRef<{ msgId: string; content: string } | null>(null);
+  // Pending RAG sources — stored on rag_sources, displayed after stream finish
+  const pendingRagSources = useRef<{ sources: string[]; sourceDetails: any[]; tokenEstimate: number } | null>(null);
   const [thought, setThought] = useState<ThoughtData>({
     description: '',
     subject: '',
@@ -118,6 +120,18 @@ const useAcpMessage = (conversation_id: string) => {
           setRunning(false);
           setAiProcessing(false);
           setThought({ subject: '', description: '' });
+          // Display RAG sources after agent response completes
+          if (pendingRagSources.current) {
+            const ragData = pendingRagSources.current;
+            pendingRagSources.current = null;
+            const ragMsg = transformMessage({
+              type: 'content',
+              conversation_id,
+              msg_id: uuid(),
+              data: `__RAG_SOURCES__${JSON.stringify(ragData)}`,
+            });
+            addOrUpdateMessage(ragMsg);
+          }
           // Display pending KB notification AFTER agent response completes
           if (pendingKbNotification.current) {
             const pending = pendingKbNotification.current;
@@ -131,6 +145,11 @@ const useAcpMessage = (conversation_id: string) => {
             addOrUpdateMessage(kbMsg);
           }
           break;
+        case 'rag_sources': {
+          const ragData = message.data as { sources: string[]; sourceDetails: any[]; tokenEstimate: number };
+          pendingRagSources.current = ragData;
+          break;
+        }
         case 'content':
           // Clear thought when final answer arrives
           setThought({ subject: '', description: '' });

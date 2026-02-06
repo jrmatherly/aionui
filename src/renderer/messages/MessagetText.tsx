@@ -15,10 +15,13 @@ import CollapsibleContent from '../components/CollapsibleContent';
 import FilePreview from '../components/FilePreview';
 import HorizontalFileList from '../components/HorizontalFileList';
 import MarkdownView from '../components/Markdown';
+import RAGSourcesDisplay from '../components/RAGSourcesDisplay';
 import MessageAvatar from './MessageAvatar';
 import { useMessageAvatars } from './MessageAvatarContext';
 import { createLogger } from '@/renderer/utils/logger';
 import { emitter } from '@/renderer/utils/emitter';
+
+const RAG_SOURCES_PREFIX = '__RAG_SOURCES__';
 
 const log = createLogger('MessagetText');
 
@@ -102,6 +105,21 @@ const MessageText: React.FC<{ message: IMessageText }> = ({ message }) => {
   // Filter empty content to avoid rendering empty DOM
   if (!message.content.content || (typeof message.content.content === 'string' && !message.content.content.trim())) {
     return null;
+  }
+
+  // Render RAG sources as an interactive accordion instead of markdown
+  if (typeof message.content.content === 'string' && message.content.content.startsWith(RAG_SOURCES_PREFIX)) {
+    try {
+      const jsonStr = message.content.content.slice(RAG_SOURCES_PREFIX.length);
+      const ragData = JSON.parse(jsonStr) as { sources: string[]; sourceDetails: any[]; tokenEstimate: number };
+      return (
+        <div className='max-w-680px'>
+          <RAGSourcesDisplay sources={ragData.sources} sourceDetails={ragData.sourceDetails} tokenEstimate={ragData.tokenEstimate} />
+        </div>
+      );
+    } catch {
+      // Fall through to normal rendering if JSON parse fails
+    }
   }
 
   const handleCopy = () => {
