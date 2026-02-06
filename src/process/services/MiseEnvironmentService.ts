@@ -180,7 +180,7 @@ export class MiseEnvironmentService {
 min_version = "2025.1.0"
 
 [tools]
-python = "3.12"
+python = "3.14"
 uv = "latest"
 
 [env]

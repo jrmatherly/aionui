@@ -210,7 +210,7 @@ RUN curl -fsSL https://mise.run | sh \
 
 # Pre-install Python and uv globally (shared across all users)
 # This avoids downloading Python for each user workspace
-RUN /usr/local/bin/mise use -g python@3.12 uv@latest \
+RUN /usr/local/bin/mise use -g python@3.14 uv@latest \
     && /usr/local/bin/mise reshim
 
 # Copy mise template for user workspaces
