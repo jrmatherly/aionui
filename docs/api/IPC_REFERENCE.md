@@ -65,8 +65,11 @@ update.downloadProgress.on(callback: (event: UpdateDownloadProgressEvent) => voi
 Native dialog operations.
 
 ```typescript
-dialog.showOpen.invoke(options: OpenDialogOptions): Promise<string[] | undefined>
-dialog.showSave.invoke(options: SaveDialogOptions): Promise<string | undefined>
+dialog.showOpen.invoke(options?: {
+  defaultPath?: string;
+  properties?: OpenDialogOptions['properties'];
+  filters?: OpenDialogOptions['filters'];
+}): Promise<string[] | undefined>
 ```
 
 ### `fs`
@@ -74,15 +77,89 @@ dialog.showSave.invoke(options: SaveDialogOptions): Promise<string | undefined>
 File system operations.
 
 ```typescript
-fs.list.invoke({ path }): Promise<IDirOrFile[]>
-fs.read.invoke({ path, encoding }): Promise<string>
-fs.write.invoke({ path, content, encoding }): Promise<void>
-fs.mkdir.invoke({ path }): Promise<void>
-fs.remove.invoke({ path }): Promise<void>
-fs.rename.invoke({ oldPath, newPath }): Promise<void>
-fs.copy.invoke({ source, destination }): Promise<void>
-fs.stat.invoke({ path }): Promise<IFileStat>
-fs.exists.invoke({ path }): Promise<boolean>
+// Directory listing
+fs.getFilesByDir.invoke({ dir: string; root: string }): Promise<IDirOrFile[]>
+
+// Image operations
+fs.getImageBase64.invoke({ path: string }): Promise<string>
+fs.fetchRemoteImage.invoke({ url: string }): Promise<string>
+
+// File I/O
+fs.readFile.invoke({ path: string }): Promise<string>              // UTF-8 text
+fs.readFileBuffer.invoke({ path: string }): Promise<ArrayBuffer>   // Binary
+fs.createTempFile.invoke({ fileName: string }): Promise<string>
+fs.writeFile.invoke({ path: string; data: Uint8Array | string }): Promise<boolean>
+fs.getFileMetadata.invoke({ path: string }): Promise<IFileMetadata>
+
+// File management
+fs.copyFilesToWorkspace.invoke({
+  filePaths: string[];
+  workspace: string;
+  sourceRoot?: string;
+}): Promise<IBridgeResponse<{
+  copiedFiles: string[];
+  failedFiles?: Array<{ path: string; error: string }>;
+}>>
+fs.removeEntry.invoke({ path: string }): Promise<IBridgeResponse>
+fs.renameEntry.invoke({ path: string; newName: string }): Promise<IBridgeResponse<{ newPath: string }>>
+
+// Built-in rules and skills
+fs.readBuiltinRule.invoke({ fileName: string }): Promise<string>
+fs.readBuiltinSkill.invoke({ fileName: string }): Promise<string>
+
+// Assistant rule file operations
+fs.readAssistantRule.invoke({ assistantId: string; locale?: string }): Promise<string>
+fs.writeAssistantRule.invoke({ assistantId: string; content: string; locale?: string }): Promise<boolean>
+fs.deleteAssistantRule.invoke({ assistantId: string }): Promise<boolean>
+
+// Assistant skill file operations
+fs.readAssistantSkill.invoke({ assistantId: string; locale?: string }): Promise<string>
+fs.writeAssistantSkill.invoke({ assistantId: string; content: string; locale?: string }): Promise<boolean>
+fs.deleteAssistantSkill.invoke({ assistantId: string }): Promise<boolean>
+
+// Skill management
+fs.listAvailableSkills.invoke(): Promise<Array<{
+  name: string;
+  description: string;
+  location: string;
+  isCustom: boolean;
+}>>
+fs.readSkillInfo.invoke({ skillPath: string }): Promise<IBridgeResponse<{ name: string; description: string }>>
+fs.importSkill.invoke({ skillPath: string }): Promise<IBridgeResponse<{ skillName: string }>>
+fs.scanForSkills.invoke({ folderPath: string }): Promise<IBridgeResponse<Array<{
+  name: string;
+  description: string;
+  path: string;
+}>>>
+fs.detectCommonSkillPaths.invoke(): Promise<IBridgeResponse<Array<{ name: string; path: string }>>>
+```
+
+### `fileWatch`
+
+File watching operations for monitoring file changes in real time.
+
+```typescript
+fileWatch.startWatch.invoke({ filePath: string }): Promise<IBridgeResponse>   // Start watching a file
+fileWatch.stopWatch.invoke({ filePath: string }): Promise<IBridgeResponse>    // Stop watching a file
+fileWatch.stopAllWatches.invoke(): Promise<IBridgeResponse>                    // Stop all active watches
+fileWatch.fileChanged.on(callback: (event: {
+  filePath: string;
+  eventType: string;
+}) => void)                                                                    // File change event
+```
+
+### `fileStream`
+
+File streaming updates for real-time content push when an agent writes files.
+
+```typescript
+fileStream.contentUpdate.on(callback: (event: {
+  filePath: string;      // Absolute file path
+  content: string;       // New content
+  workspace: string;     // Workspace root directory
+  relativePath: string;  // Relative path within workspace
+  operation: 'write' | 'delete';  // Operation type
+}) => void)
 ```
 
 ### `conversation`
@@ -92,7 +169,7 @@ Core conversation management (unified across agent types).
 ```typescript
 // Conversation CRUD
 conversation.create.invoke(params: ICreateConversationParams): Promise<TChatConversation>
-conversation.createWithConversation.invoke({ conversation, sourceConversationId }): Promise<TChatConversation>
+conversation.createWithConversation.invoke({ conversation, sourceConversationId? }): Promise<TChatConversation>
 conversation.get.invoke({ id }): Promise<TChatConversation>
 conversation.getAssociateConversation.invoke({ conversation_id }): Promise<TChatConversation[]>
 conversation.remove.invoke({ id }): Promise<boolean>
@@ -101,11 +178,13 @@ conversation.reset.invoke(params: IResetConversationParams): Promise<void>
 
 // Messaging
 conversation.sendMessage.invoke(params: ISendMessageParams): Promise<IBridgeResponse>
+conversation.confirmMessage.invoke(params: IConfirmMessageParams): Promise<IBridgeResponse>
 conversation.stop.invoke({ conversation_id }): Promise<IBridgeResponse>
 conversation.responseStream.on(callback: (message: IResponseMessage) => void)
 
 // Workspace
 conversation.getWorkspace.invoke({ conversation_id, workspace, path, search? }): Promise<IDirOrFile[]>
+conversation.responseSearchWorkSpace.invoke({ file: number; dir: number; match?: IDirOrFile }): Promise<void>
 conversation.reloadContext.invoke({ conversation_id }): Promise<IBridgeResponse>
 
 // Confirmations
@@ -124,14 +203,21 @@ conversation.approval.check.invoke({ conversation_id, action, commandType? }): P
 ACP (Agent Control Protocol) specific operations.
 
 ```typescript
-acpConversation.sendMessage.invoke(params): Promise<IBridgeResponse>
-acpConversation.responseStream.on(callback)
-acpConversation.confirmMessage.invoke(params): Promise<IBridgeResponse>
-acpConversation.startAgent.invoke({ conversation_id, agent, sessionId? }): Promise<IBridgeResponse>
-acpConversation.stopAgent.invoke({ conversation_id }): Promise<IBridgeResponse>
-acpConversation.getAvailableAgents.invoke(): Promise<IBridgeResponse<AcpBackend[]>>
-acpConversation.getAgentAuthStatus.invoke({ agent }): Promise<IBridgeResponse<{ authenticated: boolean }>>
-acpConversation.statusChange.on(callback)
+acpConversation.sendMessage  // Alias for conversation.sendMessage
+acpConversation.responseStream  // Alias for conversation.responseStream
+acpConversation.detectCliPath.invoke({ backend: AcpBackend }): Promise<IBridgeResponse<{ path?: string }>>
+acpConversation.getAvailableAgents.invoke(): Promise<IBridgeResponse<Array<{
+  backend: AcpBackend;
+  name: string;
+  cliPath?: string;
+  customAgentId?: string;
+  isPreset?: boolean;
+  context?: string;
+  avatar?: string;
+  presetAgentType?: PresetAgentType;
+}>>>
+acpConversation.checkEnv.invoke(): Promise<{ env: Record<string, string> }>
+acpConversation.refreshCustomAgents.invoke(): Promise<IBridgeResponse>
 ```
 
 ### `codexConversation`
@@ -139,9 +225,8 @@ acpConversation.statusChange.on(callback)
 Codex CLI agent operations.
 
 ```typescript
-codexConversation.sendMessage.invoke(params): Promise<IBridgeResponse>
-codexConversation.responseStream.on(callback)
-codexConversation.statusChange.on(callback)
+codexConversation.sendMessage  // Alias for conversation.sendMessage
+codexConversation.responseStream  // Alias for conversation.responseStream
 ```
 
 ### `geminiConversation`
@@ -150,7 +235,7 @@ Gemini-specific operations.
 
 ```typescript
 geminiConversation.sendMessage  // Alias for conversation.sendMessage
-geminiConversation.confirmMessage.invoke(params): Promise<IBridgeResponse>
+geminiConversation.confirmMessage.invoke(params: IConfirmMessageParams): Promise<IBridgeResponse>
 geminiConversation.responseStream  // Alias for conversation.responseStream
 ```
 
@@ -159,13 +244,46 @@ geminiConversation.responseStream  // Alias for conversation.responseStream
 MCP (Model Context Protocol) server management.
 
 ```typescript
-mcpService.testMcpConnection.invoke({ name, command, args?, env?, transport? }): Promise<IBridgeResponse>
-mcpService.syncMcpToAgents.invoke({ configs }): Promise<IBridgeResponse>
-mcpService.removeMcpFromAgents.invoke({ mcpId }): Promise<IBridgeResponse>
-mcpService.getAgentMcpConfigs.invoke({ agentType }): Promise<IBridgeResponse<McpConfig[]>>
-mcpService.loginMcpOAuth.invoke({ mcpId, serverId }): Promise<IBridgeResponse>
-mcpService.logoutMcpOAuth.invoke({ mcpId }): Promise<IBridgeResponse>
-mcpService.checkOAuthStatus.invoke({ mcpId }): Promise<IBridgeResponse>
+mcpService.getAgentMcpConfigs.invoke(
+  agents: Array<{ backend: AcpBackend; name: string; cliPath?: string }>
+): Promise<IBridgeResponse<Array<{ source: McpSource; servers: IMcpServer[] }>>>
+
+mcpService.testMcpConnection.invoke(server: IMcpServer): Promise<IBridgeResponse<{
+  success: boolean;
+  tools?: Array<{ name: string; description?: string }>;
+  error?: string;
+  needsAuth?: boolean;
+  authMethod?: 'oauth' | 'basic';
+  wwwAuthenticate?: string;
+}>>
+
+mcpService.syncMcpToAgents.invoke({
+  mcpServers: IMcpServer[];
+  agents: Array<{ backend: AcpBackend; name: string; cliPath?: string }>;
+}): Promise<IBridgeResponse<{
+  success: boolean;
+  results: Array<{ agent: string; success: boolean; error?: string }>;
+}>>
+
+mcpService.removeMcpFromAgents.invoke({
+  mcpServerName: string;
+  agents: Array<{ backend: AcpBackend; name: string; cliPath?: string }>;
+}): Promise<IBridgeResponse<{
+  success: boolean;
+  results: Array<{ agent: string; success: boolean; error?: string }>;
+}>>
+
+// OAuth
+mcpService.checkOAuthStatus.invoke(server: IMcpServer): Promise<IBridgeResponse<{
+  isAuthenticated: boolean;
+  needsLogin: boolean;
+  error?: string;
+}>>
+mcpService.loginMcpOAuth.invoke({ server: IMcpServer; config?: any }): Promise<IBridgeResponse<{
+  success: boolean;
+  error?: string;
+}>>
+mcpService.logoutMcpOAuth.invoke(serverName: string): Promise<IBridgeResponse>
 mcpService.getAuthenticatedServers.invoke(): Promise<IBridgeResponse<string[]>>
 ```
 
@@ -174,11 +292,25 @@ mcpService.getAuthenticatedServers.invoke(): Promise<IBridgeResponse<string[]>>
 Scheduled job management.
 
 ```typescript
-cron.list.invoke(): Promise<CronJob[]>
-cron.add.invoke(job: Omit<CronJob, 'id'>): Promise<CronJob>
-cron.update.invoke({ id, ...updates }): Promise<CronJob>
-cron.remove.invoke({ id }): Promise<boolean>
-cron.execute.invoke({ id }): Promise<IBridgeResponse>
+// Query
+cron.listJobs.invoke(): Promise<ICronJob[]>
+cron.listJobsByConversation.invoke({ conversationId }): Promise<ICronJob[]>
+cron.getJob.invoke({ jobId }): Promise<ICronJob | null>
+
+// CRUD
+cron.addJob.invoke(params: ICreateCronJobParams): Promise<ICronJob>
+cron.updateJob.invoke({ jobId, updates }): Promise<ICronJob>
+cron.removeJob.invoke({ jobId }): Promise<void>
+
+// Events
+cron.onJobCreated.on(callback: (job: ICronJob) => void)
+cron.onJobUpdated.on(callback: (job: ICronJob) => void)
+cron.onJobRemoved.on(callback: (event: { jobId: string }) => void)
+cron.onJobExecuted.on(callback: (event: {
+  jobId: string;
+  status: 'ok' | 'error' | 'skipped';
+  error?: string;
+}) => void)
 ```
 
 ### `channel`
@@ -186,13 +318,35 @@ cron.execute.invoke({ id }): Promise<IBridgeResponse>
 External channel plugins (Telegram, Lark, etc.).
 
 ```typescript
-channel.enable.invoke({ type, config }): Promise<IBridgeResponse>
-channel.disable.invoke({ type }): Promise<IBridgeResponse>
-channel.test.invoke({ type, config }): Promise<IBridgeResponse>
-channel.pair.invoke({ channelType, userId }): Promise<{ pairingCode, expiresAt }>
-channel.status.invoke({ type }): Promise<IBridgeResponse>
-channel.listPairedUsers.invoke({ type }): Promise<IBridgeResponse>
-channel.unpairUser.invoke({ type, pairId }): Promise<IBridgeResponse>
+// Plugin Management
+channel.getPluginStatus.invoke(): Promise<IBridgeResponse<IChannelPluginStatus[]>>
+channel.enablePlugin.invoke({ pluginId, config }): Promise<IBridgeResponse>
+channel.disablePlugin.invoke({ pluginId }): Promise<IBridgeResponse>
+channel.testPlugin.invoke({ pluginId, token, extraConfig? }): Promise<IBridgeResponse<{
+  success: boolean;
+  botUsername?: string;
+  error?: string;
+}>>
+
+// Pairing Management
+channel.getPendingPairings.invoke(): Promise<IBridgeResponse<IChannelPairingRequest[]>>
+channel.approvePairing.invoke({ code }): Promise<IBridgeResponse>
+channel.rejectPairing.invoke({ code }): Promise<IBridgeResponse>
+
+// User Management
+channel.getAuthorizedUsers.invoke(): Promise<IBridgeResponse<IChannelUser[]>>
+channel.revokeUser.invoke({ userId }): Promise<IBridgeResponse>
+
+// Session Management
+channel.getActiveSessions.invoke(): Promise<IBridgeResponse<IChannelSession[]>>
+
+// Events
+channel.pairingRequested.on(callback: (request: IChannelPairingRequest) => void)
+channel.pluginStatusChanged.on(callback: (event: {
+  pluginId: string;
+  status: IChannelPluginStatus;
+}) => void)
+channel.userAuthorized.on(callback: (user: IChannelUser) => void)
 ```
 
 ### `webui`
@@ -200,10 +354,41 @@ channel.unpairUser.invoke({ type, pairId }): Promise<IBridgeResponse>
 WebUI server management.
 
 ```typescript
-webui.getStatus.invoke(): Promise<{ running, port, allowRemote }>
-webui.changePassword.invoke(newPassword): Promise<IBridgeResponse>
-webui.generateQRToken.invoke(): Promise<{ success, token?, expiresAt? }>
-webui.resetPassword.invoke(): Promise<{ success, newPassword? }>
+webui.getStatus.invoke(): Promise<IBridgeResponse<IWebUIStatus>>
+// IWebUIStatus: { running, port, allowRemote, localUrl, networkUrl?, lanIP?, adminUsername, initialPassword? }
+
+webui.start.invoke({ port?, allowRemote? }): Promise<IBridgeResponse<{
+  port: number;
+  localUrl: string;
+  networkUrl?: string;
+  lanIP?: string;
+  initialPassword?: string;
+}>>
+webui.stop.invoke(): Promise<IBridgeResponse>
+webui.changePassword.invoke({ newPassword }): Promise<IBridgeResponse>
+webui.resetPassword.invoke(): Promise<IBridgeResponse<{ newPassword: string }>>
+webui.generateQRToken.invoke(): Promise<IBridgeResponse<{
+  token: string;
+  expiresAt: number;
+  qrUrl: string;
+}>>
+webui.verifyQRToken.invoke({ qrToken }): Promise<IBridgeResponse<{
+  sessionToken: string;
+  username: string;
+}>>
+
+// Events
+webui.statusChanged.on(callback: (event: {
+  running: boolean;
+  port?: number;
+  localUrl?: string;
+  networkUrl?: string;
+}) => void)
+webui.resetPasswordResult.on(callback: (event: {
+  success: boolean;
+  newPassword?: string;
+  msg?: string;
+}) => void)
 ```
 
 ### `userApiKeys`
@@ -211,10 +396,9 @@ webui.resetPassword.invoke(): Promise<{ success, newPassword? }>
 Per-user API key management.
 
 ```typescript
-userApiKeys.get.invoke({ userId, provider }): Promise<string | null>
-userApiKeys.set.invoke({ userId, provider, apiKey }): Promise<void>
-userApiKeys.delete.invoke({ userId, provider }): Promise<void>
-userApiKeys.list.invoke({ userId }): Promise<{ provider: string; hasKey: boolean }[]>
+userApiKeys.set.invoke({ provider, apiKey, __webUiUserId? }): Promise<void>
+userApiKeys.get.invoke({ __webUiUserId? }): Promise<Array<{ provider: string; keyHint: string }>>
+userApiKeys.delete.invoke({ provider, __webUiUserId? }): Promise<boolean>
 ```
 
 ### `mode`
@@ -222,14 +406,16 @@ userApiKeys.list.invoke({ userId }): Promise<{ provider: string; hasKey: boolean
 Model/mode configuration management.
 
 ```typescript
-mode.list.invoke(): Promise<IProvider[]>
-mode.get.invoke({ id }): Promise<IProvider | null>
-mode.add.invoke(provider: Omit<IProvider, 'id'>): Promise<IProvider>
-mode.update.invoke({ id, ...updates }): Promise<IProvider>
-mode.remove.invoke({ id }): Promise<boolean>
-mode.setDefault.invoke({ id }): Promise<void>
-mode.testConnection.invoke({ provider }): Promise<IBridgeResponse>
-mode.detectProtocol.invoke(request: ProtocolDetectionRequest): Promise<ProtocolDetectionResponse>
+mode.fetchModelList.invoke({
+  base_url?: string;
+  api_key: string;
+  try_fix?: boolean;
+  platform?: string;
+  custom_headers?: Record<string, string>;
+}): Promise<IBridgeResponse<{ mode: string[]; fix_base_url?: string }>>
+mode.saveModelConfig.invoke(providers: IProvider[]): Promise<IBridgeResponse>
+mode.getModelConfig.invoke(): Promise<IProvider[]>
+mode.detectProtocol.invoke(request: ProtocolDetectionRequest): Promise<IBridgeResponse<ProtocolDetectionResponse>>
 ```
 
 ### `googleAuth`
@@ -237,11 +423,9 @@ mode.detectProtocol.invoke(request: ProtocolDetectionRequest): Promise<ProtocolD
 Google OAuth for Gemini API.
 
 ```typescript
-googleAuth.getAuth.invoke(): Promise<GoogleAuth | null>
-googleAuth.signIn.invoke(): Promise<GoogleAuth>
-googleAuth.signOut.invoke(): Promise<void>
-googleAuth.refresh.invoke(): Promise<GoogleAuth>
-googleAuth.authChange.on(callback)
+googleAuth.login.invoke({ proxy?: string }): Promise<IBridgeResponse<{ account: string }>>
+googleAuth.logout.invoke(): Promise<void>
+googleAuth.status.invoke({ proxy?: string }): Promise<IBridgeResponse<{ account: string }>>
 ```
 
 ### `gemini`
@@ -249,17 +433,27 @@ googleAuth.authChange.on(callback)
 Gemini model operations.
 
 ```typescript
-gemini.listModels.invoke({ useAuth?, useVertexAi? }): Promise<GeminiModel[]>
-gemini.generateContent.invoke(params): Promise<GenerateContentResponse>
+gemini.subscriptionStatus.invoke({ proxy?: string }): Promise<IBridgeResponse<{
+  isSubscriber: boolean;
+  tier?: string;
+  lastChecked: number;
+  message?: string;
+}>>
 ```
 
 ### `preview`
 
-File preview operations.
+Preview panel operations.
 
 ```typescript
-preview.getSnapshot.invoke({ conversationId, path }): Promise<PreviewSnapshotInfo>
-preview.saveSnapshot.invoke({ conversationId, path, content }): Promise<void>
+preview.open.on(callback: (event: {
+  content: string;       // URL or content
+  contentType: PreviewContentType;
+  metadata?: {
+    title?: string;
+    fileName?: string;
+  };
+}) => void)
 ```
 
 ### `previewHistory`
@@ -267,18 +461,20 @@ preview.saveSnapshot.invoke({ conversationId, path, content }): Promise<void>
 Preview version history.
 
 ```typescript
-previewHistory.list.invoke({ conversationId }): Promise<PreviewHistoryTarget[]>
-previewHistory.get.invoke({ conversationId, path, version? }): Promise<string>
-previewHistory.revert.invoke({ conversationId, path, version }): Promise<void>
+previewHistory.list.invoke({ target: PreviewHistoryTarget }): Promise<PreviewSnapshotInfo[]>
+previewHistory.save.invoke({ target: PreviewHistoryTarget; content: string }): Promise<PreviewSnapshotInfo>
+previewHistory.getContent.invoke({
+  target: PreviewHistoryTarget;
+  snapshotId: string;
+}): Promise<{ snapshot: PreviewSnapshotInfo; content: string } | null>
 ```
 
 ### `document`
 
-Document parsing and export.
+Document conversion.
 
 ```typescript
-document.parse.invoke({ path }): Promise<ParsedDocument>
-document.export.invoke({ content, format, outputPath }): Promise<void>
+document.convert.invoke(request: DocumentConversionRequest): Promise<DocumentConversionResponse>
 ```
 
 ### `windowControls`
@@ -288,17 +484,27 @@ Window management (Electron only).
 ```typescript
 windowControls.minimize.invoke(): Promise<void>
 windowControls.maximize.invoke(): Promise<void>
+windowControls.unmaximize.invoke(): Promise<void>
 windowControls.close.invoke(): Promise<void>
 windowControls.isMaximized.invoke(): Promise<boolean>
+windowControls.maximizedChanged.on(callback: (event: { isMaximized: boolean }) => void)
 ```
 
 ### `database`
 
-Direct database operations (for admin/debugging).
+Database operations for conversation data access.
 
 ```typescript
-database.query.invoke({ sql, params? }): Promise<any[]>
-database.execute.invoke({ sql, params? }): Promise<{ changes: number }>
+database.getConversationMessages.invoke({
+  conversation_id: string;
+  page?: number;
+  pageSize?: number;
+}): Promise<TMessage[]>
+
+database.getUserConversations.invoke({
+  page?: number;
+  pageSize?: number;
+}): Promise<TChatConversation[]>
 ```
 
 ## Response Types
@@ -308,11 +514,10 @@ database.execute.invoke({ sql, params? }): Promise<{ changes: number }>
 Standard response wrapper:
 
 ```typescript
-interface IBridgeResponse<T = void> {
+interface IBridgeResponse<T = {}> {
   success: boolean;
   data?: T;
   msg?: string;
-  error?: string;
 }
 ```
 
@@ -322,13 +527,10 @@ Streaming message from AI agent:
 
 ```typescript
 interface IResponseMessage {
-  id: string;
+  type: string;
+  data: unknown;
   msg_id: string;
   conversation_id: string;
-  type: TMessageType;
-  content?: any;
-  data?: any;
-  status?: string;
 }
 ```
 
@@ -345,6 +547,42 @@ type TMessageType =
   | 'permission'     // Permission request
   | 'error'          // Error message
   | 'done';          // Stream complete
+```
+
+### `ICronJob`
+
+```typescript
+interface ICronJob {
+  id: string;
+  name: string;
+  enabled: boolean;
+  schedule: ICronSchedule;
+  target: { payload: { kind: 'message'; text: string } };
+  metadata: {
+    conversationId: string;
+    conversationTitle?: string;
+    agentType: ICronAgentType;
+    createdBy: 'user' | 'agent';
+    createdAt: number;
+    updatedAt: number;
+  };
+  state: {
+    nextRunAtMs?: number;
+    lastRunAtMs?: number;
+    lastStatus?: 'ok' | 'error' | 'skipped';
+    lastError?: string;
+    runCount: number;
+    retryCount: number;
+    maxRetries: number;
+  };
+}
+
+type ICronSchedule =
+  | { kind: 'at'; atMs: number; description: string }
+  | { kind: 'every'; everyMs: number; description: string }
+  | { kind: 'cron'; expr: string; tz?: string; description: string };
+
+type ICronAgentType = 'gemini' | 'claude' | 'codex' | 'opencode' | 'qwen' | 'goose' | 'custom';
 ```
 
 ## Stream Events
@@ -372,13 +610,13 @@ conversation.responseStream.on((message: IResponseMessage) => {
 
 ## Error Handling
 
-All `invoke()` calls may throw or return `{ success: false, error: string }`. Best practice:
+All `invoke()` calls may throw or return `{ success: false, msg: string }`. Best practice:
 
 ```typescript
 try {
   const response = await ipcBridge.conversation.sendMessage.invoke(params);
   if (!response.success) {
-    console.error('Send failed:', response.error || response.msg);
+    console.error('Send failed:', response.msg);
     return;
   }
   // Handle success
