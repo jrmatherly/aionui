@@ -1438,7 +1438,7 @@ skills listed in Drift's documentation.
 
 ```bash
 drift skills list
-# pdf, docx, xlsx, pptx, skill-creator, moltbook, x-recruiter, xiaohongshu-recruiter
+# pdf, docx, xlsx, pptx, skill-creator, moltbook, x-recruiter
 ```
 
 The 71 pattern implementation skills from the docs (circuit-breaker, jwt-auth,

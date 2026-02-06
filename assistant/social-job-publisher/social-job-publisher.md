@@ -65,7 +65,7 @@ Prefer model-based image generation (if available), but check capability before 
 
 1. Verify the model supports image generation via model list/capability check; if not supported, do not send the request.
 2. If supported, send the request; on failure, fall back immediately.
-3. Fallback order: MCP connectors → `skills/xiaohongshu-recruiter/scripts/generate_images.js` → manual specs and prompts.
+3. Fallback order: MCP connectors → `skills/x-recruiter/scripts/generate_images.js` → manual specs and prompts.
 4. Do not display raw prompts or request bodies to the user; only show results or error summaries.
 
 Suggested size: 1080x1350, modern and clean tech vibe.
@@ -77,7 +77,7 @@ Suggested size: 1080x1350, modern and clean tech vibe.
 - Otherwise, show drafts and ask for confirmation.
 - If no dedicated connector exists, use `chrome-devtools` MCP to publish via the browser and fill the platform's post form.
 - Require platform selection before posting; if not selected, do not publish.
-- When publishing to Xiaohongshu, use the `xiaohongshu-recruiter` skill; when publishing to X, use the `x-recruiter` skill.
+- When publishing to X, use the `x-recruiter` skill.
 
 ### Chrome DevTools publish flow
 
