@@ -7,7 +7,7 @@
 import type { IMessageText } from '@/common/chatLib';
 import { AIONUI_FILES_MARKER } from '@/common/constants';
 import { iconColors } from '@/renderer/theme/colors';
-import { Alert, Tooltip } from '@arco-design/web-react';
+import { Alert, Tag, Tooltip } from '@arco-design/web-react';
 import { Copy } from '@icon-park/react';
 import classNames from 'classnames';
 import React, { useMemo, useState } from 'react';
@@ -18,6 +18,7 @@ import MarkdownView from '../components/Markdown';
 import MessageAvatar from './MessageAvatar';
 import { useMessageAvatars } from './MessageAvatarContext';
 import { createLogger } from '@/renderer/utils/logger';
+import { emitter } from '@/renderer/utils/emitter';
 
 const log = createLogger('MessagetText');
 
@@ -52,11 +53,47 @@ const useFormatContent = (content: string) => {
   }, [content]);
 };
 
+/**
+ * Extract blockquote lines ("> prompt text") from content and return
+ * the cleaned content + prompt strings for clickable rendering.
+ */
+const extractSuggestedPrompts = (content: string): { cleanContent: string; prompts: string[] } => {
+  const lines = content.split('\n');
+  const prompts: string[] = [];
+  const kept: string[] = [];
+  for (const line of lines) {
+    const match = line.match(/^>\s+(.+)$/);
+    if (match) {
+      prompts.push(match[1]);
+    } else {
+      kept.push(line);
+    }
+  }
+  return { cleanContent: kept.join('\n'), prompts };
+};
+
+const SuggestedPrompts: React.FC<{ prompts: string[] }> = ({ prompts }) => {
+  const handleClick = (prompt: string) => {
+    emitter.emit('sendbox.fill', prompt);
+  };
+  return (
+    <div className='flex flex-wrap gap-8px mt-8px'>
+      {prompts.map((prompt) => (
+        <Tag key={prompt} color='arcoblue' className='cursor-pointer hover:opacity-80' onClick={() => handleClick(prompt)}>
+          {prompt}
+        </Tag>
+      ))}
+    </div>
+  );
+};
+
 const MessageText: React.FC<{ message: IMessageText }> = ({ message }) => {
   const { text, files } = parseFileMarker(message.content.content);
-  const { data, json } = useFormatContent(text);
-  const [showCopyAlert, setShowCopyAlert] = useState(false);
   const isUserMessage = message.position === 'right';
+  // Extract suggested prompts ("> prompt text" lines) from agent messages
+  const { cleanContent: textWithoutPrompts, prompts: suggestedPrompts } = useMemo(() => (!isUserMessage ? extractSuggestedPrompts(text) : { cleanContent: text, prompts: [] }), [text, isUserMessage]);
+  const { data, json } = useFormatContent(textWithoutPrompts);
+  const [showCopyAlert, setShowCopyAlert] = useState(false);
   const avatars = useMessageAvatars();
 
   // Check if avatars are available (context provided)
@@ -122,6 +159,7 @@ const MessageText: React.FC<{ message: IMessageText }> = ({ message }) => {
         ) : (
           <MarkdownView codeStyle={{ marginTop: 4, marginBlock: 4 }}>{data}</MarkdownView>
         )}
+        {suggestedPrompts.length > 0 && <SuggestedPrompts prompts={suggestedPrompts} />}
       </div>
       <div
         className={classNames('h-28px flex items-center mt-2px', {

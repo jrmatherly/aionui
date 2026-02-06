@@ -12,8 +12,10 @@ import { getDatabase } from '@process/database';
 import { cronService } from '@process/services/cron/CronService';
 import fs from 'fs';
 import path from 'path';
+import { transformMessage } from '@/common/chatLib';
 import { ipcBridge } from '../../common';
 import { uuid } from '../../common/utils';
+import { addMessage } from '../message';
 import WorkerManage from '../WorkerManage';
 import { ProcessChat } from '../initStorage';
 import { ConversationService } from '../services/conversationService';
@@ -505,6 +507,28 @@ export function initConversationBridge(): void {
             msg_id: other.msg_id || '',
             data: { status: 'complete', total: successCount + failedCount, successCount, failedCount },
           });
+
+          // Inject persistent in-chat message with KB status and suggested prompts
+          if (successCount > 0) {
+            const fileNames = getFilesForAutoIngest(workspaceFiles).map((f) => path.basename(f));
+            const fileList = fileNames.map((f) => `- ${f}`).join('\n');
+            const suggestedPrompts = ['Summarize the key points of this document', 'What are the main topics covered?', 'List any important dates, names, or figures mentioned'];
+            const promptButtons = suggestedPrompts.map((p) => `> ${p}`).join('\n');
+
+            const completionContent = `**Knowledge Base Updated**\n\nThe following file(s) have been indexed:\n${fileList}\n\nThis content is now stored in your Knowledge Base and will be available in all future sessions.\n\n**Try asking:**\n${promptButtons}`;
+
+            const completionMsg = {
+              type: 'content' as const,
+              conversation_id,
+              msg_id: uuid(),
+              data: completionContent,
+            };
+            // Persist to DB so it's visible when user returns
+            const tMessage = transformMessage(completionMsg);
+            if (tMessage) addMessage(conversation_id, tMessage);
+            // Emit to frontend for immediate display
+            ipcBridge.conversation.responseStream.emit(completionMsg);
+          }
         } else {
           // Small files only: fire-and-forget (they're passed inline via @ references anyway)
           void autoIngestFilesToKnowledgeBase(__webUiUserId as string, workspaceFiles);
@@ -514,20 +538,37 @@ export function initConversationBridge(): void {
       }
     }
 
-    // For Gemini: exclude large files from the files array to prevent context overflow
-    // Large files are indexed in the knowledge base and retrieved via RAG instead
+    // For Gemini: remove large files from workspace after RAG ingestion to prevent
+    // FileDiscoveryService from reading them into context (causing overflow).
+    // Content is preserved in the knowledge base for RAG retrieval.
+    if (task.type === 'gemini' && hasLargeFiles && workspaceFiles) {
+      for (const f of workspaceFiles) {
+        if (isLargeFile(f)) {
+          try {
+            await fs.promises.unlink(f);
+            log.info({ file: path.basename(f) }, 'Removed large file from workspace after RAG ingestion');
+          } catch {
+            // Best-effort: file may already be gone
+          }
+        }
+      }
+    }
+
+    // For Gemini: also filter large files from the files array as a safety net
+    // (they should already be deleted above, but this guards against unlink failures)
     const filesToSend = task.type === 'gemini' && workspaceFiles ? workspaceFiles.filter((f) => !isLargeFile(f)) : workspaceFiles;
 
     try {
       // Call the corresponding sendMessage method based on task type
+      // Pass hasAutoIngestedFiles so RAG search is forced when large files were ingested
       if (task.type === 'gemini') {
-        await (task as GeminiAgentManager).sendMessage({ ...other, files: filesToSend });
+        await (task as GeminiAgentManager).sendMessage({ ...other, files: filesToSend, hasAutoIngestedFiles: hasLargeFiles });
         return { success: true };
       } else if (task.type === 'acp') {
-        await (task as AcpAgentManager).sendMessage({ content: other.input, files: workspaceFiles, msg_id: other.msg_id });
+        await (task as AcpAgentManager).sendMessage({ content: other.input, files: workspaceFiles, msg_id: other.msg_id, hasAutoIngestedFiles: hasLargeFiles });
         return { success: true };
       } else if (task.type === 'codex') {
-        await (task as CodexAgentManager).sendMessage({ content: other.input, files: workspaceFiles, msg_id: other.msg_id });
+        await (task as CodexAgentManager).sendMessage({ content: other.input, files: workspaceFiles, msg_id: other.msg_id, hasAutoIngestedFiles: hasLargeFiles });
         return { success: true };
       } else {
         return { success: false, msg: `Unsupported task type: ${task.type}` };
