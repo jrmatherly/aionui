@@ -476,7 +476,12 @@ skills/
 ├── db-migrate/              # Database migration scaffolding
 ├── gen-test/                # Test scaffolding
 ├── release/                 # Version bump and release automation
-└── mermaid/                 # Mermaid diagram generation
+├── mermaid/                 # Mermaid diagram generation
+├── frontend-design/         # Distinctive UI design principles
+├── mcp-builder/             # MCP server creation guide
+├── webapp-testing/          # Playwright web app testing
+├── brand-guidelines/        # Brand colors and typography
+└── doc-coauthoring/         # Structured documentation workflow
 ```
 
 ### Office Infrastructure Pattern

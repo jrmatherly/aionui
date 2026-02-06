@@ -141,6 +141,16 @@ Project-specific Claude Code automation in the repo:
 | `pdf`  | PDF processing, form filling, merging, splitting           |
 | `pptx` | PowerPoint creation and editing with html2pptx workflow    |
 
+**Additional Anthropic Skills (adopted Feb 2026):**
+
+| Skill              | Purpose                                     |
+| ------------------ | ------------------------------------------- |
+| `frontend-design`  | Distinctive UI design, avoids AI aesthetics |
+| `mcp-builder`      | MCP server creation (TypeScript/Python)     |
+| `webapp-testing`   | Playwright web app testing toolkit          |
+| `brand-guidelines` | Brand colors and typography                 |
+| `doc-coauthoring`  | Structured documentation workflow           |
+
 **Office Infrastructure (`scripts/office/`):**
 
 Both `docx/` and `xlsx/` use shared Anthropic infrastructure:
