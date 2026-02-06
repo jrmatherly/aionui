@@ -516,9 +516,9 @@ if __name__ == "__main__":
 # AsyncWebCrawler
 
 The **`AsyncWebCrawler`** is the core class for asynchronous web crawling in Crawl4AI. You typically create it **once**, optionally customize it with a **`BrowserConfig`** (e.g., headless, user agent), then **run** multiple **`arun()`** calls with different **`CrawlerRunConfig`** objects.
-1. **Create** a `BrowserConfig` for global browser settings. 
-2. **Instantiate** `AsyncWebCrawler(config=browser_config)`. 
-3. **Use** the crawler in an async context manager (`async with`) or manage start/close manually. 
+1. **Create** a `BrowserConfig` for global browser settings.
+2. **Instantiate** `AsyncWebCrawler(config=browser_config)`.
+3. **Use** the crawler in an async context manager (`async with`) or manage start/close manually.
 4. **Call** `arun(url, config=crawler_run_config)` for each page you want.
 
 ## 1. Constructor Overview
@@ -738,14 +738,14 @@ async def main():
 asyncio.run(main())
 ````
 
-- We define a **`BrowserConfig`** with Firefox, no headless, and `verbose=True`. 
-- We define a **`CrawlerRunConfig`** that **bypasses cache**, uses a **CSS** extraction schema, has a `word_count_threshold=15`, etc. 
+- We define a **`BrowserConfig`** with Firefox, no headless, and `verbose=True`.
+- We define a **`CrawlerRunConfig`** that **bypasses cache**, uses a **CSS** extraction schema, has a `word_count_threshold=15`, etc.
 - We pass them to `AsyncWebCrawler(config=...)` and `arun(url=..., config=...)`.
 
 ## 7. Best Practices & Migration Notes
 
-1. **Use** `BrowserConfig` for **global** settings about the browser’s environment. 
-2. **Use** `CrawlerRunConfig` for **per-crawl** logic (caching, content filtering, extraction strategies, wait conditions). 
+1. **Use** `BrowserConfig` for **global** settings about the browser’s environment.
+2. **Use** `CrawlerRunConfig` for **per-crawl** logic (caching, content filtering, extraction strategies, wait conditions).
 3. **Avoid** legacy parameters like `css_selector` or `word_count_threshold` directly in `arun()`. Instead:
 
 ```python
@@ -755,10 +755,10 @@ result = await crawler.arun(url="...", config=run_cfg)
 
 ## 8. Summary
 
-- **Constructor** accepts **`BrowserConfig`** (or defaults). 
-- **`arun(url, config=CrawlerRunConfig)`** is the main method for single-page crawls. 
-- **`arun_many(urls, config=CrawlerRunConfig)`** handles concurrency across multiple URLs. 
-- For advanced lifecycle control, use `start()` and `close()` explicitly. 
+- **Constructor** accepts **`BrowserConfig`** (or defaults).
+- **`arun(url, config=CrawlerRunConfig)`** is the main method for single-page crawls.
+- **`arun_many(urls, config=CrawlerRunConfig)`** handles concurrency across multiple URLs.
+- For advanced lifecycle control, use `start()` and `close()` explicitly.
 - If you used `AsyncWebCrawler(browser_type="chromium", css_selector="...")`, move browser settings to `BrowserConfig(...)` and content/crawl logic to `CrawlerRunConfig(...)`.
 
 # `arun()` Parameter Guide (New Approach)
@@ -798,7 +798,7 @@ async def main():
             print(f"Error: {result.error_message}")
 ```
 
-- `verbose=True` logs each crawl step. 
+- `verbose=True` logs each crawl step.
 - `cache_mode` decides how to read/write the local crawl cache.
 
 ## 2. Cache Control
@@ -881,7 +881,7 @@ run_config = CrawlerRunConfig(
   - `"css:selector"` or
   - `"js:() => boolean"`  
     e.g. `js:() => document.querySelectorAll('.item').length > 10`.
-- `mean_delay` & `max_range`: define random delays for `arun_many()` calls. 
+- `mean_delay` & `max_range`: define random delays for `arun_many()` calls.
 - `semaphore_count`: concurrency limit when crawling multiple URLs.
 
 ### 4.2 JavaScript Execution
@@ -896,7 +896,7 @@ run_config = CrawlerRunConfig(
 )
 ```
 
-- `js_code` can be a single string or a list of strings. 
+- `js_code` can be a single string or a list of strings.
 - `js_only=True` means “I’m continuing in the same session with new JS steps, no new full navigation.”
 
 ### 4.3 Anti-Bot
@@ -909,8 +909,8 @@ run_config = CrawlerRunConfig(
 )
 ```
 
-- `magic=True` tries multiple stealth features. 
-- `simulate_user=True` mimics mouse movements or random delays. 
+- `magic=True` tries multiple stealth features.
+- `simulate_user=True` mimics mouse movements or random delays.
 - `override_navigator=True` fakes some navigator properties (like user agent checks).
 
 ## 5. Session Management
@@ -1020,23 +1020,23 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-1. **Crawling** the main content region, ignoring external links. 
-2. Running **JavaScript** to click “.show-more”. 
-3. **Waiting** for “.loaded-block” to appear. 
-4. Generating a **screenshot** & **PDF** of the final page. 
+1. **Crawling** the main content region, ignoring external links.
+2. Running **JavaScript** to click “.show-more”.
+3. **Waiting** for “.loaded-block” to appear.
+4. Generating a **screenshot** & **PDF** of the final page.
 
 ## 9. Best Practices
 
-1. **Use `BrowserConfig` for global browser** settings (headless, user agent). 
-2. **Use `CrawlerRunConfig`** to handle the **specific** crawl needs: content filtering, caching, JS, screenshot, extraction, etc. 
-4. **Limit** large concurrency (`semaphore_count`) if the site or your system can’t handle it. 
+1. **Use `BrowserConfig` for global browser** settings (headless, user agent).
+2. **Use `CrawlerRunConfig`** to handle the **specific** crawl needs: content filtering, caching, JS, screenshot, extraction, etc.
+4. **Limit** large concurrency (`semaphore_count`) if the site or your system can’t handle it.
 5. For dynamic pages, set `js_code` or `scan_full_page` so you load all content.
 
 ## 10. Conclusion
 
 All parameters that used to be direct arguments to `arun()` now belong in **`CrawlerRunConfig`**. This approach:
 
-- Makes code **clearer** and **more maintainable**. 
+- Makes code **clearer** and **more maintainable**.
 
 # `arun_many(...)` Reference
 
@@ -1068,16 +1068,16 @@ async def arun_many(
 
 1. **Multiple URLs**:
 
-- Instead of crawling a single URL, you pass a list of them (strings or tasks). 
+- Instead of crawling a single URL, you pass a list of them (strings or tasks).
 - The function returns either a **list** of `CrawlResult` or an **async generator** if streaming is enabled.
   2. **Concurrency & Dispatchers**:
-- **`dispatcher`** param allows advanced concurrency control. 
-- If omitted, a default dispatcher (like `MemoryAdaptiveDispatcher`) is used internally. 
+- **`dispatcher`** param allows advanced concurrency control.
+- If omitted, a default dispatcher (like `MemoryAdaptiveDispatcher`) is used internally.
   3. **Streaming Support**:
 - Enable streaming by setting `stream=True` in your `CrawlerRunConfig`.
 - When streaming, use `async for` to process results as they become available.
   4. **Parallel** Execution\*\*:
-- `arun_many()` can run multiple requests concurrently under the hood. 
+- `arun_many()` can run multiple requests concurrently under the hood.
 - Each `CrawlResult` might also include a **`dispatch_result`** with concurrency details (like memory usage, start/end times).
 
 ### Basic Example (Batch Mode)
@@ -1186,7 +1186,7 @@ results = await crawler.arun_many(
 - **Function matchers**: `lambda url: 'api' in url`
 - **Mixed patterns**: Combine strings and functions with `MatchMode.OR` or `MatchMode.AND`
 - **First match wins**: Configs are evaluated in order
-- `dispatch_result` in each `CrawlResult` (if using concurrency) can hold memory and timing info. 
+- `dispatch_result` in each `CrawlResult` (if using concurrency) can hold memory and timing info.
 - **Important**: Always include a default config (without `url_matcher`) as the last item if you want to handle all URLs. Otherwise, unmatched URLs will fail.
 
 ### Return Value
@@ -1195,8 +1195,8 @@ Either a **list** of [`CrawlResult`](./crawl-result.md) objects, or an **async g
 
 ## Dispatcher Reference
 
-- **`MemoryAdaptiveDispatcher`**: Dynamically manages concurrency based on system memory usage. 
-- **`SemaphoreDispatcher`**: Fixed concurrency limit, simpler but less adaptive. 
+- **`MemoryAdaptiveDispatcher`**: Dynamically manages concurrency based on system memory usage.
+- **`SemaphoreDispatcher`**: Fixed concurrency limit, simpler but less adaptive.
 
 ## Common Pitfalls
 
