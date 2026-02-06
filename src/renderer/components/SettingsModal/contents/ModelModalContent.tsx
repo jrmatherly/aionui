@@ -12,6 +12,7 @@ import AionScrollArea from '@/renderer/components/base/AionScrollArea';
 import AddModelModal from '@/renderer/pages/settings/components/AddModelModal';
 import AddPlatformModal from '@/renderer/pages/settings/components/AddPlatformModal';
 import EditModeModal from '@/renderer/pages/settings/components/EditModeModal';
+import { withCsrfToken } from '@/webserver/middleware/csrfClient';
 import { Button, Collapse, Divider, Message, Popconfirm, Tag, Tooltip } from '@arco-design/web-react';
 import { Copy, DeleteFour, Eyes, PreviewCloseOne, Info, Minus, Planet, Plus, Write } from '@icon-park/react';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -89,6 +90,8 @@ const ModelModalContent: React.FC = () => {
         const response = await fetch(`/api/models/global/${modelId}/hide`, {
           method: 'POST',
           credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(withCsrfToken({})),
         });
         const result = await response.json();
         if (result.success) {
@@ -111,6 +114,8 @@ const ModelModalContent: React.FC = () => {
         const response = await fetch(`/api/models/global/${modelId}/unhide`, {
           method: 'POST',
           credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(withCsrfToken({})),
         });
         const result = await response.json();
         if (result.success) {

@@ -8,6 +8,7 @@ import { Button, Message, Modal, Spin } from '@arco-design/web-react';
 import { IconFile, IconFolder, IconUp, IconUpload } from '@arco-design/web-react/icon';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createLogger } from '@/renderer/utils/logger';
+import { withCsrfToken } from '@/webserver/middleware/csrfClient';
 
 const log = createLogger('DirectorySelectionModal');
 interface DirectoryItem {
@@ -118,11 +119,13 @@ const DirectorySelectionModal: React.FC<DirectorySelectionModalProps> = ({ visib
           method: 'POST',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            filename: file.name,
-            content: base64,
-            targetDir: currentPath || undefined,
-          }),
+          body: JSON.stringify(
+            withCsrfToken({
+              filename: file.name,
+              content: base64,
+              targetDir: currentPath || undefined,
+            })
+          ),
         });
 
         if (!response.ok) {
