@@ -42,8 +42,10 @@ mise run drift:check           # Validate against approved patterns
 mise run drift:scan            # Full pattern discovery
 mise run drift:audit           # Detailed review report
 mise run drift:approve         # Auto-approve high-confidence patterns
-mise run drift:memory          # Cortex memory health
-mise run drift:memory:why area # Get context for a feature area
+mise run drift:memory              # Cortex memory health
+mise run drift:memory:why area     # Get context for a feature area
+mise run drift:memory:search query # Search Cortex memories
+mise run drift:memory:learn "text" # Record a lesson learned
 mise run drift:env             # Audit sensitive env var access
 mise run drift:boundaries      # Verify data access boundaries
 mise run drift:dna             # Check style consistency (DNA mutations)

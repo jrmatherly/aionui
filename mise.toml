@@ -365,6 +365,14 @@ run = "drift memory status"
 description = "Get context for a feature area (usage: mise run drift:memory:why <area>)"
 run = 'drift memory why "$1"'
 
+[tasks."drift:memory:learn"]
+description = "Record a lesson learned (usage: mise run drift:memory:learn 'lesson text')"
+run = 'drift memory learn "$1"'
+
+[tasks."drift:memory:search"]
+description = "Search Cortex memories (usage: mise run drift:memory:search 'query')"
+run = 'drift memory search "$1"'
+
 [tasks."drift:env"]
 description = "Audit sensitive env var access"
 run = "drift env secrets"

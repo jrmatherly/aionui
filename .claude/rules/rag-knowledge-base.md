@@ -12,6 +12,8 @@ paths:
 
 # Knowledge Base (RAG)
 
+> **Before working here:** Read `.serena/memories/rag-knowledge-base.md` and `.serena/memories/lancedb-implementation-review.md`, then run `mise run drift:memory:why knowledge-base`
+
 AionUI provides per-user knowledge bases using **LanceDB**, an embedded vector database for RAG (Retrieval-Augmented Generation).
 
 ## Architecture

@@ -140,6 +140,16 @@ LiteLLM, Azure OpenAI / Azure AI Foundry, Portkey, Kong AI Gateway, AgentGateway
 - `deploy/docker/.env`, `deploy/docker/global-models.json`, `deploy/docker/group-mappings.json`
 - Any file matching: `*.pem`, `*.key`, `*credentials*`, `*secrets*`
 
+## Before You Start
+
+Before modifying a subsystem, check institutional memory for context, decisions, and known pitfalls:
+
+1. **Serena memories** — Read the relevant `.serena/memories/*.md` file for the subsystem
+2. **Cortex memories** — Run `mise run drift:memory:why <area>` (e.g., `auth`, `docker`, `knowledge-base`)
+3. **Path-scoped rules** — `.claude/rules/*.md` auto-load for matching files (see table below)
+
+This prevents re-learning decisions that were already made and avoids introducing patterns that contradict established conventions.
+
 ## Definition of Done
 
 Every implementation task should include:
@@ -149,6 +159,7 @@ Every implementation task should include:
 3. **Documentation** — Update relevant files:
    - `.serena/memories/*.md` — Feature-specific memory file
    - `.claude/rules/*.md` or `CLAUDE.md` — If it affects how agents work
+   - `mise run drift:memory:learn "lesson"` — If you discovered a critical gotcha
 4. **Verify** — TypeScript compilation clean, lint passes
 
 ## Topic-Specific Rules

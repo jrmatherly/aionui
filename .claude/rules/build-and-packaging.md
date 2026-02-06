@@ -12,6 +12,8 @@ paths:
 
 # Build, Packaging & Deployment
 
+> **Before working here:** Read `.serena/memories/docker-packaging-constraints.md` and run `mise run drift:memory:why docker`
+
 ## Native Modules
 
 The following require special handling during build:

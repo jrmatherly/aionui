@@ -122,7 +122,7 @@ initial_prompt: |
   ## Tech Stack
   - **Desktop:** Electron 37.x (multi-process: main, renderer, workers)
   - **UI:** React 19.x + Arco Design 2.x + UnoCSS 0.66.x
-  - **Language:** TypeScript 5.8.x (strict mode)
+  - **Language:** TypeScript 5.9.x (strict mode)
   - **Server:** Express 5.x (WebUI remote access)
   - **Database:** SQLite (better-sqlite3, offline-first)
   - **AI SDKs:** Anthropic, Google GenAI, OpenAI
@@ -149,19 +149,35 @@ initial_prompt: |
   - Docker builds require asar unpacking for native modules (see scripts/afterPack.js)
   - i18n was removed in v1.8.2 — all strings are hardcoded English, do not use t() or i18next
 
-  ## Project Memories
-  Detailed documentation is stored in .serena/memories/:
-  - project-architecture.md — Multi-process architecture and services
-  - branding-and-release-configuration.md — Branding customization guide
-  - docker-packaging-constraints.md — Build system and native module handling
-  - auth-system.md — Multi-user authentication and RBAC
-  - code-patterns.md — IPC, worker, component, and database patterns
-  - common-pitfalls.md — Known anti-patterns and gotchas
-  - drift-integration.md — Drift Detect MCP tools, data boundaries, and workflows
+  ## Project Memories — READ BEFORE MODIFYING
 
-  Consult these memories for detailed information on specific subsystems.
+  **Always read the relevant memory BEFORE working on a subsystem.** These contain hard-won decisions, gotchas, and architectural context that prevent repeated mistakes.
 
-  ## AI Context Tools
+  | Memory File | Read When Working On |
+  |---|---|
+  | project-architecture.md | Any structural or cross-cutting change |
+  | auth-system.md | Authentication, OIDC, RBAC, tokens, middleware |
+  | docker-packaging-constraints.md | Docker, builds, native modules, CI |
+  | code-patterns.md | IPC, workers, components, database patterns |
+  | common-pitfalls.md | **Always skim** — known anti-patterns and gotchas |
+  | rag-knowledge-base.md | KB, RAG, embeddings, LanceDB, agent managers |
+  | lancedb-implementation-review.md | LanceDB API, hybrid search, vector ops |
+  | global-models-feature.md | Global Models, group access, embedding config |
+  | enterprise-logging-research.md | Pino, OTEL, syslog, Langfuse |
+  | branding-and-release-configuration.md | Branding, release workflow, changelog |
+  | crawl4ai-skill.md | Web scraping skill, Chromium in Docker |
+  | drift-integration.md | Drift Detect MCP tools, boundaries, workflows |
+  | changelog-and-release.md | git-cliff, versioning, release automation |
+
+  Use `list_memories` to see all available, then `read_memory` for the relevant one(s).
+
+  ## AI Context Tools — Drift Detect
+
   This project also uses **Drift Detect** (via `.mcp.json`) for pattern analysis,
   institutional memory (Cortex), call graph analysis, and data boundary enforcement.
+
+  **Before modifying code**, use `drift_context` or `drift_memory_why` with the relevant area
+  to check for institutional knowledge (tribal, procedural, decisions, constraints).
+  62 Cortex memories cover architecture decisions, security constraints, build procedures, and code smells.
+
   See drift-integration.md memory for details on when to use Drift vs Serena.

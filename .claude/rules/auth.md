@@ -11,6 +11,8 @@ paths:
 
 # Authentication & Authorization
 
+> **Before working here:** Read `.serena/memories/auth-system.md` and run `mise run drift:memory:why auth`
+
 ## Multi-User Support
 
 - **OIDC/SSO Integration**: EntraID (Azure AD) and other OIDC providers for enterprise single sign-on

@@ -9,6 +9,8 @@ paths:
 <!-- @modified 2026-02-06 -->
 <!-- SPDX-License-Identifier: Apache-2.0 -->
 
+> **Before working here:** Run `mise run drift:memory:why database` for tribal knowledge and decisions
+
 ## Current State
 
 - **Schema version**: v18 (`CURRENT_DB_VERSION = 18` in `schema.ts`)

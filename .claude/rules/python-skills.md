@@ -10,6 +10,8 @@ paths:
 
 # Python Environment & Skills Support
 
+> **Before working here:** Read `.serena/memories/crawl4ai-skill.md` (if relevant) and run `mise run drift:memory:why skills`
+
 AionUI supports Python-based skills for document processing and automation. Python environments are managed per-user via **mise** (mise-en-place).
 
 ## Architecture
