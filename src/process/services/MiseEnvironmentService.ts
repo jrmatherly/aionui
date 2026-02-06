@@ -16,12 +16,15 @@
  * installation. See: https://mise.jdx.dev
  */
 
-import { execFileSync, spawn, type ChildProcess, type SpawnOptions } from 'child_process';
+import { execFile, execFileSync, spawn, type ChildProcess, type SpawnOptions } from 'child_process';
 import { closeSync, constants, existsSync, mkdirSync, openSync, statSync, writeFileSync, writeSync } from 'fs';
+import { promisify } from 'util';
 import path from 'path';
 import { getDirectoryService } from './DirectoryService';
 import { getSkillsDir } from '@process/initStorage';
 import { miseLogger as log } from '@/common/logger';
+
+const execFileAsync = promisify(execFile);
 
 /**
  * Result of resolving mise environment for a workspace
@@ -319,10 +322,10 @@ yes = true
    */
   private async trustConfig(workDir: string): Promise<void> {
     try {
-      // Security: Use execFileSync with args array to prevent command injection
-      execFileSync(this.miseCmd, ['trust', '-a'], {
+      // Security: Use execFileAsync with args array to prevent command injection
+      // Async to avoid blocking the Node.js event loop during login
+      await execFileAsync(this.miseCmd, ['trust', '-a'], {
         cwd: workDir,
-        stdio: 'pipe',
         env: { ...process.env, ...this.baseMiseEnv },
         timeout: 10000,
       });
@@ -343,10 +346,10 @@ yes = true
     }
 
     try {
-      // Security: Use execFileSync with args array to prevent command injection
-      execFileSync(this.miseCmd, ['install', '-y'], {
+      // Security: Use execFileAsync with args array to prevent command injection
+      // Async to avoid blocking the Node.js event loop during login
+      await execFileAsync(this.miseCmd, ['install', '-y'], {
         cwd: workDir,
-        stdio: 'pipe',
         env: { ...process.env, ...this.baseMiseEnv },
         timeout: 300000, // 5 minutes for initial install
       });
@@ -364,10 +367,10 @@ yes = true
    */
   private async ensureVenvCreated(workDir: string): Promise<void> {
     try {
-      // Security: Use execFileSync with args array to prevent command injection
-      execFileSync(this.miseCmd, ['exec', '--', 'python', '--version'], {
+      // Security: Use execFileAsync with args array to prevent command injection
+      // Async to avoid blocking the Node.js event loop during login
+      await execFileAsync(this.miseCmd, ['exec', '--', 'python', '--version'], {
         cwd: workDir,
-        stdio: 'pipe',
         env: { ...process.env, ...this.baseMiseEnv },
         timeout: 60000, // 1 minute — venv creation can take a moment
       });
@@ -394,11 +397,11 @@ yes = true
     }
 
     try {
-      // Security: Use execFileSync with args array to prevent command injection
-      const output = execFileSync(this.miseCmd, ['env', '--json'], {
+      // Security: Use execFileAsync with args array to prevent command injection
+      // Async to avoid blocking the Node.js event loop
+      const { stdout: output } = await execFileAsync(this.miseCmd, ['env', '--json'], {
         cwd: workDir,
         encoding: 'utf-8',
-        stdio: ['pipe', 'pipe', 'pipe'],
         env: { ...process.env, ...this.baseMiseEnv },
         timeout: 30000,
       });
@@ -605,11 +608,11 @@ yes = true
     log.info({ workDir, requirementsPath: fullPath }, 'Installing requirements');
 
     try {
-      // Security: Use execFileSync with args array to prevent command injection
+      // Security: Use execFileAsync with args array to prevent command injection
       // fullPath is passed as a single argument, preventing shell interpretation
-      execFileSync(this.miseCmd, ['exec', '--', 'uv', 'pip', 'install', '-r', fullPath], {
+      // Async to avoid blocking the Node.js event loop during login
+      await execFileAsync(this.miseCmd, ['exec', '--', 'uv', 'pip', 'install', '-r', fullPath], {
         cwd: workDir,
-        stdio: 'pipe',
         env: { ...process.env, ...this.baseMiseEnv },
         timeout: 300000, // 5 minutes for requirements
       });
@@ -631,10 +634,10 @@ yes = true
     }
 
     try {
-      // Security: Use execFileSync with args array to prevent command injection
-      execFileSync(this.miseCmd, ['prepare'], {
+      // Security: Use execFileAsync with args array to prevent command injection
+      // Async to avoid blocking the Node.js event loop
+      await execFileAsync(this.miseCmd, ['prepare'], {
         cwd: workDir,
-        stdio: 'pipe',
         env: { ...process.env, ...this.baseMiseEnv },
         timeout: 300000,
       });
