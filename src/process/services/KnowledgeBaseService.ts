@@ -169,7 +169,7 @@ class KnowledgeBaseService {
   }
 
   /**
-   * Ingest a document into the knowledge base
+   * Ingest a document into the knowledge base (from text content)
    */
   public async ingest(userId: string, sourceFile: string, textContent: string, options?: { chunkSize?: number; overlap?: number }): Promise<KBIngestResult> {
     const workspaceDir = this.getWorkspaceDir(userId);
@@ -185,6 +185,41 @@ class KnowledgeBaseService {
     const env = { OPENAI_API_KEY: this.getOpenAIKey() };
 
     log.info({ userId, sourceFile, textLength: textContent.length }, 'Ingesting document to knowledge base');
+
+    const result = await this.runLanceScript('ingest.py', args, workspaceDir, env);
+
+    if (!result.success) {
+      return { success: false, chunksAdded: 0, error: result.error };
+    }
+
+    return {
+      success: true,
+      chunksAdded: (result.data?.chunks_added as number) || 0,
+      version: result.data?.version as number | undefined,
+    };
+  }
+
+  /**
+   * Ingest a document from a file path (supports binary files like PDFs)
+   *
+   * Use this for binary file types that can't be read as UTF-8.
+   * The Python script handles text extraction for PDFs using pypdf.
+   */
+  public async ingestFile(userId: string, filePath: string, options?: { chunkSize?: number; overlap?: number }): Promise<KBIngestResult> {
+    const workspaceDir = this.getWorkspaceDir(userId);
+    const sourceFile = path.basename(filePath);
+    const args = [workspaceDir, sourceFile, '--file', filePath];
+
+    if (options?.chunkSize) {
+      args.push('--chunk-size', String(options.chunkSize));
+    }
+    if (options?.overlap) {
+      args.push('--overlap', String(options.overlap));
+    }
+
+    const env = { OPENAI_API_KEY: this.getOpenAIKey() };
+
+    log.info({ userId, filePath }, 'Ingesting file to knowledge base');
 
     const result = await this.runLanceScript('ingest.py', args, workspaceDir, env);
 
@@ -279,6 +314,32 @@ class KnowledgeBaseService {
       success: true,
       deletedChunks: (result.data?.deleted_chunks as number) || 0,
     };
+  }
+
+  /**
+   * Initialize the knowledge base for a user
+   * Creates an empty knowledge base if it doesn't exist (idempotent)
+   *
+   * @param userId - User ID
+   * @returns Initialization result
+   */
+  public async initialize(userId: string): Promise<{ success: boolean; alreadyExists?: boolean; error?: string }> {
+    const workspaceDir = this.getWorkspaceDir(userId);
+    const env = { OPENAI_API_KEY: this.getOpenAIKey() };
+
+    log.info({ userId }, 'Initializing knowledge base');
+
+    const result = await this.runLanceScript('manage.py', [workspaceDir, 'init'], workspaceDir, env);
+
+    if (!result.success) {
+      log.warn({ userId, error: result.error }, 'Failed to initialize knowledge base');
+      return { success: false, error: result.error };
+    }
+
+    const alreadyExists = result.data?.already_exists === true;
+    log.info({ userId, alreadyExists }, alreadyExists ? 'Knowledge base already initialized' : 'Knowledge base initialized');
+
+    return { success: true, alreadyExists };
   }
 
   /**

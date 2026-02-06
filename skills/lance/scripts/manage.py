@@ -6,6 +6,7 @@ Usage:
     python manage.py <workspace_path> <action> [options]
 
 Actions:
+    init                    Initialize empty knowledge base (idempotent)
     delete <source_file>    Delete all chunks from a document
     delete-id <chunk_id>    Delete a specific chunk by ID
     reindex                 Rebuild all indexes (FTS and vector)
@@ -13,6 +14,10 @@ Actions:
     restore <version>       Restore to a specific version
     stats                   Show storage statistics
     clear                   Clear all data (with confirmation)
+
+Options:
+    --model <str>           Embedding model for init (default: text-embedding-3-small)
+    --confirm               Confirm destructive actions (clear)
 
 Output: JSON with operation result
 """
@@ -264,6 +269,69 @@ def get_stats(workspace_path: str) -> dict:
         return {"status": "error", "error": str(e)}
 
 
+def init_knowledge_base(workspace_path: str, embedding_model: str = "text-embedding-3-small") -> dict:
+    """Initialize an empty knowledge base for the user."""
+    import os
+
+    try:
+        import lancedb
+        from lancedb.embeddings import get_registry
+        from lancedb.pydantic import LanceModel, Vector
+    except ImportError:
+        return {"status": "error", "error": "lancedb not installed"}
+
+    lance_dir = Path(workspace_path) / ".lance"
+
+    # Check if already initialized
+    if lance_dir.exists():
+        try:
+            db = lancedb.connect(str(lance_dir))
+            if "knowledge" in db.table_names():
+                return {
+                    "status": "ok",
+                    "action": "init",
+                    "message": "Knowledge base already initialized",
+                    "already_exists": True,
+                }
+        except Exception:
+            pass
+
+    try:
+        # Create directory
+        lance_dir.mkdir(parents=True, exist_ok=True)
+
+        # Get embedding function
+        api_key = os.environ.get("OPENAI_API_KEY")
+        if not api_key:
+            return {"status": "error", "error": "OPENAI_API_KEY not set"}
+
+        embed_func = get_registry().get("openai").create(name=embedding_model, api_key=api_key)
+
+        # Define schema with embedding
+        class DocumentChunk(LanceModel):
+            id: str
+            text: str = embed_func.SourceField()
+            vector: Vector(embed_func.ndims()) = embed_func.VectorField()
+            source_file: str
+            page: int
+            chunk_index: int
+            created_at: str
+
+        # Connect and create empty table
+        db = lancedb.connect(str(lance_dir))
+        table = db.create_table("knowledge", schema=DocumentChunk)
+
+        return {
+            "status": "ok",
+            "action": "init",
+            "message": "Knowledge base initialized",
+            "path": str(lance_dir),
+            "version": table.version,
+        }
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
 def clear_knowledge(workspace_path: str, confirm: bool = False) -> dict:
     """Clear all knowledge base data."""
     if not confirm:
@@ -296,13 +364,19 @@ def clear_knowledge(workspace_path: str, confirm: bool = False) -> dict:
 def main():
     parser = argparse.ArgumentParser(description="Manage LanceDB knowledge base")
     parser.add_argument("workspace_path", help="Path to user workspace")
-    parser.add_argument("action", choices=["delete", "delete-id", "reindex", "versions", "restore", "stats", "clear"])
+    parser.add_argument(
+        "action", choices=["init", "delete", "delete-id", "reindex", "versions", "restore", "stats", "clear"]
+    )
     parser.add_argument("target", nargs="?", help="Target for action (source file, chunk ID, or version)")
     parser.add_argument("--confirm", action="store_true", help="Confirm destructive actions")
+    parser.add_argument("--model", default="text-embedding-3-small", help="Embedding model for init")
 
     args = parser.parse_args()
 
-    if args.action == "delete":
+    if args.action == "init":
+        result = init_knowledge_base(args.workspace_path, embedding_model=args.model)
+
+    elif args.action == "delete":
         if not args.target:
             print(json.dumps({"status": "error", "error": "Must specify source file"}))
             sys.exit(1)

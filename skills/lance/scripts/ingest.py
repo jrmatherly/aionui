@@ -5,11 +5,14 @@ Ingest a document into the user's LanceDB knowledge base.
 Usage:
     python ingest.py <workspace_path> <file_path> --text <text_content>
     python ingest.py <workspace_path> <file_path> --text-file <text_file>
+    python ingest.py <workspace_path> <file_path> --file <source_file>
 
 Options:
     --chunk-size <int>    Maximum tokens per chunk (default: 500)
     --overlap <int>       Overlap between chunks (default: 100)
     --model <str>         Embedding model (default: text-embedding-3-small)
+
+Note: --file supports PDF extraction via pypdf. Install with: pip install pypdf
 
 Output: JSON with ingestion status
 """
@@ -21,6 +24,47 @@ import sys
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
+
+
+def extract_text_from_file(file_path: str) -> tuple[str, list[dict]]:
+    """
+    Extract text from a file, with special handling for PDFs.
+
+    Returns:
+        tuple: (full_text, pages_info) where pages_info is a list of dicts with
+               'page' (1-indexed) and 'text' keys for PDFs, or empty for text files.
+    """
+    path = Path(file_path)
+    ext = path.suffix.lower()
+
+    if ext == ".pdf":
+        try:
+            import pypdf
+
+            reader = pypdf.PdfReader(file_path)
+            pages_info = []
+            all_text = []
+
+            for i, page in enumerate(reader.pages, start=1):
+                text = page.extract_text() or ""
+                if text.strip():
+                    pages_info.append({"page": i, "text": text})
+                    all_text.append(text)
+
+            return "\n\n".join(all_text), pages_info
+        except ImportError:
+            raise ImportError("pypdf is required for PDF extraction. Install with: pip install pypdf")
+        except Exception as e:
+            raise RuntimeError(f"Failed to extract text from PDF: {e}")
+
+    elif ext in (".docx", ".doc"):
+        # Future: could use python-docx for .docx files
+        raise NotImplementedError(f"Direct {ext} extraction not yet implemented. Convert to text first.")
+
+    else:
+        # Plain text files
+        with open(file_path, "r", encoding="utf-8") as f:
+            return f.read(), []
 
 
 def chunk_text(text: str, max_words: int = 500, overlap: int = 100) -> list[str]:
@@ -141,14 +185,15 @@ def main():
     parser.add_argument("workspace_path", help="Path to user workspace")
     parser.add_argument("file_path", help="Source file path (for tracking)")
     parser.add_argument("--text", help="Text content to ingest")
-    parser.add_argument("--text-file", help="File containing text to ingest")
+    parser.add_argument("--text-file", help="File containing text to ingest (UTF-8)")
+    parser.add_argument("--file", dest="source_file", help="Source file to extract text from (supports PDF)")
     parser.add_argument("--chunk-size", type=int, default=500, help="Max words per chunk")
     parser.add_argument("--overlap", type=int, default=100, help="Overlap between chunks")
     parser.add_argument("--model", default="text-embedding-3-small", help="Embedding model")
 
     args = parser.parse_args()
 
-    # Get text content
+    # Get text content from one of the sources
     text_content = None
     if args.text:
         text_content = args.text
@@ -159,8 +204,18 @@ def main():
         except Exception as e:
             print(json.dumps({"status": "error", "error": f"Failed to read text file: {e}"}))
             sys.exit(1)
+    elif args.source_file:
+        try:
+            text_content, _ = extract_text_from_file(args.source_file)
+        except Exception as e:
+            print(json.dumps({"status": "error", "error": f"Failed to extract text from file: {e}"}))
+            sys.exit(1)
     else:
-        print(json.dumps({"status": "error", "error": "Must provide --text or --text-file"}))
+        print(json.dumps({"status": "error", "error": "Must provide --text, --text-file, or --file"}))
+        sys.exit(1)
+
+    if not text_content or not text_content.strip():
+        print(json.dumps({"status": "error", "error": "No text content extracted from file"}))
         sys.exit(1)
 
     result = ingest_document(

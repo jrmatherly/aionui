@@ -24,6 +24,19 @@ import fs from 'fs';
 import path from 'path';
 
 /**
+ * File extensions that require binary handling (can't be read as UTF-8)
+ */
+const BINARY_FILE_EXTENSIONS = new Set(['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx']);
+
+/**
+ * Check if a file is binary (needs special handling for text extraction)
+ */
+function isBinaryFile(filePath: string): boolean {
+  const ext = path.extname(filePath).toLowerCase();
+  return BINARY_FILE_EXTENSIONS.has(ext);
+}
+
+/**
  * Auto-ingest large files to knowledge base (fire-and-forget)
  * This enables RAG for subsequent queries about the files
  *
@@ -46,12 +59,17 @@ async function autoIngestFilesToKnowledgeBase(userId: string, files: string[]): 
 
     for (const filePath of filesToIngest) {
       try {
-        // Read file content
-        const content = await fs.promises.readFile(filePath, 'utf-8');
         const fileName = path.basename(filePath);
+        let result;
 
-        // Ingest to knowledge base
-        const result = await kbService.ingest(userId, fileName, content);
+        if (isBinaryFile(filePath)) {
+          // Binary files (PDF, etc.): use ingestFile which passes path to Python for extraction
+          result = await kbService.ingestFile(userId, filePath);
+        } else {
+          // Text files: read as UTF-8 and pass content directly
+          const content = await fs.promises.readFile(filePath, 'utf-8');
+          result = await kbService.ingest(userId, fileName, content);
+        }
 
         if (result.success) {
           log.info({ userId, file: fileName, chunks: result.chunksAdded }, 'File auto-ingested to knowledge base');
