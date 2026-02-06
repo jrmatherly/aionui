@@ -25,21 +25,21 @@
       "locations": [
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 267,
+          "line": 268,
           "column": 19,
           "isOutlier": false,
           "confidence": 0.595
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 146,
+          "line": 147,
           "column": 17,
           "isOutlier": false,
           "confidence": 0.595
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 264,
+          "line": 265,
           "column": 29,
           "isOutlier": false,
           "confidence": 0.595
@@ -74,14 +74,14 @@
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 814,
+          "line": 809,
           "column": 3,
           "isOutlier": false,
           "confidence": 0.595
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 907,
+          "line": 902,
           "column": 7,
           "isOutlier": false,
           "confidence": 0.595
@@ -186,17 +186,17 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 181,
+          "line": 318,
           "column": 15,
           "isOutlier": false,
-          "confidence": 0.77
+          "confidence": 0.6533333333333333
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 183,
+          "line": 320,
           "column": 22,
           "isOutlier": false,
-          "confidence": 0.77
+          "confidence": 0.6533333333333333
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -215,8 +215,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -249,14 +249,14 @@
       "locations": [
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 146,
+          "line": 147,
           "column": 17,
           "isOutlier": false,
           "confidence": 0.595
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 264,
+          "line": 265,
           "column": 29,
           "isOutlier": false,
           "confidence": 0.595
@@ -277,14 +277,14 @@
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 814,
+          "line": 809,
           "column": 3,
           "isOutlier": false,
           "confidence": 0.6144444444444443
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 907,
+          "line": 902,
           "column": 7,
           "isOutlier": false,
           "confidence": 0.6144444444444443
@@ -348,8 +348,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -397,8 +397,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -431,7 +431,7 @@
       "locations": [
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 172,
+          "line": 173,
           "column": 31,
           "isOutlier": false,
           "confidence": 0.6084615384615384
@@ -452,21 +452,21 @@
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 177,
+          "line": 178,
           "column": 23,
           "isOutlier": false,
           "confidence": 0.6084615384615384
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 181,
+          "line": 182,
           "column": 22,
           "isOutlier": false,
           "confidence": 0.6084615384615384
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 181,
+          "line": 182,
           "column": 34,
           "isOutlier": false,
           "confidence": 0.6084615384615384
@@ -476,68 +476,68 @@
           "line": 95,
           "column": 56,
           "isOutlier": false,
-          "confidence": 0.6074999999999999
+          "confidence": 0.6387499999999999
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 121,
           "column": 27,
           "isOutlier": false,
-          "confidence": 0.6074999999999999
+          "confidence": 0.6387499999999999
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 634,
           "column": 40,
           "isOutlier": false,
-          "confidence": 0.6074999999999999
+          "confidence": 0.6387499999999999
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 705,
           "column": 22,
           "isOutlier": false,
-          "confidence": 0.6074999999999999
+          "confidence": 0.6387499999999999
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 711,
           "column": 15,
           "isOutlier": false,
-          "confidence": 0.6074999999999999
+          "confidence": 0.6387499999999999
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 815,
+          "line": 810,
           "column": 3,
           "isOutlier": false,
-          "confidence": 0.6074999999999999
+          "confidence": 0.6387499999999999
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 385,
           "column": 37,
           "isOutlier": false,
-          "confidence": 0.6074999999999999
+          "confidence": 0.6387499999999999
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 667,
           "column": 37,
           "isOutlier": false,
-          "confidence": 0.6074999999999999
+          "confidence": 0.6387499999999999
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 671,
           "column": 4,
           "isOutlier": false,
-          "confidence": 0.6074999999999999
+          "confidence": 0.6387499999999999
         },
         {
           "file": ".aionui/FEATURE_CHANNELS_LARK_LARK.md",
           "line": 386,
-          "column": 46,
+          "column": 45,
           "isOutlier": false,
           "confidence": 0.77
         },
@@ -648,21 +648,21 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 189,
+          "line": 326,
           "column": 22,
           "isOutlier": false,
           "confidence": 0.6699999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 191,
+          "line": 328,
           "column": 22,
           "isOutlier": false,
           "confidence": 0.6699999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 159,
+          "line": 181,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.6699999999999999
@@ -796,8 +796,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -820,34 +820,27 @@
         }
       },
       "confidence": {
-        "frequency": 0.07,
+        "frequency": 0.05,
         "consistency": 0.9,
         "age": 0,
         "spread": 3,
-        "score": 0.8084615384615385,
+        "score": 0.83875,
         "level": "medium"
       },
       "locations": [
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 235,
+          "line": 236,
           "column": 20,
           "isOutlier": false,
           "confidence": 0.8084615384615385
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 772,
-          "column": 20,
-          "isOutlier": false,
-          "confidence": 0.8075
-        },
-        {
-          "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 989,
+          "line": 984,
           "column": 28,
           "isOutlier": false,
-          "confidence": 0.8075
+          "confidence": 0.83875
         },
         {
           "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
@@ -859,8 +852,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -925,10 +918,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.72,
+        "frequency": 0.9,
         "consistency": 0.9,
         "age": 0,
-        "spread": 9,
+        "spread": 12,
         "score": 0.77,
         "level": "medium"
       },
@@ -963,7 +956,7 @@
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 954,
+          "line": 949,
           "column": 60,
           "isOutlier": false,
           "confidence": 0.6533333333333333
@@ -1033,42 +1026,91 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 120,
+          "line": 127,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.731111111111111
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 128,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.731111111111111
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 146,
+          "column": 26,
+          "isOutlier": false,
+          "confidence": 0.731111111111111
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 153,
+          "column": 29,
+          "isOutlier": false,
+          "confidence": 0.731111111111111
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 178,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.731111111111111
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 179,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.731111111111111
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 306,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.731111111111111
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 307,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.731111111111111
+        },
+        {
+          "file": ".github/workflows/claude-code-review.yml",
+          "line": 33,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 121,
+          "file": ".github/workflows/claude-code-review.yml",
+          "line": 34,
           "column": 23,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 139,
-          "column": 26,
+          "file": ".github/workflows/claude-code-review.yml",
+          "line": 5,
+          "column": 34,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 146,
-          "column": 29,
-          "isOutlier": false,
-          "confidence": 0.77
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 156,
+          "file": ".github/workflows/claude.yml",
+          "line": 32,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 157,
+          "file": ".github/workflows/claude.yml",
+          "line": 33,
           "column": 23,
           "isOutlier": false,
           "confidence": 0.77
@@ -1083,6 +1125,20 @@
         {
           "file": ".github/workflows/codeql.yml",
           "line": 29,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/workflows/dependency-review.yml",
+          "line": 17,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/workflows/dependency-review.yml",
+          "line": 18,
           "column": 23,
           "isOutlier": false,
           "confidence": 0.77
@@ -1188,8 +1244,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1216,7 +1272,7 @@
         "consistency": 0.9,
         "age": 0,
         "spread": 1,
-        "score": 0.8075,
+        "score": 0.83875,
         "level": "medium"
       },
       "locations": [
@@ -1225,13 +1281,13 @@
           "line": 710,
           "column": 24,
           "isOutlier": false,
-          "confidence": 0.8075
+          "confidence": 0.83875
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1272,8 +1328,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1306,7 +1362,7 @@
       "locations": [
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 267,
+          "line": 268,
           "column": 27,
           "isOutlier": false,
           "confidence": 0.7949999999999999
@@ -1356,8 +1412,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1390,7 +1446,7 @@
       "locations": [
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 157,
+          "line": 158,
           "column": 25,
           "isOutlier": false,
           "confidence": 0.7949999999999999
@@ -1427,8 +1483,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1461,7 +1517,7 @@
       "locations": [
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 157,
+          "line": 158,
           "column": 25,
           "isOutlier": false,
           "confidence": 0.7949999999999999
@@ -1490,8 +1546,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1518,22 +1574,22 @@
         "consistency": 0.9,
         "age": 0,
         "spread": 1,
-        "score": 0.8144444444444444,
-        "level": "medium"
+        "score": 0.931111111111111,
+        "level": "high"
       },
       "locations": [
         {
-          "file": ".github/CICD_SETUP.md",
-          "line": 151,
-          "column": 37,
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 168,
+          "column": 70,
           "isOutlier": false,
-          "confidence": 0.8144444444444444
+          "confidence": 0.931111111111111
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T05:33:11.262Z",
-        "lastSeen": "2026-02-05T05:33:11.262Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1588,8 +1644,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1612,14 +1668,35 @@
         }
       },
       "confidence": {
-        "frequency": 0.02,
+        "frequency": 0.05,
         "consistency": 0.9,
         "age": 0,
-        "spread": 1,
-        "score": 0.8144444444444444,
-        "level": "medium"
+        "spread": 3,
+        "score": 0.95,
+        "level": "high"
       },
       "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 275,
+          "column": 100,
+          "isOutlier": false,
+          "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/claude-code-review.yml",
+          "line": 21,
+          "column": 40,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/claude-code-review.yml",
+          "line": 22,
+          "column": 40,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
         {
           "file": ".github/workflows/pr-checks.yml",
           "line": 65,
@@ -1637,8 +1714,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.325Z",
-        "lastSeen": "2026-02-05T18:38:36.325Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1750,8 +1827,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1889,7 +1966,7 @@
       "locations": [
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 266,
+          "line": 267,
           "column": 26,
           "isOutlier": false,
           "confidence": 0.945
@@ -1904,8 +1981,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -1974,8 +2051,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.325Z",
-        "lastSeen": "2026-02-05T18:38:36.325Z",
+        "firstSeen": "2026-02-06T13:29:13.695Z",
+        "lastSeen": "2026-02-06T13:29:13.695Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -2008,7 +2085,7 @@
       "locations": [
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 266,
+          "line": 267,
           "column": 26,
           "isOutlier": false,
           "confidence": 0.945
@@ -2023,8 +2100,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -2047,7 +2124,7 @@
         }
       },
       "confidence": {
-        "frequency": 0.15,
+        "frequency": 0.13,
         "consistency": 0.9,
         "age": 0,
         "spread": 5,
@@ -2057,7 +2134,7 @@
       "locations": [
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 236,
+          "line": 237,
           "column": 19,
           "isOutlier": false,
           "confidence": 0.8084615384615385
@@ -2067,28 +2144,21 @@
           "line": 566,
           "column": 3,
           "isOutlier": false,
-          "confidence": 0.8075
+          "confidence": 0.83875
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 621,
           "column": 3,
           "isOutlier": false,
-          "confidence": 0.8075
+          "confidence": 0.83875
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 621,
           "column": 44,
           "isOutlier": false,
-          "confidence": 0.8075
-        },
-        {
-          "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 773,
-          "column": 16,
-          "isOutlier": false,
-          "confidence": 0.8075
+          "confidence": 0.83875
         },
         {
           "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
@@ -2099,11 +2169,10 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 202,
+          "line": 339,
           "column": 11,
-          "isOutlier": true,
-          "confidence": 0.87,
-          "outlierReason": "Value above IQR upper bound"
+          "isOutlier": false,
+          "confidence": 0.87
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -2116,8 +2185,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -2172,8 +2241,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -2242,8 +2311,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -2266,89 +2335,26 @@
         }
       },
       "confidence": {
-        "frequency": 0.18,
+        "frequency": 0.02,
         "consistency": 0.9,
         "age": 0,
-        "spread": 2,
-        "score": 0.931111111111111,
+        "spread": 1,
+        "score": 0.95,
         "level": "high"
       },
       "locations": [
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 186,
-          "column": 21,
+          "line": 275,
+          "column": 100,
           "isOutlier": false,
-          "confidence": 0.8533333333333333
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 246,
-          "column": 12,
-          "isOutlier": false,
-          "confidence": 0.8533333333333333
-        },
-        {
-          "file": ".github/workflows/gemini-dispatch.yml",
-          "line": 34,
-          "column": 3,
-          "isOutlier": false,
-          "confidence": 0.931111111111111
-        },
-        {
-          "file": ".github/workflows/gemini-dispatch.yml",
-          "line": 43,
-          "column": 11,
-          "isOutlier": false,
-          "confidence": 0.931111111111111
-        },
-        {
-          "file": ".github/workflows/gemini-dispatch.yml",
-          "line": 44,
-          "column": 11,
-          "isOutlier": false,
-          "confidence": 0.931111111111111
-        },
-        {
-          "file": ".github/workflows/gemini-dispatch.yml",
-          "line": 45,
-          "column": 11,
-          "isOutlier": false,
-          "confidence": 0.931111111111111
-        },
-        {
-          "file": ".github/workflows/gemini-dispatch.yml",
-          "line": 46,
-          "column": 11,
-          "isOutlier": false,
-          "confidence": 0.931111111111111
-        },
-        {
-          "file": ".github/workflows/gemini-dispatch.yml",
-          "line": 47,
-          "column": 11,
-          "isOutlier": false,
-          "confidence": 0.931111111111111
-        },
-        {
-          "file": ".github/workflows/gemini-dispatch.yml",
-          "line": 48,
-          "column": 11,
-          "isOutlier": false,
-          "confidence": 0.931111111111111
-        },
-        {
-          "file": ".github/workflows/gemini-dispatch.yml",
-          "line": 49,
-          "column": 11,
-          "isOutlier": false,
-          "confidence": 0.931111111111111
+          "confidence": 0.97
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.010Z",
-        "lastSeen": "2026-02-04T05:34:32.010Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -2396,8 +2402,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.325Z",
-        "lastSeen": "2026-02-05T18:38:36.325Z",
+        "firstSeen": "2026-02-06T13:29:13.695Z",
+        "lastSeen": "2026-02-06T13:29:13.695Z",
         "source": "auto-detected",
         "tags": [
           "logging",
@@ -2408,6 +2414,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-05T18:38:48.027Z",
-  "checksum": "c76933d43672cadb"
+  "lastUpdated": "2026-02-06T13:29:25.848Z",
+  "checksum": "3c44a238340b0d94"
 }

@@ -47,8 +47,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -131,8 +131,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -155,10 +155,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.28,
+        "frequency": 0.29,
         "consistency": 0.9,
         "age": 0,
-        "spread": 9,
+        "spread": 10,
         "score": 0.77,
         "level": "medium"
       },
@@ -179,28 +179,28 @@
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 176,
+          "line": 177,
           "column": 21,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 176,
+          "line": 177,
           "column": 35,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 188,
+          "line": 189,
           "column": 3,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 310,
+          "line": 311,
           "column": 5,
           "isOutlier": false,
           "confidence": 0.77
@@ -221,7 +221,7 @@
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 973,
+          "line": 968,
           "column": 5,
           "isOutlier": false,
           "confidence": 0.77
@@ -328,15 +328,17 @@
           "file": ".github/workflows/build-and-release.yml",
           "line": 5,
           "column": 16,
-          "isOutlier": false,
-          "confidence": 0.77
+          "isOutlier": true,
+          "confidence": 0.595,
+          "outlierReason": "Low confidence outlier"
         },
         {
           "file": ".github/workflows/build-and-release.yml",
           "line": 50,
           "column": 16,
-          "isOutlier": false,
-          "confidence": 0.77
+          "isOutlier": true,
+          "confidence": 0.595,
+          "outlierReason": "Low confidence outlier"
         },
         {
           "file": ".github/workflows/codeql.yml",
@@ -353,6 +355,13 @@
           "confidence": 0.77
         },
         {
+          "file": ".github/workflows/dependency-review.yml",
+          "line": 5,
+          "column": 16,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
           "file": ".github/workflows/pr-checks.yml",
           "line": 6,
           "column": 16,
@@ -362,8 +371,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -617,14 +626,28 @@
         }
       },
       "confidence": {
-        "frequency": 0.01,
+        "frequency": 0.03,
         "consistency": 0.9,
         "age": 0,
-        "spread": 1,
+        "spread": 2,
         "score": 0.95,
         "level": "high"
       },
       "locations": [
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 262,
+          "column": 33,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 262,
+          "column": 61,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
         {
           "file": ".github/workflows/release.yml",
           "line": 26,
@@ -635,8 +658,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.325Z",
-        "lastSeen": "2026-02-05T18:38:36.325Z",
+        "firstSeen": "2026-02-06T13:29:13.695Z",
+        "lastSeen": "2026-02-06T13:29:13.695Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -820,33 +843,26 @@
         }
       },
       "confidence": {
-        "frequency": 0.02,
+        "frequency": 0.01,
         "consistency": 0.9,
         "age": 0,
-        "spread": 2,
+        "spread": 1,
         "score": 0.95,
         "level": "high"
       },
       "locations": [
         {
-          "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 239,
-          "column": 24,
+          "file": ".github/workflows/claude.yml",
+          "line": 23,
+          "column": 118,
           "isOutlier": false,
           "confidence": 0.97
-        },
-        {
-          "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
-          "line": 227,
-          "column": 24,
-          "isOutlier": false,
-          "confidence": 0.8533333333333333
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T23:56:08.152Z",
-        "lastSeen": "2026-02-04T23:56:08.152Z",
+        "firstSeen": "2026-02-06T13:29:13.695Z",
+        "lastSeen": "2026-02-06T13:29:13.695Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -1019,14 +1035,14 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 206,
+          "line": 343,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 206,
+          "line": 343,
           "column": 42,
           "isOutlier": false,
           "confidence": 0.97
@@ -1034,8 +1050,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -1096,21 +1112,21 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 111,
+          "line": 113,
           "column": 3,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 193,
+          "line": 330,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.97
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 193,
+          "line": 330,
           "column": 47,
           "isOutlier": false,
           "confidence": 0.97
@@ -1118,8 +1134,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "accessibility",
@@ -1256,6 +1272,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-05T18:38:48.033Z",
-  "checksum": "c51b805eebf9079c"
+  "lastUpdated": "2026-02-06T13:29:25.856Z",
+  "checksum": "3e1d43a0e2ed3b5a"
 }

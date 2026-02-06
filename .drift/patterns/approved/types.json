@@ -88,56 +88,56 @@
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 144,
+          "line": 145,
           "column": 16,
           "isOutlier": false,
           "confidence": 0.742
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 144,
+          "line": 145,
           "column": 27,
           "isOutlier": false,
           "confidence": 0.742
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 157,
+          "line": 158,
           "column": 14,
           "isOutlier": false,
           "confidence": 0.742
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 206,
+          "line": 207,
           "column": 3,
           "isOutlier": false,
           "confidence": 0.742
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 206,
+          "line": 207,
           "column": 25,
           "isOutlier": false,
           "confidence": 0.742
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 216,
+          "line": 217,
           "column": 4,
           "isOutlier": false,
           "confidence": 0.742
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 266,
+          "line": 267,
           "column": 10,
           "isOutlier": false,
           "confidence": 0.742
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 266,
+          "line": 267,
           "column": 21,
           "isOutlier": false,
           "confidence": 0.742
@@ -151,7 +151,7 @@
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 123,
+          "line": 124,
           "column": 5,
           "isOutlier": false,
           "confidence": 0.742
@@ -165,7 +165,7 @@
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 285,
+          "line": 286,
           "column": 16,
           "isOutlier": false,
           "confidence": 0.742
@@ -291,35 +291,35 @@
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 809,
+          "line": 804,
           "column": 4,
           "isOutlier": false,
           "confidence": 0.6699999999999999
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 981,
+          "line": 976,
           "column": 4,
           "isOutlier": false,
           "confidence": 0.6699999999999999
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 995,
+          "line": 990,
           "column": 4,
           "isOutlier": false,
           "confidence": 0.6699999999999999
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 839,
+          "line": 834,
           "column": 9,
           "isOutlier": false,
           "confidence": 0.6699999999999999
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 865,
+          "line": 860,
           "column": 5,
           "isOutlier": false,
           "confidence": 0.6699999999999999
@@ -522,7 +522,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 139,
+          "line": 146,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.6824999999999999
@@ -538,8 +538,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -593,56 +593,56 @@
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 144,
+          "line": 145,
           "column": 16,
           "isOutlier": false,
           "confidence": 0.7288235294117646
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 144,
+          "line": 145,
           "column": 27,
           "isOutlier": false,
           "confidence": 0.7288235294117646
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 157,
+          "line": 158,
           "column": 14,
           "isOutlier": false,
           "confidence": 0.7288235294117646
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 206,
+          "line": 207,
           "column": 3,
           "isOutlier": false,
           "confidence": 0.7288235294117646
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 206,
+          "line": 207,
           "column": 25,
           "isOutlier": false,
           "confidence": 0.7288235294117646
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 216,
+          "line": 217,
           "column": 4,
           "isOutlier": false,
           "confidence": 0.7288235294117646
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 266,
+          "line": 267,
           "column": 10,
           "isOutlier": false,
           "confidence": 0.7288235294117646
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 266,
+          "line": 267,
           "column": 21,
           "isOutlier": false,
           "confidence": 0.7288235294117646
@@ -656,7 +656,7 @@
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 285,
+          "line": 286,
           "column": 16,
           "isOutlier": false,
           "confidence": 0.7288235294117646
@@ -670,7 +670,7 @@
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 237,
+          "line": 238,
           "column": 26,
           "isOutlier": false,
           "confidence": 0.7288235294117646
@@ -796,21 +796,21 @@
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 809,
+          "line": 804,
           "column": 4,
           "isOutlier": false,
           "confidence": 0.6662962962962964
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 981,
+          "line": 976,
           "column": 4,
           "isOutlier": false,
           "confidence": 0.6662962962962964
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 995,
+          "line": 990,
           "column": 4,
           "isOutlier": false,
           "confidence": 0.6662962962962964
@@ -845,13 +845,6 @@
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 774,
-          "column": 26,
-          "isOutlier": false,
-          "confidence": 0.6662962962962964
-        },
-        {
-          "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 228,
           "column": 50,
           "isOutlier": false,
@@ -868,6 +861,13 @@
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 249,
           "column": 3,
+          "isOutlier": false,
+          "confidence": 0.6662962962962964
+        },
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 257,
+          "column": 40,
           "isOutlier": false,
           "confidence": 0.6662962962962964
         },
@@ -922,21 +922,21 @@
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 898,
+          "line": 893,
           "column": 17,
           "isOutlier": false,
           "confidence": 0.6662962962962964
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 911,
+          "line": 906,
           "column": 21,
           "isOutlier": false,
           "confidence": 0.6662962962962964
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 989,
+          "line": 984,
           "column": 16,
           "isOutlier": false,
           "confidence": 0.6662962962962964
@@ -1223,7 +1223,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 139,
+          "line": 146,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.6109090909090908
@@ -1238,8 +1238,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -1279,7 +1279,7 @@
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 285,
+          "line": 286,
           "column": 16,
           "isOutlier": false,
           "confidence": 0.7262500000000001
@@ -1307,56 +1307,56 @@
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 144,
+          "line": 145,
           "column": 16,
           "isOutlier": false,
           "confidence": 0.7262500000000001
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 144,
+          "line": 145,
           "column": 27,
           "isOutlier": false,
           "confidence": 0.7262500000000001
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 157,
+          "line": 158,
           "column": 14,
           "isOutlier": false,
           "confidence": 0.7262500000000001
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 206,
+          "line": 207,
           "column": 3,
           "isOutlier": false,
           "confidence": 0.7262500000000001
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 206,
+          "line": 207,
           "column": 25,
           "isOutlier": false,
           "confidence": 0.7262500000000001
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 216,
+          "line": 217,
           "column": 4,
           "isOutlier": false,
           "confidence": 0.7262500000000001
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 266,
+          "line": 267,
           "column": 10,
           "isOutlier": false,
           "confidence": 0.7262500000000001
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 266,
+          "line": 267,
           "column": 21,
           "isOutlier": false,
           "confidence": 0.7262500000000001
@@ -1496,21 +1496,21 @@
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 809,
+          "line": 804,
           "column": 4,
           "isOutlier": false,
           "confidence": 0.6427272727272728
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 981,
+          "line": 976,
           "column": 4,
           "isOutlier": false,
           "confidence": 0.6427272727272728
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 995,
+          "line": 990,
           "column": 4,
           "isOutlier": false,
           "confidence": 0.6427272727272728
@@ -1692,7 +1692,7 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 139,
+          "line": 146,
           "column": 15,
           "isOutlier": false,
           "confidence": 0.72
@@ -1707,8 +1707,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -1734,7 +1734,7 @@
         "frequency": 1,
         "consistency": 0.9,
         "age": 0,
-        "spread": 14,
+        "spread": 17,
         "score": 0.77,
         "level": "medium"
       },
@@ -1881,112 +1881,112 @@
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 130,
+          "line": 131,
           "column": 11,
           "isOutlier": false,
           "confidence": 0.6154545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 144,
+          "line": 145,
           "column": 16,
           "isOutlier": false,
           "confidence": 0.6154545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 144,
+          "line": 145,
           "column": 27,
           "isOutlier": false,
           "confidence": 0.6154545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 148,
+          "line": 149,
           "column": 18,
           "isOutlier": false,
           "confidence": 0.6154545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 154,
+          "line": 155,
           "column": 19,
           "isOutlier": false,
           "confidence": 0.6154545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 169,
+          "line": 170,
           "column": 4,
           "isOutlier": false,
           "confidence": 0.6154545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 216,
+          "line": 217,
           "column": 4,
           "isOutlier": false,
           "confidence": 0.6154545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 222,
+          "line": 223,
           "column": 38,
           "isOutlier": false,
           "confidence": 0.6154545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 222,
+          "line": 223,
           "column": 49,
           "isOutlier": false,
           "confidence": 0.6154545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 236,
+          "line": 237,
           "column": 12,
           "isOutlier": false,
           "confidence": 0.6154545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 266,
+          "line": 267,
           "column": 10,
           "isOutlier": false,
           "confidence": 0.6154545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 266,
+          "line": 267,
           "column": 21,
           "isOutlier": false,
           "confidence": 0.6154545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 277,
+          "line": 278,
           "column": 34,
           "isOutlier": false,
           "confidence": 0.6154545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 285,
+          "line": 286,
           "column": 44,
           "isOutlier": false,
           "confidence": 0.6154545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 301,
+          "line": 302,
           "column": 13,
           "isOutlier": false,
           "confidence": 0.6154545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 310,
+          "line": 311,
           "column": 27,
           "isOutlier": false,
           "confidence": 0.6154545454545455
@@ -2007,35 +2007,35 @@
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 165,
+          "line": 166,
           "column": 108,
           "isOutlier": false,
           "confidence": 0.6154545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 165,
+          "line": 166,
           "column": 183,
           "isOutlier": false,
           "confidence": 0.6154545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 295,
+          "line": 296,
           "column": 13,
           "isOutlier": false,
           "confidence": 0.6154545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 309,
+          "line": 310,
           "column": 16,
           "isOutlier": false,
           "confidence": 0.6154545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 309,
+          "line": 310,
           "column": 34,
           "isOutlier": false,
           "confidence": 0.6154545454545455
@@ -2045,405 +2045,405 @@
           "line": 3,
           "column": 3,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 3,
           "column": 25,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 3,
           "column": 59,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 20,
           "column": 32,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 26,
           "column": 4,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 28,
           "column": 52,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 29,
           "column": 22,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 29,
           "column": 34,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 43,
           "column": 4,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 62,
           "column": 6,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 62,
           "column": 51,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 68,
           "column": 19,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 102,
           "column": 4,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 133,
           "column": 11,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 141,
           "column": 4,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 151,
           "column": 53,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 165,
           "column": 67,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 201,
           "column": 41,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 202,
           "column": 39,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 203,
           "column": 40,
           "isOutlier": false,
-          "confidence": 0.62625
-        },
-        {
-          "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 214,
-          "column": 13,
-          "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 232,
           "column": 4,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 237,
           "column": 21,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 249,
           "column": 20,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 256,
           "column": 65,
           "isOutlier": false,
-          "confidence": 0.62625
-        },
-        {
-          "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 257,
-          "column": 46,
-          "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 261,
           "column": 37,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 261,
           "column": 52,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 261,
           "column": 84,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 263,
           "column": 4,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 265,
           "column": 23,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 270,
           "column": 18,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 272,
           "column": 22,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 276,
           "column": 45,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 290,
           "column": 54,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 293,
           "column": 3,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 297,
           "column": 23,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 332,
           "column": 35,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 332,
           "column": 68,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 336,
           "column": 4,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 346,
           "column": 37,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 361,
           "column": 24,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 369,
           "column": 40,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 373,
           "column": 9,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 373,
           "column": 67,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 400,
           "column": 8,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 400,
           "column": 67,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 402,
           "column": 46,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 414,
           "column": 3,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 424,
           "column": 4,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 427,
           "column": 14,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 430,
           "column": 18,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 438,
           "column": 4,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 445,
           "column": 4,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 451,
           "column": 5,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 467,
           "column": 4,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 505,
           "column": 3,
           "isOutlier": false,
-          "confidence": 0.62625
+          "confidence": 0.6249549549549549
+        },
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 511,
+          "column": 4,
+          "isOutlier": false,
+          "confidence": 0.6249549549549549
+        },
+        {
+          "file": ".aionui/FEATURE_CHANNELS.md",
+          "line": 515,
+          "column": 17,
+          "isOutlier": false,
+          "confidence": 0.6249549549549549
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -2470,48 +2470,48 @@
         "consistency": 0.9,
         "age": 0,
         "spread": 2,
-        "score": 0.8262499999999999,
+        "score": 0.824954954954955,
         "level": "medium"
       },
       "locations": [
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 165,
+          "line": 166,
           "column": 20,
           "isOutlier": false,
           "confidence": 0.8154545454545454
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 165,
+          "line": 166,
           "column": 49,
           "isOutlier": false,
           "confidence": 0.8154545454545454
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 165,
+          "line": 166,
           "column": 77,
           "isOutlier": false,
           "confidence": 0.8154545454545454
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 165,
+          "line": 166,
           "column": 129,
           "isOutlier": false,
           "confidence": 0.8154545454545454
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 165,
+          "line": 166,
           "column": 187,
           "isOutlier": false,
           "confidence": 0.8154545454545454
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 165,
+          "line": 166,
           "column": 203,
           "isOutlier": false,
           "confidence": 0.8154545454545454
@@ -2521,48 +2521,48 @@
           "line": 119,
           "column": 36,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 120,
           "column": 6,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 235,
           "column": 24,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 235,
           "column": 51,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 238,
           "column": 30,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 273,
           "column": 19,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -2595,7 +2595,7 @@
       "locations": [
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 958,
+          "line": 953,
           "column": 63,
           "isOutlier": false,
           "confidence": 0.92625
@@ -2603,8 +2603,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -2627,10 +2627,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.58,
+        "frequency": 0.61,
         "consistency": 0.9,
         "age": 0,
-        "spread": 11,
+        "spread": 12,
         "score": 0.77,
         "level": "medium"
       },
@@ -2665,7 +2665,7 @@
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 165,
+          "line": 166,
           "column": 32,
           "isOutlier": false,
           "confidence": 0.77
@@ -2770,7 +2770,7 @@
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 781,
+          "line": 776,
           "column": 22,
           "isOutlier": false,
           "confidence": 0.6533333333333333
@@ -2973,10 +2973,31 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 195,
+          "line": 277,
+          "column": 49,
+          "isOutlier": false,
+          "confidence": 0.77
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 332,
           "column": 44,
           "isOutlier": false,
           "confidence": 0.77
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 9,
+          "column": 21,
+          "isOutlier": false,
+          "confidence": 0.595
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 14,
+          "column": 34,
+          "isOutlier": false,
+          "confidence": 0.595
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -3044,8 +3065,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -3068,10 +3089,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.11,
+        "frequency": 0.12,
         "consistency": 0.9,
         "age": 0,
-        "spread": 4,
+        "spread": 5,
         "score": 0.77,
         "level": "medium"
       },
@@ -3080,15 +3101,17 @@
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 266,
           "column": 34,
-          "isOutlier": false,
-          "confidence": 0.6533333333333333
+          "isOutlier": true,
+          "confidence": 0.6533333333333333,
+          "outlierReason": "Value below IQR lower bound"
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 758,
           "column": 63,
-          "isOutlier": false,
-          "confidence": 0.6533333333333333
+          "isOutlier": true,
+          "confidence": 0.6533333333333333,
+          "outlierReason": "Value below IQR lower bound"
         },
         {
           "file": ".aionui/FEATURE_CHANNELS_LARK_LARK.md",
@@ -3143,21 +3166,31 @@
           "file": ".github/ISSUE_TEMPLATE/bug_report.yml",
           "line": 86,
           "column": 24,
-          "isOutlier": false,
-          "confidence": 0.77
+          "isOutlier": true,
+          "confidence": 0.77,
+          "outlierReason": "Value above IQR upper bound"
         },
         {
           "file": ".github/ISSUE_TEMPLATE/feature_request.yml",
           "line": 55,
           "column": 24,
-          "isOutlier": false,
-          "confidence": 0.77
+          "isOutlier": true,
+          "confidence": 0.77,
+          "outlierReason": "Value above IQR upper bound"
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 268,
+          "column": 63,
+          "isOutlier": true,
+          "confidence": 0.77,
+          "outlierReason": "Value above IQR upper bound"
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -3240,8 +3273,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -3382,168 +3415,168 @@
           "line": 19,
           "column": 46,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 19,
           "column": 53,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 21,
           "column": 31,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 27,
           "column": 1,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 27,
           "column": 45,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 27,
           "column": 57,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 107,
           "column": 42,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 186,
           "column": 30,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 186,
           "column": 56,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 194,
           "column": 4,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 194,
           "column": 32,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 194,
           "column": 38,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 200,
           "column": 30,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 200,
           "column": 56,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 366,
           "column": 16,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 366,
           "column": 53,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 997,
+          "line": 992,
           "column": 7,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 198,
           "column": 4,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 198,
           "column": 30,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 347,
           "column": 26,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 365,
           "column": 11,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 365,
           "column": 51,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 442,
           "column": 9,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 668,
           "column": 36,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".github/CICD_SETUP.md",
@@ -3564,14 +3597,14 @@
           "line": 42,
           "column": 9,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
         },
         {
           "file": ".github/workflows/build-and-release.yml",
           "line": 87,
           "column": 9,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -3584,8 +3617,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -3608,10 +3641,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.37,
+        "frequency": 0.35,
         "consistency": 0.9,
         "age": 0,
-        "spread": 7,
+        "spread": 6,
         "score": 0.8553448275862069,
         "level": "high"
       },
@@ -3632,21 +3665,21 @@
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 131,
+          "line": 132,
           "column": 18,
           "isOutlier": false,
           "confidence": 0.8154545454545454
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 135,
+          "line": 136,
           "column": 28,
           "isOutlier": false,
           "confidence": 0.8154545454545454
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 135,
+          "line": 136,
           "column": 34,
           "isOutlier": false,
           "confidence": 0.8154545454545454
@@ -3656,70 +3689,70 @@
           "line": 18,
           "column": 12,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 18,
           "column": 86,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 251,
           "column": 7,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 319,
           "column": 44,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 399,
           "column": 49,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 501,
           "column": 54,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 686,
           "column": 13,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 686,
           "column": 47,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 788,
+          "line": 783,
           "column": 11,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 18,
           "column": 73,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
@@ -3841,20 +3874,6 @@
           "confidence": 0.8533333333333333
         },
         {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 164,
-          "column": 17,
-          "isOutlier": false,
-          "confidence": 0.7914285714285714
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 164,
-          "column": 79,
-          "isOutlier": false,
-          "confidence": 0.7914285714285714
-        },
-        {
           "file": ".github/workflows/pr-checks.yml",
           "line": 127,
           "column": 15,
@@ -3878,8 +3897,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -3920,8 +3939,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -3983,8 +4002,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -4083,8 +4102,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -4195,8 +4214,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -4258,8 +4277,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -4358,8 +4377,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -4533,8 +4552,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -4567,7 +4586,7 @@
       "locations": [
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 171,
+          "line": 172,
           "column": 27,
           "isOutlier": false,
           "confidence": 0.942
@@ -4603,8 +4622,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -4652,8 +4671,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -4686,7 +4705,7 @@
       "locations": [
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 171,
+          "line": 172,
           "column": 27,
           "isOutlier": false,
           "confidence": 0.9288235294117646
@@ -4714,7 +4733,7 @@
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 874,
+          "line": 869,
           "column": 38,
           "isOutlier": false,
           "confidence": 0.8662962962962963
@@ -4743,8 +4762,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -4777,7 +4796,7 @@
       "locations": [
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 171,
+          "line": 172,
           "column": 27,
           "isOutlier": false,
           "confidence": 0.92625
@@ -4813,8 +4832,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -4862,8 +4881,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -4886,11 +4905,11 @@
         }
       },
       "confidence": {
-        "frequency": 0.81,
+        "frequency": 0.93,
         "consistency": 0.9,
         "age": 0,
-        "spread": 8,
-        "score": 0.9341025641025641,
+        "spread": 9,
+        "score": 0.9345569620253165,
         "level": "high"
       },
       "locations": [
@@ -4924,49 +4943,49 @@
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 214,
+          "line": 215,
           "column": 38,
           "isOutlier": false,
           "confidence": 0.8154545454545454
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 293,
+          "line": 294,
           "column": 27,
           "isOutlier": false,
           "confidence": 0.8154545454545454
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 312,
+          "line": 313,
           "column": 4,
           "isOutlier": false,
           "confidence": 0.8154545454545454
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 312,
+          "line": 313,
           "column": 8,
           "isOutlier": false,
           "confidence": 0.8154545454545454
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 312,
+          "line": 313,
           "column": 23,
           "isOutlier": false,
           "confidence": 0.8154545454545454
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 312,
+          "line": 313,
           "column": 52,
           "isOutlier": false,
           "confidence": 0.8154545454545454
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 312,
+          "line": 313,
           "column": 73,
           "isOutlier": false,
           "confidence": 0.8154545454545454
@@ -4976,252 +4995,252 @@
           "line": 67,
           "column": 61,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 134,
           "column": 31,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 135,
           "column": 29,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 210,
           "column": 34,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 210,
           "column": 64,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 210,
           "column": 90,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 241,
           "column": 5,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 299,
           "column": 3,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 299,
           "column": 20,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 299,
           "column": 51,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 306,
           "column": 35,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 308,
           "column": 19,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 308,
           "column": 26,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 353,
           "column": 5,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 379,
           "column": 16,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 379,
           "column": 47,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 389,
           "column": 19,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 717,
           "column": 9,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 750,
           "column": 4,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 769,
           "column": 67,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 770,
           "column": 24,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 770,
           "column": 42,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 789,
+          "line": 784,
           "column": 14,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 831,
+          "line": 826,
           "column": 24,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 835,
+          "line": 830,
           "column": 23,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 849,
+          "line": 844,
           "column": 24,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 898,
+          "line": 893,
           "column": 11,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 957,
+          "line": 952,
           "column": 63,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 959,
+          "line": 954,
           "column": 63,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 215,
           "column": 62,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 238,
           "column": 39,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 350,
           "column": 52,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 353,
           "column": 35,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 366,
           "column": 3,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 366,
           "column": 40,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS_LARK_LARK.md",
           "line": 152,
           "column": 14,
           "isOutlier": true,
-          "confidence": 0.9341025641025641,
+          "confidence": 0.9345569620253165,
           "outlierReason": "Value above IQR upper bound"
         },
         {
@@ -5229,14 +5248,14 @@
           "line": 152,
           "column": 61,
           "isOutlier": false,
-          "confidence": 0.9341025641025641
+          "confidence": 0.9345569620253165
         },
         {
           "file": ".aionui/FEATURE_CHANNELS_LARK_LARK.md",
           "line": 162,
           "column": 19,
           "isOutlier": true,
-          "confidence": 0.9341025641025641,
+          "confidence": 0.9345569620253165,
           "outlierReason": "Value above IQR upper bound"
         },
         {
@@ -5244,7 +5263,7 @@
           "line": 328,
           "column": 53,
           "isOutlier": true,
-          "confidence": 0.9341025641025641,
+          "confidence": 0.9345569620253165,
           "outlierReason": "Value above IQR upper bound"
         },
         {
@@ -5252,7 +5271,7 @@
           "line": 308,
           "column": 99,
           "isOutlier": true,
-          "confidence": 0.9341025641025641,
+          "confidence": 0.9345569620253165,
           "outlierReason": "Value above IQR upper bound"
         },
         {
@@ -5260,14 +5279,14 @@
           "line": 328,
           "column": 3,
           "isOutlier": false,
-          "confidence": 0.9341025641025641
+          "confidence": 0.9345569620253165
         },
         {
           "file": ".aionui/FEATURE_CHANNELS_LARK_LARK.md",
           "line": 328,
           "column": 40,
           "isOutlier": false,
-          "confidence": 0.9341025641025641
+          "confidence": 0.9345569620253165
         },
         {
           "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
@@ -5397,17 +5416,101 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 226,
-          "column": 25,
+          "line": 219,
+          "column": 60,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 227,
+          "line": 262,
+          "column": 70,
+          "isOutlier": false,
+          "confidence": 0.7901388888888888
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 366,
+          "column": 25,
+          "isOutlier": false,
+          "confidence": 0.7901388888888888
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 367,
           "column": 58,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 209,
+          "column": 25,
+          "isOutlier": false,
+          "confidence": 0.7901388888888888
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 209,
+          "column": 50,
+          "isOutlier": false,
+          "confidence": 0.7901388888888888
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 284,
+          "column": 39,
+          "isOutlier": false,
+          "confidence": 0.7901388888888888
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 310,
+          "column": 41,
+          "isOutlier": false,
+          "confidence": 0.7901388888888888
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 47,
+          "column": 44,
+          "isOutlier": false,
+          "confidence": 0.7815384615384615
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 47,
+          "column": 58,
+          "isOutlier": false,
+          "confidence": 0.7815384615384615
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 47,
+          "column": 101,
+          "isOutlier": false,
+          "confidence": 0.7815384615384615
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 47,
+          "column": 131,
+          "isOutlier": false,
+          "confidence": 0.7815384615384615
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 47,
+          "column": 143,
+          "isOutlier": false,
+          "confidence": 0.7815384615384615
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 47,
+          "column": 148,
+          "isOutlier": false,
+          "confidence": 0.7815384615384615
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -5474,8 +5577,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -5529,28 +5632,28 @@
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 123,
+          "line": 124,
           "column": 5,
           "isOutlier": false,
           "confidence": 0.9654545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 123,
+          "line": 124,
           "column": 44,
           "isOutlier": false,
           "confidence": 0.9654545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 206,
+          "line": 207,
           "column": 3,
           "isOutlier": false,
           "confidence": 0.9654545454545455
         },
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 206,
+          "line": 207,
           "column": 25,
           "isOutlier": false,
           "confidence": 0.9654545454545455
@@ -5560,84 +5663,84 @@
           "line": 212,
           "column": 17,
           "isOutlier": false,
-          "confidence": 0.97625
+          "confidence": 0.974954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 212,
           "column": 22,
           "isOutlier": false,
-          "confidence": 0.97625
+          "confidence": 0.974954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 212,
           "column": 42,
           "isOutlier": false,
-          "confidence": 0.97625
+          "confidence": 0.974954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 212,
           "column": 48,
           "isOutlier": false,
-          "confidence": 0.97625
+          "confidence": 0.974954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 758,
           "column": 1,
           "isOutlier": false,
-          "confidence": 0.97625
+          "confidence": 0.974954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 758,
           "column": 31,
           "isOutlier": false,
-          "confidence": 0.97625
+          "confidence": 0.974954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 839,
+          "line": 834,
           "column": 9,
           "isOutlier": false,
-          "confidence": 0.97625
+          "confidence": 0.974954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 839,
+          "line": 834,
           "column": 15,
           "isOutlier": false,
-          "confidence": 0.97625
+          "confidence": 0.974954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 839,
+          "line": 834,
           "column": 54,
           "isOutlier": false,
-          "confidence": 0.97625
+          "confidence": 0.974954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 865,
+          "line": 860,
           "column": 5,
           "isOutlier": false,
-          "confidence": 0.97625
+          "confidence": 0.974954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 865,
+          "line": 860,
           "column": 11,
           "isOutlier": false,
-          "confidence": 0.97625
+          "confidence": 0.974954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 865,
+          "line": 860,
           "column": 38,
           "isOutlier": false,
-          "confidence": 0.97625
+          "confidence": 0.974954954954955
         },
         {
           "file": ".aionui/FEATURE_DEV_TEMPLATE.md",
@@ -5691,8 +5794,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -5715,11 +5818,11 @@
         }
       },
       "confidence": {
-        "frequency": 0.79,
+        "frequency": 0.94,
         "consistency": 0.9,
         "age": 0,
-        "spread": 10,
-        "score": 0.9341025641025641,
+        "spread": 12,
+        "score": 0.9345569620253165,
         "level": "high"
       },
       "locations": [
@@ -5728,42 +5831,42 @@
           "line": 109,
           "column": 44,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 670,
           "column": 10,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 760,
           "column": 15,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 811,
+          "line": 806,
           "column": 3,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 811,
+          "line": 806,
           "column": 10,
           "isOutlier": false,
-          "confidence": 0.8262499999999999
+          "confidence": 0.824954954954955
         },
         {
           "file": ".aionui/FEATURE_CHANNELS_LARK_LARK.md",
           "line": 27,
           "column": 1,
           "isOutlier": true,
-          "confidence": 0.9341025641025641,
+          "confidence": 0.9345569620253165,
           "outlierReason": "High confidence outlier"
         },
         {
@@ -6121,133 +6224,238 @@
           "line": 98,
           "column": 9,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 194,
+          "line": 109,
+          "column": 6,
+          "isOutlier": false,
+          "confidence": 0.7901388888888888
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 331,
           "column": 11,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 195,
+          "line": 332,
           "column": 13,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 196,
+          "line": 333,
           "column": 13,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 197,
+          "line": 334,
           "column": 13,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 205,
+          "line": 342,
           "column": 11,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 205,
+          "line": 342,
           "column": 40,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 211,
+          "line": 348,
           "column": 23,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 212,
+          "line": 349,
           "column": 17,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 212,
+          "line": 349,
           "column": 21,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 133,
+          "line": 140,
           "column": 11,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 134,
+          "line": 141,
           "column": 19,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 173,
+          "line": 216,
           "column": 11,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 173,
+          "line": 231,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.7901388888888888
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 232,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.7901388888888888
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 241,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.7901388888888888
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 242,
+          "column": 19,
+          "isOutlier": false,
+          "confidence": 0.7901388888888888
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 193,
+          "column": 16,
+          "isOutlier": false,
+          "confidence": 0.7901388888888888
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 193,
+          "column": 35,
+          "isOutlier": false,
+          "confidence": 0.7901388888888888
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 201,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.7901388888888888
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 201,
           "column": 56,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 175,
+          "line": 203,
           "column": 17,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 175,
+          "line": 203,
           "column": 27,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 195,
+          "line": 272,
+          "column": 27,
+          "isOutlier": false,
+          "confidence": 0.7901388888888888
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 332,
           "column": 22,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 196,
+          "line": 333,
           "column": 22,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.7901388888888888
         },
         {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 196,
-          "column": 50,
+          "file": ".github/workflows/claude-code-review.yml",
+          "line": 5,
+          "column": 5,
           "isOutlier": false,
-          "confidence": 0.7914285714285714
+          "confidence": 0.83
+        },
+        {
+          "file": ".github/workflows/claude-code-review.yml",
+          "line": 30,
+          "column": 10,
+          "isOutlier": false,
+          "confidence": 0.83
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 5,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.7815384615384615
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 7,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.7815384615384615
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 9,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.7815384615384615
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 11,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.7815384615384615
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 29,
+          "column": 10,
+          "isOutlier": false,
+          "confidence": 0.7815384615384615
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -6281,8 +6489,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -6358,8 +6566,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -6382,10 +6590,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.15,
+        "frequency": 0.16,
         "consistency": 0.9,
         "age": 0,
-        "spread": 3,
+        "spread": 4,
         "score": 0.8533333333333333,
         "level": "high"
       },
@@ -6447,6 +6655,13 @@
           "confidence": 0.8241666666666667
         },
         {
+          "file": ".github/workflows/claude.yml",
+          "line": 47,
+          "column": 63,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
           "file": ".github/workflows/pr-checks.yml",
           "line": 18,
           "column": 36,
@@ -6498,8 +6713,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -6522,10 +6737,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.28,
+        "frequency": 0.38,
         "consistency": 0.9,
         "age": 0,
-        "spread": 6,
+        "spread": 8,
         "score": 0.95,
         "level": "high"
       },
@@ -6546,7 +6761,7 @@
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 811,
+          "line": 806,
           "column": 3,
           "isOutlier": false,
           "confidence": 0.87
@@ -6679,38 +6894,73 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 195,
+          "line": 332,
           "column": 13,
           "isOutlier": false,
           "confidence": 0.8825
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 196,
+          "line": 333,
           "column": 13,
           "isOutlier": false,
           "confidence": 0.8825
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 197,
+          "line": 334,
           "column": 13,
           "isOutlier": false,
           "confidence": 0.8825
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 211,
+          "line": 348,
           "column": 23,
           "isOutlier": false,
           "confidence": 0.8825
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 212,
+          "line": 349,
           "column": 21,
           "isOutlier": false,
           "confidence": 0.8825
+        },
+        {
+          "file": ".github/workflows/claude-code-review.yml",
+          "line": 5,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 5,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 7,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 9,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 11,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.97
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -6723,8 +6973,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -6747,11 +6997,11 @@
         }
       },
       "confidence": {
-        "frequency": 0.34,
+        "frequency": 0.39,
         "consistency": 0.9,
         "age": 0,
-        "spread": 7,
-        "score": 0.9381818181818182,
+        "spread": 9,
+        "score": 0.95,
         "level": "high"
       },
       "locations": [
@@ -6771,7 +7021,7 @@
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 811,
+          "line": 806,
           "column": 3,
           "isOutlier": false,
           "confidence": 0.8662962962962963
@@ -6953,38 +7203,73 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 195,
+          "line": 332,
           "column": 13,
           "isOutlier": false,
           "confidence": 0.8109090909090909
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 196,
+          "line": 333,
           "column": 13,
           "isOutlier": false,
           "confidence": 0.8109090909090909
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 197,
+          "line": 334,
           "column": 13,
           "isOutlier": false,
           "confidence": 0.8109090909090909
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 211,
+          "line": 348,
           "column": 23,
           "isOutlier": false,
           "confidence": 0.8109090909090909
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 212,
+          "line": 349,
           "column": 21,
           "isOutlier": false,
           "confidence": 0.8109090909090909
+        },
+        {
+          "file": ".github/workflows/claude-code-review.yml",
+          "line": 5,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 5,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 7,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 9,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 11,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.97
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -6996,8 +7281,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -7020,10 +7305,10 @@
         }
       },
       "confidence": {
-        "frequency": 0.27,
+        "frequency": 0.32,
         "consistency": 0.9,
         "age": 0,
-        "spread": 6,
+        "spread": 8,
         "score": 0.95,
         "level": "high"
       },
@@ -7044,7 +7329,7 @@
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 811,
+          "line": 806,
           "column": 3,
           "isOutlier": false,
           "confidence": 0.8427272727272728
@@ -7177,52 +7462,86 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 195,
+          "line": 332,
           "column": 13,
           "isOutlier": false,
           "confidence": 0.9199999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 196,
+          "line": 333,
           "column": 13,
           "isOutlier": false,
           "confidence": 0.9199999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 197,
+          "line": 334,
           "column": 13,
           "isOutlier": false,
           "confidence": 0.9199999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 211,
+          "line": 348,
           "column": 23,
           "isOutlier": false,
           "confidence": 0.9199999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 212,
+          "line": 349,
           "column": 21,
           "isOutlier": false,
           "confidence": 0.9199999999999999
         },
         {
+          "file": ".github/workflows/claude-code-review.yml",
+          "line": 5,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 5,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 7,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 9,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 11,
+          "column": 5,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
           "file": ".github/workflows/pr-checks.yml",
           "line": 5,
           "column": 5,
-          "isOutlier": true,
-          "confidence": 0.7949999999999999,
-          "outlierReason": "Value below IQR lower bound"
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -7347,8 +7666,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -7371,11 +7690,11 @@
         }
       },
       "confidence": {
-        "frequency": 0.13,
+        "frequency": 0.17,
         "consistency": 0.9,
         "age": 0,
-        "spread": 2,
-        "score": 0.8533333333333333,
+        "spread": 4,
+        "score": 0.95,
         "level": "high"
       },
       "locations": [
@@ -7406,6 +7725,34 @@
           "column": 4,
           "isOutlier": false,
           "confidence": 0.8533333333333333
+        },
+        {
+          "file": ".github/workflows/claude-code-review.yml",
+          "line": 29,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.97
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 4,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 8,
+          "column": 3,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
+        },
+        {
+          "file": ".github/workflows/claude.yml",
+          "line": 28,
+          "column": 7,
+          "isOutlier": false,
+          "confidence": 0.7949999999999999
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -7473,8 +7820,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -7522,8 +7869,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "types",
@@ -7534,6 +7881,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-05T18:38:48.031Z",
-  "checksum": "27d7d26e7d275d6a"
+  "lastUpdated": "2026-02-06T13:29:25.853Z",
+  "checksum": "3fcc72a923fc5590"
 }

@@ -19,7 +19,7 @@
         "consistency": 0.9,
         "age": 0,
         "spread": 1,
-        "score": 0.92625,
+        "score": 0.9199999999999999,
         "level": "high"
       },
       "locations": [
@@ -28,13 +28,13 @@
           "line": 134,
           "column": 74,
           "isOutlier": false,
-          "confidence": 0.92625
+          "confidence": 0.9199999999999999
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -67,14 +67,14 @@
       "locations": [
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 218,
+          "line": 219,
           "column": 1,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 959,
+          "line": 954,
           "column": 23,
           "isOutlier": false,
           "confidence": 0.6299999999999999
@@ -88,7 +88,7 @@
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 813,
+          "line": 808,
           "column": 3,
           "isOutlier": false,
           "confidence": 0.6299999999999999
@@ -103,8 +103,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -127,7 +127,7 @@
         }
       },
       "confidence": {
-        "frequency": 0.34,
+        "frequency": 0.48,
         "consistency": 0.9,
         "age": 0,
         "spread": 6,
@@ -137,7 +137,7 @@
       "locations": [
         {
           "file": ".aionui/FEATURE_ASSISTANT.md",
-          "line": 238,
+          "line": 239,
           "column": 16,
           "isOutlier": false,
           "confidence": 0.77
@@ -147,49 +147,42 @@
           "line": 402,
           "column": 40,
           "isOutlier": false,
-          "confidence": 0.7262500000000001
+          "confidence": 0.72
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 920,
+          "line": 915,
           "column": 37,
           "isOutlier": false,
-          "confidence": 0.7262500000000001
+          "confidence": 0.72
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 1031,
+          "line": 1026,
           "column": 33,
           "isOutlier": false,
-          "confidence": 0.7262500000000001
+          "confidence": 0.72
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 293,
           "column": 23,
           "isOutlier": false,
-          "confidence": 0.7262500000000001
+          "confidence": 0.72
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 436,
           "column": 45,
           "isOutlier": false,
-          "confidence": 0.7262500000000001
+          "confidence": 0.72
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
           "line": 442,
           "column": 19,
           "isOutlier": false,
-          "confidence": 0.7262500000000001
-        },
-        {
-          "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 775,
-          "column": 12,
-          "isOutlier": false,
-          "confidence": 0.7262500000000001
+          "confidence": 0.72
         },
         {
           "file": ".aionui/FEATURE_CHANNELS_LARK_LARK.md",
@@ -228,37 +221,93 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 129,
+          "line": 136,
           "column": 15,
           "isOutlier": false,
-          "confidence": 0.7
+          "confidence": 0.6299999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 130,
+          "line": 137,
           "column": 23,
           "isOutlier": false,
-          "confidence": 0.7
+          "confidence": 0.6299999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
           "line": 211,
-          "column": 11,
+          "column": 15,
           "isOutlier": false,
-          "confidence": 0.7
+          "confidence": 0.6299999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
           "line": 212,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.6299999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 213,
+          "column": 13,
+          "isOutlier": false,
+          "confidence": 0.6299999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 227,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.6299999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 228,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.6299999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 230,
+          "column": 26,
+          "isOutlier": false,
+          "confidence": 0.6299999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 237,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.6299999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 238,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.6299999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 348,
           "column": 11,
           "isOutlier": false,
-          "confidence": 0.7
+          "confidence": 0.6299999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 349,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.6299999999999999
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.323Z",
-        "lastSeen": "2026-02-05T18:38:36.323Z",
+        "firstSeen": "2026-02-06T13:29:13.693Z",
+        "lastSeen": "2026-02-06T13:29:13.693Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -368,14 +417,14 @@
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 941,
+          "line": 936,
           "column": 7,
           "isOutlier": false,
           "confidence": 0.7430769230769232
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 962,
+          "line": 957,
           "column": 17,
           "isOutlier": false,
           "confidence": 0.7430769230769232
@@ -410,7 +459,7 @@
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 962,
+          "line": 957,
           "column": 22,
           "isOutlier": false,
           "confidence": 0.7430769230769232
@@ -502,8 +551,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -544,8 +593,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -568,7 +617,7 @@
         }
       },
       "confidence": {
-        "frequency": 0.2,
+        "frequency": 0.36,
         "consistency": 0.9,
         "age": 0,
         "spread": 3,
@@ -585,14 +634,14 @@
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 920,
+          "line": 915,
           "column": 37,
           "isOutlier": false,
           "confidence": 0.77
         },
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 1031,
+          "line": 1026,
           "column": 33,
           "isOutlier": false,
           "confidence": 0.77
@@ -620,37 +669,93 @@
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 129,
+          "line": 136,
           "column": 15,
           "isOutlier": false,
-          "confidence": 0.7
+          "confidence": 0.6299999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 130,
+          "line": 137,
           "column": 23,
           "isOutlier": false,
-          "confidence": 0.7
+          "confidence": 0.6299999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
           "line": 211,
-          "column": 11,
+          "column": 15,
           "isOutlier": false,
-          "confidence": 0.7
+          "confidence": 0.6299999999999999
         },
         {
           "file": ".github/workflows/build-and-release.yml",
           "line": 212,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.6299999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 213,
+          "column": 13,
+          "isOutlier": false,
+          "confidence": 0.6299999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 227,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.6299999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 228,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.6299999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 230,
+          "column": 26,
+          "isOutlier": false,
+          "confidence": 0.6299999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 237,
+          "column": 15,
+          "isOutlier": false,
+          "confidence": 0.6299999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 238,
+          "column": 23,
+          "isOutlier": false,
+          "confidence": 0.6299999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 348,
           "column": 11,
           "isOutlier": false,
-          "confidence": 0.7
+          "confidence": 0.6299999999999999
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 349,
+          "column": 11,
+          "isOutlier": false,
+          "confidence": 0.6299999999999999
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -715,47 +820,40 @@
         }
       },
       "confidence": {
-        "frequency": 0.08,
+        "frequency": 0.06,
         "consistency": 0.9,
         "age": 0,
         "spread": 1,
-        "score": 0.8533333333333333,
-        "level": "high"
+        "score": 0.83,
+        "level": "medium"
       },
       "locations": [
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 276,
-          "column": 47,
+          "line": 219,
+          "column": 19,
           "isOutlier": false,
-          "confidence": 0.8533333333333333
+          "confidence": 0.83
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 277,
-          "column": 55,
+          "line": 219,
+          "column": 46,
           "isOutlier": false,
-          "confidence": 0.8533333333333333
+          "confidence": 0.83
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 346,
-          "column": 47,
+          "line": 240,
+          "column": 20,
           "isOutlier": false,
-          "confidence": 0.8533333333333333
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 347,
-          "column": 55,
-          "isOutlier": false,
-          "confidence": 0.8533333333333333
+          "confidence": 0.83
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.010Z",
-        "lastSeen": "2026-02-04T05:34:32.010Z",
+        "firstSeen": "2026-02-06T13:29:13.695Z",
+        "lastSeen": "2026-02-06T13:29:13.695Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -778,47 +876,40 @@
         }
       },
       "confidence": {
-        "frequency": 0.08,
+        "frequency": 0.06,
         "consistency": 0.9,
         "age": 0,
         "spread": 1,
-        "score": 0.8533333333333333,
-        "level": "high"
+        "score": 0.83,
+        "level": "medium"
       },
       "locations": [
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 276,
-          "column": 47,
+          "line": 219,
+          "column": 19,
           "isOutlier": false,
-          "confidence": 0.8533333333333333
+          "confidence": 0.83
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 277,
-          "column": 55,
+          "line": 219,
+          "column": 46,
           "isOutlier": false,
-          "confidence": 0.8533333333333333
+          "confidence": 0.83
         },
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 346,
-          "column": 47,
+          "line": 240,
+          "column": 20,
           "isOutlier": false,
-          "confidence": 0.8533333333333333
-        },
-        {
-          "file": ".github/workflows/build-and-release.yml",
-          "line": 347,
-          "column": 55,
-          "isOutlier": false,
-          "confidence": 0.8533333333333333
+          "confidence": 0.83
         }
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-04T05:34:32.010Z",
-        "lastSeen": "2026-02-04T05:34:32.010Z",
+        "firstSeen": "2026-02-06T13:29:13.695Z",
+        "lastSeen": "2026-02-06T13:29:13.695Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -925,7 +1016,7 @@
         }
       },
       "confidence": {
-        "frequency": 0.08,
+        "frequency": 0.12,
         "consistency": 0.9,
         "age": 0,
         "spread": 3,
@@ -935,10 +1026,24 @@
       "locations": [
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 126,
+          "line": 133,
           "column": 11,
           "isOutlier": false,
-          "confidence": 0.8999999999999999
+          "confidence": 0.83
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 207,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.83
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 235,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.83
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -964,8 +1069,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.325Z",
-        "lastSeen": "2026-02-05T18:38:36.325Z",
+        "firstSeen": "2026-02-06T13:29:13.695Z",
+        "lastSeen": "2026-02-06T13:29:13.695Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -988,7 +1093,7 @@
         }
       },
       "confidence": {
-        "frequency": 0.08,
+        "frequency": 0.12,
         "consistency": 0.9,
         "age": 0,
         "spread": 3,
@@ -998,10 +1103,24 @@
       "locations": [
         {
           "file": ".github/workflows/build-and-release.yml",
-          "line": 126,
+          "line": 133,
           "column": 11,
           "isOutlier": false,
-          "confidence": 0.8999999999999999
+          "confidence": 0.83
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 207,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.83
+        },
+        {
+          "file": ".github/workflows/build-and-release.yml",
+          "line": 235,
+          "column": 9,
+          "isOutlier": false,
+          "confidence": 0.83
         },
         {
           "file": ".github/workflows/pr-checks.yml",
@@ -1027,8 +1146,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.325Z",
-        "lastSeen": "2026-02-05T18:38:36.325Z",
+        "firstSeen": "2026-02-06T13:29:13.695Z",
+        "lastSeen": "2026-02-06T13:29:13.695Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -1061,7 +1180,7 @@
       "locations": [
         {
           "file": ".aionui/FEATURE_CHANNELS.md",
-          "line": 941,
+          "line": 936,
           "column": 12,
           "isOutlier": false,
           "confidence": 0.9430769230769231
@@ -1069,8 +1188,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -1111,8 +1230,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.324Z",
-        "lastSeen": "2026-02-05T18:38:36.324Z",
+        "firstSeen": "2026-02-06T13:29:13.694Z",
+        "lastSeen": "2026-02-06T13:29:13.694Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -1153,8 +1272,8 @@
       ],
       "outliers": [],
       "metadata": {
-        "firstSeen": "2026-02-05T18:38:36.325Z",
-        "lastSeen": "2026-02-05T18:38:36.325Z",
+        "firstSeen": "2026-02-06T13:29:13.695Z",
+        "lastSeen": "2026-02-06T13:29:13.695Z",
         "source": "auto-detected",
         "tags": [
           "performance",
@@ -1207,6 +1326,6 @@
       "autoFixable": false
     }
   ],
-  "lastUpdated": "2026-02-05T18:38:48.033Z",
-  "checksum": "618dff979a39d2f6"
+  "lastUpdated": "2026-02-06T13:29:25.855Z",
+  "checksum": "a0e3cff7a7f82180"
 }
