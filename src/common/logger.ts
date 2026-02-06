@@ -308,6 +308,9 @@ export const initLogger = createLogger('Init');
 /** mise environment service (Python workspace management) */
 export const miseLogger = createLogger('Mise');
 
+/** Knowledge base / RAG operations */
+export const kbLogger = createLogger('KnowledgeBase');
+
 // ============================================================
 // Utility functions
 // ============================================================
