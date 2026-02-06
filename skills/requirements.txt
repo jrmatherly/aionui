@@ -76,3 +76,15 @@ lancedb>=0.27.0
 
 # Optional: Local embeddings (if not using OpenAI API)
 # sentence-transformers>=3.0.0
+
+# =============================================================================
+# Web Scraping dependencies (crawl4ai skill)
+# =============================================================================
+
+# Crawl4AI - Advanced web scraping with JavaScript support
+# v0.8.0 includes crash recovery, prefetch mode, Docker security fixes
+# Requires one-time browser setup: playwright install chromium
+crawl4ai>=0.8.0
+
+# Note: playwright is a transitive dependency of crawl4ai
+# Browsers need separate installation: playwright install chromium

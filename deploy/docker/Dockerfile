@@ -216,6 +216,15 @@ RUN curl -fsSL https://mise.run | sh \
 RUN /usr/local/bin/mise use -g python@3.14 uv@latest \
     && /usr/local/bin/mise reshim
 
+# -----------------------------------------------------------------------------
+# Playwright Chromium (for crawl4ai web scraping skill)
+# Pre-install browser during build so first run doesn't need network download.
+# System dependencies already installed above for Electron runtime.
+# -----------------------------------------------------------------------------
+RUN /usr/local/bin/mise exec -- pip install playwright \
+    && /usr/local/bin/mise exec -- playwright install chromium \
+    && echo "✅ Playwright Chromium installed"
+
 # Copy mise template for user workspaces
 COPY deploy/docker/mise-template.toml /mise/template.toml
 

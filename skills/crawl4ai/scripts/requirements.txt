@@ -1,0 +1,11 @@
+# Crawl4AI Web Scraping Skill Dependencies
+# Last updated: 2026-02-06
+
+# Core library - v0.8.0 includes crash recovery, prefetch mode, Docker security fixes
+crawl4ai>=0.8.0
+
+# Browser automation (transitive dep of crawl4ai, pinned for stability)
+playwright>=1.40.0
+
+# Version comparison utilities (transitive dep)
+packaging
