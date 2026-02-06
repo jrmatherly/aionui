@@ -395,6 +395,60 @@ Python skills require system packages:
 
 ---
 
+## Knowledge Base (RAG)
+
+AionUI provides per-user knowledge bases using **LanceDB**, an embedded vector database for RAG (Retrieval-Augmented Generation).
+
+### Architecture
+
+- **LanceDB** stores vectors and metadata in each user's workspace at `.lance/`
+- **OpenAI embeddings** (`text-embedding-3-small`) for semantic search
+- **Hybrid search** combines vector similarity with BM25 keyword search
+- **Versioning** enables time-travel and rollback
+
+### Storage Structure
+
+```text
+/workspace/
+├── .lance/                    # LanceDB database root
+│   └── knowledge/             # Knowledge table
+│       ├── _latest.manifest   # Current version
+│       ├── _versions/         # Version history
+│       └── data/              # Vector data (Lance format)
+└── documents/                 # Original uploaded files
+```
+
+### Key Components
+
+| File/Service             | Purpose                              |
+| ------------------------ | ------------------------------------ |
+| `KnowledgeBaseService`   | Backend RAG operations               |
+| `knowledgeRoutes.ts`     | REST API at `/api/knowledge/*`       |
+| `skills/lance/scripts/*` | Python scripts for LanceDB           |
+| `KnowledgeBase.tsx`      | Settings UI at `/settings/knowledge` |
+
+### API Endpoints
+
+| Endpoint                       | Method | Description                   |
+| ------------------------------ | ------ | ----------------------------- |
+| `/api/knowledge/status`        | GET    | KB stats (docs, chunks, size) |
+| `/api/knowledge/documents`     | GET    | List indexed documents        |
+| `/api/knowledge/search`        | GET    | Vector/FTS/hybrid search      |
+| `/api/knowledge/ingest`        | POST   | Ingest with chunking + embed  |
+| `/api/knowledge/document/:src` | DELETE | Delete by source file         |
+| `/api/knowledge/reindex`       | POST   | Rebuild indexes               |
+| `/api/knowledge/versions`      | GET    | Version history               |
+| `/api/knowledge/restore`       | POST   | Restore to version            |
+
+### Features
+
+- **Automatic chunking**: 500 tokens with 100 overlap (configurable)
+- **Auto-embedding**: OpenAI registry handles embedding generation
+- **Time-travel**: Query historical versions, rollback changes
+- **Search test**: Built-in search panel in settings UI
+
+---
+
 ## Key Configuration Files
 
 | File                   | Purpose                             |
@@ -532,6 +586,14 @@ skills/
 ├── mermaid/                 # Mermaid diagram generation
 ├── frontend-design/         # Distinctive UI design principles
 ├── mcp-builder/             # MCP server creation guide
+├── lance/                   # Knowledge base (LanceDB) management
+│   ├── SKILL.md
+│   └── scripts/
+│       ├── setup.py         # Initialize user's LanceDB
+│       ├── ingest.py        # Ingest documents with chunking
+│       ├── search.py        # Vector/FTS/hybrid search
+│       ├── view.py          # View indexed documents
+│       └── manage.py        # Delete, reindex, versions
 ├── webapp-testing/          # Playwright web app testing
 ├── brand-guidelines/        # Brand colors and typography
 ├── doc-coauthoring/         # Structured documentation workflow
