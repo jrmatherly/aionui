@@ -39,6 +39,11 @@ def search_knowledge(
     # Get embedding model from env or use default
     if embedding_model is None:
         embedding_model = os.environ.get("EMBEDDING_MODEL", "text-embedding-3-small")
+
+    # Get embedding dimensions from env (optional)
+    dim_env = os.environ.get("EMBEDDING_DIMENSIONS")
+    embedding_dimensions = int(dim_env) if dim_env else None
+
     try:
         import lancedb
         from lancedb.embeddings import get_registry
@@ -99,6 +104,8 @@ def search_knowledge(
             embed_kwargs = {"name": embedding_model}
             if api_base:
                 embed_kwargs["base_url"] = api_base
+            if embedding_dimensions:
+                embed_kwargs["dim"] = embedding_dimensions
             embed_func = get_registry().get("openai").create(**embed_kwargs)
             query_vector = embed_func.compute_query_embeddings(query)[0]
             search_result = table.search(query_vector)
@@ -107,6 +114,8 @@ def search_knowledge(
             embed_kwargs = {"name": embedding_model}
             if api_base:
                 embed_kwargs["base_url"] = api_base
+            if embedding_dimensions:
+                embed_kwargs["dim"] = embedding_dimensions
             embed_func = get_registry().get("openai").create(**embed_kwargs)
             query_vector = embed_func.compute_query_embeddings(query)[0]
             # Use hybrid search with RRF reranking for better result fusion

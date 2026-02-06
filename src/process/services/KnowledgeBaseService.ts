@@ -15,10 +15,10 @@
  */
 
 import { kbLogger as log } from '@/common/logger';
-import { getDirectoryService } from './DirectoryService';
-import { getMiseEnvironmentService } from './MiseEnvironmentService';
 import { getSkillsDir } from '@process/initStorage';
 import path from 'path';
+import { getDirectoryService } from './DirectoryService';
+import { getMiseEnvironmentService } from './MiseEnvironmentService';
 
 /**
  * Search result from knowledge base
@@ -120,42 +120,14 @@ class KnowledgeBaseService {
   /**
    * Get embedding configuration for Python scripts
    *
-   * Priority order:
-   * 1. Global Models with embedding capability/model
-   * 2. Environment variables (EMBEDDING_API_KEY, EMBEDDING_API_BASE)
-   * 3. OPENAI_API_KEY fallback
+   * Uses EMBEDDING_* environment variables exclusively.
+   * Falls back to OPENAI_API_KEY if EMBEDDING_API_KEY is not set.
    *
    * @returns Environment variables to pass to Python scripts
    */
   private getEmbeddingEnv(): Record<string, string> {
     const env: Record<string, string> = {};
 
-    // First, try to get embedding config from Global Models
-    try {
-      const { GlobalModelService } = require('./GlobalModelService');
-      const globalModelService = GlobalModelService.getInstance();
-      const embeddingConfig = globalModelService.getEmbeddingConfig();
-
-      if (embeddingConfig && embeddingConfig.api_key) {
-        log.debug({ model: embeddingConfig.model, hasBaseUrl: !!embeddingConfig.base_url }, 'Using embedding config from Global Models');
-        env.EMBEDDING_API_KEY = embeddingConfig.api_key;
-        env.OPENAI_API_KEY = embeddingConfig.api_key; // Backward compatibility
-        env.EMBEDDING_MODEL = embeddingConfig.model;
-        if (embeddingConfig.base_url) {
-          env.EMBEDDING_API_BASE = embeddingConfig.base_url;
-        }
-        // Also pass dimensions from process env if set (Global Models doesn't track dimensions)
-        if (process.env.EMBEDDING_DIMENSIONS) {
-          env.EMBEDDING_DIMENSIONS = process.env.EMBEDDING_DIMENSIONS;
-        }
-        return env;
-      }
-    } catch (e) {
-      // GlobalModelService not initialized yet (e.g., during startup)
-      log.debug({ err: e }, 'GlobalModelService not available, falling back to env vars');
-    }
-
-    // Fallback to environment variables
     const apiKey = process.env.EMBEDDING_API_KEY || process.env.OPENAI_API_KEY;
     if (apiKey) {
       env.EMBEDDING_API_KEY = apiKey;
@@ -175,13 +147,6 @@ class KnowledgeBaseService {
     }
 
     return env;
-  }
-
-  /**
-   * Get OpenAI API key from environment (deprecated, use getEmbeddingEnv)
-   */
-  private getOpenAIKey(): string {
-    return process.env.EMBEDDING_API_KEY || process.env.OPENAI_API_KEY || '';
   }
 
   /**

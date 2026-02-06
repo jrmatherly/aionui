@@ -10,6 +10,8 @@ import { conversationLogger as log } from '@/common/logger';
 import type { TChatConversation } from '@/common/storage';
 import { getDatabase } from '@process/database';
 import { cronService } from '@process/services/cron/CronService';
+import fs from 'fs';
+import path from 'path';
 import { ipcBridge } from '../../common';
 import { uuid } from '../../common/utils';
 import WorkerManage from '../WorkerManage';
@@ -17,11 +19,9 @@ import { ProcessChat } from '../initStorage';
 import { ConversationService } from '../services/conversationService';
 import type AcpAgentManager from '../task/AcpAgentManager';
 import type { GeminiAgentManager } from '../task/GeminiAgentManager';
+import { getFilesForAutoIngest, isLargeFile } from '../task/RagUtils';
 import { copyFilesToDirectory, readDirectoryRecursive } from '../utils';
 import { migrateConversationToDatabase } from './migrationUtils';
-import { getFilesForAutoIngest } from '../task/RagUtils';
-import fs from 'fs';
-import path from 'path';
 
 /**
  * File extensions that require binary handling (can't be read as UTF-8)
@@ -37,29 +37,38 @@ function isBinaryFile(filePath: string): boolean {
 }
 
 /**
- * Auto-ingest large files to knowledge base (fire-and-forget)
+ * Auto-ingest large files to knowledge base
  * This enables RAG for subsequent queries about the files
  *
  * @param userId - User ID for per-user knowledge base
  * @param files - Array of file paths in workspace
+ * @param onProgress - Optional callback for progress events
+ * @returns Counts of successful and failed ingestions
  */
-async function autoIngestFilesToKnowledgeBase(userId: string, files: string[]): Promise<void> {
+async function autoIngestFilesToKnowledgeBase(userId: string, files: string[], onProgress?: (event: { current: number; total: number; fileName: string; status: 'ingesting' | 'success' | 'error' }) => void): Promise<{ success: number; failed: number }> {
   // Filter to files that should be ingested (large, supported types)
   const filesToIngest = getFilesForAutoIngest(files);
 
   if (filesToIngest.length === 0) {
-    return;
+    return { success: 0, failed: 0 };
   }
 
   log.info({ userId, fileCount: filesToIngest.length }, 'Auto-ingesting files to knowledge base');
+
+  let successCount = 0;
+  let failedCount = 0;
 
   try {
     const { getKnowledgeBaseService } = await import('@process/services/KnowledgeBaseService');
     const kbService = getKnowledgeBaseService();
 
-    for (const filePath of filesToIngest) {
+    for (let i = 0; i < filesToIngest.length; i++) {
+      const filePath = filesToIngest[i];
+      const fileName = path.basename(filePath);
+
       try {
-        const fileName = path.basename(filePath);
+        onProgress?.({ current: i + 1, total: filesToIngest.length, fileName, status: 'ingesting' });
+
         let result;
 
         if (isBinaryFile(filePath)) {
@@ -72,18 +81,26 @@ async function autoIngestFilesToKnowledgeBase(userId: string, files: string[]): 
         }
 
         if (result.success) {
+          successCount++;
           log.info({ userId, file: fileName, chunks: result.chunksAdded }, 'File auto-ingested to knowledge base');
+          onProgress?.({ current: i + 1, total: filesToIngest.length, fileName, status: 'success' });
         } else {
+          failedCount++;
           log.warn({ userId, file: fileName, error: result.error }, 'Failed to auto-ingest file');
+          onProgress?.({ current: i + 1, total: filesToIngest.length, fileName, status: 'error' });
         }
       } catch (err) {
+        failedCount++;
         // Individual file failure shouldn't stop others
         log.warn({ userId, file: filePath, err }, 'Failed to read/ingest file');
+        onProgress?.({ current: i + 1, total: filesToIngest.length, fileName, status: 'error' });
       }
     }
   } catch (err) {
     log.warn({ userId, err }, 'Failed to initialize knowledge base service');
   }
+
+  return { success: successCount, failed: failedCount };
 }
 
 export function initConversationBridge(): void {
@@ -457,21 +474,54 @@ export function initConversationBridge(): void {
     // Copy files to workspace (unified for all agents)
     const workspaceFiles = await copyFilesToDirectory(task.workspace, files, false);
 
-    // Auto-ingest files to knowledge base
+    // Auto-ingest files to knowledge base with progress reporting
     // For large files: AWAIT ingestion so RAG context is available for the immediate query
-    // For small files: fire-and-forget (they're passed inline via @ references anyway)
+    const hasLargeFiles = workspaceFiles?.some((f) => isLargeFile(f));
+
     if (__webUiUserId && workspaceFiles && workspaceFiles.length > 0) {
       try {
-        await autoIngestFilesToKnowledgeBase(__webUiUserId as string, workspaceFiles);
+        if (hasLargeFiles) {
+          // Emit start event
+          ipcBridge.conversation.responseStream.emit({
+            type: 'ingest_progress',
+            conversation_id,
+            msg_id: other.msg_id || '',
+            data: { status: 'start', total: getFilesForAutoIngest(workspaceFiles).length },
+          });
+
+          const { success: successCount, failed: failedCount } = await autoIngestFilesToKnowledgeBase(__webUiUserId as string, workspaceFiles, (event) => {
+            ipcBridge.conversation.responseStream.emit({
+              type: 'ingest_progress',
+              conversation_id,
+              msg_id: other.msg_id || '',
+              data: { status: event.status, current: event.current, total: event.total, fileName: event.fileName },
+            });
+          });
+
+          // Emit complete event
+          ipcBridge.conversation.responseStream.emit({
+            type: 'ingest_progress',
+            conversation_id,
+            msg_id: other.msg_id || '',
+            data: { status: 'complete', total: successCount + failedCount, successCount, failedCount },
+          });
+        } else {
+          // Small files only: fire-and-forget (they're passed inline via @ references anyway)
+          void autoIngestFilesToKnowledgeBase(__webUiUserId as string, workspaceFiles);
+        }
       } catch (err) {
         log.warn({ err, userId: __webUiUserId }, 'Auto-ingest to knowledge base failed (non-fatal)');
       }
     }
 
+    // For Gemini: exclude large files from the files array to prevent context overflow
+    // Large files are indexed in the knowledge base and retrieved via RAG instead
+    const filesToSend = task.type === 'gemini' && workspaceFiles ? workspaceFiles.filter((f) => !isLargeFile(f)) : workspaceFiles;
+
     try {
       // Call the corresponding sendMessage method based on task type
       if (task.type === 'gemini') {
-        await (task as GeminiAgentManager).sendMessage({ ...other, files: workspaceFiles });
+        await (task as GeminiAgentManager).sendMessage({ ...other, files: filesToSend });
         return { success: true };
       } else if (task.type === 'acp') {
         await (task as AcpAgentManager).sendMessage({ content: other.input, files: workspaceFiles, msg_id: other.msg_id });

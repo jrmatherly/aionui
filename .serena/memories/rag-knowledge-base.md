@@ -85,16 +85,34 @@ export async function prepareMessageWithRAGContext(content: string, userId: stri
 }
 ```
 
-### 4. Auto-Ingestion (`conversationBridge.autoIngestFilesToKnowledgeBase`)
+### 4. Auto-Ingestion with Progress (`conversationBridge.autoIngestFilesToKnowledgeBase`)
 
-Files >40KB automatically ingested when attached to messages:
+**Updated:** 2026-02-06
+
+Files >40KB are automatically ingested when attached to messages. Large files trigger progress events via `responseStream`:
 
 ```typescript
-// In conversationBridge.ts
-if (__webUiUserId && workspaceFiles && workspaceFiles.length > 0) {
-  void autoIngestFilesToKnowledgeBase(__webUiUserId, workspaceFiles);
+// In conversationBridge.ts sendMessage handler
+if (hasLargeFiles) {
+  // Emit start → ingesting → complete events via responseStream
+  ipcBridge.conversation.responseStream.emit({
+    type: 'ingest_progress',
+    conversation_id,
+    msg_id,
+    data: { status: 'start', total: filesToIngest.length },
+  });
+  await autoIngestFilesToKnowledgeBase(userId, files, progressCallback);
+  // Emit complete
+} else {
+  // Small files: fire-and-forget (non-blocking)
+  void autoIngestFilesToKnowledgeBase(userId, files);
 }
+
+// For Gemini: exclude large files from agent (prevents context overflow)
+const filesToSend = task.type === 'gemini' ? workspaceFiles.filter((f) => !isLargeFile(f)) : workspaceFiles;
 ```
+
+All 3 SendBox components (Gemini, ACP, Codex) handle `ingest_progress` events with an Arco `<Progress>` bar and disable send during ingestion.
 
 ## Agent Integration
 
@@ -212,82 +230,28 @@ for v in table.list_versions():
 
 ## Configuration
 
-### Embedding Model (Global Models Integration)
+### Embedding Configuration (Env Vars Only)
 
-**Added:** 2026-02-06 (commits: `b09dad7a`, `885f2dca`)
+**Updated:** 2026-02-06
 
-The Knowledge Base automatically uses your **Global Models** configuration for embeddings, eliminating the need for separate embedding API keys.
+The Knowledge Base uses **`EMBEDDING_*` environment variables** exclusively for embedding configuration. Global Models auto-detection was removed to prevent model/dimension mismatches.
 
-#### Resolution Chain
+#### Configuration
 
-1. **Check Global Models** for embedding providers:
-   - First: models with `embedding` capability
-   - Then: models with `embedding` in name (e.g., `text-embedding-3-small`)
-2. **Fall back to env vars** if no embedding model found:
-   - `OPENAI_API_KEY` + `OPENAI_BASE_URL` (optional)
+Set these env vars in your `.env` or Docker compose:
 
-#### Global Models Setup (Admin → Global Models)
+| Variable               | Required | Default                        | Description                      |
+| ---------------------- | -------- | ------------------------------ | -------------------------------- |
+| `EMBEDDING_API_KEY`    | Yes\*    | Falls back to `OPENAI_API_KEY` | API key for embedding provider   |
+| `EMBEDDING_API_BASE`   | No       | (OpenAI default)               | Custom endpoint (Azure, LiteLLM) |
+| `EMBEDDING_MODEL`      | No       | `text-embedding-3-small`       | Model name                       |
+| `EMBEDDING_DIMENSIONS` | No       | (auto-detect from model)       | Vector dimensions (e.g., 3072)   |
 
-| Field    | Example                                      |
-| -------- | -------------------------------------------- |
-| Platform | `openai` (or your gateway)                   |
-| Name     | `Embeddings`                                 |
-| Base URL | Your gateway URL (or leave empty for OpenAI) |
-| API Key  | Your API key                                 |
-| Models   | `text-embedding-3-small`                     |
+#### Critical: `dim` Parameter
 
-#### Implementation Details
+**Fixed:** 2026-02-06. The `EMBEDDING_DIMENSIONS` env var is now passed as the `dim` kwarg to LanceDB's OpenAI embedding `create()` call. Without this, the schema expects N dimensions but the API call returns the model's default (e.g., 1536 vs 3072), causing `"expected 3072 but got array of size 1536"` errors.
 
-```python
-# ingest.py - get_embedding_config()
-def get_embedding_config() -> tuple[str, str, str]:
-    """Returns (api_key, base_url, model) from Global Models or env vars."""
-
-    # 1. Try Global Models
-    kb_service = KnowledgeBaseService.getInstance()
-    embedding_config = kb_service.getEmbeddingModelFromGlobalModels()
-
-    if embedding_config:
-        return (
-            embedding_config['api_key'],
-            embedding_config['base_url'],
-            embedding_config['model']
-        )
-
-    # 2. Fallback to env vars
-    return (
-        os.environ.get('OPENAI_API_KEY'),
-        os.environ.get('OPENAI_BASE_URL', 'https://api.openai.com/v1'),
-        'text-embedding-3-small'
-    )
-```
-
-```typescript
-// KnowledgeBaseService.ts
-getEmbeddingModelFromGlobalModels(): EmbeddingConfig | null {
-  const globalModels = GlobalModelService.getInstance().getAllGlobalModels();
-
-  // Priority 1: Models with embedding capability
-  const withCapability = globalModels.find(m =>
-    m.capabilities?.includes('embedding')
-  );
-  if (withCapability) return extractConfig(withCapability);
-
-  // Priority 2: Models with "embedding" in name
-  const byName = globalModels.find(m =>
-    m.models.some(name => name.toLowerCase().includes('embedding'))
-  );
-  if (byName) return extractConfig(byName);
-
-  return null;
-}
-```
-
-#### Benefits
-
-- **Single source of truth**: Same API keys for chat and embeddings
-- **Gateway support**: Works with Azure OpenAI, Portkey, LiteLLM, etc.
-- **No extra config**: Just add embedding model to Global Models
+All 3 Python scripts (`ingest.py`, `search.py`, `manage.py`) pass `dim` when `EMBEDDING_DIMENSIONS` is set.
 
 ### Chunking Parameters
 
@@ -349,7 +313,7 @@ def extract_text_from_file(file_path: str) -> tuple[str, list[dict]]:
 
 1. **LanceDB over Qdrant for per-user**: Embedded file-based storage inherits workspace isolation
 2. **Python over TypeScript**: Richer embedding registry, leverages mise infrastructure
-3. **Fire-and-forget ingestion**: Doesn't block message sending
+3. **Smart blocking**: Large files block send (await for RAG availability); small files fire-and-forget
 4. **Pattern-based triggers**: Avoids unnecessary KB searches
 5. **Graceful fallback**: RAG failure doesn't block messages
 6. **KB init on login**: Ensures KB is ready before any document interaction
@@ -365,4 +329,7 @@ def extract_text_from_file(file_path: str) -> tuple[str, list[dict]]:
 - [ ] Qdrant integration for shared/team knowledge bases
 - [x] PDF text extraction before ingestion (implemented via pypdf)
 - [x] KB initialization on user login (implemented in AuthService)
-- [x] Global Models integration for embeddings (`b09dad7a`, `885f2dca`)
+- [x] Global Models integration for embeddings (`b09dad7a`, `885f2dca`) — later removed to prevent model/dim mismatches
+- [x] Embedding `dim` parameter fix for LanceDB OpenAI registry
+- [x] Ingest progress bar in all SendBox components
+- [x] Large file exclusion from Gemini context (use RAG instead)

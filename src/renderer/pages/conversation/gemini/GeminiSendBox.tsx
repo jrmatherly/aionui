@@ -6,8 +6,8 @@ import { uuid } from '@/common/utils';
 import ContextUsageIndicator from '@/renderer/components/ContextUsageIndicator';
 import FilePreview from '@/renderer/components/FilePreview';
 import HorizontalFileList from '@/renderer/components/HorizontalFileList';
-import SendBox from '@/renderer/components/sendbox';
 import ThoughtDisplay, { type ThoughtData } from '@/renderer/components/ThoughtDisplay';
+import SendBox from '@/renderer/components/sendbox';
 import { useAutoTitle } from '@/renderer/hooks/useAutoTitle';
 import { useLatestRef } from '@/renderer/hooks/useLatestRef';
 import { getSendBoxDraftHook, type FileOrFolderItem } from '@/renderer/hooks/useSendBoxDraft';
@@ -18,13 +18,13 @@ import { allSupportedExts } from '@/renderer/services/FileService';
 import { iconColors } from '@/renderer/theme/colors';
 import { emitter, useAddEventListener } from '@/renderer/utils/emitter';
 import { mergeFileSelectionItems } from '@/renderer/utils/fileSelection';
+import { createLogger } from '@/renderer/utils/logger';
 import { buildDisplayMessage, collectSelectedFiles } from '@/renderer/utils/messageFiles';
 import { getModelContextLimit } from '@/renderer/utils/modelContextLimits';
-import { Button, Message, Tag } from '@arco-design/web-react';
+import { Button, Message, Progress, Tag } from '@arco-design/web-react';
 import { Plus } from '@icon-park/react';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { GeminiModelSelection } from './useGeminiModelSelection';
-import { createLogger } from '@/renderer/utils/logger';
 
 const log = createLogger('GeminiSendBox');
 
@@ -45,6 +45,14 @@ const useGeminiMessage = (conversation_id: string, onError?: (message: IResponse
     subject: '',
   });
   const [tokenUsage, setTokenUsage] = useState<TokenUsageData | null>(null);
+  const [ingestionProgress, setIngestionProgress] = useState<{
+    status: 'start' | 'ingesting' | 'success' | 'error' | 'complete';
+    current?: number;
+    total: number;
+    fileName?: string;
+    successCount?: number;
+    failedCount?: number;
+  } | null>(null);
   // 当前活跃的消息 ID，用于过滤旧请求的事件（防止 abort 后的事件干扰新请求）
   // Current active message ID to filter out events from old requests (prevents aborted request events from interfering with new ones)
   const activeMsgIdRef = useRef<string | null>(null);
@@ -246,6 +254,16 @@ const useGeminiMessage = (conversation_id: string, onError?: (message: IResponse
             // 只有 'finish' 事件才应该重置流状态
           }
           break;
+        case 'ingest_progress': {
+          const progress = message.data as typeof ingestionProgress;
+          if (progress?.status === 'complete') {
+            setIngestionProgress(progress);
+            setTimeout(() => setIngestionProgress(null), 1500);
+          } else {
+            setIngestionProgress(progress);
+          }
+          break;
+        }
         default: {
           if (message.type === 'error') {
             setWaitingResponse(false);
@@ -267,6 +285,7 @@ const useGeminiMessage = (conversation_id: string, onError?: (message: IResponse
     setWaitingResponse(false);
     setThought({ subject: '', description: '' });
     setTokenUsage(null);
+    setIngestionProgress(null);
     void ipcBridge.conversation.get.invoke({ id: conversation_id }).then((res) => {
       if (!res) return;
       if (res.status === 'running') {
@@ -290,7 +309,7 @@ const useGeminiMessage = (conversation_id: string, onError?: (message: IResponse
     setThought({ subject: '', description: '' });
   }, []);
 
-  return { thought, setThought, running, tokenUsage, setActiveMsgId, setWaitingResponse, resetState };
+  return { thought, setThought, running, tokenUsage, ingestionProgress, setActiveMsgId, setWaitingResponse, resetState };
 };
 
 const EMPTY_AT_PATH: Array<string | FileOrFolderItem> = [];
@@ -403,7 +422,7 @@ const GeminiSendBox: React.FC<{
     [currentModel, handleSelectModel, isQuotaErrorMessage, resolveFallbackTarget]
   );
 
-  const { thought, running, tokenUsage, setActiveMsgId, setWaitingResponse, resetState } = useGeminiMessage(conversation_id, handleGeminiError);
+  const { thought, running, tokenUsage, ingestionProgress, setActiveMsgId, setWaitingResponse, resetState } = useGeminiMessage(conversation_id, handleGeminiError);
 
   useEffect(() => {
     void ipcBridge.conversation.get.invoke({ id: conversation_id }).then((res) => {
@@ -575,11 +594,23 @@ const GeminiSendBox: React.FC<{
     <div className='max-w-800px w-full mx-auto flex flex-col mt-auto mb-16px'>
       <ThoughtDisplay thought={thought} running={running} onStop={handleStop} />
 
+      {ingestionProgress && (
+        <div className='px-3 py-2 flex items-center gap-2 text-sm' style={{ color: 'var(--color-text-2)' }}>
+          <Progress percent={ingestionProgress.status === 'complete' ? 100 : Math.round(((ingestionProgress.current || 0) / ingestionProgress.total) * 100)} status={ingestionProgress.status === 'error' ? 'error' : 'normal'} size='small' style={{ flex: 1 }} />
+          <span className='whitespace-nowrap'>
+            {ingestionProgress.status === 'start' && `Indexing ${ingestionProgress.total} file(s)...`}
+            {ingestionProgress.status === 'ingesting' && `Indexing ${ingestionProgress.fileName}...`}
+            {ingestionProgress.status === 'success' && `Indexed ${ingestionProgress.fileName}`}
+            {ingestionProgress.status === 'complete' && `Indexed ${ingestionProgress.successCount} file(s)`}
+          </span>
+        </div>
+      )}
+
       <SendBox
         value={content}
         onChange={setContent}
-        loading={running}
-        disabled={!currentModel?.useModel}
+        loading={running || ingestionProgress !== null}
+        disabled={!currentModel?.useModel || ingestionProgress !== null}
         // 占位提示同步右上角选择的模型，确保用户感知当前目标
         // Keep placeholder in sync with header selection so users know the active target
         placeholder={currentModel?.useModel ? `Send message to ${getDisplayModelName(currentModel.useModel)}` : 'No model selected for current session, cannot send message'}

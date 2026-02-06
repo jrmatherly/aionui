@@ -153,6 +153,8 @@ def ingest_document(
         embed_kwargs = {"name": embedding_model}
         if api_base:
             embed_kwargs["base_url"] = api_base
+        if embedding_dimensions:
+            embed_kwargs["dim"] = embedding_dimensions
 
         embed_func = get_registry().get("openai").create(**embed_kwargs)
 

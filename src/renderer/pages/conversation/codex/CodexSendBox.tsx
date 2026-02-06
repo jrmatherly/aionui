@@ -15,11 +15,11 @@ import { allSupportedExts, type FileMetadata } from '@/renderer/services/FileSer
 import { iconColors } from '@/renderer/theme/colors';
 import { emitter, useAddEventListener } from '@/renderer/utils/emitter';
 import { mergeFileSelectionItems } from '@/renderer/utils/fileSelection';
+import { createLogger } from '@/renderer/utils/logger';
 import { buildDisplayMessage } from '@/renderer/utils/messageFiles';
-import { Button, Tag } from '@arco-design/web-react';
+import { Button, Progress, Tag } from '@arco-design/web-react';
 import { Plus } from '@icon-park/react';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { createLogger } from '@/renderer/utils/logger';
 
 const log = createLogger('CodexSendBox');
 interface CodexDraftData {
@@ -49,6 +49,14 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
     description: '',
     subject: '',
   });
+  const [ingestionProgress, setIngestionProgress] = useState<{
+    status: 'start' | 'ingesting' | 'success' | 'error' | 'complete';
+    current?: number;
+    total: number;
+    fileName?: string;
+    successCount?: number;
+    failedCount?: number;
+  } | null>(null);
 
   // Throttle thought updates to reduce render frequency
   const thoughtThrottleRef = useRef<{
@@ -125,6 +133,7 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
     setAiProcessing(false);
     setCodexStatus(null);
     setThought({ subject: '', description: '' });
+    setIngestionProgress(null);
   }, [conversation_id]);
 
   // Register handler for adding text from preview panel to sendbox
@@ -176,6 +185,16 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
           const transformedMessage = transformMessage(message);
           if (transformedMessage) {
             addOrUpdateMessage(transformedMessage);
+          }
+          break;
+        }
+        case 'ingest_progress': {
+          const progress = message.data as typeof ingestionProgress;
+          if (progress?.status === 'complete') {
+            setIngestionProgress(progress);
+            setTimeout(() => setIngestionProgress(null), 1500);
+          } else {
+            setIngestionProgress(progress);
           }
           break;
         }
@@ -357,6 +376,18 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
     <div className='max-w-800px w-full mx-auto flex flex-col mt-auto mb-16px'>
       <ThoughtDisplay thought={thought} running={aiProcessing || running} onStop={handleStop} />
 
+      {ingestionProgress && (
+        <div className='px-3 py-2 flex items-center gap-2 text-sm' style={{ color: 'var(--color-text-2)' }}>
+          <Progress percent={ingestionProgress.status === 'complete' ? 100 : Math.round(((ingestionProgress.current || 0) / ingestionProgress.total) * 100)} status={ingestionProgress.status === 'error' ? 'error' : 'normal'} size='small' style={{ flex: 1 }} />
+          <span className='whitespace-nowrap'>
+            {ingestionProgress.status === 'start' && `Indexing ${ingestionProgress.total} file(s)...`}
+            {ingestionProgress.status === 'ingesting' && `Indexing ${ingestionProgress.fileName}...`}
+            {ingestionProgress.status === 'success' && `Indexed ${ingestionProgress.fileName}`}
+            {ingestionProgress.status === 'complete' && `Indexed ${ingestionProgress.successCount} file(s)`}
+          </span>
+        </div>
+      )}
+
       <SendBox
         value={content}
         onChange={(val) => {
@@ -365,8 +396,8 @@ const CodexSendBox: React.FC<{ conversation_id: string }> = ({ conversation_id }
             setContent(val);
           }
         }}
-        loading={running || aiProcessing}
-        disabled={aiProcessing}
+        loading={running || aiProcessing || ingestionProgress !== null}
+        disabled={aiProcessing || ingestionProgress !== null}
         className='z-10'
         placeholder={aiProcessing ? 'Processing...' : `Send message to ${'Codex'}...`}
         onStop={handleStop}

@@ -16,11 +16,11 @@ import { allSupportedExts } from '@/renderer/services/FileService';
 import { iconColors } from '@/renderer/theme/colors';
 import { emitter, useAddEventListener } from '@/renderer/utils/emitter';
 import { mergeFileSelectionItems } from '@/renderer/utils/fileSelection';
+import { createLogger } from '@/renderer/utils/logger';
 import type { AcpBackend } from '@/types/acpTypes';
-import { Button, Tag } from '@arco-design/web-react';
+import { Button, Progress, Tag } from '@arco-design/web-react';
 import { Plus } from '@icon-park/react';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { createLogger } from '@/renderer/utils/logger';
 
 const log = createLogger('AcpSendBox');
 const useAcpSendBoxDraft = getSendBoxDraftHook('acp', {
@@ -39,6 +39,14 @@ const useAcpMessage = (conversation_id: string) => {
   });
   const [acpStatus, setAcpStatus] = useState<'connecting' | 'connected' | 'authenticated' | 'session_active' | 'disconnected' | 'error' | null>(null);
   const [aiProcessing, setAiProcessing] = useState(false); // New loading state for AI response
+  const [ingestionProgress, setIngestionProgress] = useState<{
+    status: 'start' | 'ingesting' | 'success' | 'error' | 'complete';
+    current?: number;
+    total: number;
+    fileName?: string;
+    successCount?: number;
+    failedCount?: number;
+  } | null>(null);
 
   // Throttle thought updates to reduce render frequency
   const thoughtThrottleRef = useRef<{
@@ -138,6 +146,16 @@ const useAcpMessage = (conversation_id: string) => {
           setAiProcessing(false);
           addOrUpdateMessage(transformedMessage);
           break;
+        case 'ingest_progress': {
+          const progress = message.data as typeof ingestionProgress;
+          if (progress?.status === 'complete') {
+            setIngestionProgress(progress);
+            setTimeout(() => setIngestionProgress(null), 1500);
+          } else {
+            setIngestionProgress(progress);
+          }
+          break;
+        }
         default:
           addOrUpdateMessage(transformedMessage);
           break;
@@ -156,6 +174,7 @@ const useAcpMessage = (conversation_id: string) => {
     setThought({ subject: '', description: '' });
     setAcpStatus(null);
     setAiProcessing(false);
+    setIngestionProgress(null);
   }, [conversation_id]);
 
   const resetState = useCallback(() => {
@@ -164,7 +183,7 @@ const useAcpMessage = (conversation_id: string) => {
     setThought({ subject: '', description: '' });
   }, []);
 
-  return { thought, setThought, running, acpStatus, aiProcessing, setAiProcessing, resetState };
+  return { thought, setThought, running, acpStatus, aiProcessing, setAiProcessing, ingestionProgress, resetState };
 };
 
 const EMPTY_AT_PATH: Array<string | FileOrFolderItem> = [];
@@ -206,18 +225,10 @@ const AcpSendBox: React.FC<{
   conversation_id: string;
   backend: AcpBackend;
 }> = ({ conversation_id, backend }) => {
-  const [workspacePath, setWorkspacePath] = useState('');
-  const { thought, running, acpStatus, aiProcessing, setAiProcessing, resetState } = useAcpMessage(conversation_id);
+  const { thought, running, acpStatus, aiProcessing, setAiProcessing, ingestionProgress, resetState } = useAcpMessage(conversation_id);
   const { checkAndUpdateTitle } = useAutoTitle();
   const { atPath, uploadFile, setAtPath, setUploadFile, content, setContent } = useSendBoxDraft(conversation_id);
   const { setSendBoxHandler } = usePreviewContext();
-
-  useEffect(() => {
-    void ipcBridge.conversation.get.invoke({ id: conversation_id }).then((res) => {
-      if (!res?.extra?.workspace) return;
-      setWorkspacePath(res.extra.workspace);
-    });
-  }, [conversation_id]);
 
   // Use useLatestRef to keep latest setters to avoid re-registering handler
   const setContentRef = useLatestRef(setContent);
@@ -418,11 +429,23 @@ const AcpSendBox: React.FC<{
     <div className='max-w-800px w-full mx-auto flex flex-col mt-auto mb-16px'>
       <ThoughtDisplay thought={thought} running={running || aiProcessing} onStop={handleStop} />
 
+      {ingestionProgress && (
+        <div className='px-3 py-2 flex items-center gap-2 text-sm' style={{ color: 'var(--color-text-2)' }}>
+          <Progress percent={ingestionProgress.status === 'complete' ? 100 : Math.round(((ingestionProgress.current || 0) / ingestionProgress.total) * 100)} status={ingestionProgress.status === 'error' ? 'error' : 'normal'} size='small' style={{ flex: 1 }} />
+          <span className='whitespace-nowrap'>
+            {ingestionProgress.status === 'start' && `Indexing ${ingestionProgress.total} file(s)...`}
+            {ingestionProgress.status === 'ingesting' && `Indexing ${ingestionProgress.fileName}...`}
+            {ingestionProgress.status === 'success' && `Indexed ${ingestionProgress.fileName}`}
+            {ingestionProgress.status === 'complete' && `Indexed ${ingestionProgress.successCount} file(s)`}
+          </span>
+        </div>
+      )}
+
       <SendBox
         value={content}
         onChange={setContent}
-        loading={running || aiProcessing}
-        disabled={false}
+        loading={running || aiProcessing || ingestionProgress !== null}
+        disabled={ingestionProgress !== null}
         placeholder={`Send message to ${backend}...`}
         onStop={handleStop}
         className='z-10'
