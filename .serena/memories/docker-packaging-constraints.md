@@ -43,8 +43,6 @@ Currently unpacked resources: `rules/**/*`, `skills/**/*`, `assistant/**/*`, and
 | `node-pty`       | Native (.node) | Terminal emulation for agent processes               |
 | `bcrypt-ts`      | Pure JS        | Password hashing — migrated from bcryptjs (Feb 2026) |
 
-Note: `electron-builder.yml` includes `bcrypt/**/*` in `files` and `asarUnpack`. The project uses `bcrypt-ts` (pure JS). These entries are dead weight but harmless.
-
 ## Circular Dependency Warning
 
 `src/process/initStorage.ts` ↔ `src/process/utils.ts` had a circular import that crashes production webpack bundles (`getHomePage is not a function`). Fixed with a lazy `require()` in `utils.ts`. When adding new modules that import from `initStorage` or `utils`, verify no new cycles are introduced.
