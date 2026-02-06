@@ -45,9 +45,12 @@ skills/                      # Claude Code skills (docx, xlsx, pdf, lance, etc.)
 ```bash
 mise run dev               # Start dev environment
 mise run webui             # Start WebUI server
-npm run lint:fix           # ESLint auto-fix
-npm run format             # Prettier format
-npm test                   # Run all tests
+mise run lint:fix          # ESLint auto-fix
+mise run format            # Prettier format
+mise run typecheck         # TypeScript type checking (no emit)
+mise run test              # Run all tests
+mise run lint:python       # Lint Python scripts (ruff)
+mise run lint:python:fix   # Lint + auto-fix Python (ruff)
 mise run docker:build      # Build Docker image
 mise run docker:up         # Start container
 mise run changelog         # Generate CHANGELOG.md (git-cliff)
@@ -140,7 +143,7 @@ LiteLLM, Azure OpenAI / Azure AI Foundry, Portkey, Kong AI Gateway, AgentGateway
 
 Every implementation task should include:
 
-1. **Code** — Implementation complete, `npx tsc --noEmit` passes
+1. **Code** — Implementation complete, `mise run typecheck` passes
 2. **Commit** — Conventional commit with clear scope
 3. **Documentation** — Update relevant files:
    - `.serena/memories/*.md` — Feature-specific memory file

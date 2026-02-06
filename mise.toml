@@ -313,6 +313,26 @@ run = "docker compose -f deploy/docker/docker-compose.yml --profile https logs -
 # ─── Drift Detect Tasks ─────────────────────────────────────────────────────
 # Integration with Drift Detect for pattern analysis and code health
 
+[tasks."typecheck"]
+description = "Run TypeScript type checking (no emit)"
+run = "npx tsc --noEmit"
+
+[tasks."lint:python"]
+description = "Lint Python scripts with ruff"
+run = "ruff check skills/"
+
+[tasks."lint:python:fix"]
+description = "Lint and auto-fix Python scripts with ruff"
+run = "ruff check --fix skills/ && ruff format skills/"
+
+# ─── Drift Detect Tasks ──────────────────────────────────────────────────
+# Pattern analysis and code health. Drift requires Node 25 (native modules).
+# The pre-push hook runs 'drift:check' automatically before each push.
+
+[tasks."drift:status"]
+description = "Show Drift Detect pattern health"
+run = "drift status"
+
 [tasks."drift:audit"]
 description = "Run Drift Detect audit"
 run = "drift audit --review"
@@ -336,6 +356,26 @@ run = "drift scan"
 [tasks."drift:export"]
 description = "Export Drift AI context (for AI assistants)"
 run = "drift export --format ai-context --compact"
+
+[tasks."drift:memory"]
+description = "Show Drift Cortex memory health"
+run = "drift memory status"
+
+[tasks."drift:memory:why"]
+description = "Get context for a feature area (usage: mise run drift:memory:why <area>)"
+run = 'drift memory why "$1"'
+
+[tasks."drift:env"]
+description = "Audit sensitive env var access"
+run = "drift env secrets"
+
+[tasks."drift:boundaries"]
+description = "Verify data access boundaries"
+run = "drift boundaries check"
+
+[tasks."drift:dna"]
+description = "Check style consistency (DNA mutations)"
+run = "drift dna mutations"
 
 [tasks."drift:health"]
 description = "Show Drift Detect health summary"

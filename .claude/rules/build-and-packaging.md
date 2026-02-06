@@ -53,7 +53,7 @@ Additional workflows: `pr-checks.yml`, `codeql.yml`, `dependency-review.yml`, `r
 ### HTTPS (Compose Profile)
 
 ```bash
-docker compose --profile https up -d
+mise run docker:up:https
 ```
 
 Required env vars: `AIONUI_HTTPS=true`, `AIONUI_TRUST_PROXY=1`. See `deploy/docker/nginx.conf`.

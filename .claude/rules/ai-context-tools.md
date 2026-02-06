@@ -14,7 +14,7 @@ This project uses **Drift Detect** and **Serena** for enhanced AI-assisted devel
 - **Serena** — Symbolic code navigation via language server (`.serena/project.yml`, `.serena/memories/`)
 - **MCP config** — `.mcp.json` configures Drift as an MCP server (TypeScript-only tool filtering)
 - **Data boundaries** — `.drift/boundaries/rules.json` enforces auth data access rules
-- **Env variable tracking** — `drift env secrets` audits sensitive variable access (7 secrets tracked)
+- **Env variable tracking** — `mise run drift:env` audits sensitive variable access (7 secrets tracked)
 
 ## Serena MCP Tool Parameters
 
@@ -34,13 +34,22 @@ Use these exact parameter names when calling Serena tools to avoid validation er
 
 ## Key Commands
 
+All Drift commands are available as mise tasks:
+
 ```bash
-drift status             # Pattern health
-drift memory status      # Cortex memory health
-drift memory why "area"  # Get context before working on a feature area
-drift env secrets        # Audit sensitive env var access
-drift boundaries check   # Verify data access boundaries
-drift dna mutations      # Check style consistency
+mise run drift:status          # Pattern health
+mise run drift:check           # Validate against approved patterns
+mise run drift:scan            # Full pattern discovery
+mise run drift:audit           # Detailed review report
+mise run drift:approve         # Auto-approve high-confidence patterns
+mise run drift:memory          # Cortex memory health
+mise run drift:memory:why area # Get context for a feature area
+mise run drift:env             # Audit sensitive env var access
+mise run drift:boundaries      # Verify data access boundaries
+mise run drift:dna             # Check style consistency (DNA mutations)
+mise run drift:export          # Export AI context
+mise run drift:dashboard       # Open interactive dashboard
+mise run drift:health          # Overall health summary
 ```
 
 See `docs/guides/AI_CONTEXT_GUIDE.md` for full setup and workflow documentation.
