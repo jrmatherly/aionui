@@ -260,8 +260,8 @@ const PreviewPanel: React.FC = () => {
   // Check if file type already has built-in open button (Word, PPT, PDF, Excel components provide their own)
   const hasBuiltInOpenButton = (FILE_TYPES_WITH_BUILTIN_OPEN as readonly string[]).includes(contentType);
 
-  // Show "Open in System" button for all files with filePath (unified in toolbar)
-  const showOpenInSystemButton = Boolean(metadata?.filePath);
+  // "Open in System" button disabled for web deployment (no local system access)
+  const showOpenInSystemButton = false;
 
   // Download file to local system
   const handleDownload = useCallback(async () => {

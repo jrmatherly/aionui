@@ -48,20 +48,11 @@ const PPTPreview: React.FC<PPTPreviewProps> = ({ filePath }) => {
       <div className='text-center max-w-400px'>
         <div className='text-48px mb-16px'>📊</div>
         <div className='text-16px text-t-primary font-medium mb-8px'>{'PowerPoint Presentation'}</div>
-        <div className='text-13px text-t-secondary mb-24px'>{'Click the button below to open in system application to view full content'}</div>
+        <div className='text-13px text-t-secondary mb-24px'>{'PowerPoint files are not previewable in the web interface. Download the file to view its contents.'}</div>
 
-        {filePath && (
-          <div className='flex items-center justify-center gap-12px'>
-            <Button size='small' onClick={handleOpenExternal}>
-              <span>{'Open File'}</span>
-            </Button>
-            <Button size='small' onClick={handleShowInFolder}>
-              {'Show Location'}
-            </Button>
-          </div>
-        )}
+        {/* "Open in system" disabled for web deployment */}
 
-        <div className='text-11px text-t-tertiary mt-16px'>{'Will be opened with default system app (PowerPoint, Keynote, or WPS)'}</div>
+        <div className='text-11px text-t-tertiary mt-16px'>{'Supported formats: .pptx, .ppt'}</div>
       </div>
     </div>
   );

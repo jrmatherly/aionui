@@ -137,17 +137,7 @@ const WordPreview: React.FC<WordPreviewProps> = ({ filePath, hideToolbar = false
             <span className='text-13px text-t-secondary'>📄 {'Word Document'}</span>
           </div>
 
-          {/* Right button group */}
-          <div className='flex items-center gap-8px'>
-            <div className='flex items-center gap-4px px-8px py-4px rd-4px cursor-pointer hover:bg-bg-3 transition-colors text-12px text-t-secondary' onClick={handleOpenInSystem} title={`Open in ${'Word'}`}>
-              <svg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2'>
-                <path d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6' />
-                <polyline points='15 3 21 3 21 9' />
-                <line x1='10' y1='14' x2='21' y2='3' />
-              </svg>
-              <span>{`Open in ${'Word'}`}</span>
-            </div>
-          </div>
+          {/* "Open in system" disabled for web deployment */}
         </div>
       )}
 

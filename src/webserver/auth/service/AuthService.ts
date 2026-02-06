@@ -627,7 +627,7 @@ export class AuthService {
 
   /**
    * Post-login initialization tasks (runs async, non-blocking)
-   * Initializes user's Python workspace for skill execution
+   * Initializes user's Python workspace and knowledge base for skill execution
    *
    * @param userId - User ID for workspace initialization
    */
@@ -645,6 +645,20 @@ export class AuthService {
       } catch (e) {
         // Non-fatal: log but don't fail login
         log.warn({ userId, err: e }, 'Failed to initialize Python workspace on login (non-fatal)');
+      }
+
+      // Initialize knowledge base (depends on Python workspace being ready)
+      try {
+        const { getKnowledgeBaseService } = await import('@process/services/KnowledgeBaseService');
+        const kbService = getKnowledgeBaseService();
+
+        const result = await kbService.initialize(userId);
+        if (result.success) {
+          log.info({ userId, alreadyExists: result.alreadyExists }, 'Knowledge base ready');
+        }
+      } catch (e) {
+        // Non-fatal: log but don't fail login
+        log.warn({ userId, err: e }, 'Failed to initialize knowledge base on login (non-fatal)');
       }
     })();
   }
