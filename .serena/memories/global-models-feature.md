@@ -1,7 +1,7 @@
 # Global Models Feature
 
 **Added:** 2026-02-05  
-**DB Version:** 16
+**DB Version:** 18 (v16: tables, v18: allowed_groups)
 
 ## Overview
 
@@ -153,6 +153,87 @@ Model forms use shared components from `src/renderer/components/shared/`:
 - **ProviderLogo.tsx**: `ProviderLogo`, `renderPlatformOption`, `getProviderLogo` — single source of truth for all provider logo rendering
 - **PlatformSelect.tsx**: Reusable alphabetically-sorted provider dropdown with logos
 - **GlobalModelForm.tsx**: Uses `useModeModeList` SWR hook for dynamic model fetching (same pattern as `AddPlatformModal`)
+
+## Group-Based Access Control (v18)
+
+**Added:** 2026-02-05
+
+Enables cost-effective model distribution by restricting expensive models to specific EntraID groups.
+
+### Configuration
+
+Add `allowed_groups` to any global model config:
+
+```json
+{
+  "name": "Economy Models",
+  "models": ["gpt-4o-mini"],
+  "priority": 5
+  // No allowed_groups = everyone
+},
+{
+  "name": "Premium Models",
+  "models": ["gpt-4o", "o1-mini"],
+  "allowed_groups": ["AI-Power-Users", "AI-Admins"],
+  "priority": 20
+}
+```
+
+### Access Rules
+
+| Scenario                    | Access            |
+| --------------------------- | ----------------- |
+| No `allowed_groups` or `[]` | Everyone          |
+| Admin role                  | Always (bypass)   |
+| User with matching group    | Yes               |
+| User without matching group | No                |
+| Local auth user (no OIDC)   | Unrestricted only |
+
+### Group Matching
+
+Groups matched by **name** (not ID) for readability. Resolution:
+
+1. Check if user's group IDs contain the allowed value (direct ID match)
+2. Look up group name in `GROUP_MAPPINGS` → resolve to groupId → check match
+
+### Implementation
+
+**Schema (v18):**
+
+```sql
+ALTER TABLE global_models ADD COLUMN allowed_groups TEXT;
+-- JSON array of group names, NULL = everyone
+```
+
+**Service (`GlobalModelService.ts`):**
+
+```typescript
+private hasGroupAccess(userGroups: string[] | null, userRole: UserRole, allowedGroups: string[] | null): boolean {
+  if (userRole === 'admin') return true;
+  if (!allowedGroups?.length) return true;
+  if (!userGroups?.length) return false;
+  // Match by ID or resolve name via GROUP_MAPPINGS
+}
+```
+
+**Token Flow:**
+
+1. User logs in → groups extracted from OIDC claims
+2. JWT access token includes `groups` array
+3. WebSocket connection stores `groups` and `role`
+4. IPC messages include `__webUiUserGroups` and `__webUiUserRole`
+5. `getEffectiveModels()` filters by group access
+
+### Files Modified
+
+- `v18_add_global_model_groups.ts` — Migration
+- `GlobalModelService.ts` — `hasGroupAccess()` + filtered queries
+- `AuthService.ts` — Groups in JWT payload
+- `WebSocketManager.ts` — Store/retrieve groups and role
+- `adapter.ts` — Inject user context into IPC
+- `apiRoutes.ts` — Pass groups/role to service
+- `types.ts` — `allowed_groups` in interfaces
+- `express.d.ts` — Groups in Request.user
 
 ## Security
 
