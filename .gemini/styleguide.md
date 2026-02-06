@@ -21,7 +21,7 @@ This document defines the coding standards and best practices for the AionUI pro
 
 - Use strict TypeScript configuration
 - Avoid `any` type - use `unknown` or proper generics
-- Prefer interfaces over type aliases for object shapes
+- Prefer `type` over `interface` for object shapes (per project convention)
 - Use explicit return types for exported functions
 - Use optional chaining (`?.`) and nullish coalescing (`??`)
 - Use path aliases: `@/*`, `@process/*`, `@renderer/*`
@@ -40,7 +40,7 @@ This document defines the coding standards and best practices for the AionUI pro
 - Always handle Promise rejections
 - Use try-catch for async/await
 - Provide meaningful error messages
-- Log errors appropriately using console.error
+- Log errors using Pino structured logging (`import { logger } from '@/common/logger'`)
 
 ### Security
 

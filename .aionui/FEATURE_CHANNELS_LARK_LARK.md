@@ -346,32 +346,32 @@ interface LarkPluginConfig {
 
 ## 10. Development Plan
 
-### Phase 1: Basic Connection (Est. 2-3 Days)
+### Phase 1: Basic Connection — ✅ Completed
 
-- [ ] Create LarkPlugin base class
-- [ ] Implement WebSocket event reception
-- [ ] Implement Access Token auto-refresh
-- [ ] Basic message send/receive functionality
+- [x] Create LarkPlugin base class
+- [x] Implement WebSocket event reception
+- [x] Implement Access Token auto-refresh
+- [x] Basic message send/receive functionality
 
-### Phase 2: Security & Auth (Est. 1-2 Days)
+### Phase 2: Security & Auth — ✅ Completed
 
-- [ ] Reuse PairingService
-- [ ] Pairing flow message cards
-- [ ] Settings page UI adaptation
+- [x] Reuse PairingService
+- [x] Pairing flow message cards
+- [x] Settings page UI adaptation
 
-### Phase 3: Interaction Perfection (Est. 2-3 Days)
+### Phase 3: Interaction Perfection — ✅ Completed
 
-- [ ] Message card template system
-- [ ] Button callback handling
-- [ ] Agent switching functionality
-- [ ] Streaming response support
+- [x] Message card template system
+- [x] Button callback handling
+- [x] Agent switching functionality
+- [x] Streaming response support
 
-### Phase 4: Optimization (Est. 1-2 Days)
+### Phase 4: Optimization — Partially Completed
 
 - [ ] Long message sharding
-- [ ] Error handling perfection
-- [ ] Multi-language support
-- [ ] Logging and monitoring
+- [x] Error handling perfection
+- [x] English-only UI (i18n removed in v1.8.2)
+- [x] Logging and monitoring
 
 ---
 
@@ -379,15 +379,15 @@ interface LarkPluginConfig {
 
 | Feature                 | Telegram | Lark | Component Reused      |
 | ----------------------- | :------: | :--: | --------------------- |
-| Bot Config Verification |    ✅    |  🔲  | -                     |
-| Bot Start/Stop          |    ✅    |  🔲  | ChannelManager        |
-| Pairing Code Auth       |    ✅    |  🔲  | PairingService        |
-| Local Approval Flow     |    ✅    |  🔲  | Existing UI           |
-| User Whitelist          |    ✅    |  🔲  | Database              |
-| Button Interaction      |    ✅    |  🔲  | SystemActions         |
-| Streaming Response      |    ✅    |  🔲  | ChannelMessageService |
-| Agent Switching         |    ✅    |  🔲  | SystemActions         |
-| New Session             |    ✅    |  🔲  | SessionManager        |
+| Bot Config Verification |    ✅    |  ✅  | -                     |
+| Bot Start/Stop          |    ✅    |  ✅  | ChannelManager        |
+| Pairing Code Auth       |    ✅    |  ✅  | PairingService        |
+| Local Approval Flow     |    ✅    |  ✅  | Existing UI           |
+| User Whitelist          |    ✅    |  ✅  | Database              |
+| Button Interaction      |    ✅    |  ✅  | SystemActions         |
+| Streaming Response      |    ✅    |  ✅  | ChannelMessageService |
+| Agent Switching         |    ✅    |  ✅  | SystemActions         |
+| New Session             |    ✅    |  ✅  | SessionManager        |
 | Rate Limiting           |    ✅    |  🔲  | RateLimiter           |
 
 ---
@@ -396,29 +396,29 @@ interface LarkPluginConfig {
 
 ### 12.1 Functionality Acceptance
 
-- [ ] Lark app credentials configuration and verification
-- [ ] Bot start/stop control
-- [ ] Pairing code generation and local approval flow
-- [ ] Authorized user management
-- [ ] Message card interaction
-- [ ] Chat with Gemini/Claude Agent
-- [ ] Agent switching functionality
-- [ ] New session functionality
-- [ ] Streaming message response
+- [x] Lark app credentials configuration and verification
+- [x] Bot start/stop control
+- [x] Pairing code generation and local approval flow
+- [x] Authorized user management
+- [x] Message card interaction
+- [x] Chat with Gemini/ACP/Codex Agent
+- [x] Agent switching functionality
+- [x] New session functionality
+- [x] Streaming message response
 
 ### 12.2 Security Acceptance
 
-- [ ] Pairing code 10-minute expiration
-- [ ] Must approve locally in AionUi
-- [ ] Unauthorized users cannot use
-- [ ] App Secret encrypted storage
+- [x] Pairing code 10-minute expiration
+- [x] Must approve locally in AionUi
+- [x] Unauthorized users cannot use
+- [x] App Secret encrypted storage
 - [ ] Rate limiting active
 
 ### 12.3 Compatibility
 
-- [ ] macOS runs normally
-- [ ] Windows runs normally
-- [ ] Linux/Docker runs normally
+- [x] macOS runs normally
+- [x] Windows runs normally
+- [x] Linux/Docker runs normally
 
 ---
 

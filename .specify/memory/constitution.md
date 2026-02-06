@@ -45,7 +45,7 @@ Code must be maintainable and extensible:
 
 - TypeScript for type safety across the entire stack
 - ESLint and Prettier for consistent code quality
-- Conventional commit message format (feat/fix/chore/docs/refactor)
+- Conventional commit message format (feat/fix/docs/style/refactor/perf/test/chore)
 - Clear documentation for architectural decisions
 - mise-en-place for tool version management
 
@@ -76,8 +76,8 @@ Code must be maintainable and extensible:
 ### Database
 
 - SQLite via better-sqlite3 with migration system
-- Schema versioning (current: v15)
-- Tables: conversations, messages, users, refresh_tokens, token_blacklist, user_api_keys, organizations, teams, etc.
+- Schema versioning (current: v18)
+- Tables: conversations, messages, users, refresh_tokens, token_blacklist, user_api_keys, organizations, teams, global_models, user_model_overrides, logging_config, etc.
 
 ## Development Workflow
 

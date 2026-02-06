@@ -211,7 +211,7 @@ created → initializing → ready → starting → running → stopping → sto
 4. Register plugin in `ChannelManager` constructor: `registerPlugin('platform', PlatformPlugin)`.
 5. Add platform type to `PluginType` in `types.ts`.
 6. Add Settings Page UI.
-7. Add i18n translations.
+7. Ensure all strings are hardcoded English.
 8. Implement platform-specific interactive components (e.g., Keyboard, Card).
 
 ---
@@ -254,7 +254,7 @@ created → initializing → ready → starting → running → stopping → sto
 | Pairing Mode   | boolean           | Whether pairing code authorization is required |
 | Rate Limit     | number            | Max messages per minute                        |
 | Group Mentions | boolean           | Whether @bot is required to respond in groups  |
-| Default Agent  | gemini            | Fixed to Gemini in MVP phase                   |
+| Default Agent  | gemini/acp/codex  | Configurable per session                       |
 
 #### Pairing Security Mechanism (Clawdbot Mode)
 
@@ -769,11 +769,6 @@ type StreamCallback = (chunk: TMessage, isInsert: boolean) => void;
 | Send New Message   | No Limit  | Send immediately when isInsert=true |
 | Edit Message       | Throttled | Apply throttle when isInsert=false  |
 
-- [ ] Use Existing Context: **\*\*\*\***\_\_\_\_**\*\*\*\***
-- [ ] Need New Context: **\*\*\*\***\_\_\_\_**\*\*\*\***
-- [ ] Component Internal State Only (useState/useReducer)
-- [ ] Need Persistence
-
 ### 8.6 Key Design Principles
 
 1. **Separation of Event Listening and Message Sending**
@@ -792,7 +787,7 @@ type StreamCallback = (chunk: TMessage, isInsert: boolean) => void;
 
 ## 9. Agent Interface Specification
 
-### 8.1 Capabilities Required for Each Agent
+### 9.1 Capabilities Required for Each Agent
 
 | Capability      | Description                   |
 | --------------- | ----------------------------- |
@@ -804,7 +799,7 @@ type StreamCallback = (chunk: TMessage, isInsert: boolean) => void;
 | `getContext`    | Get session context           |
 | `clearContext`  | Clear session context         |
 
-### 8.2 Agent Response Format
+### 9.2 Agent Response Format
 
 ```typescript
 AgentResponse {

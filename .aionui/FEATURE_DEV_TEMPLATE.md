@@ -104,7 +104,7 @@ src/
 │   │   │   ├── preview/          # Preview panel
 │   │   │   └── workspace/        # Workspace
 │   │   ├── settings/             # Settings pages (12+)
-│   │   ├── admin/                # Admin pages (UserManagement, GroupMappings)
+│   │   ├── admin/                # Admin pages (UserManagement, GroupMappings, GlobalModels, LoggingSettings)
 │   │   └── login/                # Login page
 │   ├── messages/                 # Message rendering components
 │   ├── services/                 # Frontend services
@@ -229,8 +229,8 @@ export const [featureName] = {
 
 ### 3.4 State Management Design
 
-- [ ] Use existing Context: ****\_\_\_\_****
-- [ ] Need to add Context: ****\_\_\_\_****
+- [ ] Use existing Context: \***\*\_\_\_\_\*\***
+- [ ] Need to add Context: \***\*\_\_\_\_\*\***
 - [ ] Component-internal state only (useState/useReducer)
 - [ ] Requires persistent storage (ConfigStorage)
 
