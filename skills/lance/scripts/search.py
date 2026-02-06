@@ -28,7 +28,13 @@ def search_knowledge(
     filter_expr: str | None = None,
     embedding_model: str = "text-embedding-3-small",
 ) -> dict:
-    """Search the knowledge base."""
+    """Search the knowledge base.
+
+    Environment variables:
+        EMBEDDING_API_KEY: API key for embedding provider (required for vector/hybrid)
+        EMBEDDING_API_BASE: Base URL for OpenAI-compatible endpoint (optional)
+        OPENAI_API_KEY: Fallback if EMBEDDING_API_KEY not set
+    """
     try:
         import lancedb
         from lancedb.embeddings import get_registry
@@ -65,22 +71,31 @@ def search_knowledge(
                 "message": "Knowledge base is empty",
             }
 
-        # Get embedding function for vector search
-        api_key = os.environ.get("OPENAI_API_KEY")
+        # Get embedding configuration from environment
+        # Supports custom OpenAI-compatible endpoints (Azure, LiteLLM, etc.)
+        api_key = os.environ.get("EMBEDDING_API_KEY") or os.environ.get("OPENAI_API_KEY")
+        api_base = os.environ.get("EMBEDDING_API_BASE")  # Custom endpoint URL
+
         if not api_key and search_type in ("vector", "hybrid"):
-            return {"status": "error", "error": "OPENAI_API_KEY required for vector search"}
+            return {"status": "error", "error": "EMBEDDING_API_KEY or OPENAI_API_KEY required for vector search"}
 
         if search_type == "fts":
             # Full-text search only
             search_result = table.search(query, query_type="fts")
         elif search_type == "vector":
-            # Vector search only
-            embed_func = get_registry().get("openai").create(name=embedding_model, api_key=api_key)
+            # Vector search only - create embedding function with optional custom base URL
+            embed_kwargs = {"name": embedding_model, "api_key": api_key}
+            if api_base:
+                embed_kwargs["base_url"] = api_base
+            embed_func = get_registry().get("openai").create(**embed_kwargs)
             query_vector = embed_func.compute_query_embeddings(query)[0]
             search_result = table.search(query_vector)
         else:
-            # Hybrid search (default)
-            embed_func = get_registry().get("openai").create(name=embedding_model, api_key=api_key)
+            # Hybrid search (default) - create embedding function with optional custom base URL
+            embed_kwargs = {"name": embedding_model, "api_key": api_key}
+            if api_base:
+                embed_kwargs["base_url"] = api_base
+            embed_func = get_registry().get("openai").create(**embed_kwargs)
             query_vector = embed_func.compute_query_embeddings(query)[0]
             search_result = table.search(query_vector, query_type="hybrid")
 

@@ -118,10 +118,37 @@ class KnowledgeBaseService {
   }
 
   /**
-   * Get OpenAI API key from environment
+   * Get embedding configuration from environment
+   * Supports custom OpenAI-compatible endpoints (Azure, LiteLLM, etc.)
+   *
+   * Environment variables (in order of precedence):
+   * - EMBEDDING_API_KEY: API key for embedding provider
+   * - EMBEDDING_API_BASE: Base URL for OpenAI-compatible endpoint
+   * - OPENAI_API_KEY: Fallback if EMBEDDING_API_KEY not set
+   */
+  private getEmbeddingEnv(): Record<string, string> {
+    const env: Record<string, string> = {};
+
+    // API key (EMBEDDING_API_KEY takes precedence over OPENAI_API_KEY)
+    const apiKey = process.env.EMBEDDING_API_KEY || process.env.OPENAI_API_KEY;
+    if (apiKey) {
+      env.EMBEDDING_API_KEY = apiKey;
+      env.OPENAI_API_KEY = apiKey; // Also set for backward compatibility
+    }
+
+    // Custom base URL for OpenAI-compatible endpoints
+    if (process.env.EMBEDDING_API_BASE) {
+      env.EMBEDDING_API_BASE = process.env.EMBEDDING_API_BASE;
+    }
+
+    return env;
+  }
+
+  /**
+   * Get OpenAI API key from environment (deprecated, use getEmbeddingEnv)
    */
   private getOpenAIKey(): string {
-    return process.env.OPENAI_API_KEY || '';
+    return process.env.EMBEDDING_API_KEY || process.env.OPENAI_API_KEY || '';
   }
 
   /**
@@ -182,7 +209,7 @@ class KnowledgeBaseService {
       args.push('--overlap', String(options.overlap));
     }
 
-    const env = { OPENAI_API_KEY: this.getOpenAIKey() };
+    const env = this.getEmbeddingEnv();
 
     log.info({ userId, sourceFile, textLength: textContent.length }, 'Ingesting document to knowledge base');
 
@@ -217,7 +244,7 @@ class KnowledgeBaseService {
       args.push('--overlap', String(options.overlap));
     }
 
-    const env = { OPENAI_API_KEY: this.getOpenAIKey() };
+    const env = this.getEmbeddingEnv();
 
     log.info({ userId, filePath }, 'Ingesting file to knowledge base');
 
@@ -248,7 +275,7 @@ class KnowledgeBaseService {
       args.push('--filter', options.filter);
     }
 
-    const env = { OPENAI_API_KEY: this.getOpenAIKey() };
+    const env = this.getEmbeddingEnv();
 
     const result = await this.runLanceScript('search.py', args, workspaceDir, env);
 
@@ -325,7 +352,7 @@ class KnowledgeBaseService {
    */
   public async initialize(userId: string): Promise<{ success: boolean; alreadyExists?: boolean; error?: string }> {
     const workspaceDir = this.getWorkspaceDir(userId);
-    const env = { OPENAI_API_KEY: this.getOpenAIKey() };
+    const env = this.getEmbeddingEnv();
 
     log.info({ userId }, 'Initializing knowledge base');
 

@@ -95,7 +95,13 @@ def ingest_document(
     overlap: int = 100,
     embedding_model: str = "text-embedding-3-small",
 ) -> dict:
-    """Ingest a document into the knowledge base."""
+    """Ingest a document into the knowledge base.
+
+    Environment variables:
+        EMBEDDING_API_KEY: API key for embedding provider (required)
+        EMBEDDING_API_BASE: Base URL for OpenAI-compatible endpoint (optional)
+        OPENAI_API_KEY: Fallback if EMBEDDING_API_KEY not set
+    """
     try:
         import lancedb
         from lancedb.embeddings import get_registry
@@ -117,12 +123,20 @@ def ingest_document(
     }
 
     try:
-        # Get embedding function
-        api_key = os.environ.get("OPENAI_API_KEY")
-        if not api_key:
-            return {"status": "error", "error": "OPENAI_API_KEY not set"}
+        # Get embedding configuration from environment
+        # Supports custom OpenAI-compatible endpoints (Azure, LiteLLM, etc.)
+        api_key = os.environ.get("EMBEDDING_API_KEY") or os.environ.get("OPENAI_API_KEY")
+        api_base = os.environ.get("EMBEDDING_API_BASE")  # Custom endpoint URL
 
-        embed_func = get_registry().get("openai").create(name=embedding_model, api_key=api_key)
+        if not api_key:
+            return {"status": "error", "error": "EMBEDDING_API_KEY or OPENAI_API_KEY not set"}
+
+        # Create embedding function with optional custom base URL
+        embed_kwargs = {"name": embedding_model, "api_key": api_key}
+        if api_base:
+            embed_kwargs["base_url"] = api_base
+
+        embed_func = get_registry().get("openai").create(**embed_kwargs)
 
         # Define schema with embedding
         class DocumentChunk(LanceModel):
