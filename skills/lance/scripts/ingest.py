@@ -94,6 +94,7 @@ def ingest_document(
     chunk_size: int = 500,
     overlap: int = 100,
     embedding_model: str | None = None,
+    embedding_dimensions: int | None = None,
 ) -> dict:
     """Ingest a document into the knowledge base.
 
@@ -101,11 +102,18 @@ def ingest_document(
         EMBEDDING_API_KEY: API key for embedding provider (required)
         EMBEDDING_API_BASE: Base URL for OpenAI-compatible endpoint (optional)
         EMBEDDING_MODEL: Model name (optional, defaults to text-embedding-3-small)
+        EMBEDDING_DIMENSIONS: Vector dimensions (optional, auto-detected if not set)
         OPENAI_API_KEY: Fallback if EMBEDDING_API_KEY not set
     """
     # Get embedding model from env or use default
     if embedding_model is None:
         embedding_model = os.environ.get("EMBEDDING_MODEL", "text-embedding-3-small")
+
+    # Get embedding dimensions from env (optional - auto-detected if not set)
+    if embedding_dimensions is None:
+        dim_env = os.environ.get("EMBEDDING_DIMENSIONS")
+        if dim_env:
+            embedding_dimensions = int(dim_env)
     try:
         import lancedb
         from lancedb.embeddings import get_registry
@@ -148,11 +156,14 @@ def ingest_document(
 
         embed_func = get_registry().get("openai").create(**embed_kwargs)
 
+        # Determine vector dimensions: explicit env var > auto-detect from model
+        vector_dims = embedding_dimensions if embedding_dimensions else embed_func.ndims()
+
         # Define schema with embedding
         class DocumentChunk(LanceModel):
             id: str
             text: str = embed_func.SourceField()
-            vector: Vector(embed_func.ndims()) = embed_func.VectorField()
+            vector: Vector(vector_dims) = embed_func.VectorField()
             source_file: str
             page: int
             chunk_index: int
