@@ -481,7 +481,9 @@ skills/
 ├── mcp-builder/             # MCP server creation guide
 ├── webapp-testing/          # Playwright web app testing
 ├── brand-guidelines/        # Brand colors and typography
-└── doc-coauthoring/         # Structured documentation workflow
+├── doc-coauthoring/         # Structured documentation workflow
+├── internal-comms/          # 3P updates, newsletters, FAQs
+└── x-recruiter/             # X/Twitter job posting automation
 ```
 
 ### Office Infrastructure Pattern

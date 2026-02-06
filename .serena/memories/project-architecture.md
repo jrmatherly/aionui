@@ -114,9 +114,22 @@ Configs that sync from env vars to DB on startup (allows deployment-time config)
 
 3-job pipeline: **quality** → **compile** → **docker**
 
+- **quality** is skipped for PRs (deduped — `pr-checks.yml` runs the same gate)
 - **compile** runs on CI runner with cached `node_modules` + webpack + Electron
 - **docker** uses `Dockerfile.package` (COPY pre-built app, no compilation)
+- Docker images include **provenance attestation** and **SBOM** for supply-chain verification
 - Caches: node_modules (lockfile key), .webpack-cache (source hash key), Electron binary (version key)
+
+### Additional CI Workflows
+
+| Workflow                 | Purpose                                                |
+| ------------------------ | ------------------------------------------------------ |
+| `pr-checks.yml`          | Issue link check, code quality gate, PR summary        |
+| `codeql.yml`             | CodeQL security analysis (push/PR + weekly schedule)   |
+| `dependency-review.yml`  | Dependency vulnerability + license check on PRs        |
+| `release.yml`            | Tag-triggered GitHub Release with git-cliff notes      |
+| `claude.yml`             | Claude Code interactive assistant (`@claude` mentions) |
+| `claude-code-review.yml` | Automated PR code review via Claude                    |
 
 ## Claude Code Skills & Agents
 
@@ -150,6 +163,7 @@ Project-specific Claude Code automation in the repo:
 | `webapp-testing`   | Playwright web app testing toolkit          |
 | `brand-guidelines` | Brand colors and typography                 |
 | `doc-coauthoring`  | Structured documentation workflow           |
+| `internal-comms`   | 3P updates, newsletters, FAQs               |
 
 **Office Infrastructure (`scripts/office/`):**
 
