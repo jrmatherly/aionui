@@ -83,20 +83,27 @@ def search_knowledge(
         if not api_key and search_type in ("vector", "hybrid"):
             return {"status": "error", "error": "EMBEDDING_API_KEY or OPENAI_API_KEY required for vector search"}
 
+        # Set OPENAI_API_KEY for LanceDB's embedding registry
+        # LanceDB rejects direct api_key kwargs for security - it reads from env instead
+        if api_key:
+            os.environ["OPENAI_API_KEY"] = api_key
+        if api_base:
+            os.environ["OPENAI_API_BASE"] = api_base
+
         if search_type == "fts":
             # Full-text search only
             search_result = table.search(query, query_type="fts")
         elif search_type == "vector":
-            # Vector search only - create embedding function with optional custom base URL
-            embed_kwargs = {"name": embedding_model, "api_key": api_key}
+            # Vector search only - create embedding function
+            embed_kwargs = {"name": embedding_model}
             if api_base:
                 embed_kwargs["base_url"] = api_base
             embed_func = get_registry().get("openai").create(**embed_kwargs)
             query_vector = embed_func.compute_query_embeddings(query)[0]
             search_result = table.search(query_vector)
         else:
-            # Hybrid search (default) - create embedding function with optional custom base URL
-            embed_kwargs = {"name": embedding_model, "api_key": api_key}
+            # Hybrid search (default) - create embedding function
+            embed_kwargs = {"name": embedding_model}
             if api_base:
                 embed_kwargs["base_url"] = api_base
             embed_func = get_registry().get("openai").create(**embed_kwargs)

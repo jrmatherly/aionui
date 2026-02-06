@@ -135,8 +135,14 @@ def ingest_document(
         if not api_key:
             return {"status": "error", "error": "EMBEDDING_API_KEY or OPENAI_API_KEY not set"}
 
-        # Create embedding function with optional custom base URL
-        embed_kwargs = {"name": embedding_model, "api_key": api_key}
+        # Set OPENAI_API_KEY for LanceDB's embedding registry
+        # LanceDB rejects direct api_key kwargs for security - it reads from env instead
+        os.environ["OPENAI_API_KEY"] = api_key
+        if api_base:
+            os.environ["OPENAI_API_BASE"] = api_base
+
+        # Create embedding function - it reads API key from OPENAI_API_KEY env var
+        embed_kwargs = {"name": embedding_model}
         if api_base:
             embed_kwargs["base_url"] = api_base
 
