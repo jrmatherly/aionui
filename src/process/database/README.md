@@ -5,33 +5,38 @@ This document describes AionUi's database system, which uses **better-sqlite3** 
 ## Architecture Overview
 
 ```text
-┌─────────────────────────────────────┐
-│         Main Process                │
-│                                     │
-│  ┌─────────────────────────────┐   │
-│  │   better-sqlite3            │   │
-│  │   - Account system          │   │
-│  │   - Chat history persistence│   │
-│  │   - Config info (db_version)│   │
-│  └─────────────────────────────┘   │
-│              ↕ IPC                  │
-└─────────────────────────────────────┘
+┌────────────────────────────────────────┐
+│         Main Process                   │
+│                                        │
+│  ┌─────────────────────────────┐       │
+│  │   better-sqlite3            │       │
+│  │   - Account system + RBAC   │       │
+│  │   - Auth (JWT, refresh,     │       │
+│  │     token blacklist, OIDC)  │       │
+│  │   - Chat history persistence│       │
+│  │   - Personal assistant      │       │
+│  │   - Cron jobs, API keys     │       │
+│  │   - Orgs, models, logging   │       │
+│  │   - Config info (db_version)│       │
+│  └─────────────────────────────┘       │
+│              ↕ IPC                     │
+└────────────────────────────────────────┘
               ↕ IPC
-┌─────────────────────────────────────┐
-│       Renderer Process              │
-│                                     │
-│  - IPC Bridge queries main process  │
-│  - React State manages UI state     │
-│  - localStorage saves temp data     │
-└─────────────────────────────────────┘
+┌────────────────────────────────────────┐
+│       Renderer Process                 │
+│                                        │
+│  - IPC Bridge queries main process     │
+│  - React State manages UI state        │
+│  - localStorage saves temp data        │
+└────────────────────────────────────────┘
 
-┌─────────────────────────────────────┐
-│         File System                 │
-│                                     │
+┌────────────────────────────────────────┐
+│         File System                    │
+│                                        │
 │  - Image files (message.resultDisplay) │
-│  - Large file attachments           │
-│  - Database file (aionui.db)        │
-└─────────────────────────────────────┘
+│  - Large file attachments              │
+│  - Database file (aionui.db)           │
+└────────────────────────────────────────┘
 ```
 
 ## Design Features
@@ -272,24 +277,18 @@ If better-sqlite3 fails to load:
 
 ### Version Management
 
-Database Schema has version control, current version is **v4**. Each version upgrade has a corresponding migration script.
+Database Schema has version control, current version is **v18** (`CURRENT_DB_VERSION = 18` in `schema.ts`). Each version upgrade has a corresponding migration script.
 
 ```typescript
-import { getDatabase } from '@/process/database/export';
+import { getMigrationHistory, isMigrationApplied } from '@/process/database/migrations';
 
-const db = getDatabase();
-
-// View migration history
-const history = db.getMigrationHistory();
+// View migration history (returns current version info)
+const history = getMigrationHistory(db);
 console.log(history);
-// [
-//   { version: 1, name: 'Initial schema', timestamp: 1738012345678 },
-//   { version: 2, name: 'Add performance indexes', timestamp: 1738012345679 },
-//   ...
-// ]
+// [{ version: 18, name: 'Current schema version', timestamp: 1738012345678 }]
 
-// Check if specific migration has been applied
-const isV2Applied = db.isMigrationApplied(2);
+// Check if specific migration has been applied (checks user_version >= target)
+const isV10Applied = isMigrationApplied(db, 10); // true if version >= 10
 ```
 
 ### Migration Scripts
@@ -306,8 +305,21 @@ Migration scripts are defined in `migrations.ts`. Each migration includes:
 - **v1**: Initial Schema (users, conversations, messages, configs)
 - **v2**: Add performance indexes (composite indexes for query optimization)
 - **v3**: ~~Add full-text search support~~ (skipped, doesn't create FTS tables)
-- **v4**: Add user preferences table
-- **v5**: Delete FTS tables (cleanup v3 legacy tables, ensure database structure consistency)
+- **v4**: ~~Add user preferences table~~ (removed, no-op)
+- **v5**: Remove FTS table (cleanup v3 legacy tables, ensure database structure consistency)
+- **v6**: Add `jwt_secret` column to users table (per-user JWT secrets)
+- **v7**: Add Personal Assistant tables (`assistant_plugins`, `assistant_users`, `assistant_sessions`, `assistant_pairing_codes`)
+- **v8**: Add `source` column to conversations table (identify conversation origin: `aionui`, `telegram`)
+- **v9**: Add `cron_jobs` table (scheduled tasks with schedule_kind, payload, runtime state)
+- **v10**: Add multi-user auth columns to users table (`role`, `auth_method`, `oidc_subject`, `display_name`, `groups` for OIDC SSO + RBAC)
+- **v11**: Add `refresh_tokens` and `token_blacklist` tables (access+refresh token pattern, survives restarts)
+- **v12**: Add `avatar_url` column to users table (base64 data URLs from Microsoft Graph)
+- **v13**: Add `lark` to `assistant_plugins` type constraint (Lark/Feishu channel integration)
+- **v14**: Add `user_api_keys` table (per-user API key storage for multi-user mode)
+- **v15**: Add `organizations`, teams, and `user_directories` tables (multi-tenant orgs, team-based sharing, per-user directory isolation)
+- **v16**: Add `global_models` and `user_model_overrides` tables (admin-managed shared model configurations)
+- **v17**: Add `logging_config` table (centralized runtime logging configuration)
+- **v18**: Add `allowed_groups` column to `global_models` (group-based access control for cost management)
 
 ### Migration Features
 
@@ -331,10 +343,14 @@ All migrations use `IF NOT EXISTS` to ensure safe repeated runs.
 4. **Test rollback**: Ensure `down()` method correctly restores state
 5. **Small migrations**: One migration does one thing
 
+### Migration Scaffolding
+
+New migrations can be scaffolded using the Claude Code skill at `.claude/skills/db-migrate/SKILL.md`. This automates the boilerplate for creating new versioned migration files.
+
 ## Future Plans
 
 - [x] Database version upgrade and migration system
-- [ ] Support multi-user account system
+- [x] Support multi-user account system _(Complete: multi-user auth with OIDC SSO, RBAC roles, refresh tokens, token blacklist, per-user API keys, organizations, and user directories — see migrations v6–v18)_
 - [ ] Data encryption
 - [ ] Cloud sync
 - [ ] More query APIs (search, filter, etc.)
@@ -343,7 +359,7 @@ All migrations use `IF NOT EXISTS` to ensure safe repeated runs.
 
 ## Tech Stack
 
-- **better-sqlite3** v12.4.1 - Main process SQLite database
+- **better-sqlite3** ^12.6.2 - Main process SQLite database
 - **Electron IPC Bridge** - Renderer to main process communication
 - **Electron Forge** - Auto-handles native modules
 
@@ -358,4 +374,4 @@ To add new database features:
 
 ---
 
-**Last Updated**: 2025-01-27
+**Last Updated**: 2026-02-06

@@ -67,14 +67,16 @@ preview/
 │   │   ├── WordViewer.tsx             # Word viewer
 │   │   ├── ExcelViewer.tsx            # Excel viewer
 │   │   ├── PPTViewer.tsx              # PPT viewer
-│   │   └── HTMLViewer.tsx             # HTML rendering
+│   │   ├── HTMLViewer.tsx             # HTML rendering
+│   │   └── URLViewer.tsx              # URL/website viewer
 │   ├── editors/                       # Editor components
 │   │   ├── MarkdownEditor.tsx         # Markdown editor
 │   │   ├── TextEditor.tsx             # Code editor (Monaco)
 │   │   └── HTMLEditor.tsx             # HTML editor
 │   └── renderers/                     # Special renderers
 │       ├── HTMLRenderer.tsx           # HTML iframe renderer
-│       └── SelectionToolbar.tsx       # HTML selection toolbar
+│       ├── SelectionToolbar.tsx       # HTML selection toolbar
+│       └── htmlInspectScript.ts       # HTML inspection script for iframe
 ├── hooks/                             # Custom hooks
 │   ├── usePreviewHistory.ts           # Version history management
 │   ├── usePreviewKeyboardShortcuts.ts # Keyboard shortcut handling
@@ -548,6 +550,6 @@ export const FILE_TYPES_WITH_BUILTIN_OPEN = ['pdf', 'word', 'excel', 'ppt'];
 
 ## Related Links
 
-- [Workspace Module Documentation](../workspace/README.en.md)
-- [IPC Bridge Documentation](../../../../common/ipcBridge/README.en.md)
+- [Workspace Module Documentation](../workspace/README.md)
+- [IPC Reference Documentation](../../../../docs/api/IPC_REFERENCE.md)
 - [Monaco Editor Documentation](https://microsoft.github.io/monaco-editor/)

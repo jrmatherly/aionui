@@ -1,0 +1,1 @@
+../../src/renderer/styles/themes/README.md

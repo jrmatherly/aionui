@@ -8,8 +8,8 @@ The Workspace module is a core component in AionUi for managing conversation wor
 
 The Workspace module follows the **Container Component Pattern**:
 
-- **index.tsx (550 lines)**: Acts as the container component, composing and coordinating all hooks
-- **hooks/**: 5 specialized hooks, each handling a specific business logic domain
+- **index.tsx (~936 lines)**: Acts as the container component, composing and coordinating all hooks
+- **hooks/**: 6 specialized hooks, each handling a specific business logic domain
 - **utils/**: Utility functions for tree structure operations and path calculations
 - **types.ts**: TypeScript type definitions
 
@@ -24,16 +24,17 @@ Advantages of this architecture:
 
 ```text
 workspace/
-├── index.tsx                   # Container component (550 lines) - Composes all hooks
-├── hooks/                      # Business logic hooks
-│   ├── useWorkspaceTree.ts     # Tree state management and selection logic
-│   ├── useWorkspaceEvents.ts   # Event listener management
-│   ├── useWorkspaceFileOps.ts  # File operations (open, delete, rename, preview)
-│   ├── useWorkspaceModals.ts   # Modal and menu state management
-│   └── useWorkspacePaste.ts    # File paste and add logic
+├── index.tsx                       # Container component (~936 lines) - Composes all hooks
+├── hooks/                          # Business logic hooks
+│   ├── useWorkspaceTree.ts         # Tree state management and selection logic
+│   ├── useWorkspaceEvents.ts       # Event listener management
+│   ├── useWorkspaceFileOps.ts      # File operations (open, delete, rename, preview)
+│   ├── useWorkspaceModals.ts       # Modal and menu state management
+│   ├── useWorkspacePaste.ts        # File paste and add logic
+│   └── useWorkspaceDragImport.ts   # Drag-and-drop file import from OS
 ├── utils/
-│   └── treeHelpers.ts          # Tree structure utility functions
-└── types.ts                    # TypeScript type definitions
+│   └── treeHelpers.ts              # Tree structure utility functions
+└── types.ts                        # TypeScript type definitions
 ```
 
 ## Hook Details
@@ -204,6 +205,52 @@ Check workspace.pasteConfirm config
 - Supports pasting multiple files simultaneously
 - Shows detailed error messages on failure
 
+### 6. useWorkspaceDragImport
+
+**Responsibility**: Handle drag-and-drop file import from the operating system (Finder/Explorer)
+
+**Main Features**:
+
+1. **Drag state tracking** (`isDragging`) - Visual feedback when files are dragged over the workspace
+2. **Drop handling** (`handleDrop`) - Process dropped files and directories from the OS
+3. **Path resolution** - Uses Electron's `webUtils.getPathForFile` API to get absolute paths
+4. **Directory detection** - Inspects dropped items via IPC to distinguish files from directories
+5. **Fallback handling** - Creates temp files for browser drops without path properties
+
+**Core API**:
+
+```typescript
+const {
+  isDragging, // Whether files are being dragged over the workspace
+  dragHandlers, // Event handlers: onDragEnter, onDragOver, onDragLeave, onDrop
+} = useWorkspaceDragImport({
+  onFilesDropped, // Callback when files are dropped
+  messageApi, // Ant Design message API for notifications
+});
+```
+
+**Workflow**:
+
+```text
+User drags files from Finder/Explorer
+    ↓
+onDragEnter → isDragging = true (visual overlay)
+    ↓
+onDrop → Extract files from DataTransfer
+    ↓
+├─ Has Electron path → resolveDroppedItems (detect file/directory)
+└─ No path (browser) → createTempItemsFromFiles via FileService
+    ↓
+Deduplicate items → onFilesDropped callback
+```
+
+**Features**:
+
+- Uses `dragCounterRef` to correctly handle nested drag enter/leave events
+- Deduplicates dropped items by path
+- Supports both Electron (`getPathForFile`) and browser (`webkitGetAsEntry`) environments
+- Displays warning if no valid files are detected
+
 ## Usage Examples
 
 ### Basic Usage
@@ -357,10 +404,10 @@ All file operations include comprehensive error handling:
 try {
   const result = await operation();
   if (!result.success) {
-    messageApi.error(result.msg || t('defaultErrorMessage'));
+    messageApi.error(result.msg || 'Operation failed');
   }
 } catch (error) {
-  messageApi.error(t('unknownError'));
+  messageApi.error('An unexpected error occurred');
 }
 ```
 
@@ -378,11 +425,12 @@ try {
 ```text
 index.tsx (Container Component)
     ↓
-├── useWorkspaceTree        (Independent)
-├── useWorkspaceModals      (Independent)
-├── useWorkspacePaste       (Depends on: Tree, Modals)
-├── useWorkspaceFileOps     (Depends on: Tree, Modals, Preview)
-└── useWorkspaceEvents      (Depends on: Tree, Modals)
+├── useWorkspaceTree            (Independent)
+├── useWorkspaceModals          (Independent)
+├── useWorkspacePaste           (Depends on: Tree, Modals)
+├── useWorkspaceFileOps         (Depends on: Tree, Modals, Preview)
+├── useWorkspaceEvents          (Depends on: Tree, Modals)
+└── useWorkspaceDragImport      (Independent — receives onFilesDropped callback)
 ```
 
 ## FAQ
@@ -415,6 +463,6 @@ await ConfigStorage.set('workspace.pasteConfirm', true);
 
 ## Related Links
 
-- [Preview Module Documentation](../preview/README.en.md)
-- [IPC Bridge Documentation](../../../../common/ipcBridge/README.en.md)
+- [Preview Module Documentation](../preview/README.md)
+- [IPC Reference Documentation](../../../../docs/api/IPC_REFERENCE.md)
 - [Configuration Storage Documentation](../../../../common/storage.ts)
