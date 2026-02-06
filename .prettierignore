@@ -17,4 +17,7 @@ resources/
 docs/
 config/webpack/
 scripts/
-deploy/STYLING-PLAYBOOK.md
+STYLING-PLAYBOOK.md
+.serena/
+.scratchpad/
+.local_docs/

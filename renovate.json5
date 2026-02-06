@@ -93,9 +93,16 @@
       // openid-client v6 is a complete API rewrite — pin to v5.x
       // v6 removes Issuer/Client/TokenSet classes entirely (ESM-only, new function-based API)
       // v5 continues to receive security updates
-      // See: docs/guides/DEPENDENCY_UPGRADE_ANALYSIS.md
+      // See: docs/BLOCKED_UPGRADES.md
       "matchPackageNames": ["openid-client"],
       "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      // web-tree-sitter pinned at 0.25.10 — DO NOT UPGRADE
+      // v0.25.11+ breaks WASM loading in Docker (headless Electron)
+      // See: docs/BLOCKED_UPGRADES.md
+      "matchPackageNames": ["web-tree-sitter"],
       "enabled": false
     },
     {
