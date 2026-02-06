@@ -361,6 +361,16 @@ export class AcpAgent {
 
       if (resolvedPath) {
         try {
+          // Check file size first - skip large files to prevent context window overflow
+          // Large files should use RAG (auto-ingested to knowledge base)
+          const LARGE_FILE_THRESHOLD = 40_000; // ~10K tokens
+          const stats = await fs.stat(resolvedPath);
+
+          if (stats.size > LARGE_FILE_THRESHOLD) {
+            log.info({ atPath, sizeBytes: stats.size }, 'Skipping large file (use Knowledge Base for RAG)');
+            continue;
+          }
+
           // Try to read as text file
           const fileContent = await fs.readFile(resolvedPath, 'utf-8');
           resolvedFiles.set(atPath, fileContent);
