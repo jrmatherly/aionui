@@ -53,10 +53,10 @@ def fill_form_fields(input_path: str, values_path: str, output_path: str) -> Non
             invalid_fields.append(field_id)
 
     if invalid_fields:
-        print(f"Error: The following field IDs are not valid:")
+        print("Error: The following field IDs are not valid:")
         for f in invalid_fields:
             print(f"  - {f}")
-        print(f"\nValid field IDs are:")
+        print("\nValid field IDs are:")
         for f in sorted(valid_fields):
             print(f"  - {f}")
         sys.exit(1)
