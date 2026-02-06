@@ -6,6 +6,20 @@ This guide explains how AionUI isolates API keys between users in a multi-user d
 
 In multi-user deployments, each user can store their own API keys for various AI providers (Anthropic, OpenAI, Google, etc.). When a user starts a CLI agent conversation (Claude Code, Codex, etc.), their personal API keys are automatically injected into the CLI process environment.
 
+## Global Models: Shared Provider Access
+
+Before diving into per-user key isolation, note that users may not need personal API keys at all if an admin has configured **Global Models**.
+
+Global Models are admin-managed, shared provider configurations with group-based access control. When a Global Model is available for a provider, users see it alongside any personal API keys and can use it without storing their own key.
+
+The per-user API key system described in this guide is still used when:
+
+- Users want their **own keys** for a specific provider (billing isolation, higher rate limits, etc.)
+- The admin **hasn't configured** a Global Model for that provider
+- A user needs a provider that isn't covered by any Global Model
+
+When both exist, the resolution order is: **user's personal key → Global Model → container env var fallback**.
+
 ## Architecture
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -294,8 +308,23 @@ If a user hasn't stored a key, the CLI will use the container-level environment 
 - Users who prefer centralized key management
 - Development/testing scenarios
 
+### Knowledge Base Embedding Keys
+
+The Knowledge Base (RAG) system uses a separate path for embedding API keys. These are **not** injected via CLI spawn — instead, they're passed to Python scripts via `KnowledgeBaseService` using these environment variables:
+
+| Variable | Description |
+|----------|-------------|
+| `EMBEDDING_API_KEY` | API key for the embedding provider |
+| `EMBEDDING_MODEL` | Embedding model name (e.g., `text-embedding-3-small`) |
+| `EMBEDDING_BASE_URL` | Base URL for the embedding API |
+
+The KB system can also auto-use a Global Model with embedding capability. The resolution order is:
+
+1. **Capability match** — A Global Model explicitly tagged with embedding capability
+2. **Name match** — A Global Model whose name matches the configured embedding model
+3. **Env var fallback** — `EMBEDDING_API_KEY` / `EMBEDDING_MODEL` / `EMBEDDING_BASE_URL` from the environment
+
 ## Related Documentation
 
-- [Multi-User Authentication](./MULTI_USER_AUTH.md)
-- [API Key Management UI](./API_KEY_MANAGEMENT.md) (coming soon)
-- [Security Model](./SECURITY.md)
+- [Multi-User Authentication](./GETTING_STARTED.md#multi-user-authentication)
+- [Security Model](../architecture/ARCHITECTURE.md#security-considerations)

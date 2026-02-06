@@ -33,21 +33,43 @@ mise run dev        # Installs npm deps + starts dev server
 
 ```bash
 # Ensure Node.js >= 24 is installed (npm 11+ is bundled)
-# Optionally upgrade npm to 11.9+: npm install -g npm@11
-npm install -g npm@11
 git clone https://github.com/jrmatherly/aionui.git
 cd aionui
+# Optionally upgrade npm: npm install -g npm@11
 npm install
 npm start
 ```
 
 ### From Release
 
-Download the latest release for your platform from the [Releases page](https://github.com/your-org/aionui/releases).
+Download the latest release for your platform from the [Releases page](https://github.com/jrmatherly/aionui/releases).
 
 - **macOS**: `AionUI-x.x.x.dmg`
 - **Windows**: `AionUI-Setup-x.x.x.exe`
 - **Linux**: `AionUI-x.x.x.AppImage`
+
+### Docker (Primary Deployment)
+
+Docker is the recommended way to run AionUI in production or multi-user environments:
+
+```bash
+cd deploy/docker
+cp .env.example .env
+# Edit .env with your API keys and OIDC config
+mise run docker:up    # or: docker compose up -d
+```
+
+Access at [http://localhost:25808](http://localhost:25808). Check container logs for the initial admin password on first start.
+
+#### Enabling HTTPS
+
+For production deployments with HTTPS via nginx reverse proxy:
+
+```bash
+mise run docker:up:https
+```
+
+This requires SSL certificates to be mounted. See [`deploy/README.md`](../../deploy/README.md) for certificate configuration and full deployment details.
 
 ## Quick Start
 
@@ -93,6 +115,30 @@ Or launch the installed application from your system.
 - **Permission Requests**: Control what the AI can do
 - **Streaming Responses**: Real-time response display
 
+### Knowledge Base
+
+Upload documents (PDF, text, code files) for RAG-powered conversations. The Knowledge Base enables your AI agents to reference your uploaded content for more relevant, context-aware responses.
+
+1. Navigate to **Settings → Knowledge Base**
+2. Upload your documents
+3. Start a conversation — the agent will automatically search your knowledge base for relevant context
+
+### Global Models
+
+Admins can configure shared model providers that are available to all users (or specific groups). Users see Global Models alongside any personal API keys they've configured.
+
+- Admins configure Global Models in **Settings → Global Models**
+- Users can use Global Models without needing their own API keys
+- Access can be scoped to specific groups via RBAC
+
+### Python Environment
+
+Per-user Python workspaces allow custom skills and scripts:
+
+1. Navigate to **Settings → Python Environment**
+2. Configure your Python workspace
+3. Install packages and create custom skills for your AI agents
+
 ### Scheduled Tasks (Cron)
 
 1. Navigate to **Settings > Cron**
@@ -110,10 +156,10 @@ Access AionUI from other devices on your network:
 
 ```bash
 # Start with WebUI enabled
-npm run webui
+mise run webui            # or: npm run webui
 
 # Start with remote access
-npm run webui:remote
+mise run webui:remote     # or: npm run webui:remote
 ```
 
 Then open `http://your-ip:25808` in a browser.
@@ -300,7 +346,7 @@ Configure MCP servers for extended capabilities:
 3. **Review logs**:
 
    ```bash
-   docker-compose logs -f  # For Docker deployments
+   docker compose logs -f  # For Docker deployments
    # Or check application logs for OIDC errors
    ```
 
