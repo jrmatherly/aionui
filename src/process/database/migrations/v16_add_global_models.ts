@@ -192,7 +192,8 @@ export function syncGlobalModelsFromEnv(db: Database.Database, jwtSecret: string
   log.info({ count: models.length }, 'Syncing global models from environment');
 
   const now = Math.floor(Date.now() / 1000);
-  const systemUserId = 'system'; // Models created via env are attributed to 'system'
+  // Must match defaultUserId in AionUIDatabase (foreign key constraint)
+  const systemUserId = 'system_default_user';
 
   // Prepare statements
   const findByName = db.prepare('SELECT id FROM global_models WHERE name = ?');
