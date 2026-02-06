@@ -229,7 +229,7 @@ For Docker builds, native modules use prebuild binaries:
 
 1. **No native compilation** in Docker (uses prebuild-install)
 2. **Version lock**: Docker uses Node/npm versions from `mise.lock`
-3. **Build command**: `mise run docker:build` or `docker-compose build`
+3. **Build command**: `mise run docker:build` or `docker compose build`
 
 See `deploy/docker/Dockerfile` for details.
 

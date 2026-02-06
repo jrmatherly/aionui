@@ -4,7 +4,7 @@
 
 AionUI uses a Docker-focused CI/CD pipeline via GitHub Actions. The primary deployment target is Docker containers (web mode via headless Electron + Xvfb), with native desktop builds available but disabled by default.
 
-## Workflows
+## Workflows (7 Active + 1 Archived)
 
 ### 1. `build-and-release.yml` — Docker Build & Release
 
@@ -35,7 +35,49 @@ AionUI uses a Docker-focused CI/CD pipeline via GitHub Actions. The primary depl
   - JavaScript/TypeScript analysis with `security-extended` queries
   - Free for public repositories
 
-### 4. `build-and-release.yml.disabled` — Native Desktop Build (Archived)
+### 4. `release.yml` — Tag-Triggered Release
+
+- **Trigger**: Push tag matching `v[0-9]+.[0-9]+.[0-9]+`
+- **Features**:
+  - Generates release notes via `git-cliff` (latest tag only)
+  - Creates a GitHub Release with auto-generated notes
+  - Permissions: `contents: write`
+- **Process**:
+  1. Checkout with full history (`fetch-depth: 0`)
+  2. Install tools via mise
+  3. Generate release notes with `git cliff --latest`
+  4. Create GitHub Release via `softprops/action-gh-release@v2`
+
+### 5. `claude-code-review.yml` — Claude Code PR Review
+
+- **Trigger**: PRs opened/synchronized/ready_for_review/reopened
+- **Features**:
+  - Automated code review via Claude Code (`anthropics/claude-code-action@v1`)
+  - Concurrency: one review per PR number (cancels in-progress reviews on new pushes)
+  - Permissions: `contents: read`, `pull-requests: read`, `issues: read`, `id-token: write`
+
+### 6. `claude.yml` — Claude Code Assistant
+
+- **Trigger**: Issue comments containing `@claude`, PR review comments containing `@claude`, issues opened/assigned with `@claude`, PR reviews mentioning `@claude`
+- **Features**:
+  - Claude Code acts as an AI assistant on issues and PRs
+  - Concurrency: per issue/PR number (does **not** cancel in-progress — allows queued work)
+  - Permissions: `contents: read`, `pull-requests: read`, `issues: read`, `id-token: write`, `actions: read`
+
+### 7. `dependency-review.yml` — Dependency Review
+
+- **Trigger**: PRs to `main`
+- **Features**:
+  - Reviews dependency changes for vulnerabilities via `actions/dependency-review-action@v4`
+  - Fails on `high` severity vulnerabilities
+  - Denies `GPL-3.0` and `AGPL-3.0` licensed dependencies
+  - Posts summary comment on PR
+  - Permissions: `contents: read`, `pull-requests: write`
+  - Timeout: 5 minutes
+
+### Archived
+
+#### `build-and-release.yml.disabled` — Native Desktop Build
 
 The original multi-platform native Electron build workflow. Disabled in favor of Docker-only builds. Preserved for reference if native desktop distribution is needed in the future.
 
@@ -82,11 +124,11 @@ ghcr.io/jrmatherly/aionui
 
 ### Tags
 
-| Tag      | Description               |
-| -------- | ------------------------- |
-| `latest` | Latest main branch build  |
-| `1.8.2`  | Version from package.json |
-| `<sha>`  | Git commit SHA            |
+| Tag      | Description                                                         |
+| -------- | ------------------------------------------------------------------- |
+| `latest` | Latest main branch build                                            |
+| `2.0.0`  | Version from package.json (next release, 401+ commits since v1.8.2) |
+| `<sha>`  | Git commit SHA                                                      |
 
 ### Build Arguments
 

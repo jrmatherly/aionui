@@ -10,16 +10,16 @@ The `docker/` directory contains everything needed to run AionUI as a containeri
 
 ```bash
 # From project root
-docker-compose -f deploy/docker/docker-compose.yml up -d
+docker compose -f deploy/docker/docker-compose.yml up -d
 
 # View logs
-docker-compose -f deploy/docker/docker-compose.yml logs -f
+docker compose -f deploy/docker/docker-compose.yml logs -f
 
 # Stop
-docker-compose -f deploy/docker/docker-compose.yml down
+docker compose -f deploy/docker/docker-compose.yml down
 
 # Rebuild after code changes
-docker-compose -f deploy/docker/docker-compose.yml up -d --build
+docker compose -f deploy/docker/docker-compose.yml up -d --build
 ```
 
 ### Build Only
@@ -39,7 +39,7 @@ docker build -f deploy/docker/Dockerfile -t aionui .
 On first startup, check the container logs for the initial admin password:
 
 ```bash
-docker-compose -f deploy/docker/docker-compose.yml logs | grep -A5 "Initial Admin"
+docker compose -f deploy/docker/docker-compose.yml logs | grep -A5 "Initial Admin"
 ```
 
 - **Username:** `admin`
@@ -137,7 +137,7 @@ environment:
 **Step 4: Start the Container**
 
 ```bash
-docker-compose -f deploy/docker/docker-compose.yml up -d
+docker compose -f deploy/docker/docker-compose.yml up -d
 ```
 
 **Step 5: Verify OIDC Login**
@@ -200,6 +200,30 @@ Environment variables can be set in `.env` or `docker-compose.yml`:
 | ------------------- | ------- | ------------------------------------------ |
 | `ALLOW_CLAUDE_YOLO` | `false` | Show Claude YOLO (skip permissions) toggle |
 | `ALLOW_GEMINI_YOLO` | `false` | Show Gemini YOLO (skip permissions) toggle |
+
+#### Knowledge Base & Embeddings
+
+Configure the embedding provider for document ingestion and semantic search (Knowledge Base / RAG). Supports any OpenAI-compatible endpoint (OpenAI, Azure, LiteLLM, vLLM, etc.).
+
+| Variable               | Default                  | Description                                                    |
+| ---------------------- | ------------------------ | -------------------------------------------------------------- |
+| `EMBEDDING_MODEL`      | `text-embedding-3-small` | OpenAI-compatible embedding model name                         |
+| `EMBEDDING_API_KEY`    | —                        | API key for embedding service (falls back to `OPENAI_API_KEY`) |
+| `EMBEDDING_API_BASE`   | —                        | Custom embedding API endpoint                                  |
+| `EMBEDDING_DIMENSIONS` | (auto)                   | Embedding vector dimensions (auto-detected for OpenAI models)  |
+
+> See `deploy/docker/.env.example` for detailed examples with Azure, LiteLLM, and self-hosted endpoints.
+
+#### Global Models
+
+Mount `global-models.json` to provide pre-configured models for all users. Models are synced to the database on startup and can also be managed via the Admin UI.
+
+```bash
+# Copy the example and customize
+cp deploy/docker/global-models-example.json deploy/docker/global-models.json
+```
+
+The compose file mounts `./global-models.json` to `/etc/aionui/global-models.json` automatically. Set `GLOBAL_MODELS_FILE=/etc/aionui/global-models.json` in your `.env` (already configured in `.env.example`). See `docker/global-models-example.json` for a complete example with multiple providers.
 
 #### Multi-Agent CLI
 
@@ -375,16 +399,21 @@ server {
 
 ## Files
 
-| File                                 | Description                          | Git-tracked     |
-| ------------------------------------ | ------------------------------------ | --------------- |
-| `docker/Dockerfile`                  | Multi-stage Docker build (local dev) | ✅              |
-| `docker/Dockerfile.package`          | Packaging-only build (CI)            | ✅              |
-| `docker/docker-compose.yml`          | Compose orchestration                | ✅              |
-| `docker/docker-entrypoint.sh`        | Container startup script             | ✅              |
-| `docker/.env.example`                | Environment variable template        | ✅              |
-| `docker/.env`                        | Your local config (secrets)          | ❌ (gitignored) |
-| `docker/group-mappings.json`         | Your OIDC group mappings             | ❌ (gitignored) |
-| `docker/group-mappings-example.json` | Example group mappings               | ✅              |
+| File                                     | Description                                       | Git-tracked     |
+| ---------------------------------------- | ------------------------------------------------- | --------------- |
+| `docker/Dockerfile`                      | Multi-stage Docker build (local dev)              | ✅              |
+| `docker/Dockerfile.package`              | Packaging-only build (CI)                         | ✅              |
+| `docker/Dockerfile.package.dockerignore` | CI build .dockerignore                            | ✅              |
+| `docker/docker-compose.yml`              | Compose orchestration                             | ✅              |
+| `docker/docker-entrypoint.sh`            | Container startup script                          | ✅              |
+| `docker/nginx.conf`                      | nginx reverse proxy config (TLS, WebSocket, ACME) | ✅              |
+| `docker/mise-template.toml`              | Template mise config for user workspaces          | ✅              |
+| `docker/.env.example`                    | Environment variable template                     | ✅              |
+| `docker/.env`                            | Your local config (secrets)                       | ❌ (gitignored) |
+| `docker/group-mappings-example.json`     | Example group mappings                            | ✅              |
+| `docker/group-mappings.json`             | Your OIDC group mappings                          | ❌ (gitignored) |
+| `docker/global-models-example.json`      | Example Global Models configuration               | ✅              |
+| `docker/global-models.json`              | Your Global Models config                         | ❌ (gitignored) |
 
 ## Future Deployments
 

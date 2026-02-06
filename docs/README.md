@@ -17,6 +17,8 @@ docs/
 │   └── ARCHITECTURE.md                    # System architecture documentation
 └── guides/
     ├── AI_CONTEXT_GUIDE.md                # Drift Detect + Serena setup
+    ├── CICD_SETUP.md                      # CI/CD pipeline setup → .github/CICD_SETUP.md
+    ├── DEPLOYMENT.md                      # Deployment guide → deploy/README.md
     ├── DEVELOPER_GUIDE.md                 # Developer contribution guide
     ├── GETTING_STARTED.md                 # User getting started guide
     ├── LOGGING_GUIDE.md                   # Logging & observability guide
@@ -30,6 +32,11 @@ docs/
 - **[Getting Started](./guides/GETTING_STARTED.md)** - Installation, setup, and basic usage
 - **[WebUI Guide](./guides/WEBUI_GUIDE.md)** - Remote access via web browser
 - **[Logging & Observability](./guides/LOGGING_GUIDE.md)** - Pino + OTEL + Syslog + Langfuse logging stack
+
+### For Operators
+
+- **[Deployment Guide](./guides/DEPLOYMENT.md)** - Docker deployment, OIDC/SSO, HTTPS, configuration
+- **[CI/CD Setup](./guides/CICD_SETUP.md)** - GitHub Actions workflows, Docker registry, secrets
 
 ### For Developers
 
