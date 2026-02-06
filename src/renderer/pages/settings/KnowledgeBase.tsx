@@ -153,7 +153,9 @@ const KnowledgeBase: React.FC = () => {
         try {
           const response = await fetch(`/api/knowledge/document/${encodeURIComponent(sourceFile)}`, {
             method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
+            body: JSON.stringify(withCsrfToken({})),
           });
           const data = await response.json();
           if (data.success) {
