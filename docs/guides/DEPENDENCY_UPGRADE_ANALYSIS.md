@@ -1,7 +1,7 @@
 # Dependency Upgrade Analysis
 
 **Date:** 2026-02-05  
-**Analyst:** OpenClaw AI (sub-agent analysis + manual validation)  
+**Analyst:** Bot42 AI (sub-agent analysis + manual validation)  
 **Project:** AionUI v1.8.2  
 **Tech Stack:** Electron 37, React 19, TypeScript 5.8, Express 5, webpack (Electron Forge), UnoCSS, Arco Design  
 **Status:** ✅ Applied — all safe upgrades committed, `openid-client` pinned to v5.x
@@ -1253,5 +1253,5 @@ Add a "Changelog" section at the bottom:
 ---
 
 **Analysis completed:** 2026-02-05 00:46 EST  
-**Subagent:** OpenClaw (dep-upgrade-analysis)  
+**Subagent:** Bot42 (dep-upgrade-analysis)  
 **Contact:** Jason Matherly (jason@matherly.net)
