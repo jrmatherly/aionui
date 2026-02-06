@@ -377,6 +377,10 @@ run = "drift boundaries check"
 description = "Check style consistency (DNA mutations)"
 run = "drift dna mutations"
 
+[tasks."drift:dna:playbook"]
+description = "Regenerate STYLING-PLAYBOOK.md (gitignored, local reference)"
+run = "drift dna playbook"
+
 [tasks."drift:health"]
 description = "Show Drift Detect health summary"
 run = """
@@ -439,6 +443,10 @@ node -e "
   pkg.version = '$VERSION_NUM';
   require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\\n');
 "
+
+# Regenerate styling playbook (gitignored, but keeps local copy fresh)
+echo "📝 Regenerating styling playbook..."
+drift dna playbook 2>/dev/null || echo "⚠️  drift dna playbook skipped (drift not available)"
 
 # Generate changelog
 git cliff --tag "$NEXT_VERSION" -o CHANGELOG.md
