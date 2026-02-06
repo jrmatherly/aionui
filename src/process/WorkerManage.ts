@@ -62,6 +62,8 @@ const buildConversation = (conversation: TChatConversation, options?: BuildConve
           enabledSkills: conversation.extra.enabledSkills,
           // Runtime options
           yoloMode: options?.yoloMode,
+          // Per-user features (RAG)
+          userId: options?.userId,
         },
         conversation.model
       );

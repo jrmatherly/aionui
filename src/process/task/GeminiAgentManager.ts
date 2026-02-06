@@ -21,7 +21,7 @@ import { handlePreviewOpenEvent } from '../utils/previewUtils';
 import BaseAgentManager from './BaseAgentManager';
 import { hasCronCommands } from './CronCommandDetector';
 import { extractTextFromMessage, processCronInMessage } from './MessageMiddleware';
-import { buildSystemInstructions } from './agentUtils';
+import { buildSystemInstructions, prepareMessageWithRAGContext } from './agentUtils';
 
 // Gemini agent manager class
 type UiMcpServerConfig = {
@@ -49,6 +49,8 @@ export class GeminiAgentManager extends BaseAgentManager<
     enabledSkills?: string[];
     /** Yolo mode: auto-approve all tool calls */
     yoloMode?: boolean;
+    /** User ID for per-user features like RAG */
+    userId?: string;
   },
   string
 > {
@@ -58,6 +60,7 @@ export class GeminiAgentManager extends BaseAgentManager<
   presetRules?: string;
   contextContent?: string;
   enabledSkills?: string[];
+  userId?: string;
   private bootstrap: Promise<void>;
 
   /** Session-level approval store for "always allow" memory */
@@ -83,6 +86,8 @@ export class GeminiAgentManager extends BaseAgentManager<
       enabledSkills?: string[];
       /** Force yolo mode (for cron jobs) */
       yoloMode?: boolean;
+      /** User ID for per-user features like RAG */
+      userId?: string;
     },
     model: TProviderWithModel
   ) {
@@ -94,6 +99,7 @@ export class GeminiAgentManager extends BaseAgentManager<
     this.presetRules = data.presetRules;
     this.enabledSkills = data.enabledSkills;
     this.forceYoloMode = data.yoloMode;
+    this.userId = data.userId;
     // Backward compatible
     this.contextContent = data.contextContent || data.presetRules;
     this.bootstrap = Promise.all([ProcessConfig.get('gemini.config'), this.getImageGenerationModel(), this.getMcpServers()])
@@ -198,6 +204,24 @@ export class GeminiAgentManager extends BaseAgentManager<
     addMessage(this.conversation_id, message);
     this.status = 'pending';
     cronBusyGuard.setProcessing(this.conversation_id, true);
+
+    // Prepare message data with potential RAG context injection
+    let messageData = data;
+    if (this.userId) {
+      try {
+        const ragResult = await prepareMessageWithRAGContext(data.input, this.userId, {
+          attachedFiles: data.files,
+        });
+        if (ragResult.ragUsed) {
+          messageData = { ...data, input: ragResult.content };
+          // Note: Using conversationLogger since geminiLogger isn't available in this file
+          // The log will still be useful for debugging
+        }
+      } catch {
+        // RAG failure should not block the message - continue with original data
+      }
+    }
+
     const result = await this.bootstrap
       .catch((e) => {
         cronBusyGuard.setProcessing(this.conversation_id, false);
@@ -215,7 +239,7 @@ export class GeminiAgentManager extends BaseAgentManager<
           });
         });
       })
-      .then(() => super.sendMessage(data))
+      .then(() => super.sendMessage(messageData))
       .finally(() => {
         cronBusyGuard.setProcessing(this.conversation_id, false);
       });

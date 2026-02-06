@@ -19,6 +19,54 @@ import type AcpAgentManager from '../task/AcpAgentManager';
 import type { GeminiAgentManager } from '../task/GeminiAgentManager';
 import { copyFilesToDirectory, readDirectoryRecursive } from '../utils';
 import { migrateConversationToDatabase } from './migrationUtils';
+import { getFilesForAutoIngest } from '../task/RagUtils';
+import fs from 'fs';
+import path from 'path';
+
+/**
+ * Auto-ingest large files to knowledge base (fire-and-forget)
+ * This enables RAG for subsequent queries about the files
+ *
+ * @param userId - User ID for per-user knowledge base
+ * @param files - Array of file paths in workspace
+ */
+async function autoIngestFilesToKnowledgeBase(userId: string, files: string[]): Promise<void> {
+  // Filter to files that should be ingested (large, supported types)
+  const filesToIngest = getFilesForAutoIngest(files);
+
+  if (filesToIngest.length === 0) {
+    return;
+  }
+
+  log.info({ userId, fileCount: filesToIngest.length }, 'Auto-ingesting files to knowledge base');
+
+  try {
+    const { getKnowledgeBaseService } = await import('@process/services/KnowledgeBaseService');
+    const kbService = getKnowledgeBaseService();
+
+    for (const filePath of filesToIngest) {
+      try {
+        // Read file content
+        const content = await fs.promises.readFile(filePath, 'utf-8');
+        const fileName = path.basename(filePath);
+
+        // Ingest to knowledge base
+        const result = await kbService.ingest(userId, fileName, content);
+
+        if (result.success) {
+          log.info({ userId, file: fileName, chunks: result.chunksAdded }, 'File auto-ingested to knowledge base');
+        } else {
+          log.warn({ userId, file: fileName, error: result.error }, 'Failed to auto-ingest file');
+        }
+      } catch (err) {
+        // Individual file failure shouldn't stop others
+        log.warn({ userId, file: filePath, err }, 'Failed to read/ingest file');
+      }
+    }
+  } catch (err) {
+    log.warn({ userId, err }, 'Failed to initialize knowledge base service');
+  }
+}
 
 export function initConversationBridge(): void {
   ipcBridge.conversation.create.provider(async (params: any): Promise<TChatConversation> => {
@@ -370,12 +418,13 @@ export function initConversationBridge(): void {
   });
 
   // Generic sendMessage implementation - automatically dispatches based on conversation type
-  ipcBridge.conversation.sendMessage.provider(async ({ conversation_id, files, ...other }) => {
-    log.debug({ conversationId: conversation_id, msgId: other.msg_id }, 'sendMessage called');
+  ipcBridge.conversation.sendMessage.provider(async ({ conversation_id, files, __webUiUserId, ...other }) => {
+    log.debug({ conversationId: conversation_id, msgId: other.msg_id, userId: __webUiUserId }, 'sendMessage called');
 
     let task: GeminiAgentManager | AcpAgentManager | CodexAgentManager | undefined;
     try {
-      task = (await WorkerManage.getTaskByIdRollbackBuild(conversation_id)) as GeminiAgentManager | AcpAgentManager | CodexAgentManager | undefined;
+      // Pass userId for per-user features (RAG, API keys)
+      task = (await WorkerManage.getTaskByIdRollbackBuild(conversation_id, { userId: __webUiUserId as string | undefined })) as GeminiAgentManager | AcpAgentManager | CodexAgentManager | undefined;
     } catch (err) {
       log.debug({ err, conversationId: conversation_id }, 'sendMessage: failed to get/build task');
       return { success: false, msg: err instanceof Error ? err.message : 'conversation not found' };
@@ -389,6 +438,13 @@ export function initConversationBridge(): void {
 
     // Copy files to workspace (unified for all agents)
     const workspaceFiles = await copyFilesToDirectory(task.workspace, files, false);
+
+    // Auto-ingest large files to knowledge base (fire-and-forget)
+    if (__webUiUserId && workspaceFiles && workspaceFiles.length > 0) {
+      void autoIngestFilesToKnowledgeBase(__webUiUserId as string, workspaceFiles).catch((err) => {
+        log.warn({ err, userId: __webUiUserId }, 'Auto-ingest to knowledge base failed (non-fatal)');
+      });
+    }
 
     try {
       // Call the corresponding sendMessage method based on task type

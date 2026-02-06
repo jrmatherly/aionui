@@ -14,7 +14,7 @@ import { handlePreviewOpenEvent } from '../utils/previewUtils';
 import BaseAgentManager from './BaseAgentManager';
 import { hasCronCommands } from './CronCommandDetector';
 import { extractTextFromMessage, processCronInMessage } from './MessageMiddleware';
-import { prepareFirstMessageWithSkillsIndex } from './agentUtils';
+import { prepareFirstMessageWithSkillsIndex, prepareMessageWithRAGContext } from './agentUtils';
 import { acpLogger as log } from '@/common/logger';
 
 interface AcpAgentManagerData {
@@ -253,6 +253,17 @@ class AcpAgentManager extends BaseAgentManager<AcpAgentManagerData, AcpPermissio
             presetContext: this.options.presetContext,
             enabledSkills: this.options.enabledSkills,
           });
+        }
+
+        // Inject RAG context from user's knowledge base (if available and relevant)
+        if (this.options.userId) {
+          const ragResult = await prepareMessageWithRAGContext(contentToSend, this.options.userId, {
+            attachedFiles: data.files,
+          });
+          if (ragResult.ragUsed) {
+            contentToSend = ragResult.content;
+            log.info({ userId: this.options.userId, sources: ragResult.sources, tokens: ragResult.tokenEstimate }, 'RAG context injected');
+          }
         }
 
         const userMessage: TMessage = {

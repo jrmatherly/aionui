@@ -26,7 +26,7 @@ import BaseAgentManager from '@process/task/BaseAgentManager';
 import { createLogger } from '@/common/logger';
 
 const log = createLogger('Codex');
-import { prepareFirstMessageWithSkillsIndex } from '@process/task/agentUtils';
+import { prepareFirstMessageWithSkillsIndex, prepareMessageWithRAGContext } from '@process/task/agentUtils';
 import { handlePreviewOpenEvent } from '@process/utils/previewUtils';
 import { getConfiguredAppClientName, getConfiguredAppClientVersion, getConfiguredCodexMcpProtocolVersion, setAppConfig } from '../../common/utils/appConfig';
 
@@ -202,6 +202,17 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
           enabledSkills: this.options.enabledSkills,
         });
 
+        // Inject RAG context from user's knowledge base (if available and relevant)
+        if (this.options.userId) {
+          const ragResult = await prepareMessageWithRAGContext(processedContent, this.options.userId, {
+            attachedFiles: data.files,
+          });
+          if (ragResult.ragUsed) {
+            processedContent = ragResult.content;
+            log.info({ userId: this.options.userId, sources: ragResult.sources, tokens: ragResult.tokenEstimate }, 'RAG context injected');
+          }
+        }
+
         const result = await this.agent.newSession(this.workspace, processedContent);
 
         // Session created successfully - Codex will send session_configured event automatically
@@ -210,6 +221,16 @@ class CodexAgentManager extends BaseAgentManager<CodexAgentManagerData> implemen
         return result;
       } else {
         // Subsequent messages use normal sendPrompt
+        // Inject RAG context for subsequent messages too (if applicable)
+        if (this.options.userId) {
+          const ragResult = await prepareMessageWithRAGContext(processedContent, this.options.userId, {
+            attachedFiles: data.files,
+          });
+          if (ragResult.ragUsed) {
+            processedContent = ragResult.content;
+            log.info({ userId: this.options.userId, sources: ragResult.sources, tokens: ragResult.tokenEstimate }, 'RAG context injected');
+          }
+        }
         const result = await this.agent.sendPrompt(processedContent);
         // Note: setProcessing(false) is called in CodexMessageProcessor.processTaskComplete
         return result;

@@ -442,6 +442,8 @@ interface ISendMessageParams {
   conversation_id: string;
   files?: string[];
   loading_id?: string;
+  /** User ID injected by WebSocket adapter for per-user features */
+  __webUiUserId?: string;
 }
 
 // Unified confirm message params for all agents (Gemini, ACP, Codex)
