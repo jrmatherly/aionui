@@ -479,6 +479,7 @@ export function initConversationBridge(): void {
     // Auto-ingest files to knowledge base with progress reporting
     // For large files: AWAIT ingestion so RAG context is available for the immediate query
     const hasLargeFiles = workspaceFiles?.some((f) => isLargeFile(f));
+    let ingestedFileNames: string[] = [];
 
     if (__webUiUserId && workspaceFiles && workspaceFiles.length > 0) {
       try {
@@ -508,26 +509,9 @@ export function initConversationBridge(): void {
             data: { status: 'complete', total: successCount + failedCount, successCount, failedCount },
           });
 
-          // Inject persistent in-chat message with KB status and suggested prompts
+          // Track ingested files for post-response KB notification
           if (successCount > 0) {
-            const fileNames = getFilesForAutoIngest(workspaceFiles).map((f) => path.basename(f));
-            const fileList = fileNames.map((f) => `- ${f}`).join('\n');
-            const suggestedPrompts = ['Summarize the key points of this document', 'What are the main topics covered?', 'List any important dates, names, or figures mentioned'];
-            const promptButtons = suggestedPrompts.map((p) => `> ${p}`).join('\n');
-
-            const completionContent = `**Knowledge Base Updated**\n\nThe following file(s) have been indexed:\n${fileList}\n\nThis content is now stored in your Knowledge Base and will be available in all future sessions.\n\n**Try asking:**\n${promptButtons}`;
-
-            const completionMsg = {
-              type: 'content' as const,
-              conversation_id,
-              msg_id: uuid(),
-              data: completionContent,
-            };
-            // Persist to DB so it's visible when user returns
-            const tMessage = transformMessage(completionMsg);
-            if (tMessage) addMessage(conversation_id, tMessage);
-            // Emit to frontend for immediate display
-            ipcBridge.conversation.responseStream.emit(completionMsg);
+            ingestedFileNames = getFilesForAutoIngest(workspaceFiles).map((f) => path.basename(f));
           }
         } else {
           // Small files only: fire-and-forget (they're passed inline via @ references anyway)
@@ -558,24 +542,45 @@ export function initConversationBridge(): void {
     // (they should already be deleted above, but this guards against unlink failures)
     const filesToSend = workspaceFiles ? workspaceFiles.filter((f) => !isLargeFile(f)) : workspaceFiles;
 
+    let sendResult: { success: boolean; msg?: string };
     try {
       // Call the corresponding sendMessage method based on task type
       // Pass hasAutoIngestedFiles so RAG search is forced when large files were ingested
       if (task.type === 'gemini') {
         await (task as GeminiAgentManager).sendMessage({ ...other, files: filesToSend, hasAutoIngestedFiles: hasLargeFiles });
-        return { success: true };
+        sendResult = { success: true };
       } else if (task.type === 'acp') {
         await (task as AcpAgentManager).sendMessage({ content: other.input, files: filesToSend, msg_id: other.msg_id, hasAutoIngestedFiles: hasLargeFiles });
-        return { success: true };
+        sendResult = { success: true };
       } else if (task.type === 'codex') {
         await (task as CodexAgentManager).sendMessage({ content: other.input, files: filesToSend, msg_id: other.msg_id, hasAutoIngestedFiles: hasLargeFiles });
-        return { success: true };
+        sendResult = { success: true };
       } else {
-        return { success: false, msg: `Unsupported task type: ${task.type}` };
+        sendResult = { success: false, msg: `Unsupported task type: ${task.type}` };
       }
     } catch (err: unknown) {
-      return { success: false, msg: err instanceof Error ? err.message : String(err) };
+      sendResult = { success: false, msg: err instanceof Error ? err.message : String(err) };
     }
+
+    // Emit KB notification AFTER agent response so the agent's answer appears first
+    if (ingestedFileNames.length > 0) {
+      const fileList = ingestedFileNames.map((f) => `- ${f}`).join('\n');
+      const completionContent = `📚 **Knowledge Base Updated**\n\nThe following file(s) have been added to your Knowledge Base:\n${fileList}\n\nThis content is now stored and available across all conversations. You can ask follow-up questions anytime.`;
+
+      const completionMsg = {
+        type: 'content' as const,
+        conversation_id,
+        msg_id: uuid(),
+        data: completionContent,
+      };
+      // Persist to DB so it's visible when user returns
+      const tMessage = transformMessage(completionMsg);
+      if (tMessage) addMessage(conversation_id, tMessage);
+      // Emit to frontend for immediate display
+      ipcBridge.conversation.responseStream.emit(completionMsg);
+    }
+
+    return sendResult;
   });
 
   // Generic confirmMessage implementation - automatically dispatches based on conversation type
