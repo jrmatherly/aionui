@@ -5,8 +5,8 @@
   "license": "Apache-2.0",
   "generated": "2026-02-05",
   "stats": {
-    "typescript_files": 465,
-    "test_files": 4,
+    "typescript_files": 508,
+    "test_files": 0,
     "language": "en-US"
   },
   "tech_stack": {
@@ -55,7 +55,7 @@
       },
       "database": {
         "path": "src/process/database/",
-        "purpose": "SQLite operations, schema v15, migrations"
+        "purpose": "SQLite operations, schema v18, migrations"
       },
       "websocket": {
         "path": "src/webserver/websocket/WebSocketManager.ts",

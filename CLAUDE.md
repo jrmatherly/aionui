@@ -392,9 +392,11 @@ Both main and renderer webpack configs use `cache: { type: 'filesystem' }` with 
 
 The CI workflow (`build-and-release.yml`) uses a 3-job pipeline:
 
-1. **quality** — TypeScript, ESLint, Prettier checks
+1. **quality** — TypeScript, ESLint, Prettier checks (skipped for PRs — `pr-checks.yml` runs the same gate)
 2. **compile** — Runs on CI runner (NOT Docker) with cached node_modules + webpack cache
-3. **docker** — Uses `Dockerfile.package` (packaging only, no compilation)
+3. **docker** — Uses `Dockerfile.package` (packaging only, no compilation); includes provenance attestation + SBOM
+
+Additional CI workflows: `pr-checks.yml` (issue link + quality + PR summary), `codeql.yml` (security analysis), `dependency-review.yml` (vulnerable deps + license check), `release.yml` (tag-triggered), `claude.yml` + `claude-code-review.yml` (AI assistant + auto-review).
 
 This architecture mirrors local dev speed: cached deps + incremental webpack.
 

@@ -94,6 +94,7 @@ deploy/                   # Deployment configurations
 | `ChannelManager` | Plugin orchestration     |
 | `SessionManager` | User session tracking    |
 | `TelegramPlugin` | Telegram bot integration |
+| `LarkPlugin`     | Lark bot integration     |
 | `ActionExecutor` | Action dispatch          |
 
 ---
@@ -114,13 +115,13 @@ type TMessage = IMessageText | IMessageToolCall | IMessagePlan
 
 ## Configuration
 
-| File              | Purpose                         |
-| ----------------- | ------------------------------- |
-| `package.json`    | Dependencies, scripts           |
-| `tsconfig.json`   | TypeScript config, path aliases |
-| `forge.config.ts` | Electron Forge build            |
-| `uno.config.ts`   | UnoCSS styling                  |
-| `.eslintrc.json`  | Linting rules                   |
+| File                | Purpose                         |
+| ------------------- | ------------------------------- |
+| `package.json`      | Dependencies, scripts           |
+| `tsconfig.json`     | TypeScript config, path aliases |
+| `forge.config.ts`   | Electron Forge build            |
+| `uno.config.ts`     | UnoCSS styling                  |
+| `eslint.config.mjs` | Linting rules (flat config)     |
 
 **Path Aliases**: `@/*`, `@process/*`, `@renderer/*`, `@worker/*`
 
@@ -151,9 +152,9 @@ npm run build        # Build (macOS)
 
 ## Stats
 
-- **Files**: 465 TypeScript files
-- **Tests**: 4 unit tests (`tests/unit/`)
-- **Languages**: en-US, zh-CN, zh-TW, ja-JP, ko-KR
+- **Files**: 508 TypeScript files
+- **Tests**: `tests/unit/`, `tests/integration/`, `tests/contract/`
+- **Languages**: en-US only (i18n removed in v1.8.2)
 
 ---
 

@@ -6,8 +6,8 @@ This project uses ESLint and Prettier to ensure code quality and consistency.
 
 ### ESLint
 
-- Configuration file: `.eslintrc.json`
-- Ignore file: `.eslintignore`
+- Configuration file: `eslint.config.mjs` (flat config format)
+- Ignores are defined inline in the config (no `.eslintignore` file)
 - Main rules:
   - TypeScript support
   - Import rules checking
@@ -71,6 +71,7 @@ Types:
 - `docs`: Documentation update
 - `style`: Code formatting adjustment
 - `refactor`: Code refactoring
+- `perf`: Performance improvement
 - `test`: Test-related changes
 - `chore`: Build process or auxiliary tool changes
 
@@ -101,7 +102,7 @@ docs: update API documentation
 
 ### Ignoring Specific Files from Checking
 
-Add file paths to `.eslintignore` or `.prettierignore`.
+Add patterns to the `ignores` array in `eslint.config.mjs` or to `.prettierignore`.
 
 ### Disabling Checking for Specific Lines
 
@@ -112,7 +113,7 @@ const data: any = getData();
 
 ### Custom Rules
 
-Modify rule configuration in `.eslintrc.json`.
+Modify rule configuration in `eslint.config.mjs`.
 
 ## IDE Integration
 

@@ -636,7 +636,7 @@ class WebSocketManager {
 | `tsconfig.json` | TypeScript compiler options |
 | `forge.config.ts` | Electron Forge build config |
 | `uno.config.ts` | UnoCSS styling config |
-| `.eslintrc.json` | ESLint rules |
+| `eslint.config.mjs` | ESLint rules (flat config) |
 | `.prettierrc.json` | Prettier formatting |
 | `jest.config.js` | Jest test configuration |
 
