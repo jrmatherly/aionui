@@ -121,9 +121,15 @@ def reindex(workspace_path: str) -> dict:
         # Optimize/compact the table
         table.optimize()
 
-        # Recreate FTS index if text column exists
+        # Recreate FTS index with optimized settings for English text
         try:
-            table.create_fts_index("text", replace=True)
+            table.create_fts_index(
+                "text",
+                language="English",
+                stem=True,
+                remove_stop_words=True,
+                replace=True,
+            )
             fts_created = True
         except Exception:
             fts_created = False
@@ -368,12 +374,25 @@ def init_knowledge_base(
         db = lancedb.connect(str(lance_dir))
         table = db.create_table("knowledge", schema=DocumentChunk)
 
+        # Create FTS index for hybrid search (critical for text search)
+        fts_status = "created"
+        try:
+            table.create_fts_index(
+                "text",
+                language="English",
+                stem=True,
+                remove_stop_words=True,
+            )
+        except Exception as fts_err:
+            fts_status = f"failed: {fts_err}"
+
         return {
             "status": "ok",
             "action": "init",
             "message": "Knowledge base initialized",
             "path": str(lance_dir),
             "version": table.version,
+            "fts_index": fts_status,
         }
     except Exception as e:
         return {"status": "error", "error": str(e)}

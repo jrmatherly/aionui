@@ -42,6 +42,7 @@ def search_knowledge(
     try:
         import lancedb
         from lancedb.embeddings import get_registry
+        from lancedb.rerankers import RRFReranker
     except ImportError:
         return {"status": "error", "error": "lancedb not installed"}
 
@@ -108,7 +109,9 @@ def search_knowledge(
                 embed_kwargs["base_url"] = api_base
             embed_func = get_registry().get("openai").create(**embed_kwargs)
             query_vector = embed_func.compute_query_embeddings(query)[0]
-            search_result = table.search(query_vector, query_type="hybrid")
+            # Use hybrid search with RRF reranking for better result fusion
+            reranker = RRFReranker()
+            search_result = table.search(query_vector, query_type="hybrid", fts_columns="text").rerank(reranker)
 
         # Apply filter if provided
         if filter_expr:
@@ -123,10 +126,22 @@ def search_knowledge(
         # Convert to list of dicts
         results_list = df.to_dict(orient="records")
 
-        # Add score if available
-        if "_distance" in df.columns:
+        # Add score if available (handle different score columns from different search types)
+        if "_relevance_score" in df.columns:
+            # RRF reranker returns relevance score (higher = better)
             for i, row in enumerate(results_list):
-                row["score"] = 1.0 - float(df.iloc[i]["_distance"])  # Convert distance to similarity
+                row["score"] = float(df.iloc[i]["_relevance_score"])
+        elif "_score" in df.columns:
+            # FTS returns BM25 score (higher = better)
+            for i, row in enumerate(results_list):
+                row["score"] = float(df.iloc[i]["_score"])
+        elif "_distance" in df.columns:
+            # Vector search returns distance (lower = better)
+            # For L2: score = 1 / (1 + distance)
+            # For cosine: distance ranges 0-2, score = 1 - (distance / 2)
+            for i, row in enumerate(results_list):
+                distance = float(df.iloc[i]["_distance"])
+                row["score"] = max(0, 1.0 - (distance / 2.0))  # Normalize cosine distance to 0-1
 
         result["results"] = results_list
         result["count"] = len(results_list)

@@ -180,6 +180,18 @@ def ingest_document(
             # Create new table
             table = db.create_table("knowledge", schema=DocumentChunk)
 
+            # Create FTS index for hybrid search (critical for text search)
+            try:
+                table.create_fts_index(
+                    "text",
+                    language="English",
+                    stem=True,
+                    remove_stop_words=True,
+                )
+            except Exception as fts_err:
+                # Log but don't fail - FTS is optional enhancement
+                result["fts_index_warning"] = f"FTS index creation failed: {fts_err}"
+
         # Chunk the text
         chunks = chunk_text(text_content, max_words=chunk_size, overlap=overlap)
 
