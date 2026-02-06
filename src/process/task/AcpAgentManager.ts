@@ -100,6 +100,24 @@ class AcpAgentManager extends BaseAgentManager<AcpAgentManagerData, AcpPermissio
         log.warn({ backend: data.backend }, 'Custom backend specified but customAgentId is missing');
       }
 
+      // Initialize mise Python environment for the workspace if user and workspace are available
+      // This ensures Python and venv are ready before CLI agents that might invoke Python scripts
+      if (data.userId && data.workspace) {
+        try {
+          const { getMiseEnvironmentService } = await import('@process/services/MiseEnvironmentService');
+          const miseService = getMiseEnvironmentService();
+          if (miseService.isMiseAvailable()) {
+            await miseService.initUserWorkspace(data.userId);
+            // Run prepare to auto-install requirements if stale
+            await miseService.prepare(data.workspace);
+            log.debug({ userId: data.userId, workspace: data.workspace }, 'Initialized mise workspace');
+          }
+        } catch (e) {
+          // Non-fatal: continue without mise - skills requiring Python may fail
+          log.warn({ userId: data.userId, err: e }, 'Failed to initialize mise workspace (non-fatal)');
+        }
+      }
+
       this.agent = new AcpAgent({
         id: data.conversation_id,
         backend: data.backend,

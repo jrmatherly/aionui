@@ -1,0 +1,49 @@
+# mise-template.toml — Template for per-user Python workspaces
+# This template is copied to each user's workspace when initialized.
+# Located at: /mise/template.toml in the Docker container
+#
+# mise (mise-en-place) manages Python versions and virtual environments.
+# Documentation: https://mise.jdx.dev
+#
+# User workspaces will have this copied as mise.toml with the user ID injected.
+
+min_version = "2025.1.0"
+
+[tools]
+# Python version - pinned for reproducibility
+python = "3.12"
+
+# uv - fast Python package installer (10-100x faster than pip)
+# https://docs.astral.sh/uv/
+uv = "latest"
+
+[env]
+# Automatic virtual environment creation and activation
+# mise will create .venv/ in the workspace directory if it doesn't exist
+# and activate it automatically when entering the directory
+_.python.venv = { path = ".venv", create = true }
+
+# Python settings for clean, reproducible environments
+PYTHONDONTWRITEBYTECODE = "1"  # Don't create .pyc files
+PYTHONUNBUFFERED = "1"          # Unbuffered stdout/stderr
+
+[settings]
+# Use uv for virtual environment operations (faster than python -m venv)
+python.uv_venv_auto = true
+
+# Auto-install missing tools when needed
+not_found_auto_install = true
+
+# Non-interactive mode (required for CLI agent spawning)
+yes = true
+
+# Enable experimental features (prepare, etc.)
+experimental = true
+
+[prepare.requirements]
+# Automatically install requirements.txt when present and stale
+# This runs before mise exec/run if requirements.txt is newer than .venv/
+auto = true
+sources = ["requirements.txt"]
+outputs = [".venv/lib/"]
+run = "uv pip install -r requirements.txt 2>/dev/null || true"

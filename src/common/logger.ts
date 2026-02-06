@@ -305,6 +305,9 @@ export const cronLogger = createLogger('Cron');
 /** Initialization & startup */
 export const initLogger = createLogger('Init');
 
+/** mise environment service (Python workspace management) */
+export const miseLogger = createLogger('Mise');
+
 // ============================================================
 // Utility functions
 // ============================================================

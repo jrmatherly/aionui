@@ -1,0 +1,67 @@
+# Aggregated Python requirements for AionUI skills
+# This file is installed in user workspaces when skills require Python
+#
+# To install: uv pip install -r requirements.txt
+#
+# Individual skill requirements are sourced from:
+# - skills/pdf/scripts/*.py (inline comments)
+# - skills/docx/scripts/*.py (inline comments)  
+# - skills/pptx/scripts/*.py (inline comments)
+# - skills/xlsx/scripts/*.py (inline comments)
+# - skills/mcp-builder/scripts/requirements.txt
+#
+# Last updated: 2026-02-06
+
+# =============================================================================
+# Core dependencies (used by multiple skills)
+# =============================================================================
+
+# Image processing - used by pdf, pptx, and image manipulation
+Pillow>=10.0.0
+
+# Secure XML parsing - used by docx, pptx for OOXML manipulation
+defusedxml>=0.7.0
+
+# =============================================================================
+# PDF skill dependencies
+# =============================================================================
+
+# PDF to image conversion (requires poppler-utils system package)
+pdf2image>=1.16.0
+
+# PDF reading and manipulation
+pypdf>=3.0.0
+
+# PDF generation (forms, reports)
+# Note: ReportLab may have issues with Unicode fonts - see skill docs
+reportlab>=4.0.0
+
+# =============================================================================
+# Office document dependencies
+# =============================================================================
+
+# Microsoft Word (.docx) manipulation
+python-docx>=1.0.0
+
+# Microsoft PowerPoint (.pptx) manipulation  
+python-pptx>=0.6.21
+
+# Microsoft Excel (.xlsx) manipulation
+openpyxl>=3.1.0
+
+# =============================================================================
+# MCP/API dependencies
+# =============================================================================
+
+# Anthropic SDK for Claude API access
+anthropic>=0.39.0
+
+# Model Context Protocol client
+mcp>=1.1.0
+
+# =============================================================================
+# Optional: Web testing (installed on-demand)
+# =============================================================================
+
+# Playwright for browser automation (large dependency, install manually if needed)
+# playwright>=1.40.0

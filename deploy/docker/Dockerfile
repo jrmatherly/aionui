@@ -177,8 +177,44 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # Utilities
     curl \
     ca-certificates \
+    # Python skill dependencies
+    poppler-utils \
+    # LibreOffice for office document conversion (docx, pptx, xlsx skills)
+    libreoffice-core \
+    libreoffice-writer \
+    libreoffice-calc \
+    libreoffice-impress \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
+
+# -----------------------------------------------------------------------------
+# mise (mise-en-place) - Polyglot runtime manager for Python environment
+# Provides per-user Python version management, virtual environments, and uv
+# integration for fast package installation.
+# Documentation: https://mise.jdx.dev
+# -----------------------------------------------------------------------------
+ENV MISE_DATA_DIR="/mise" \
+    MISE_CONFIG_DIR="/mise" \
+    MISE_CACHE_DIR="/mise/cache" \
+    MISE_STATE_DIR="/mise/state" \
+    MISE_INSTALL_PATH="/usr/local/bin/mise" \
+    MISE_TRUSTED_CONFIG_PATHS="/data/users:/home/aionui" \
+    MISE_YES="1" \
+    MISE_EXPERIMENTAL="1" \
+    PATH="/mise/shims:$PATH"
+
+# Install mise binary
+RUN curl -fsSL https://mise.run | sh \
+    && mkdir -p /mise/shims /mise/cache /mise/state \
+    && chmod -R 755 /mise
+
+# Pre-install Python and uv globally (shared across all users)
+# This avoids downloading Python for each user workspace
+RUN /usr/local/bin/mise use -g python@3.12 uv@latest \
+    && /usr/local/bin/mise reshim
+
+# Copy mise template for user workspaces
+COPY deploy/docker/mise-template.toml /mise/template.toml
 
 # -----------------------------------------------------------------------------
 # Multi-Agent CLI: Copy Node.js runtime + installed CLIs from cli-installer
@@ -220,12 +256,14 @@ COPY --from=builder /app/out/linux-unpacked /app
 COPY deploy/docker/docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Create data directory, X11 socket dir, and D-Bus system bus dir
+# Create data directory, X11 socket dir, D-Bus system bus dir, and user data dir
 # /tmp/.X11-unix — needed by Xvfb (avoids _XSERVTransmkdir error when running as non-root)
 # /run/dbus — needed for D-Bus system bus (avoids Electron dbus/bus.cc errors)
-RUN mkdir -p /home/aionui/.config/AionUi /tmp/.X11-unix /run/dbus /var/log/aionui \
+# /data/users — per-user workspaces (Python venvs, skills, etc.)
+# /mise/state — mise state needs to be writable for per-user trust state
+RUN mkdir -p /home/aionui/.config/AionUi /tmp/.X11-unix /run/dbus /var/log/aionui /data/users \
     && chmod 1777 /tmp/.X11-unix \
-    && chown -R aionui:aionui /home/aionui /app /var/log/aionui
+    && chown -R aionui:aionui /home/aionui /app /var/log/aionui /data/users /mise/state /mise/cache
 
 # Switch to non-root user
 USER aionui

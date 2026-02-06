@@ -342,6 +342,50 @@ Supports routing through proxy providers:
 - AgentGateway
 - Envoy AI Gateway
 
+## Python Environment & Skills Support
+
+AionUI supports Python-based skills for document processing and automation. Python environments are managed per-user via **mise** (mise-en-place).
+
+### Architecture
+
+- **mise** manages Python versions and virtual environments
+- **uv** provides fast package installation (10-100x faster than pip)
+- Each user gets an isolated workspace with their own `.venv/`
+- Skills can declare Python dependencies in `requirements.txt`
+
+### Key Components
+
+| File/Service              | Purpose                                |
+| ------------------------- | -------------------------------------- |
+| `MiseEnvironmentService`  | Per-user Python environment management |
+| `skills/requirements.txt` | Aggregated skill dependencies          |
+| `/mise/template.toml`     | Template for user workspace mise.toml  |
+| `DirectoryService`        | Per-user workspace directory isolation |
+
+### Skills with Python Dependencies
+
+| Skill       | Dependencies                        |
+| ----------- | ----------------------------------- |
+| pdf         | pdf2image, pypdf, reportlab, Pillow |
+| docx        | python-docx, defusedxml             |
+| pptx        | python-pptx, Pillow                 |
+| xlsx        | openpyxl                            |
+| mcp-builder | anthropic, mcp                      |
+
+### System Requirements (Docker)
+
+Python skills require system packages:
+
+- `poppler-utils` - PDF rendering for pdf2image
+- `libreoffice-*` - Office document conversion
+
+### How It Works
+
+1. When a CLI agent starts, `AcpAgentManager.initAgent()` initializes the user's mise workspace
+2. mise creates a venv in the user's workspace if needed
+3. Python scripts run via mise shims or `mise exec`
+4. User-specific packages are isolated in their `.venv/`
+
 ---
 
 ## Key Configuration Files

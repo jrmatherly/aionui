@@ -111,6 +111,10 @@ services:
     volumes:
       # Database, config, and session data
       - aionui_data:/home/aionui/.config/AionUi
+      # Per-user workspaces (Python venvs, skills, assistants)
+      - user_workspaces:/data/users
+      # mise cache (shared Python/uv installs, avoid re-downloading)
+      - mise_cache:/mise/cache
       # OIDC group→role mappings (file-based, see GROUP_MAPPINGS_FILE in .env)
       - ./group-mappings.json:/etc/aionui/group-mappings.json:ro
       # Global models config (file-based, see GLOBAL_MODELS_FILE in .env)
@@ -157,6 +161,12 @@ services:
 # Named volumes for data persistence
 volumes:
   aionui_data:
+    driver: local
+  # Per-user workspaces (Python venvs, skills, assistants)
+  user_workspaces:
+    driver: local
+  # mise cache (shared Python/uv installs across container restarts)
+  mise_cache:
     driver: local
 
 # =============================================================================
