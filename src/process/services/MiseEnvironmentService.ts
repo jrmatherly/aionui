@@ -17,9 +17,16 @@
  */
 
 import { execFile, execFileSync, spawn, type ChildProcess, type SpawnOptions } from 'child_process';
-import { closeSync, constants, existsSync, mkdirSync, openSync, statSync, writeFileSync, writeSync } from 'fs';
+import { closeSync, constants, cpSync, existsSync, mkdirSync, openSync, readFileSync, statSync, writeFileSync, writeSync } from 'fs';
 import { promisify } from 'util';
 import path from 'path';
+
+/**
+ * Path to the pre-built template venv (created during Docker image build).
+ * Contains all skill Python dependencies pre-installed.
+ * MiseEnvironmentService copies this for new users instead of running pip install.
+ */
+const TEMPLATE_VENV_PATH = '/mise/template-venv';
 import { getDirectoryService } from './DirectoryService';
 import { getSkillsDir } from '@process/initStorage';
 import { miseLogger as log } from '@/common/logger';
@@ -184,6 +191,7 @@ export class MiseEnvironmentService {
     const userDirs = dirService.getUserDirectories(userId);
     const workDir = userDirs.work_dir;
     const miseTomlPath = path.join(workDir, 'mise.toml');
+    const venvDir = path.join(workDir, '.venv');
 
     log.debug({ userId, workDir }, 'Initializing mise workspace');
 
@@ -198,53 +206,77 @@ export class MiseEnvironmentService {
     // Install tools (Python, uv)
     await this.installTools(workDir);
 
-    // Trigger venv creation by running a command
-    // The _.python.venv setting creates venv lazily on first mise exec
-    await this.ensureVenvCreated(workDir);
+    // --- Template venv: copy instead of pip install ---
+    // If the Docker image has a pre-built template venv, copy it for this user.
+    // This avoids per-user pip downloads (~2min) and rate-limiting issues at scale.
+    // Falls back to traditional pip install if no template is available.
+    if (!existsSync(venvDir)) {
+      if (existsSync(TEMPLATE_VENV_PATH) && existsSync(path.join(TEMPLATE_VENV_PATH, 'bin', 'python'))) {
+        try {
+          log.info({ userId, templatePath: TEMPLATE_VENV_PATH }, 'Copying template venv for user');
+          // cpSync with recursive: true does a deep copy (Node 16.7+)
+          cpSync(TEMPLATE_VENV_PATH, venvDir, { recursive: true });
 
-    // Auto-install skill requirements if available (first-time setup)
-    // Security: Use atomic file creation to prevent TOCTOU race condition (CWE-367)
-    const skillsReqPath = this.getSkillsRequirementsPath();
-    if (skillsReqPath) {
-      const venvMarker = path.join(workDir, '.venv', '.skills-installed');
-      let fd: number | null = null;
+          // Fix pyvenv.cfg to point to the correct home directory
+          const pyvenvCfg = path.join(venvDir, 'pyvenv.cfg');
+          if (existsSync(pyvenvCfg)) {
+            let cfg = readFileSync(pyvenvCfg, 'utf-8');
+            // The template venv's home path needs to stay as-is (points to mise Python)
+            // But we need to update any absolute path references to the venv itself
+            cfg = cfg.replace(/\/mise\/template-venv/g, venvDir);
+            writeFileSync(pyvenvCfg, cfg);
+          }
 
-      try {
-        // Atomically create marker file with O_CREAT | O_EXCL (fails if exists)
-        // This prevents race conditions where another process could create a symlink
-        // between our check and write operations
-        fd = openSync(venvMarker, constants.O_CREAT | constants.O_EXCL | constants.O_WRONLY, 0o644);
+          // Write marker to indicate this was copied from template
+          const markerPath = path.join(venvDir, '.skills-installed');
+          writeFileSync(markerPath, `Copied from template: ${TEMPLATE_VENV_PATH}\nDate: ${new Date().toISOString()}\n`);
 
-        // We successfully created the marker (didn't exist before)
-        // Now safe to install requirements
-        log.info({ skillsReqPath }, 'Installing skill Python requirements');
-        const success = await this.installRequirements(workDir, skillsReqPath);
-
-        // Write content to the marker file we already own
-        const content = `Installed from: ${skillsReqPath}\nDate: ${new Date().toISOString()}\nSuccess: ${success}\n`;
-        writeSync(fd, content);
-      } catch (e: unknown) {
-        const error = e as NodeJS.ErrnoException;
-        if (error.code === 'EEXIST') {
-          // Marker already exists — requirements already installed, skip
-          log.debug({ venvMarker }, 'Skill requirements marker exists, skipping installation');
-        } else if (error.code === 'ENOENT') {
-          // .venv directory doesn't exist yet — will be created on first mise exec
-          log.debug({ venvMarker }, 'Venv not yet created, will install requirements on first use');
-        } else {
-          // Unexpected error — log but don't fail (marker is just an optimization)
-          log.warn({ venvMarker, err: error }, 'Failed to create skill requirements marker');
+          log.info({ userId, workDir }, 'Template venv copied successfully');
+        } catch (e) {
+          log.warn({ userId, err: e }, 'Failed to copy template venv, falling back to pip install');
+          // Fall through to traditional install below
         }
-      } finally {
-        // Always close the file descriptor if we opened one
-        if (fd !== null) {
-          try {
-            closeSync(fd);
-          } catch {
-            // Ignore close errors
+      }
+    }
+
+    // If venv still doesn't exist (no template or copy failed), create and install traditionally
+    if (!existsSync(venvDir)) {
+      // Trigger venv creation by running a command
+      await this.ensureVenvCreated(workDir);
+
+      // Traditional pip install (fallback for non-Docker or failed template copy)
+      const skillsReqPath = this.getSkillsRequirementsPath();
+      if (skillsReqPath) {
+        const venvMarker = path.join(workDir, '.venv', '.skills-installed');
+        let fd: number | null = null;
+
+        try {
+          fd = openSync(venvMarker, constants.O_CREAT | constants.O_EXCL | constants.O_WRONLY, 0o644);
+          log.info({ skillsReqPath }, 'Installing skill Python requirements (no template available)');
+          const success = await this.installRequirements(workDir, skillsReqPath);
+          const content = `Installed from: ${skillsReqPath}\nDate: ${new Date().toISOString()}\nSuccess: ${success}\n`;
+          writeSync(fd, content);
+        } catch (e: unknown) {
+          const error = e as NodeJS.ErrnoException;
+          if (error.code === 'EEXIST') {
+            log.debug({ venvMarker }, 'Skill requirements marker exists, skipping installation');
+          } else if (error.code === 'ENOENT') {
+            log.debug({ venvMarker }, 'Venv not yet created, will install requirements on first use');
+          } else {
+            log.warn({ venvMarker, err: error }, 'Failed to create skill requirements marker');
+          }
+        } finally {
+          if (fd !== null) {
+            try {
+              closeSync(fd);
+            } catch {
+              // Ignore close errors
+            }
           }
         }
       }
+    } else {
+      log.debug({ userId, workDir }, 'Venv already exists, skipping setup');
     }
 
     log.info({ userId, workDir }, 'Initialized mise workspace');
@@ -681,20 +713,21 @@ yes = true
   async miseExecSync(command: string, args: string[], workDir: string, env?: Record<string, string>): Promise<string> {
     const fullArgs = ['exec', '--', command, ...args];
 
-    // Security: Use execFileSync with args array to prevent command injection
-    const output = execFileSync(this.miseCmd, fullArgs, {
+    // Security: Use execFileAsync with args array to prevent command injection
+    // Async to avoid blocking the Node.js event loop during KB operations
+    const { stdout } = await execFileAsync(this.miseCmd, fullArgs, {
       cwd: workDir,
       encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'pipe'],
       env: {
         ...process.env,
         ...this.baseMiseEnv,
         ...env,
       },
       timeout: 60000,
+      maxBuffer: 10 * 1024 * 1024, // 10MB for large search results
     });
 
-    return output;
+    return stdout;
   }
 
   /**

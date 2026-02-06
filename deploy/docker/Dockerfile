@@ -232,15 +232,28 @@ RUN /usr/local/bin/mise exec -- pip install playwright \
     && echo "✅ Playwright Chromium installed"
 
 # -----------------------------------------------------------------------------
-# Skill Python Dependencies
-# Pre-install skill dependencies so they're immediately available.
-# This includes: lancedb (RAG), pypdf (PDF extraction), crawl4ai, etc.
+# Skill Python Dependencies + Template Venv
+# Pre-install skill dependencies into the global mise environment AND a
+# "golden" template venv. On first user login, the template venv is COPIED
+# (not pip-installed), eliminating:
+#   - Per-user download delays (lxml alone takes ~2min to build from source)
+#   - Rate-limiting risk when many users log in simultaneously
+#   - Network dependency at login time
 # See skills/requirements.txt for full list.
 # -----------------------------------------------------------------------------
-COPY skills/requirements.txt /tmp/skills-requirements.txt
-RUN /usr/local/bin/mise exec -- pip install -r /tmp/skills-requirements.txt \
-    && rm /tmp/skills-requirements.txt \
-    && echo "✅ Skill Python dependencies installed"
+COPY skills/requirements.txt /mise/skills-requirements.txt
+RUN /usr/local/bin/mise exec -- pip install -r /mise/skills-requirements.txt \
+    && echo "✅ Skill Python dependencies installed (global)"
+
+# Build template venv: a pre-populated virtualenv with all skill dependencies.
+# MiseEnvironmentService copies this for new users instead of running pip install.
+# The venv is created with --relocatable so paths work after copy.
+RUN /usr/local/bin/mise exec -- uv venv /mise/template-venv --seed \
+    && /usr/local/bin/mise exec -- uv pip install \
+       --python /mise/template-venv/bin/python \
+       -r /mise/skills-requirements.txt \
+    && rm /mise/skills-requirements.txt \
+    && echo "✅ Template venv created at /mise/template-venv"
 
 # Copy mise template for user workspaces
 COPY deploy/docker/mise-template.toml /mise/template.toml

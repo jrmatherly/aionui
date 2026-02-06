@@ -144,6 +144,10 @@ class KnowledgeBaseService {
         if (embeddingConfig.base_url) {
           env.EMBEDDING_API_BASE = embeddingConfig.base_url;
         }
+        // Also pass dimensions from process env if set (Global Models doesn't track dimensions)
+        if (process.env.EMBEDDING_DIMENSIONS) {
+          env.EMBEDDING_DIMENSIONS = process.env.EMBEDDING_DIMENSIONS;
+        }
         return env;
       }
     } catch (e) {
@@ -160,6 +164,14 @@ class KnowledgeBaseService {
 
     if (process.env.EMBEDDING_API_BASE) {
       env.EMBEDDING_API_BASE = process.env.EMBEDDING_API_BASE;
+    }
+
+    if (process.env.EMBEDDING_MODEL) {
+      env.EMBEDDING_MODEL = process.env.EMBEDDING_MODEL;
+    }
+
+    if (process.env.EMBEDDING_DIMENSIONS) {
+      env.EMBEDDING_DIMENSIONS = process.env.EMBEDDING_DIMENSIONS;
     }
 
     return env;
