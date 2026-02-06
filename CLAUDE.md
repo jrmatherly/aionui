@@ -10,7 +10,7 @@
 
 ## Tech Stack
 
-- **Electron 37.x** + **React 19.x** + **TypeScript 5.8.x** + **Express 5.x**
+- **Electron 37.x** + **React 19.x** + **TypeScript 5.9.x** + **Express 5.x**
 - **Webpack 6.x** (via Forge) + **Electron Builder 26.x** + **mise-en-place** (Node 24, npm 11)
 - **Arco Design 2.x** + **UnoCSS 66.x** + **Monaco Editor 4.x**
 - **Pino 10.x** (structured logging) + **OpenTelemetry** (tracing) + **Langfuse** (LLM observability)
@@ -37,7 +37,8 @@ src/
 └── channels/                # External messaging (Telegram, Lark)
 
 deploy/docker/               # Dockerfile, docker-compose.yml, nginx.conf, .env
-skills/                      # Claude Code skills (docx, xlsx, pdf, lance, etc.)
+skills/                      # User-facing skills shipped with app (docx, xlsx, pdf, lance, etc.)
+.claude/skills/              # Developer workflow skills (release, gen-test, db-migrate)
 ```
 
 ## Development Commands
@@ -159,6 +160,8 @@ Detailed guidance for specific subsystems is in `.claude/rules/`:
 | `auth.md`                | Authentication, OIDC, RBAC, admin pages                    |
 | `rag-knowledge-base.md`  | Knowledge Base, RAG, embeddings, agent managers            |
 | `python-skills.md`       | Skills, Python environments, mise                          |
+| `database.md`            | SQLite schema, migrations, database operations             |
 | `build-and-packaging.md` | Docker, Webpack, CI/CD, Electron packaging, branding       |
+| `code-style.md`          | ESLint, Prettier, CSS, UnoCSS config                       |
 | `ai-context-tools.md`    | Drift Detect, Serena, MCP config                           |
 | `common-pitfalls.md`     | _(always loaded)_ Critical patterns that cause subtle bugs |

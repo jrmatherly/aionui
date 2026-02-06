@@ -68,7 +68,7 @@ AionUi provides two remote access methods:
 
   Access AionUi from any device via browser - phone, tablet, computer. Supports LAN, cross-network, and server deployment. Features enterprise-grade authentication with SSO/OIDC support and role-based access control (RBAC). You can log in by scanning a QR code, using account password, or through your organization's single sign-on, making it simple and convenient.
 
-  > 💡 **Need detailed configuration guide?** Check out [Remote Internet Access Tutorial](https://github.com/iOfficeAI/AionUi/wiki/Remote-Internet-Access-Guide-Chinese)
+  > 💡 **Need detailed configuration guide?** Check out the [Deployment Guide](docs/guides/DEPLOYMENT.md) or [WebUI Guide](docs/guides/WEBUI_GUIDE.md)
 
   <p align="center">
     <img src="./resources/webui-remote.png" alt="WebUI Remote Access" width="800">
@@ -136,7 +136,7 @@ _Intelligent image generation, editing, and recognition, powered by Gemini_
   <img src="./resources/Image_Generation.gif" alt="AI Image Generation Demo" width="800">
 </p>
 
-> 💡 **Need help setting up free image generation?** [Follow the tutorial to configure image generation models](https://github.com/iOfficeAI/AionUi/wiki/AionUi-Image-Generation-Tool-Model-Configuration-Guide)
+> 💡 **Need help setting up image generation?** See the model configuration section in the [Getting Started Guide](docs/guides/GETTING_STARTED.md)
 
 ---
 
@@ -287,24 +287,18 @@ A: All conversation data is stored in a local SQLite database and will not be up
 
 ### 🚀 Quick Start
 
-- [📖 Complete Installation Guide](https://github.com/iOfficeAI/AionUi/wiki/Getting-Started) - Detailed steps from download to configuration
-- [⚙️ LLM Configuration Guide](https://github.com/iOfficeAI/AionUi/wiki/LLM-Configuration) - Multi-platform AI model configuration
-- [🤖 Multi-Agent Mode Setup](https://github.com/iOfficeAI/AionUi/wiki/ACP-Setup) - Integrate terminal AI agents
-- [🔌 MCP Tool Configuration](https://github.com/iOfficeAI/AionUi/wiki/MCP-Configuration-Guide) - Model Context Protocol server setup
-- [🎨 Image Generation Configuration](https://github.com/iOfficeAI/AionUi/wiki/AionUi-Image-Generation-Tool-Model-Configuration-Guide) - AI image generation setup tutorial
-- [🌐 WebUI Configuration Guide](https://github.com/iOfficeAI/AionUi/wiki/WebUI-Configuration-Guide) - Complete WebUI setup and configuration tutorial
+- [📖 Getting Started](docs/guides/GETTING_STARTED.md) - Installation, configuration, and first run
+- [🐳 Docker Deployment](docs/guides/DEPLOYMENT.md) - Production deployment with Docker and HTTPS
+- [🌐 WebUI Guide](docs/guides/WEBUI_GUIDE.md) - WebUI setup, remote access, and configuration
+- [🏗️ Architecture](docs/architecture/ARCHITECTURE.md) - System design and component overview
+- [🔧 Developer Guide](docs/guides/DEVELOPER_GUIDE.md) - Contributing, building, and debugging
 
-### 🎯 Use Cases
+### 📚 Additional Documentation
 
-- [📁 File Management](https://github.com/iOfficeAI/AionUi/wiki/file-management) - Smart file organization
-- [📊 Excel Processing](https://github.com/iOfficeAI/AionUi/wiki/excel-processing) - AI-driven data processing
-- [🎨 Image Generation](https://github.com/iOfficeAI/AionUi/wiki/AionUi-Image-Generation-Tool-Model-Configuration-Guide) - AI image creation
-- [📚 More Use Cases](https://github.com/iOfficeAI/AionUi/wiki/Use-Cases-Overview)
-
-### ❓ Support & Help
-
-- [❓ FAQ](https://github.com/iOfficeAI/AionUi/wiki/FAQ) - Questions and troubleshooting
-- [🔧 Configuration & Usage Tutorials](https://github.com/iOfficeAI/AionUi/wiki/Configuration-Guides) - Complete configuration documentation
+- [🔐 Authentication & RBAC](docs/guides/PER_USER_API_KEY_ISOLATION.md) - Multi-user auth, OIDC/SSO, API key isolation
+- [📊 Logging & Observability](docs/guides/LOGGING_GUIDE.md) - Pino, OTEL, syslog, and Langfuse integration
+- [⚙️ CI/CD Setup](docs/guides/CICD_SETUP.md) - GitHub Actions workflows and Docker registry
+- [📋 Project Index](docs/PROJECT_INDEX.md) - Complete file map and component index
 
 </details>
 
@@ -334,7 +328,7 @@ A: All conversation data is stored in a local SQLite database and will not be up
 2. **Configure AI service** - Support Google account login or API Key authentication
 3. **Start using** - Immediately experience modern AI chat interface
 
-> 💡 **Need detailed configuration guide?** Check out our [Complete Installation Tutorial](https://github.com/iOfficeAI/AionUi/wiki/Getting-Started)
+> 💡 **Need detailed configuration guide?** Check out our [Getting Started Guide](docs/guides/GETTING_STARTED.md) or [Docker Deployment Guide](docs/guides/DEPLOYMENT.md)
 
 ---
 
