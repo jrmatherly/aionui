@@ -1810,17 +1810,17 @@ drift-check:
   runs-on: ubuntu-latest
   timeout-minutes: 5
   steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
 
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: "24"
 
     - name: Cache Drift data
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: .drift
         key: drift-${{ runner.os }}-${{ hashFiles('**/*.ts', '**/*.tsx') }}

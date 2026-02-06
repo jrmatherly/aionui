@@ -115,6 +115,14 @@ Two Dockerfiles exist:
 
 `Dockerfile.package.dockerignore` allows `out/` through (unlike root `.dockerignore` which excludes it).
 
+### Supply Chain Attestation
+
+The CI Docker build produces **provenance attestation** and **SBOM** (Software Bill of Materials) for every pushed image. This requires `attestations: write` and `id-token: write` permissions in `build-and-release.yml`. Verify attestations with:
+
+```bash
+docker buildx imagetools inspect --format "{{json .Provenance}}" ghcr.io/jrmatherly/aionui:latest
+```
+
 ## Webpack Filesystem Cache
 
 Both main and renderer webpack configs use `cache: { type: 'filesystem' }`:
