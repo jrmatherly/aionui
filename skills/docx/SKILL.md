@@ -31,6 +31,22 @@ Use "Creating a new Word document" workflow
 - **Legal, academic, business, or government docs**
   Use **"Redlining workflow"** (required)
 
+## Converting .doc to .docx
+
+Legacy `.doc` files must be converted before editing:
+
+```bash
+python scripts/office/soffice.py --headless --convert-to docx document.doc
+```
+
+## Accepting Tracked Changes
+
+To produce a clean document with all tracked changes accepted (requires LibreOffice):
+
+```bash
+python scripts/accept_changes.py input.docx output.docx
+```
+
 ## Reading and analyzing content
 
 ### Text extraction
@@ -49,7 +65,7 @@ You need raw XML access for: comments, complex formatting, document structure, e
 
 #### Unpacking a file
 
-`python ooxml/scripts/unpack.py <office_file> <output_directory>`
+`python scripts/office/unpack.py <office_file> <output_directory>`
 
 #### Key file structures
 
@@ -75,11 +91,37 @@ When editing an existing Word document, use the **Document library** (a Python l
 ### Workflow
 
 1. **MANDATORY - READ ENTIRE FILE**: Read [`ooxml.md`](ooxml.md) (~600 lines) completely from start to finish. **NEVER set any range limits when reading this file.** Read the full file content for the Document library API and XML patterns for directly editing document files.
-2. Unpack the document: `python ooxml/scripts/unpack.py <office_file> <output_directory>`
+2. Unpack the document: `python scripts/office/unpack.py <office_file> <output_directory>`
 3. Create and run a Python script using the Document library (see "Document Library" section in ooxml.md)
-4. Pack the final document: `python ooxml/scripts/pack.py <input_directory> <office_file>`
+4. Pack the final document: `python scripts/office/pack.py <input_directory> <office_file>`
 
 The Document library provides both high-level methods for common operations and direct DOM access for complex scenarios.
+
+## Adding Comments
+
+Use `scripts/comment.py` to add comments to unpacked DOCX documents:
+
+```bash
+# Add a comment (text must be pre-escaped XML)
+python scripts/comment.py unpacked/ 0 "Comment text with &amp; and &#x2019;"
+
+# Add a reply to comment 0
+python scripts/comment.py unpacked/ 1 "Reply text" --parent 0
+
+# Use custom author name
+python scripts/comment.py unpacked/ 0 "Text" --author "Custom Author"
+```
+
+After running `comment.py`, add markers to document.xml:
+
+```xml
+<w:commentRangeStart w:id="0"/>
+... commented content ...
+<w:commentRangeEnd w:id="0"/>
+<w:r><w:rPr><w:rStyle w:val="CommentReference"/></w:rPr><w:commentReference w:id="0"/></w:r>
+```
+
+**CRITICAL**: `<w:commentRangeStart>` and `<w:commentRangeEnd>` are siblings of `<w:r>`, never inside `<w:r>`.
 
 ## Redlining workflow for document review
 
@@ -125,7 +167,7 @@ Example - Changing "30 days" to "60 days" in a sentence:
 
 3. **Read documentation and unpack**:
    - **MANDATORY - READ ENTIRE FILE**: Read [`ooxml.md`](ooxml.md) (~600 lines) completely from start to finish. **NEVER set any range limits when reading this file.** Pay special attention to the "Document Library" and "Tracked Change Patterns" sections.
-   - **Unpack the document**: `python ooxml/scripts/unpack.py <file.docx> <dir>`
+   - **Unpack the document**: `python scripts/office/unpack.py <file.docx> <dir>`
    - **Note the suggested RSID**: The unpack script will suggest an RSID to use for your tracked changes. Copy this RSID for use in step 4b.
 
 4. **Implement changes in batches**: Group changes logically (by section, by type, or by proximity) and implement them together in a single script. This approach:
@@ -149,7 +191,7 @@ Example - Changing "30 days" to "60 days" in a sentence:
 5. **Pack the document**: After all batches are complete, convert the unpacked directory back to .docx:
 
    ```bash
-   python ooxml/scripts/pack.py unpacked reviewed-document.docx
+   python scripts/office/pack.py unpacked reviewed-document.docx
    ```
 
 6. **Final verification**: Do a comprehensive check of the complete document:
@@ -175,7 +217,7 @@ To visually analyze Word documents, convert them to images using a two-step proc
 1. **Convert DOCX to PDF**:
 
    ```bash
-   soffice --headless --convert-to pdf document.docx
+   python scripts/office/soffice.py --headless --convert-to pdf document.docx
    ```
 
 2. **Convert PDF pages to JPEG images**:
@@ -214,6 +256,6 @@ Required dependencies (install if not available):
 
 - **pandoc**: `sudo apt-get install pandoc` (for text extraction)
 - **docx**: `npm install -g docx` (for creating new documents)
-- **LibreOffice**: `sudo apt-get install libreoffice` (for PDF conversion)
+- **LibreOffice**: `sudo apt-get install libreoffice` (for PDF conversion, auto-configured for sandboxed environments via `scripts/office/soffice.py`)
 - **Poppler**: `sudo apt-get install poppler-utils` (for pdftoppm to convert PDF to images)
 - **defusedxml**: `pip install defusedxml` (for secure XML parsing)
