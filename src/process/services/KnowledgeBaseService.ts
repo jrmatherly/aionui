@@ -118,25 +118,46 @@ class KnowledgeBaseService {
   }
 
   /**
-   * Get embedding configuration from environment
-   * Supports custom OpenAI-compatible endpoints (Azure, LiteLLM, etc.)
+   * Get embedding configuration for Python scripts
    *
-   * Environment variables (in order of precedence):
-   * - EMBEDDING_API_KEY: API key for embedding provider
-   * - EMBEDDING_API_BASE: Base URL for OpenAI-compatible endpoint
-   * - OPENAI_API_KEY: Fallback if EMBEDDING_API_KEY not set
+   * Priority order:
+   * 1. Global Models with embedding capability/model
+   * 2. Environment variables (EMBEDDING_API_KEY, EMBEDDING_API_BASE)
+   * 3. OPENAI_API_KEY fallback
+   *
+   * @returns Environment variables to pass to Python scripts
    */
   private getEmbeddingEnv(): Record<string, string> {
     const env: Record<string, string> = {};
 
-    // API key (EMBEDDING_API_KEY takes precedence over OPENAI_API_KEY)
+    // First, try to get embedding config from Global Models
+    try {
+      const { GlobalModelService } = require('./GlobalModelService');
+      const globalModelService = GlobalModelService.getInstance();
+      const embeddingConfig = globalModelService.getEmbeddingConfig();
+
+      if (embeddingConfig && embeddingConfig.api_key) {
+        log.debug({ model: embeddingConfig.model, hasBaseUrl: !!embeddingConfig.base_url }, 'Using embedding config from Global Models');
+        env.EMBEDDING_API_KEY = embeddingConfig.api_key;
+        env.OPENAI_API_KEY = embeddingConfig.api_key; // Backward compatibility
+        env.EMBEDDING_MODEL = embeddingConfig.model;
+        if (embeddingConfig.base_url) {
+          env.EMBEDDING_API_BASE = embeddingConfig.base_url;
+        }
+        return env;
+      }
+    } catch (e) {
+      // GlobalModelService not initialized yet (e.g., during startup)
+      log.debug({ err: e }, 'GlobalModelService not available, falling back to env vars');
+    }
+
+    // Fallback to environment variables
     const apiKey = process.env.EMBEDDING_API_KEY || process.env.OPENAI_API_KEY;
     if (apiKey) {
       env.EMBEDDING_API_KEY = apiKey;
-      env.OPENAI_API_KEY = apiKey; // Also set for backward compatibility
+      env.OPENAI_API_KEY = apiKey;
     }
 
-    // Custom base URL for OpenAI-compatible endpoints
     if (process.env.EMBEDDING_API_BASE) {
       env.EMBEDDING_API_BASE = process.env.EMBEDDING_API_BASE;
     }

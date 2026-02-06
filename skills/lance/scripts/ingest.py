@@ -93,15 +93,19 @@ def ingest_document(
     text_content: str,
     chunk_size: int = 500,
     overlap: int = 100,
-    embedding_model: str = "text-embedding-3-small",
+    embedding_model: str | None = None,
 ) -> dict:
     """Ingest a document into the knowledge base.
 
     Environment variables:
         EMBEDDING_API_KEY: API key for embedding provider (required)
         EMBEDDING_API_BASE: Base URL for OpenAI-compatible endpoint (optional)
+        EMBEDDING_MODEL: Model name (optional, defaults to text-embedding-3-small)
         OPENAI_API_KEY: Fallback if EMBEDDING_API_KEY not set
     """
+    # Get embedding model from env or use default
+    if embedding_model is None:
+        embedding_model = os.environ.get("EMBEDDING_MODEL", "text-embedding-3-small")
     try:
         import lancedb
         from lancedb.embeddings import get_registry

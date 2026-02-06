@@ -491,6 +491,68 @@ export class GlobalModelService {
       .filter((m) => hiddenGlobalIds.has(m.id))
       .filter((m) => this.hasGroupAccess(userGroups ?? null, userRole ?? 'user', m.allowed_groups));
   }
+
+  // ========================================
+  // Embedding model helpers
+  // ========================================
+
+  /**
+   * Find a global model that supports embeddings
+   * Looks for models with "embedding" in their name or capabilities
+   *
+   * @returns Embedding config with base_url, api_key, and model name, or null if not found
+   */
+  getEmbeddingConfig(): { base_url: string; api_key: string; model: string } | null {
+    const models = this.listGlobalModels(false); // Only enabled models
+
+    // First, look for models with embedding capability
+    for (const model of models) {
+      if (model.capabilities?.some((c) => c.toLowerCase().includes('embedding'))) {
+        const withKey = this.getGlobalModelWithKey(model.id);
+        if (withKey) {
+          // Find an embedding model name
+          const embeddingModel = model.models.find((m) => m.toLowerCase().includes('embedding')) || model.models[0] || 'text-embedding-3-small';
+          return {
+            base_url: model.base_url || '',
+            api_key: withKey.api_key || '',
+            model: embeddingModel,
+          };
+        }
+      }
+    }
+
+    // Then, look for models with "embedding" in the model names
+    for (const model of models) {
+      const embeddingModelName = model.models.find((m) => m.toLowerCase().includes('embedding'));
+      if (embeddingModelName) {
+        const withKey = this.getGlobalModelWithKey(model.id);
+        if (withKey) {
+          return {
+            base_url: model.base_url || '',
+            api_key: withKey.api_key || '',
+            model: embeddingModelName,
+          };
+        }
+      }
+    }
+
+    // No embedding model found in Global Models
+    log.debug('No embedding model found in Global Models');
+    return null;
+  }
+
+  /**
+   * Get global model with decrypted API key (internal use only)
+   */
+  private getGlobalModelWithKey(id: string): IGlobalModelWithKey | null {
+    const row = this.getGlobalModelRow(id);
+    if (!row) return null;
+
+    const model = this.rowToGlobalModel(row);
+    const api_key = row.encrypted_api_key ? this.decrypt(row.encrypted_api_key) : '';
+
+    return { ...model, api_key };
+  }
 }
 
 // Export singleton getter

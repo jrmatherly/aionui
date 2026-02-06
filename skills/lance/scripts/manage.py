@@ -269,15 +269,20 @@ def get_stats(workspace_path: str) -> dict:
         return {"status": "error", "error": str(e)}
 
 
-def init_knowledge_base(workspace_path: str, embedding_model: str = "text-embedding-3-small") -> dict:
+def init_knowledge_base(workspace_path: str, embedding_model: str | None = None) -> dict:
     """Initialize an empty knowledge base for the user.
 
     Environment variables:
         EMBEDDING_API_KEY: API key for embedding provider (required)
         EMBEDDING_API_BASE: Base URL for OpenAI-compatible endpoint (optional)
+        EMBEDDING_MODEL: Model name (optional, defaults to text-embedding-3-small)
         OPENAI_API_KEY: Fallback if EMBEDDING_API_KEY not set
     """
     import os
+
+    # Get embedding model from env or use default
+    if embedding_model is None:
+        embedding_model = os.environ.get("EMBEDDING_MODEL", "text-embedding-3-small")
 
     try:
         import lancedb

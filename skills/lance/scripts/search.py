@@ -26,15 +26,19 @@ def search_knowledge(
     search_type: str = "hybrid",
     limit: int = 10,
     filter_expr: str | None = None,
-    embedding_model: str = "text-embedding-3-small",
+    embedding_model: str | None = None,
 ) -> dict:
     """Search the knowledge base.
 
     Environment variables:
         EMBEDDING_API_KEY: API key for embedding provider (required for vector/hybrid)
         EMBEDDING_API_BASE: Base URL for OpenAI-compatible endpoint (optional)
+        EMBEDDING_MODEL: Model name (optional, defaults to text-embedding-3-small)
         OPENAI_API_KEY: Fallback if EMBEDDING_API_KEY not set
     """
+    # Get embedding model from env or use default
+    if embedding_model is None:
+        embedding_model = os.environ.get("EMBEDDING_MODEL", "text-embedding-3-small")
     try:
         import lancedb
         from lancedb.embeddings import get_registry
