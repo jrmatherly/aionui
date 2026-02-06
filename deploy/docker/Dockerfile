@@ -203,6 +203,9 @@ ENV MISE_DATA_DIR="/mise" \
     MISE_EXPERIMENTAL="1" \
     PATH="/mise/shims:$PATH"
 
+# Set shell with pipefail for pipe safety (DL4006)
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 # Install mise binary
 RUN curl -fsSL https://mise.run | sh \
     && mkdir -p /mise/shims /mise/cache /mise/state \
