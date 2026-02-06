@@ -40,7 +40,7 @@ def setup_knowledge_base(workspace_path: str) -> dict:
     if lance_dir.exists():
         try:
             db = lancedb.connect(str(lance_dir))
-            tables = db.table_names()
+            tables = db.list_tables()
             result["initialized"] = True
             result["tables"] = tables
 

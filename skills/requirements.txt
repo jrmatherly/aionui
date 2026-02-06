@@ -74,6 +74,9 @@ mcp>=1.1.0
 # Enables: document ingestion, semantic search, hybrid search, versioning
 lancedb>=0.27.0
 
+# pandas - required by LanceDB for DataFrame operations
+pandas>=2.0.0
+
 # Optional: Local embeddings (if not using OpenAI API)
 # sentence-transformers>=3.0.0
 

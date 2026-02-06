@@ -61,7 +61,7 @@ def search_knowledge(
     try:
         db = lancedb.connect(str(lance_dir))
 
-        if "knowledge" not in db.table_names():
+        if "knowledge" not in db.list_tables():
             return {"status": "error", "error": "No knowledge table found"}
 
         table = db.open_table("knowledge")

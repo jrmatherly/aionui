@@ -41,7 +41,7 @@ def delete_by_source(workspace_path: str, source_file: str) -> dict:
 
     try:
         db = lancedb.connect(str(lance_dir))
-        if "knowledge" not in db.table_names():
+        if "knowledge" not in db.list_tables():
             return {"status": "error", "error": "No knowledge table"}
 
         table = db.open_table("knowledge")
@@ -78,7 +78,7 @@ def delete_by_id(workspace_path: str, chunk_id: str) -> dict:
 
     try:
         db = lancedb.connect(str(lance_dir))
-        if "knowledge" not in db.table_names():
+        if "knowledge" not in db.list_tables():
             return {"status": "error", "error": "No knowledge table"}
 
         table = db.open_table("knowledge")
@@ -113,7 +113,7 @@ def reindex(workspace_path: str) -> dict:
 
     try:
         db = lancedb.connect(str(lance_dir))
-        if "knowledge" not in db.table_names():
+        if "knowledge" not in db.list_tables():
             return {"status": "error", "error": "No knowledge table"}
 
         table = db.open_table("knowledge")
@@ -153,7 +153,7 @@ def list_versions(workspace_path: str) -> dict:
 
     try:
         db = lancedb.connect(str(lance_dir))
-        if "knowledge" not in db.table_names():
+        if "knowledge" not in db.list_tables():
             return {"status": "error", "error": "No knowledge table"}
 
         table = db.open_table("knowledge")
@@ -161,13 +161,23 @@ def list_versions(workspace_path: str) -> dict:
 
         version_list = []
         for v in versions:
-            version_list.append(
-                {
-                    "version": v.version,
-                    "timestamp": str(v.timestamp) if hasattr(v, "timestamp") else None,
-                    "metadata": v.metadata if hasattr(v, "metadata") else None,
-                }
-            )
+            # Handle both dict format (new LanceDB) and object format (old LanceDB)
+            if isinstance(v, dict):
+                version_list.append(
+                    {
+                        "version": v.get("version"),
+                        "timestamp": str(v.get("timestamp")) if v.get("timestamp") else None,
+                        "metadata": v.get("metadata"),
+                    }
+                )
+            else:
+                version_list.append(
+                    {
+                        "version": v.version,
+                        "timestamp": str(v.timestamp) if hasattr(v, "timestamp") else None,
+                        "metadata": v.metadata if hasattr(v, "metadata") else None,
+                    }
+                )
 
         return {
             "status": "ok",
@@ -193,7 +203,7 @@ def restore_version(workspace_path: str, version: int) -> dict:
 
     try:
         db = lancedb.connect(str(lance_dir))
-        if "knowledge" not in db.table_names():
+        if "knowledge" not in db.list_tables():
             return {"status": "error", "error": "No knowledge table"}
 
         table = db.open_table("knowledge")
@@ -233,7 +243,7 @@ def get_stats(workspace_path: str) -> dict:
                 total_size += path.stat().st_size
 
         db = lancedb.connect(str(lance_dir))
-        tables = db.table_names()
+        tables = db.list_tables()
 
         stats = {
             "status": "ok",
@@ -269,13 +279,16 @@ def get_stats(workspace_path: str) -> dict:
         return {"status": "error", "error": str(e)}
 
 
-def init_knowledge_base(workspace_path: str, embedding_model: str | None = None) -> dict:
+def init_knowledge_base(
+    workspace_path: str, embedding_model: str | None = None, embedding_dimensions: int | None = None
+) -> dict:
     """Initialize an empty knowledge base for the user.
 
     Environment variables:
         EMBEDDING_API_KEY: API key for embedding provider (required)
         EMBEDDING_API_BASE: Base URL for OpenAI-compatible endpoint (optional)
         EMBEDDING_MODEL: Model name (optional, defaults to text-embedding-3-small)
+        EMBEDDING_DIMENSIONS: Vector dimensions (optional, auto-detected if not set)
         OPENAI_API_KEY: Fallback if EMBEDDING_API_KEY not set
     """
     import os
@@ -283,6 +296,12 @@ def init_knowledge_base(workspace_path: str, embedding_model: str | None = None)
     # Get embedding model from env or use default
     if embedding_model is None:
         embedding_model = os.environ.get("EMBEDDING_MODEL", "text-embedding-3-small")
+
+    # Get embedding dimensions from env (optional - auto-detected if not set)
+    if embedding_dimensions is None:
+        dim_env = os.environ.get("EMBEDDING_DIMENSIONS")
+        if dim_env:
+            embedding_dimensions = int(dim_env)
 
     try:
         import lancedb
@@ -297,7 +316,7 @@ def init_knowledge_base(workspace_path: str, embedding_model: str | None = None)
     if lance_dir.exists():
         try:
             db = lancedb.connect(str(lance_dir))
-            if "knowledge" in db.table_names():
+            if "knowledge" in db.list_tables():
                 return {
                     "status": "ok",
                     "action": "init",
@@ -332,11 +351,14 @@ def init_knowledge_base(workspace_path: str, embedding_model: str | None = None)
 
         embed_func = get_registry().get("openai").create(**embed_kwargs)
 
+        # Determine vector dimensions: explicit env var > auto-detect from model
+        vector_dims = embedding_dimensions if embedding_dimensions else embed_func.ndims()
+
         # Define schema with embedding
         class DocumentChunk(LanceModel):
             id: str
             text: str = embed_func.SourceField()
-            vector: Vector(embed_func.ndims()) = embed_func.VectorField()
+            vector: Vector(vector_dims) = embed_func.VectorField()
             source_file: str
             page: int
             chunk_index: int
@@ -374,7 +396,7 @@ def clear_knowledge(workspace_path: str, confirm: bool = False) -> dict:
     try:
         db = lancedb.connect(str(lance_dir))
 
-        if "knowledge" in db.table_names():
+        if "knowledge" in db.list_tables():
             db.drop_table("knowledge")
 
         return {
