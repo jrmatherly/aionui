@@ -194,13 +194,13 @@ AionUI supports full white-label branding via the `AIONUI_BRAND_NAME` environmen
 
 ### Build-Time vs Runtime
 
-| Layer | Method | When Applied |
-|-------|--------|--------------|
-| HTML `<title>` | BrandingInjectorPlugin | Build time |
-| React components | DefinePlugin | Build time |
-| useBranding default | DefinePlugin | Build time |
-| Server messages | `getBrandName()` | Runtime |
-| HTTP headers | `getBrandName()` | Runtime |
+| Layer               | Method                 | When Applied |
+| ------------------- | ---------------------- | ------------ |
+| HTML `<title>`      | BrandingInjectorPlugin | Build time   |
+| React components    | DefinePlugin           | Build time   |
+| useBranding default | DefinePlugin           | Build time   |
+| Server messages     | `getBrandName()`       | Runtime      |
+| HTTP headers        | `getBrandName()`       | Runtime      |
 
 ### Usage
 
@@ -282,6 +282,7 @@ Do not add `🤖 Generated with Claude` or similar signatures to commits.
 - **groupMappings.ts**: Map OIDC groups to roles (JSON or file-based)
 - Environment variables: `OIDC_ENABLED`, `OIDC_ISSUER`, `OIDC_CLIENT_ID`, etc.
 - **GLOBAL_MODELS**: JSON array to pre-configure shared models (synced to DB on startup)
+
   ```json
   [{ "platform": "openai", "name": "GPT-4", "api_key": "sk-xxx", "models": ["gpt-4", "gpt-4o"] }]
   ```
@@ -390,6 +391,60 @@ The CI workflow (`build-and-release.yml`) uses a 3-job pipeline:
 3. **docker** — Uses `Dockerfile.package` (packaging only, no compilation)
 
 This architecture mirrors local dev speed: cached deps + incremental webpack.
+
+## Common Pitfalls
+
+These are critical patterns that cause subtle bugs. Review before making changes in these areas.
+
+### Pino Webpack Externalization
+
+Pino has `"browser": "./browser.js"` in its package.json — a console.log shim with no transport/file/worker support. Webpack can resolve the browser build even with `target: 'electron-main'`. Pino and ALL transport deps (`pino-pretty`, `pino-roll`, `pino-syslog`, `thread-stream`, etc.) **must** remain in webpack `externals` and `electron-builder.yml` files list. Never bundle pino.
+
+### Message.useMessage() Infinite Loop
+
+Arco Design's `Message.useMessage()` creates a new reference each render. Putting it in `useCallback`/`useEffect` dependency arrays causes infinite re-render loops. Use static `Message.error()` / `Message.success()` for callbacks in dependency arrays.
+
+### CSS Theme Selectors
+
+`:root` matches `<html>` in both themes. Using `:root .class` for light-mode CSS breaks dark mode. Always use `[data-theme='light'] .class` for light-mode-specific rules.
+
+### Express Route Ordering
+
+Static routes like `/global/hidden` must be defined **before** parameterized routes like `/global/:id`, otherwise `:id` captures the literal string "hidden".
+
+### Build-Time vs Runtime Branding
+
+Setting `AIONUI_BRAND_NAME` only at runtime causes a "flash of default brand" in the UI. Set it before building: `mise run build:branded --brand "Name"`.
+
+### Native Module Build Config
+
+Native modules (better-sqlite3, node-pty, web-tree-sitter) must appear in all three places:
+
+1. `forge.config.ts` — `rebuildConfig.onlyModules`
+2. `electron-builder.yml` — `asarUnpack` section
+3. Webpack config — `externals` array
+
+Missing any one = broken builds.
+
+## Files Requiring Explicit Permission to Modify
+
+Before editing these files, always ask the user first:
+
+- `package-lock.json` — dependency lock (regenerate with `npm ci`)
+- `.husky/*` — git hooks (commit-msg, pre-commit)
+- `deploy/docker/Dockerfile` — production container build
+- `deploy/docker/Dockerfile.package` — CI packaging build
+- `electron-builder.yml` — application packaging config
+- `forge.config.ts` — Electron Forge build config (complex, many edge cases)
+- `mise.lock` — tool version pins with checksums
+- `entitlements.plist` — macOS code signing
+
+## Files to Never Read or Modify
+
+- `deploy/docker/.env` — contains secrets
+- `deploy/docker/global-models.json` — contains API keys
+- `deploy/docker/group-mappings.json` — contains EntraID group IDs
+- Any file matching: `*.pem`, `*.key`, `*credentials*`, `*secrets*`
 
 ## AI Context Tools
 
