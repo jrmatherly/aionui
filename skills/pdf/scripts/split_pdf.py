@@ -65,15 +65,9 @@ def extract_pages(input_path: str, output_path: str, page_range: str) -> None:
 if __name__ == "__main__":
     if len(sys.argv) < 3:
         print("Usage:")
-        print(
-            "  python split_pdf.py <input.pdf> <output_dir>              # Split all pages"
-        )
-        print(
-            "  python split_pdf.py <input.pdf> <output.pdf> 1-5          # Extract pages 1-5"
-        )
-        print(
-            "  python split_pdf.py <input.pdf> <output.pdf> 1,3,5        # Extract specific pages"
-        )
+        print("  python split_pdf.py <input.pdf> <output_dir>              # Split all pages")
+        print("  python split_pdf.py <input.pdf> <output.pdf> 1-5          # Extract pages 1-5")
+        print("  python split_pdf.py <input.pdf> <output.pdf> 1,3,5        # Extract specific pages")
         sys.exit(1)
 
     input_path = sys.argv[1]

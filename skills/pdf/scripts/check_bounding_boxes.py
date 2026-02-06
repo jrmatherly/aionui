@@ -48,17 +48,13 @@ def check_bounding_boxes(json_path: str) -> bool:
 
         # Check for intersection
         if label_box and entry_box and boxes_intersect(label_box, entry_box):
-            errors.append(
-                f"Page {page}: Label and entry boxes intersect for '{description}'"
-            )
+            errors.append(f"Page {page}: Label and entry boxes intersect for '{description}'")
 
         # Check minimum height
         if entry_box:
             height = entry_box[3] - entry_box[1]  # bottom - top
             if height < MIN_HEIGHT:
-                errors.append(
-                    f"Page {page}: Entry box too short ({height}px < {MIN_HEIGHT}px) for '{description}'"
-                )
+                errors.append(f"Page {page}: Entry box too short ({height}px < {MIN_HEIGHT}px) for '{description}'")
 
     if errors:
         print("Bounding box errors found:")

@@ -20,9 +20,7 @@ def convert_pdf_to_images(pdf_path: str, output_dir: str, dpi: int = 150) -> Non
         from pdf2image import convert_from_path
     except ImportError:
         print("Error: pdf2image is required. Install with: pip install pdf2image")
-        print(
-            "Also requires poppler: brew install poppler (macOS) or apt-get install poppler-utils (Linux)"
-        )
+        print("Also requires poppler: brew install poppler (macOS) or apt-get install poppler-utils (Linux)")
         sys.exit(1)
 
     # Create output directory
@@ -43,9 +41,7 @@ def convert_pdf_to_images(pdf_path: str, output_dir: str, dpi: int = 150) -> Non
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        print(
-            "Usage: python convert_pdf_to_images.py <input.pdf> <output_directory> [dpi]"
-        )
+        print("Usage: python convert_pdf_to_images.py <input.pdf> <output_directory> [dpi]")
         sys.exit(1)
 
     pdf_path = sys.argv[1]

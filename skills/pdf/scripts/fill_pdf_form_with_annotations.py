@@ -39,9 +39,7 @@ except ImportError as e:
     sys.exit(1)
 
 
-def fill_form_with_annotations(
-    input_path: str, json_path: str, output_path: str
-) -> None:
+def fill_form_with_annotations(input_path: str, json_path: str, output_path: str) -> None:
     """Fill PDF form using text annotations."""
     # Load fields data
     with open(json_path, "r", encoding="utf-8") as f:
@@ -70,11 +68,7 @@ def fill_form_with_annotations(
         scale_y = page_height / img_height
 
         # Get fields for this page
-        page_fields = [
-            f
-            for f in data.get("form_fields", [])
-            if f.get("page_number", 1) == page_num
-        ]
+        page_fields = [f for f in data.get("form_fields", []) if f.get("page_number", 1) == page_num]
 
         if page_fields:
             # Create overlay with annotations
@@ -128,9 +122,7 @@ def fill_form_with_annotations(
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
-        print(
-            "Usage: python fill_pdf_form_with_annotations.py <input.pdf> <fields.json> <output.pdf>"
-        )
+        print("Usage: python fill_pdf_form_with_annotations.py <input.pdf> <fields.json> <output.pdf>")
         sys.exit(1)
 
     fill_form_with_annotations(sys.argv[1], sys.argv[2], sys.argv[3])

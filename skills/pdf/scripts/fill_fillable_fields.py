@@ -62,9 +62,7 @@ def fill_form_fields(input_path: str, values_path: str, output_path: str) -> Non
         sys.exit(1)
 
     # Update fields
-    writer.update_page_form_field_values(
-        writer.pages[0], values_dict, auto_regenerate=False
-    )
+    writer.update_page_form_field_values(writer.pages[0], values_dict, auto_regenerate=False)
 
     # Write output
     with open(output_path, "wb") as f:
@@ -75,9 +73,7 @@ def fill_form_fields(input_path: str, values_path: str, output_path: str) -> Non
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
-        print(
-            "Usage: python fill_fillable_fields.py <input.pdf> <field_values.json> <output.pdf>"
-        )
+        print("Usage: python fill_fillable_fields.py <input.pdf> <field_values.json> <output.pdf>")
         sys.exit(1)
 
     fill_form_fields(sys.argv[1], sys.argv[2], sys.argv[3])

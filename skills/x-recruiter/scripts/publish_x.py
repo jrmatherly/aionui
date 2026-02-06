@@ -38,7 +38,9 @@ def main() -> None:
         # If not logged in, X will redirect to login or show a login wall.
         if "login" in page.url or "i/flow/login" in page.url:
             print("⏳ [Step 2] Waiting for login: please complete login in the browser window.")
-            print("   The script will auto-detect login completion; if not detected, return to terminal and press Enter.")
+            print(
+                "   The script will auto-detect login completion; if not detected, return to terminal and press Enter."
+            )
             try:
                 page.wait_for_url("https://x.com/home", timeout=120000)
             except Exception:
@@ -50,7 +52,9 @@ def main() -> None:
         composer = page.locator("div[role='textbox'][data-testid='tweetTextarea_0']")
         if not composer.is_visible():
             # Try clicking the compose button if needed
-            compose_btn = page.locator("a[data-testid='SideNav_NewTweet_Button'], div[data-testid='SideNav_NewTweet_Button']")
+            compose_btn = page.locator(
+                "a[data-testid='SideNav_NewTweet_Button'], div[data-testid='SideNav_NewTweet_Button']"
+            )
             if compose_btn.is_visible():
                 compose_btn.click()
             page.wait_for_timeout(1000)

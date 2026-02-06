@@ -56,9 +56,7 @@ def extract_form_fields(pdf_path: str, output_path: str) -> None:
                 field_info["radio_options"] = []
                 if "/Kids" in field:
                     for kid in field["/Kids"]:
-                        kid_obj = (
-                            kid.get_object() if hasattr(kid, "get_object") else kid
-                        )
+                        kid_obj = kid.get_object() if hasattr(kid, "get_object") else kid
                         option_rect = kid_obj.get("/Rect", [0, 0, 0, 0])
                         ap_dict = kid_obj.get("/AP", {})
                         if "/N" in ap_dict:
@@ -67,9 +65,7 @@ def extract_form_fields(pdf_path: str, output_path: str) -> None:
                                     field_info["radio_options"].append(
                                         {
                                             "value": key,
-                                            "rect": [float(x) for x in option_rect]
-                                            if option_rect
-                                            else None,
+                                            "rect": [float(x) for x in option_rect] if option_rect else None,
                                         }
                                     )
             else:
@@ -95,9 +91,7 @@ def extract_form_fields(pdf_path: str, output_path: str) -> None:
                         }
                     )
                 else:
-                    field_info["choice_options"].append(
-                        {"value": str(opt), "text": str(opt)}
-                    )
+                    field_info["choice_options"].append({"value": str(opt), "text": str(opt)})
         else:
             field_info["type"] = "text"
 

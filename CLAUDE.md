@@ -124,9 +124,16 @@ npm start                  # Start dev environment
 npm run webui              # Start WebUI server
 
 # Code Quality
+
+## JavaScript/TypeScript
 npm run lint               # Run ESLint
 npm run lint:fix           # Auto-fix lint issues
 npm run format             # Format with Prettier
+
+## Python (Skills)
+ruff check skills/         # Lint Python scripts
+ruff check --fix skills/   # Auto-fix violations
+ruff format skills/        # Format Python code
 
 # Testing
 npm test                   # Run all tests

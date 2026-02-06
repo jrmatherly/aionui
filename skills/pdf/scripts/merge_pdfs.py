@@ -28,9 +28,7 @@ def merge_pdfs(output_path: str, input_paths: list) -> None:
     with open(output_path, "wb") as f:
         writer.write(f)
 
-    print(
-        f"\nMerged {len(input_paths)} PDFs ({total_pages} total pages) into {output_path}"
-    )
+    print(f"\nMerged {len(input_paths)} PDFs ({total_pages} total pages) into {output_path}")
 
 
 if __name__ == "__main__":

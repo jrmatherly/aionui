@@ -38,12 +38,8 @@ from pptx.shapes.base import BaseShape
 # Type aliases for cleaner signatures
 JsonValue = Union[str, int, float, bool, None]
 ParagraphDict = Dict[str, JsonValue]
-ShapeDict = Dict[
-    str, Union[str, float, bool, List[ParagraphDict], List[str], Dict[str, Any], None]
-]
-InventoryData = Dict[
-    str, Dict[str, "ShapeData"]
-]  # Dict of slide_id -> {shape_id -> ShapeData}
+ShapeDict = Dict[str, Union[str, float, bool, List[ParagraphDict], List[str], Dict[str, Any], None]]
+InventoryData = Dict[str, Dict[str, "ShapeData"]]  # Dict of slide_id -> {shape_id -> ShapeData}
 InventoryDict = Dict[str, Dict[str, ShapeDict]]  # JSON-serializable inventory
 
 
@@ -91,9 +87,7 @@ The output JSON includes:
     try:
         print(f"Extracting text inventory from: {args.input}")
         if args.issues_only:
-            print(
-                "Filtering to include only text shapes with issues (overflow/overlap)"
-            )
+            print("Filtering to include only text shapes with issues (overflow/overlap)")
         inventory = extract_text_inventory(input_path, issues_only=args.issues_only)
 
         output_path = Path(args.output)
@@ -107,15 +101,11 @@ The output JSON includes:
         total_shapes = sum(len(shapes) for shapes in inventory.values())
         if args.issues_only:
             if total_shapes > 0:
-                print(
-                    f"Found {total_shapes} text elements with issues in {total_slides} slides"
-                )
+                print(f"Found {total_shapes} text elements with issues in {total_slides} slides")
             else:
                 print("No issues discovered")
         else:
-            print(
-                f"Found text in {total_slides} slides with {total_shapes} text elements"
-            )
+            print(f"Found text in {total_slides} slides with {total_shapes} text elements")
 
     except Exception as e:
         print(f"Error processing presentation: {e}")
@@ -159,17 +149,10 @@ class ParagraphData:
         self.line_spacing: Optional[float] = None
 
         # Check for bullet formatting
-        if (
-            hasattr(paragraph, "_p")
-            and paragraph._p is not None
-            and paragraph._p.pPr is not None
-        ):
+        if hasattr(paragraph, "_p") and paragraph._p is not None and paragraph._p.pPr is not None:
             pPr = paragraph._p.pPr
             ns = "{http://schemas.openxmlformats.org/drawingml/2006/main}"
-            if (
-                pPr.find(f"{ns}buChar") is not None
-                or pPr.find(f"{ns}buAutoNum") is not None
-            ):
+            if pPr.find(f"{ns}buChar") is not None or pPr.find(f"{ns}buAutoNum") is not None:
                 self.bullet = True
                 if hasattr(paragraph, "level"):
                     self.level = paragraph.level
@@ -211,12 +194,12 @@ class ParagraphData:
                     # Try RGB color first
                     if font.color.rgb:
                         self.color = str(font.color.rgb)
-                except (AttributeError, TypeError):
+                except AttributeError, TypeError:
                     # Fall back to theme color
                     try:
                         if font.color.theme_color:
                             self.theme_color = font.color.theme_color.name
-                    except (AttributeError, TypeError):
+                    except AttributeError, TypeError:
                         pass
 
         # Add line spacing if set
@@ -337,7 +320,7 @@ class ShapeData:
                             file_name_lower.endswith(ext) for ext in extensions
                         ):
                             return str(file_path)
-            except (OSError, PermissionError):
+            except OSError, PermissionError:
                 continue
 
         return None
@@ -355,7 +338,7 @@ class ShapeData:
         try:
             prs = slide.part.package.presentation_part.presentation
             return prs.slide_width, prs.slide_height
-        except (AttributeError, TypeError):
+        except AttributeError, TypeError:
             return None, None
 
     @staticmethod
@@ -404,9 +387,7 @@ class ShapeData:
         self.shape_id: str = ""  # Will be set after sorting
 
         # Get slide dimensions from slide object
-        self.slide_width_emu, self.slide_height_emu = (
-            self.get_slide_dimensions(slide) if slide else (None, None)
-        )
+        self.slide_width_emu, self.slide_height_emu = self.get_slide_dimensions(slide) if slide else (None, None)
 
         # Get placeholder type if applicable
         self.placeholder_type: Optional[str] = None
@@ -419,22 +400,12 @@ class ShapeData:
 
                 # Get default font size from layout
                 if slide and hasattr(slide, "slide_layout"):
-                    self.default_font_size = self.get_default_font_size(
-                        shape, slide.slide_layout
-                    )
+                    self.default_font_size = self.get_default_font_size(shape, slide.slide_layout)
 
         # Get position information
         # Use absolute positions if provided (for shapes in groups), otherwise use shape's position
-        left_emu = (
-            absolute_left
-            if absolute_left is not None
-            else (shape.left if hasattr(shape, "left") else 0)
-        )
-        top_emu = (
-            absolute_top
-            if absolute_top is not None
-            else (shape.top if hasattr(shape, "top") else 0)
-        )
+        left_emu = absolute_left if absolute_left is not None else (shape.left if hasattr(shape, "left") else 0)
+        top_emu = absolute_top if absolute_top is not None else (shape.top if hasattr(shape, "top") else 0)
 
         self.left: float = round(self.emu_to_inches(left_emu), 2)  # type: ignore
         self.top: float = round(self.emu_to_inches(top_emu), 2)  # type: ignore
@@ -457,9 +428,7 @@ class ShapeData:
         self.frame_overflow_bottom: Optional[float] = None
         self.slide_overflow_right: Optional[float] = None
         self.slide_overflow_bottom: Optional[float] = None
-        self.overlapping_shapes: Dict[
-            str, float
-        ] = {}  # Dict of shape_id -> overlap area in sq inches
+        self.overlapping_shapes: Dict[str, float] = {}  # Dict of shape_id -> overlap area in sq inches
         self.warnings: List[str] = []
         self._estimate_frame_overflow()
         self._calculate_slide_overflow()
@@ -480,9 +449,7 @@ class ShapeData:
     def _get_default_font_size(self) -> int:
         """Get default font size from theme text styles or use conservative default."""
         try:
-            if not (
-                hasattr(self.shape, "part") and hasattr(self.shape.part, "slide_layout")
-            ):
+            if not (hasattr(self.shape, "part") and hasattr(self.shape.part, "slide_layout")):
                 return 14
 
             slide_master = self.shape.part.slide_layout.slide_master  # type: ignore
@@ -673,9 +640,7 @@ class ShapeData:
             text = paragraph.text.strip()
             # Check for manual bullet symbols
             if text and any(text.startswith(symbol + " ") for symbol in bullet_symbols):
-                self.warnings.append(
-                    "manual_bullet_symbol: use proper bullet formatting"
-                )
+                self.warnings.append("manual_bullet_symbol: use proper bullet formatting")
                 break
 
     @property
@@ -792,11 +757,7 @@ def collect_shapes_with_absolute_positions(
 
         # Process children with accumulated offsets
         for child in shape.shapes:  # type: ignore
-            result.extend(
-                collect_shapes_with_absolute_positions(
-                    child, abs_group_left, abs_group_top
-                )
-            )
+            result.extend(collect_shapes_with_absolute_positions(child, abs_group_left, abs_group_top))
         return result
 
     # Regular shape - check if it has valid text
@@ -911,9 +872,7 @@ def detect_overlaps(shapes: List[ShapeData]) -> None:
                 shape2.overlapping_shapes[shape1.shape_id] = overlap_area
 
 
-def extract_text_inventory(
-    pptx_path: Path, prs: Optional[Any] = None, issues_only: bool = False
-) -> InventoryData:
+def extract_text_inventory(pptx_path: Path, prs: Optional[Any] = None, issues_only: bool = False) -> InventoryData:
     """Extract text content from all slides in a PowerPoint presentation.
 
     Args:
@@ -967,9 +926,7 @@ def extract_text_inventory(
             continue
 
         # Create slide inventory using the stable shape IDs
-        inventory[f"slide-{slide_idx}"] = {
-            shape_data.shape_id: shape_data for shape_data in sorted_shapes
-        }
+        inventory[f"slide-{slide_idx}"] = {shape_data.shape_id: shape_data for shape_data in sorted_shapes}
 
     return inventory
 
@@ -993,9 +950,7 @@ def get_inventory_as_dict(pptx_path: Path, issues_only: bool = False) -> Invento
     # Convert ShapeData objects to dictionaries
     dict_inventory: InventoryDict = {}
     for slide_key, shapes in inventory.items():
-        dict_inventory[slide_key] = {
-            shape_key: shape_data.to_dict() for shape_key, shape_data in shapes.items()
-        }
+        dict_inventory[slide_key] = {shape_key: shape_data.to_dict() for shape_key, shape_data in shapes.items()}
 
     return dict_inventory
 
@@ -1008,9 +963,7 @@ def save_inventory(inventory: InventoryData, output_path: Path) -> None:
     # Convert ShapeData objects to dictionaries
     json_inventory: InventoryDict = {}
     for slide_key, shapes in inventory.items():
-        json_inventory[slide_key] = {
-            shape_key: shape_data.to_dict() for shape_key, shape_data in shapes.items()
-        }
+        json_inventory[slide_key] = {shape_key: shape_data.to_dict() for shape_key, shape_data in shapes.items()}
 
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(json_inventory, f, indent=2, ensure_ascii=False)
