@@ -10,6 +10,7 @@ import { migrate_v14_add_user_api_keys } from './migrations/v14_add_user_api_key
 import { migrate_v15_add_organizations_and_user_directories, rollback_v15 } from './migrations/v15_add_organizations_and_user_directories';
 import { migrate_v16_add_global_models } from './migrations/v16_add_global_models';
 import { migrate_v17_add_logging_config } from './migrations/v17_add_logging_config';
+import { migrate_v18_add_global_model_groups } from './migrations/v18_add_global_model_groups';
 
 /**
  * Migration script definition
@@ -628,9 +629,26 @@ const migration_v17: IMigration = {
 };
 
 /**
+ * Migration v17 -> v18: Add allowed_groups to global_models
+ * Enables group-based access control for cost management
+ */
+const migration_v18: IMigration = {
+  version: 18,
+  name: 'Add allowed_groups to global_models',
+  up: (db) => {
+    migrate_v18_add_global_model_groups(db);
+  },
+  down: (db) => {
+    // SQLite doesn't support DROP COLUMN, so we need to recreate the table
+    // For simplicity, we just leave the column (it's nullable and backward compatible)
+    log.info({ version: 18 }, 'Rollback: allowed_groups column left in place (nullable, backward compatible)');
+  },
+};
+
+/**
  * All migrations in order
  */
-export const ALL_MIGRATIONS: IMigration[] = [migration_v1, migration_v2, migration_v3, migration_v4, migration_v5, migration_v6, migration_v7, migration_v8, migration_v9, migration_v10, migration_v11, migration_v12, migration_v13, migration_v14, migration_v15, migration_v16, migration_v17];
+export const ALL_MIGRATIONS: IMigration[] = [migration_v1, migration_v2, migration_v3, migration_v4, migration_v5, migration_v6, migration_v7, migration_v8, migration_v9, migration_v10, migration_v11, migration_v12, migration_v13, migration_v14, migration_v15, migration_v16, migration_v17, migration_v18];
 
 /**
  * Get migrations needed to upgrade from one version to another

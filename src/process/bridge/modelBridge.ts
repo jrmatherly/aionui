@@ -237,7 +237,14 @@ export function initModelBridge(): void {
         if (userId) {
           try {
             const globalModelService = GlobalModelService.getInstance();
-            return globalModelService.getEffectiveModels(userId, localModels);
+
+            // Get user's groups and role for group-based access control
+            // Groups are stored as JSON string in the database
+            const userGroups = params?.__webUiUserGroups;
+            const userRole = params?.__webUiUserRole;
+            const parsedGroups = userGroups ? (typeof userGroups === 'string' ? JSON.parse(userGroups) : userGroups) : null;
+
+            return globalModelService.getEffectiveModels(userId, localModels, parsedGroups, userRole);
           } catch {
             // GlobalModelService not initialized (e.g., desktop mode) — return local only
           }

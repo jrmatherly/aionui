@@ -18,6 +18,8 @@ interface ClientInfo {
   lastPing: number;
   userId: string;
   username: string;
+  role: 'admin' | 'user' | 'viewer';
+  groups: string[] | null;
 }
 
 /**
@@ -75,7 +77,7 @@ export class WebSocketManager {
   }
 
   /**
-   * Add client — decode the JWT to attach userId/username metadata.
+   * Add client — decode the JWT to attach userId/username/role/groups metadata.
    */
   private addClient(ws: WebSocket, token: string): void {
     const decoded = AuthService.verifyWebSocketToken(token);
@@ -84,6 +86,8 @@ export class WebSocketManager {
       lastPing: Date.now(),
       userId: decoded?.userId ?? 'unknown',
       username: decoded?.username ?? 'unknown',
+      role: decoded?.role ?? 'user',
+      groups: decoded?.groups ?? null,
     });
   }
 
@@ -255,6 +259,20 @@ export class WebSocketManager {
    */
   getUserId(ws: WebSocket): string | undefined {
     return this.clients.get(ws)?.userId;
+  }
+
+  /**
+   * Get the user's role associated with a WebSocket connection.
+   */
+  getUserRole(ws: WebSocket): 'admin' | 'user' | 'viewer' {
+    return this.clients.get(ws)?.role ?? 'user';
+  }
+
+  /**
+   * Get the user's groups associated with a WebSocket connection (OIDC groups).
+   */
+  getUserGroups(ws: WebSocket): string[] | null {
+    return this.clients.get(ws)?.groups ?? null;
   }
 
   /**

@@ -48,7 +48,16 @@ export function initWebAdapter(wss: WebSocketServer): void {
     const emitter = getBridgeEmitter();
     if (emitter) {
       const userId = wsManager.getUserId(ws);
+      const userRole = wsManager.getUserRole(ws);
+      const userGroups = wsManager.getUserGroups(ws);
       let enriched = data;
+
+      // User context to inject for model access control
+      const userContext = {
+        __webUiUserId: userId,
+        __webUiUserRole: userRole,
+        __webUiUserGroups: userGroups,
+      };
 
       if (userId && typeof data === 'object' && data !== null) {
         // Bridge protocol detection: invoke payloads have an `id` field.
@@ -60,25 +69,25 @@ export function initWebAdapter(wss: WebSocketServer): void {
             // Array payloads (e.g., saveModelConfig, getAgentMcpConfigs): preserve
             // the array intact. Spreading arrays into objects destroys them.
             // Providers receiving arrays don't need userId — attach at wrapper level.
-            enriched = { ...data, __webUiUserId: userId };
+            enriched = { ...data, ...userContext };
           } else if (typeof innerData === 'object' && innerData !== null) {
-            // Object payloads: inject userId into inner data so providers see it
+            // Object payloads: inject user context into inner data so providers see it
             enriched = {
               ...data,
-              data: { ...innerData, __webUiUserId: userId },
+              data: { ...innerData, ...userContext },
             };
           } else if (innerData === undefined) {
-            // No-argument calls (void params): create data object with userId.
+            // No-argument calls (void params): create data object with user context.
             // Providers receive data.data, so we must populate it.
-            enriched = { ...data, data: { __webUiUserId: userId } };
+            enriched = { ...data, data: { ...userContext } };
           } else {
             // Primitive payloads (e.g. storage key strings): preserve the original
-            // value and attach userId at the outer wrapper level instead.
-            enriched = { ...data, __webUiUserId: userId };
+            // value and attach user context at the outer wrapper level instead.
+            enriched = { ...data, ...userContext };
           }
         } else {
           // Non-bridge-protocol messages (e.g., pong, subscribe): enrich top-level
-          enriched = { ...data, __webUiUserId: userId };
+          enriched = { ...data, ...userContext };
         }
       }
 

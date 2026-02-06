@@ -52,16 +52,33 @@ export function registerApiRoutes(app: Express): void {
   /* ================================================================== */
 
   /**
+   * Helper to parse user groups from request
+   * Groups are stored as JSON string in the database
+   */
+  const parseUserGroups = (groupsJson: string | null | undefined): string[] | null => {
+    if (!groupsJson) return null;
+    try {
+      const parsed = JSON.parse(groupsJson);
+      return Array.isArray(parsed) ? parsed : null;
+    } catch {
+      return null;
+    }
+  };
+
+  /**
    * Get visible global models for the current user
    * GET /api/models/global
    *
-   * Returns global models that are enabled and not hidden by the user.
+   * Returns global models that are enabled, not hidden by the user,
+   * and accessible based on group membership.
    */
   app.get('/api/models/global', apiRateLimiter, validateApiAccess, scopeToUser, (req: Request, res: Response) => {
     try {
       const userId = req.scopedUserId!;
+      const userGroups = parseUserGroups(req.user?.groups);
+      const userRole = req.user?.role ?? 'user';
       const service = GlobalModelService.getInstance();
-      const models = service.getVisibleGlobalModels(userId);
+      const models = service.getVisibleGlobalModels(userId, userGroups, userRole);
       res.json({ success: true, models });
     } catch (error) {
       log.error({ err: error }, 'Get global models failed');
@@ -73,13 +90,16 @@ export function registerApiRoutes(app: Express): void {
    * Get hidden global models for the current user
    * GET /api/models/global/hidden
    *
-   * Returns global models that the user has hidden.
+   * Returns global models that the user has hidden
+   * (filtered by group access - only shows models they would have access to).
    */
   app.get('/api/models/global/hidden', apiRateLimiter, validateApiAccess, scopeToUser, (req: Request, res: Response) => {
     try {
       const userId = req.scopedUserId!;
+      const userGroups = parseUserGroups(req.user?.groups);
+      const userRole = req.user?.role ?? 'user';
       const service = GlobalModelService.getInstance();
-      const models = service.getHiddenGlobalModels(userId);
+      const models = service.getHiddenGlobalModels(userId, userGroups, userRole);
       res.json({ success: true, models });
     } catch (error) {
       log.error({ err: error }, 'Get hidden global models failed');

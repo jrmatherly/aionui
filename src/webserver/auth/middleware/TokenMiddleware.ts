@@ -135,12 +135,13 @@ export const createAuthMiddleware = (type: 'json' | 'html' = 'json') => {
       return;
     }
 
-    // 4. Attach user info to request object
+    // 4. Attach user info to request object (including groups for model access control)
     req.user = {
       id: user.id,
       username: user.username,
       role: user.role ?? 'user',
       auth_method: user.auth_method ?? 'local',
+      groups: user.groups ?? null,
     };
 
     next();

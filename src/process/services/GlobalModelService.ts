@@ -16,7 +16,8 @@ import { modelLogger as log } from '@/common/logger';
 import type { IProvider, ModelCapability } from '@/common/storage';
 import crypto from 'crypto';
 import type Database from 'better-sqlite3';
-import type { ICreateGlobalModelDTO, IGlobalModel, IGlobalModelRow, IGlobalModelWithKey, IUpdateGlobalModelDTO, IUserModelOverride } from '../database/types';
+import type { ICreateGlobalModelDTO, IGlobalModel, IGlobalModelRow, IGlobalModelWithKey, IUpdateGlobalModelDTO, IUserModelOverride, UserRole } from '../database/types';
+import { GROUP_MAPPINGS } from '@/webserver/auth/config/groupMappings';
 
 /**
  * Singleton service for managing global models
@@ -98,6 +99,49 @@ export class GlobalModelService {
   }
 
   // ========================================
+  // Group access control helpers
+  // ========================================
+
+  /**
+   * Check if a user has access to a model based on group membership
+   *
+   * Access rules:
+   * 1. Admins always have access (bypass all restrictions)
+   * 2. No allowed_groups or empty array = everyone has access
+   * 3. Otherwise, user must have at least one matching group
+   *
+   * Group matching supports both:
+   * - Direct group ID match (user's groups contain the ID)
+   * - Group name resolution via GROUP_MAPPINGS (name → ID)
+   *
+   * @param userGroups - User's group IDs from OIDC token (or null for local auth)
+   * @param userRole - User's role (admin bypasses restrictions)
+   * @param allowedGroups - Model's allowed groups (null/empty = everyone)
+   */
+  private hasGroupAccess(userGroups: string[] | null, userRole: UserRole, allowedGroups: string[] | null | undefined): boolean {
+    // Admin bypass: admins see all models
+    if (userRole === 'admin') return true;
+
+    // No restrictions = everyone has access
+    if (!allowedGroups || allowedGroups.length === 0) return true;
+
+    // Local auth users without groups: only unrestricted models
+    if (!userGroups || userGroups.length === 0) return false;
+
+    // Check each allowed group
+    for (const allowed of allowedGroups) {
+      // Direct group ID match
+      if (userGroups.includes(allowed)) return true;
+
+      // Group name → ID resolution via GROUP_MAPPINGS
+      const mapping = GROUP_MAPPINGS.find((m) => m.groupName === allowed);
+      if (mapping && userGroups.includes(mapping.groupId)) return true;
+    }
+
+    return false;
+  }
+
+  // ========================================
   // Row conversion helpers
   // ========================================
 
@@ -113,6 +157,7 @@ export class GlobalModelService {
       custom_headers: row.custom_headers ? JSON.parse(row.custom_headers) : undefined,
       enabled: row.enabled === 1,
       priority: row.priority,
+      allowed_groups: row.allowed_groups ? JSON.parse(row.allowed_groups) : null,
       created_by: row.created_by,
       created_at: row.created_at,
       updated_at: row.updated_at,
@@ -173,13 +218,15 @@ export class GlobalModelService {
       INSERT INTO global_models (
         id, platform, name, base_url, encrypted_api_key, models,
         capabilities, context_limit, custom_headers, enabled, priority,
-        created_by, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        allowed_groups, created_by, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
-    stmt.run(id, dto.platform, dto.name, dto.base_url || '', dto.api_key ? this.encrypt(dto.api_key) : null, JSON.stringify(dto.models || []), dto.capabilities ? JSON.stringify(dto.capabilities) : null, dto.context_limit ?? null, dto.custom_headers ? JSON.stringify(dto.custom_headers) : null, dto.enabled !== false ? 1 : 0, dto.priority ?? 0, adminId, now, now);
+    const allowedGroupsJson = dto.allowed_groups?.length ? JSON.stringify(dto.allowed_groups) : null;
 
-    log.info({ modelId: id, name: dto.name }, 'Global model created');
+    stmt.run(id, dto.platform, dto.name, dto.base_url || '', dto.api_key ? this.encrypt(dto.api_key) : null, JSON.stringify(dto.models || []), dto.capabilities ? JSON.stringify(dto.capabilities) : null, dto.context_limit ?? null, dto.custom_headers ? JSON.stringify(dto.custom_headers) : null, dto.enabled !== false ? 1 : 0, dto.priority ?? 0, allowedGroupsJson, adminId, now, now);
+
+    log.info({ modelId: id, name: dto.name, allowedGroups: dto.allowed_groups }, 'Global model created');
     return this.getGlobalModel(id)!;
   }
 
@@ -233,6 +280,11 @@ export class GlobalModelService {
     if (dto.priority !== undefined) {
       updates.push('priority = ?');
       values.push(dto.priority);
+    }
+    if (dto.allowed_groups !== undefined) {
+      updates.push('allowed_groups = ?');
+      // null or empty array = clear restrictions (everyone)
+      values.push(dto.allowed_groups?.length ? JSON.stringify(dto.allowed_groups) : null);
     }
 
     values.push(id);
@@ -362,11 +414,15 @@ export class GlobalModelService {
    *
    * @param userId - User ID
    * @param localModels - User's locally configured models (from ProcessConfig)
+   * @param userGroups - User's OIDC group IDs (null for local auth users)
+   * @param userRole - User's role (admin bypasses group restrictions)
    * @returns Merged list of IProvider
    */
-  getEffectiveModels(userId: string, localModels: IProvider[]): IProvider[] {
+  getEffectiveModels(userId: string, localModels: IProvider[], userGroups?: string[] | null, userRole?: UserRole): IProvider[] {
     const result: IProvider[] = [];
     const seenIds = new Set<string>();
+    const effectiveRole = userRole ?? 'user';
+    const effectiveGroups = userGroups ?? null;
 
     // 1. Add user's local models (highest priority)
     for (const model of localModels) {
@@ -388,6 +444,10 @@ export class GlobalModelService {
       // Skip if user has a local model with same ID
       if (seenIds.has(row.id)) continue;
 
+      // Skip if user doesn't have group access
+      const allowedGroups = row.allowed_groups ? JSON.parse(row.allowed_groups) : null;
+      if (!this.hasGroupAccess(effectiveGroups, effectiveRole, allowedGroups)) continue;
+
       // Convert to IProvider and add
       const modelWithKey = this.rowToGlobalModelWithKey(row);
       result.push(this.globalModelToProvider(modelWithKey));
@@ -400,23 +460,36 @@ export class GlobalModelService {
   /**
    * Get visible global models for a user (without merging with local)
    * Used for UI to show which global models are available
+   *
+   * @param userId - User ID
+   * @param userGroups - User's OIDC group IDs (null for local auth users)
+   * @param userRole - User's role (admin bypasses group restrictions)
    */
-  getVisibleGlobalModels(userId: string): IGlobalModel[] {
+  getVisibleGlobalModels(userId: string, userGroups?: string[] | null, userRole?: UserRole): IGlobalModel[] {
     const overrides = this.getUserOverrides(userId);
     const hiddenGlobalIds = new Set(overrides.filter((o) => o.override_type === 'hidden').map((o) => o.global_model_id));
 
-    return this.listGlobalModels(false).filter((m) => !hiddenGlobalIds.has(m.id));
+    return this.listGlobalModels(false)
+      .filter((m) => !hiddenGlobalIds.has(m.id))
+      .filter((m) => this.hasGroupAccess(userGroups ?? null, userRole ?? 'user', m.allowed_groups));
   }
 
   /**
    * Get hidden global models for a user
    * Used for UI to show which global models are hidden
+   * Note: Only shows models the user would have access to if they weren't hidden
+   *
+   * @param userId - User ID
+   * @param userGroups - User's OIDC group IDs (null for local auth users)
+   * @param userRole - User's role (admin bypasses group restrictions)
    */
-  getHiddenGlobalModels(userId: string): IGlobalModel[] {
+  getHiddenGlobalModels(userId: string, userGroups?: string[] | null, userRole?: UserRole): IGlobalModel[] {
     const overrides = this.getUserOverrides(userId);
     const hiddenGlobalIds = new Set(overrides.filter((o) => o.override_type === 'hidden').map((o) => o.global_model_id));
 
-    return this.listGlobalModels(true).filter((m) => hiddenGlobalIds.has(m.id));
+    return this.listGlobalModels(true)
+      .filter((m) => hiddenGlobalIds.has(m.id))
+      .filter((m) => this.hasGroupAccess(userGroups ?? null, userRole ?? 'user', m.allowed_groups));
   }
 }
 

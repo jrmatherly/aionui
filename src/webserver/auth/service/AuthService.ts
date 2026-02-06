@@ -17,6 +17,7 @@ interface TokenPayload {
   username: string;
   role: 'admin' | 'user' | 'viewer';
   authMethod: 'local' | 'oidc';
+  groups?: string[] | null; // OIDC group IDs for model access control
   iat?: number;
   exp?: number;
 }
@@ -254,13 +255,29 @@ export class AuthService {
 
   /**
    * Generate short-lived access token (15 min)
+   * Includes groups for model access control (parsed from JSON string if needed)
    */
-  public static generateToken(user: Pick<AuthUser, 'id' | 'username' | 'role' | 'auth_method'>): string {
+  public static generateToken(user: Pick<AuthUser, 'id' | 'username' | 'role' | 'auth_method' | 'groups'>): string {
+    // Parse groups if stored as JSON string
+    let groups: string[] | null = null;
+    if (user.groups) {
+      if (typeof user.groups === 'string') {
+        try {
+          groups = JSON.parse(user.groups);
+        } catch {
+          groups = null;
+        }
+      } else if (Array.isArray(user.groups)) {
+        groups = user.groups;
+      }
+    }
+
     const payload: TokenPayload = {
       userId: user.id,
       username: user.username,
       role: user.role ?? 'user',
       authMethod: user.auth_method ?? 'local',
+      groups,
     };
 
     return jwt.sign(payload, this.getJwtSecret(), {

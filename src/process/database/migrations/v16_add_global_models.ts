@@ -50,6 +50,8 @@ export interface GlobalModelEnvConfig {
   custom_headers?: Record<string, string>;
   enabled?: boolean;
   priority?: number;
+  /** Group-based access control: undefined/empty = everyone, array = restricted to listed groups */
+  allowed_groups?: string[];
 }
 
 export function migrate_v16_add_global_models(db: Database.Database): void {
@@ -201,8 +203,8 @@ export function syncGlobalModelsFromEnv(db: Database.Database, jwtSecret: string
     INSERT INTO global_models (
       id, platform, name, base_url, encrypted_api_key, models,
       capabilities, context_limit, custom_headers, enabled, priority,
-      created_by, created_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      allowed_groups, created_by, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
   const updateModel = db.prepare(`
     UPDATE global_models SET
@@ -215,6 +217,7 @@ export function syncGlobalModelsFromEnv(db: Database.Database, jwtSecret: string
       custom_headers = ?,
       enabled = ?,
       priority = ?,
+      allowed_groups = ?,
       updated_at = ?
     WHERE id = ?
   `);
@@ -233,6 +236,7 @@ export function syncGlobalModelsFromEnv(db: Database.Database, jwtSecret: string
       const modelsJson = JSON.stringify(config.models);
       const capabilitiesJson = config.capabilities ? JSON.stringify(config.capabilities) : null;
       const headersJson = config.custom_headers ? JSON.stringify(config.custom_headers) : null;
+      const allowedGroupsJson = config.allowed_groups?.length ? JSON.stringify(config.allowed_groups) : null;
       const enabled = config.enabled !== false ? 1 : 0;
       const priority = config.priority ?? 0;
 
@@ -248,15 +252,16 @@ export function syncGlobalModelsFromEnv(db: Database.Database, jwtSecret: string
           headersJson,
           enabled,
           priority,
+          allowedGroupsJson,
           now,
           existing.id
         );
-        log.info({ name: config.name, id: existing.id }, 'Updated global model from env');
+        log.info({ name: config.name, id: existing.id, allowedGroups: config.allowed_groups }, 'Updated global model from env');
       } else {
         // Create new model
         const id = `gm_${crypto.randomUUID()}`;
-        insertModel.run(id, config.platform, config.name, config.base_url || '', encryptedKey, modelsJson, capabilitiesJson, config.context_limit ?? null, headersJson, enabled, priority, systemUserId, now, now);
-        log.info({ name: config.name, id }, 'Created global model from env');
+        insertModel.run(id, config.platform, config.name, config.base_url || '', encryptedKey, modelsJson, capabilitiesJson, config.context_limit ?? null, headersJson, enabled, priority, allowedGroupsJson, systemUserId, now, now);
+        log.info({ name: config.name, id, allowedGroups: config.allowed_groups }, 'Created global model from env');
       }
     } catch (err) {
       log.error({ err, name: config.name }, 'Failed to sync global model from env');

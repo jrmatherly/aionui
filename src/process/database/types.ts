@@ -197,6 +197,8 @@ export interface IGlobalModel {
   custom_headers?: Record<string, string>; // Parsed from JSON
   enabled: boolean;
   priority: number;
+  /** Group-based access control: NULL/empty = everyone, array = restricted to listed groups */
+  allowed_groups?: string[] | null; // Parsed from JSON
   created_by: string;
   created_at: number;
   updated_at: number;
@@ -224,6 +226,7 @@ export interface IGlobalModelRow {
   custom_headers: string | null; // JSON string
   enabled: number; // SQLite boolean (0/1)
   priority: number;
+  allowed_groups: string | null; // JSON string array of group names
   created_by: string;
   created_at: number;
   updated_at: number;
@@ -256,6 +259,8 @@ export interface ICreateGlobalModelDTO {
   custom_headers?: Record<string, string>;
   enabled?: boolean;
   priority?: number;
+  /** Group-based access control: undefined/null/[] = everyone, array = restricted */
+  allowed_groups?: string[];
 }
 
 /**
@@ -272,6 +277,8 @@ export interface IUpdateGlobalModelDTO {
   custom_headers?: Record<string, string>;
   enabled?: boolean;
   priority?: number;
+  /** Group-based access control: undefined = no change, null/[] = everyone, array = restricted */
+  allowed_groups?: string[] | null;
 }
 
 /**
