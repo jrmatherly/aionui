@@ -431,7 +431,7 @@ const KnowledgeBase: React.FC = () => {
             <div>
               <Typography.Text type='secondary'>Version</Typography.Text>
               <div>
-                <Tag color={hasKnowledge ? 'purple' : 'gray'}>{status?.knowledge?.version || '-'}</Tag>
+                <Tag color={hasKnowledge ? 'purple' : 'gray'}>{hasKnowledge ? status?.knowledge?.version : 'Not initialized'}</Tag>
               </div>
             </div>
           </div>
@@ -440,6 +440,13 @@ const KnowledgeBase: React.FC = () => {
               <Typography.Text type='secondary'>Path: </Typography.Text>
               <Typography.Text copyable style={{ fontSize: '12px' }}>
                 {status.path}
+              </Typography.Text>
+            </div>
+          )}
+          {!hasKnowledge && status?.initialized && (
+            <div style={{ marginTop: '8px' }}>
+              <Typography.Text type='secondary' style={{ fontSize: '12px' }}>
+                Your knowledge base is ready but empty. Upload documents through the chat interface or ingest files via the API to start using RAG.
               </Typography.Text>
             </div>
           )}
