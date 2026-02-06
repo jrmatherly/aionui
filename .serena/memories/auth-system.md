@@ -29,9 +29,9 @@ Multi-user enterprise authentication added February 2026. Supports both local ad
 
 ### Database
 
-- **Schema version:** 14 (`CURRENT_DB_VERSION` in `src/process/database/schema.ts`)
-- **Tables:** `users` (with role, auth_method, oidc_subject, display_name, groups, avatar_url), `refresh_tokens`, `token_blacklist`, `user_api_keys`
-- **Migrations:** v10 (auth columns), v11 (refresh tokens + blacklist), v12 (avatar_url), v13 (upstream Lark), v14 (user_api_keys for per-user API key storage)
+- **Schema version:** 18 (`CURRENT_DB_VERSION` in `src/process/database/schema.ts`)
+- **Tables:** `users` (with role, auth_method, oidc_subject, display_name, groups, avatar_url), `refresh_tokens`, `token_blacklist`, `user_api_keys`, `global_models`, `user_model_overrides`
+- **Migrations:** v10 (auth columns), v11 (refresh tokens + blacklist), v12 (avatar_url), v13 (upstream Lark), v14 (user_api_keys), v15 (organizations + user directories), v16 (global_models), v17 (logging_config), v18 (global_model_groups)
 
 ### Frontend
 

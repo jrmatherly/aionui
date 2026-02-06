@@ -250,7 +250,7 @@ private hasGroupAccess(userGroups: string[] | null, userRole: UserRole, allowedG
 src/process/database/
 ├── migrations/v16_add_global_models.ts
 ├── types.ts (IGlobalModel, IUserModelOverride, etc.)
-└── schema.ts (DB_VERSION = 16)
+└── schema.ts (CURRENT_DB_VERSION = 18)
 
 src/process/services/
 └── GlobalModelService.ts
