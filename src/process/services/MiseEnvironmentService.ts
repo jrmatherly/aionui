@@ -672,6 +672,7 @@ yes = true
 
   /**
    * Reset user's Python environment (delete and recreate venv)
+   * Also reinstalls skill requirements from skills/requirements.txt
    */
   async resetUserEnv(userId: string): Promise<void> {
     const dirService = getDirectoryService();
@@ -690,6 +691,25 @@ yes = true
 
     // Reinstall (will recreate venv)
     await this.installTools(workDir);
+
+    // Reinstall skill requirements
+    const skillsReqPath = this.getSkillsRequirementsPath();
+    if (skillsReqPath) {
+      log.info({ skillsReqPath }, 'Reinstalling skill Python requirements after reset');
+      const success = await this.installRequirements(workDir, skillsReqPath);
+
+      // Recreate the marker file
+      if (success) {
+        const venvMarker = path.join(workDir, '.venv', '.skills-installed');
+        try {
+          const content = `Installed from: ${skillsReqPath}\nDate: ${new Date().toISOString()}\nReset: true\n`;
+          writeFileSync(venvMarker, content, { mode: 0o644 });
+        } catch {
+          // Non-fatal
+        }
+      }
+    }
+
     log.info({ userId }, 'Reset user Python environment complete');
   }
 
