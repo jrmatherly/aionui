@@ -255,3 +255,36 @@ The embedding registry uses OpenAI's `text-embedding-3-small`. Without `OPENAI_A
 ### text-embedding-3-large has lower similarity scores
 
 From MEMORY.md: Don't use `score_threshold=0.5` — typical relevant scores are 0.2-0.4. Use `score_threshold=0.2` for this model.
+
+### Knowledge Base must be initialized on login
+
+The KB should be created when the user logs in, not when they first ingest a document:
+
+```typescript
+// AuthService.postLoginInit()
+const kbService = getKnowledgeBaseService();
+await kbService.initialize(userId); // Idempotent, creates empty KB if needed
+```
+
+This ensures the KB is ready before any document interactions.
+
+### Large files overflow context window
+
+Files >40KB injected inline will overflow the context window. The ACP agent now skips large files:
+
+```typescript
+const LARGE_FILE_THRESHOLD = 40_000; // ~10K tokens
+if (stats.size > LARGE_FILE_THRESHOLD) {
+  log.info({ atPath }, 'Skipping large file (use Knowledge Base for RAG)');
+  continue; // Skip inline injection
+}
+```
+
+Large files should be auto-ingested to KB and queried via RAG instead.
+
+### Binary files cannot be read as UTF-8
+
+PDFs, DOCX, and other binary formats cannot be read with `fs.readFile(path, 'utf-8')`. Use:
+
+1. **For ingestion**: `kbService.ingestFile()` with `--file` flag to Python
+2. **Python extraction**: `extract_text_from_file()` in `ingest.py` uses pypdf

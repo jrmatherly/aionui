@@ -150,6 +150,56 @@ Requires `OPENAI_API_KEY` environment variable.
 - **Overlap**: 100 tokens (default)
 - Configurable via API
 
+## Knowledge Base Initialization
+
+The knowledge base is initialized automatically when a user logs in:
+
+```typescript
+// AuthService.postLoginInit()
+const result = await kbService.initialize(userId);
+```
+
+This ensures the KB is ready for document ingestion immediately, rather than waiting for the first ingest operation.
+
+## Large File Handling
+
+### Context Window Protection
+
+Large files (>40KB) are **automatically skipped** from inline content injection to prevent context window overflow:
+
+```typescript
+// src/agent/acp/index.ts - processAtFileReferences()
+const LARGE_FILE_THRESHOLD = 40_000; // ~10K tokens
+if (stats.size > LARGE_FILE_THRESHOLD) {
+  log.info({ atPath, sizeBytes: stats.size }, 'Skipping large file (use Knowledge Base for RAG)');
+  continue;
+}
+```
+
+Large files should be:
+
+1. Auto-ingested to Knowledge Base (via `autoIngestFilesToKnowledgeBase`)
+2. Queried via RAG instead of inline content
+
+### Binary File Extraction
+
+PDFs and other binary files are handled specially:
+
+```typescript
+// KnowledgeBaseService.ingestFile()
+// Uses --file flag to pass path to Python for text extraction
+const args = [workspaceDir, sourceFile, '--file', filePath];
+```
+
+```python
+# ingest.py - extract_text_from_file()
+def extract_text_from_file(file_path: str) -> tuple[str, list[dict]]:
+    if ext == ".pdf":
+        import pypdf
+        reader = pypdf.PdfReader(file_path)
+        # Extracts text from all pages
+```
+
 ## Design Decisions
 
 1. **LanceDB over Qdrant for per-user**: Embedded file-based storage inherits workspace isolation
@@ -157,10 +207,13 @@ Requires `OPENAI_API_KEY` environment variable.
 3. **Fire-and-forget ingestion**: Doesn't block message sending
 4. **Pattern-based triggers**: Avoids unnecessary KB searches
 5. **Graceful fallback**: RAG failure doesn't block messages
+6. **KB init on login**: Ensures KB is ready before any document interaction
+7. **Large file threshold**: Prevents context window overflow (40KB limit)
 
 ## Future Enhancements
 
 - [ ] UI toggle for enabling/disabling auto-RAG per conversation
 - [ ] Source citations in AI responses
 - [ ] Qdrant integration for shared/team knowledge bases
-- [ ] PDF/DOCX text extraction before ingestion
+- [x] PDF text extraction before ingestion (implemented via pypdf)
+- [x] KB initialization on user login (implemented in AuthService)

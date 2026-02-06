@@ -447,6 +447,17 @@ AionUI provides per-user knowledge bases using **LanceDB**, an embedded vector d
 - **Time-travel**: Query historical versions, rollback changes
 - **Search test**: Built-in search panel in settings UI
 
+### Initialization
+
+The knowledge base is **initialized on user login** via `AuthService.postLoginInit()`:
+
+```typescript
+const kbService = getKnowledgeBaseService();
+await kbService.initialize(userId); // Creates empty KB, idempotent
+```
+
+This ensures the KB is ready immediately, without waiting for the first ingest operation.
+
 ### Auto-RAG (Chat Integration)
 
 RAG context is automatically injected into chat messages when:
@@ -457,6 +468,20 @@ RAG context is automatically injected into chat messages when:
    - "find/search/look up", "key points/terms"
 
 2. **File context**: Large files (>40KB) attached to messages are auto-ingested
+
+### Large File Protection
+
+Files exceeding **40KB** are skipped from inline content injection to prevent context window overflow:
+
+```typescript
+// src/agent/acp/index.ts - processAtFileReferences()
+const LARGE_FILE_THRESHOLD = 40_000; // ~10K tokens
+if (stats.size > LARGE_FILE_THRESHOLD) {
+  // Skip - use Knowledge Base RAG instead
+}
+```
+
+**Binary files** (PDF, DOCX) are extracted via `pypdf` in `ingest.py`.
 
 **Implementation files:**
 
