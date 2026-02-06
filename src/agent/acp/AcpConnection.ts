@@ -84,12 +84,13 @@ function loadShellEnvironment(): Record<string, string> {
 
 /**
  * Get enhanced environment variables by merging shell env with process.env.
- * Priority: process.env < shell env < userApiKeys < customEnv
+ * Priority: process.env < shell env < userApiKeys < userHome < customEnv
  *
  * @param customEnv - Custom environment variable overrides
  * @param userId - Optional user ID to load per-user API keys
+ * @param userHome - Optional user HOME directory for per-user isolation
  */
-export function getEnhancedEnv(customEnv?: Record<string, string>, userId?: string): Record<string, string> {
+export function getEnhancedEnv(customEnv?: Record<string, string>, userId?: string, userHome?: string): Record<string, string> {
   const shellEnv = loadShellEnvironment();
 
   // Get user-specific API keys if userId provided
@@ -104,10 +105,15 @@ export function getEnhancedEnv(customEnv?: Record<string, string>, userId?: stri
     }
   }
 
+  // Set HOME to user's workspace directory for per-user isolation
+  // CLI agents (Gemini, Claude, etc.) use $HOME to store their configs
+  const homeOverride: Record<string, string> = userHome ? { HOME: userHome } : {};
+
   return {
     ...process.env,
     ...shellEnv,
     ...userApiKeys,
+    ...homeOverride,
     ...customEnv,
   } as Record<string, string>;
 }
@@ -136,7 +142,8 @@ export function createGenericSpawnConfig(cliPath: string, workingDir: string, ac
   const isWindows = process.platform === 'win32';
   // Use enhanced env that includes shell environment variables (PATH, SSL certs, etc.)
   // If userId provided, also includes per-user API keys from user_api_keys table
-  const env = getEnhancedEnv(customEnv, userId);
+  // Set HOME to workingDir for per-user isolation (CLI agents store configs in $HOME)
+  const env = getEnhancedEnv(customEnv, userId, workingDir);
 
   // Default to --experimental-acp if no acpArgs specified
   const effectiveAcpArgs = acpArgs && acpArgs.length > 0 ? acpArgs : ['--experimental-acp'];
@@ -247,7 +254,8 @@ export class AcpConnection {
     log.info('Using NPX approach for Claude ACP bridge');
 
     // Use enhanced env with shell variables and per-user API keys, then clean up Node.js debugging vars
-    const cleanEnv = getEnhancedEnv(undefined, userId);
+    // Set HOME to workingDir for per-user isolation (CLI agents store configs in $HOME)
+    const cleanEnv = getEnhancedEnv(undefined, userId, workingDir);
     delete cleanEnv.NODE_OPTIONS;
     delete cleanEnv.NODE_INSPECT;
     delete cleanEnv.NODE_DEBUG;
