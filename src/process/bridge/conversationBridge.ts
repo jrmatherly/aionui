@@ -457,11 +457,15 @@ export function initConversationBridge(): void {
     // Copy files to workspace (unified for all agents)
     const workspaceFiles = await copyFilesToDirectory(task.workspace, files, false);
 
-    // Auto-ingest large files to knowledge base (fire-and-forget)
+    // Auto-ingest files to knowledge base
+    // For large files: AWAIT ingestion so RAG context is available for the immediate query
+    // For small files: fire-and-forget (they're passed inline via @ references anyway)
     if (__webUiUserId && workspaceFiles && workspaceFiles.length > 0) {
-      void autoIngestFilesToKnowledgeBase(__webUiUserId as string, workspaceFiles).catch((err) => {
+      try {
+        await autoIngestFilesToKnowledgeBase(__webUiUserId as string, workspaceFiles);
+      } catch (err) {
         log.warn({ err, userId: __webUiUserId }, 'Auto-ingest to knowledge base failed (non-fatal)');
-      });
+      }
     }
 
     try {

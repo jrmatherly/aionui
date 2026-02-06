@@ -245,24 +245,53 @@ export class AcpAgent {
       this.adapter.resetMessageTracking();
       let processedContent = data.content;
 
-      // Add @ prefix to ALL uploaded files (including images) with FULL PATH
-      // Claude CLI needs full path to read files
+      // Large file threshold — files above this are handled via RAG (Knowledge Base)
+      // rather than being passed inline to the CLI agent which would overflow context
+      const LARGE_FILE_THRESHOLD = 40_000; // ~10K tokens ≈ 40KB
+
+      // Add @ prefix to uploaded files with FULL PATH
+      // Large files (>40KB) are excluded — they're auto-ingested to Knowledge Base
+      // and the RAG pipeline injects relevant chunks instead of the full content
+      const largeFiles: string[] = [];
       if (data.files && data.files.length > 0) {
-        const fileRefs = data.files
-          .map((filePath) => {
-            // Use full path instead of just filename
-            // Escape paths with spaces using quotes for Claude CLI
-            if (filePath.includes(' ')) {
-              return `@"${filePath}"`;
+        const smallFiles: string[] = [];
+
+        for (const filePath of data.files) {
+          try {
+            const stats = await fs.stat(filePath);
+            if (stats.size > LARGE_FILE_THRESHOLD) {
+              largeFiles.push(filePath);
+              log.info({ file: path.basename(filePath), sizeKB: Math.round(stats.size / 1024) }, 'Large file excluded from inline @ reference (will use RAG)');
+            } else {
+              smallFiles.push(filePath);
             }
-            return '@' + filePath;
-          })
-          .join(' ');
-        // Prepend file references to the content
-        processedContent = fileRefs + ' ' + processedContent;
+          } catch {
+            // If we can't stat, include it (let CLI handle the error)
+            smallFiles.push(filePath);
+          }
+        }
+
+        // Only prepend @ references for small files
+        if (smallFiles.length > 0) {
+          const fileRefs = smallFiles
+            .map((filePath) => {
+              if (filePath.includes(' ')) {
+                return `@"${filePath}"`;
+              }
+              return '@' + filePath;
+            })
+            .join(' ');
+          processedContent = fileRefs + ' ' + processedContent;
+        }
+
+        // For large files, add a hint so the agent knows they exist
+        if (largeFiles.length > 0) {
+          const fileNames = largeFiles.map((f) => path.basename(f)).join(', ');
+          processedContent += `\n\n[Note: The following large file(s) have been uploaded to the Knowledge Base for retrieval: ${fileNames}. Relevant sections are provided above via RAG context.]`;
+        }
       }
 
-      // Process @ file references in the message
+      // Process @ file references in the message (workspace file resolution)
       processedContent = await this.processAtFileReferences(processedContent, data.files);
 
       await this.connection.sendPrompt(processedContent);
