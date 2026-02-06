@@ -111,7 +111,7 @@ git push origin main --tags
 
 ## Claude Code `/release` Skill
 
-The `/release` skill (`skills/release/SKILL.md`) automates the full release workflow interactively:
+The `/release` skill (`.claude/skills/release/SKILL.md`) automates the full release workflow interactively:
 
 1. Determine next version (`git cliff --bumped-version` or user-specified)
 2. Preview unreleased changes and get user confirmation

@@ -1,6 +1,7 @@
 ---
 paths:
   - 'skills/**'
+  - '.claude/skills/**'
   - 'src/process/services/MiseEnvironment*'
   - 'src/main/services/Mise*'
   - 'src/webserver/routes/pythonRoutes*'
@@ -50,9 +51,22 @@ Python skills require system packages: `poppler-utils` (PDF rendering), `libreof
 
 ## Skills Infrastructure
 
-The `skills/` directory contains Claude Code automation skills bundled with the application. These follow the Anthropic Skills format.
+### ⚠️ Two Skill Locations — Know the Difference
 
-### Office Infrastructure Pattern (`scripts/office/`)
+| Location          | Purpose                                                          | Bundled with app?                  | Shipped to users? |
+| ----------------- | ---------------------------------------------------------------- | ---------------------------------- | ----------------- |
+| `skills/`         | **User-facing skills** — document processing, RAG, web scraping  | ✅ Yes (electron-builder + Docker) | ✅ Yes            |
+| `.claude/skills/` | **Developer workflow skills** — release, test gen, db migrations | ❌ No                              | ❌ No             |
+
+**Rule:** If a skill is for working _on_ the project (dev tooling), it goes in `.claude/skills/`. If it's for end users of the application, it goes in `skills/`.
+
+`skills/` contents are packaged via electron-builder `asarUnpack`, copied to Docker images, and deployed to user config directories at first run via `initBuiltinAssistantRules()`.
+
+### User-Facing Skills (`skills/`)
+
+Follow the Anthropic Skills format with `SKILL.md` frontmatter.
+
+#### Office Infrastructure Pattern (`scripts/office/`)
 
 Both `docx/` and `xlsx/` use shared Anthropic infrastructure:
 
@@ -62,24 +76,28 @@ Both `docx/` and `xlsx/` use shared Anthropic infrastructure:
 - **validate.py** — Validate Office XML against schemas
 - **helpers/** — XML manipulation utilities
 
-### Skills Directory
+#### Skills Directory
 
 ```text
-skills/
-├── docx/            # Word document manipulation
-├── xlsx/            # Excel spreadsheet manipulation
-├── pdf/             # PDF processing
-├── pptx/            # PowerPoint presentations
-├── lance/           # Knowledge base (LanceDB)
-├── release/         # Version bump and release automation
-├── db-migrate/      # Database migration scaffolding
-├── gen-test/        # Test scaffolding
-├── skill-creator/   # Guide for creating new skills
-├── frontend-design/ # Distinctive UI design principles
-├── mcp-builder/     # MCP server creation guide
-├── webapp-testing/  # Playwright web app testing
-├── brand-guidelines/# Brand colors and typography
-├── doc-coauthoring/ # Structured documentation workflow
-├── internal-comms/  # 3P updates, newsletters, FAQs
-└── crawl4ai/        # Web scraping (Crawl4AI)
+skills/                  # User-facing (bundled and deployed)
+├── docx/                # Word document manipulation
+├── xlsx/                # Excel spreadsheet manipulation
+├── pdf/                 # PDF processing
+├── pptx/                # PowerPoint presentations
+├── lance/               # Knowledge base (LanceDB)
+├── crawl4ai/            # Web scraping (Crawl4AI)
+├── skill-creator/       # Guide for creating new skills
+├── frontend-design/     # Distinctive UI design principles
+├── mcp-builder/         # MCP server creation guide
+├── webapp-testing/      # Playwright web app testing
+├── brand-guidelines/    # Brand colors and typography
+├── doc-coauthoring/     # Structured documentation workflow
+├── internal-comms/      # 3P updates, newsletters, FAQs
+├── mermaid/             # Mermaid diagram rendering
+└── x-recruiter/         # Recruitment content posting
+
+.claude/skills/          # Developer workflow (NOT bundled)
+├── release/             # Version bump, changelog, release automation
+├── gen-test/            # Jest test scaffolding for AionUI modules
+└── db-migrate/          # Database migration scaffolding
 ```
