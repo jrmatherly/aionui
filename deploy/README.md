@@ -212,6 +212,18 @@ Configure the embedding provider for document ingestion and semantic search (Kno
 | `EMBEDDING_API_BASE`   | —                        | Custom embedding API endpoint                                  |
 | `EMBEDDING_DIMENSIONS` | (auto)                   | Embedding vector dimensions (auto-detected for OpenAI models)  |
 
+#### Image Generation
+
+Pre-configure image generation from global models on first startup:
+
+| Variable                    | Default | Description                                                      |
+| --------------------------- | ------- | ---------------------------------------------------------------- |
+| `IMAGE_GENERATION_ENABLED`  | —       | Set to `true` to auto-enable image generation on first startup   |
+| `IMAGE_GENERATION_MODEL`    | (auto)  | Model name (e.g., `gpt-image-1`). Auto-detects if omitted        |
+| `IMAGE_GENERATION_PROVIDER` | (auto)  | Provider name from `global-models.json`. Auto-detects if omitted |
+
+When enabled, the system finds the first global model provider with an image-capable model (name contains "image" or "banana") and pre-selects it. Only applies on first run — never overwrites existing user configuration.
+
 > See `deploy/docker/.env.example` for detailed examples with Azure, LiteLLM, and self-hosted endpoints.
 
 #### Global Models
