@@ -568,6 +568,105 @@ const getDefaultMcpServers = (): IMcpServer[] => {
   }));
 };
 
+/**
+ * Initialize image generation config from environment variables.
+ *
+ * When IMAGE_GENERATION_ENABLED=true and tools.imageGenerationModel is not yet configured:
+ * 1. Looks up the global model provider matching IMAGE_GENERATION_PROVIDER (by name)
+ * 2. Falls back to auto-detecting the first global model with image-capable models
+ * 3. Selects IMAGE_GENERATION_MODEL (or auto-detects from the provider's model list)
+ * 4. Writes the config with switch=true so image generation is immediately available
+ *
+ * Respects existing user config — never overwrites a previously set image model.
+ */
+async function initImageGenerationFromEnv(): Promise<void> {
+  const enabled = process.env.IMAGE_GENERATION_ENABLED?.toLowerCase();
+  if (enabled !== 'true' && enabled !== '1') return;
+
+  // Don't overwrite existing config
+  const existing = await configFile.get('tools.imageGenerationModel').catch((): undefined => undefined);
+  if (existing && existing.useModel) {
+    log.debug('Image generation already configured, skipping env init');
+    return;
+  }
+
+  // Need GlobalModelService to look up provider details
+  let globalModelService: { getEffectiveModels: (userId: string, localModels: import('../common/storage').IProvider[], userGroups: string[] | null, userRole: string) => import('../common/storage').IProvider[] };
+  try {
+    const { GlobalModelService } = await import('./services/GlobalModelService');
+    globalModelService = GlobalModelService.getInstance();
+  } catch {
+    log.warn('GlobalModelService not available, cannot initialize image generation from env');
+    return;
+  }
+
+  const requestedProvider = process.env.IMAGE_GENERATION_PROVIDER?.trim();
+  const requestedModel = process.env.IMAGE_GENERATION_MODEL?.trim();
+
+  // Helper: check if a model name looks like an image model
+  const isImageModel = (name: string) => {
+    const lower = name.toLowerCase();
+    return lower.includes('image') || lower.includes('banana');
+  };
+
+  // Get all enabled global models as IProvider[] (admin view, no user filtering)
+  // Use system user to get all models without group filtering
+  const allProviders = globalModelService.getEffectiveModels('system_default_user', [], null, 'admin') as import('../common/storage').IProvider[];
+  const globalProviders = allProviders.filter((p: import('../common/storage').IProvider) => p.isGlobal);
+
+  if (globalProviders.length === 0) {
+    log.warn('No global models available, cannot auto-configure image generation');
+    return;
+  }
+
+  // Find the target provider
+  let targetProvider = requestedProvider ? globalProviders.find((p) => p.name === requestedProvider) : undefined;
+
+  if (requestedProvider && !targetProvider) {
+    log.warn({ requestedProvider }, 'IMAGE_GENERATION_PROVIDER not found in global models');
+  }
+
+  // Find the image model within the provider
+  let targetModel: string | undefined;
+
+  if (targetProvider) {
+    // Provider specified — find image model within it
+    targetModel = requestedModel && targetProvider.model.includes(requestedModel) ? requestedModel : targetProvider.model.find(isImageModel);
+  } else {
+    // No provider specified (or not found) — auto-detect from all global providers
+    for (const provider of globalProviders) {
+      const imageModel = requestedModel && provider.model.includes(requestedModel) ? requestedModel : provider.model.find(isImageModel);
+
+      if (imageModel) {
+        targetProvider = provider;
+        targetModel = imageModel;
+        break;
+      }
+    }
+  }
+
+  if (!targetProvider || !targetModel) {
+    log.warn({ requestedProvider, requestedModel }, 'No image-capable model found in global models');
+    return;
+  }
+
+  // Write the config matching the shape tools.imageGenerationModel expects
+  const imageGenConfig: IConfigStorageRefer['tools.imageGenerationModel'] = {
+    id: targetProvider.id,
+    platform: targetProvider.platform,
+    name: targetProvider.name,
+    baseUrl: targetProvider.baseUrl,
+    apiKey: targetProvider.apiKey,
+    useModel: targetModel,
+    switch: true,
+    capabilities: targetProvider.capabilities,
+    isGlobal: targetProvider.isGlobal,
+  };
+
+  await configFile.set('tools.imageGenerationModel', imageGenConfig);
+  log.info({ provider: targetProvider.name, model: targetModel }, 'Image generation pre-configured from environment');
+}
+
 const initStorage = async () => {
   log.info('Starting storage initialization...');
 
@@ -686,6 +785,16 @@ const initStorage = async () => {
     getDatabase();
   } catch (error) {
     log.error({ err: error }, 'Database initialization failed, falling back to file-based storage');
+  }
+
+  // 7. Initialize image generation from environment (Docker/WebUI)
+  // Only applies when IMAGE_GENERATION_ENABLED=true and no existing config is set.
+  // Matches a global model provider by IMAGE_GENERATION_PROVIDER name (or auto-detects
+  // the first provider with image models) and pre-selects IMAGE_GENERATION_MODEL.
+  try {
+    await initImageGenerationFromEnv();
+  } catch (error) {
+    log.error({ err: error }, 'Failed to initialize image generation from environment');
   }
 
   // NOTE: systemInfo provider is now in applicationBridge.ts
