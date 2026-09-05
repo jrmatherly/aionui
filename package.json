@@ -114,7 +114,7 @@
     "@codemirror/lang-json": "^6.0.2",
     "@codemirror/lang-markdown": "^6.5.0",
     "@floating-ui/react": "^0.27.17",
-    "@google/genai": "^1.40.0",
+    "@google/genai": "^2.0.0",
     "@grammyjs/transformer-throttler": "^1.2.1",
     "@icon-park/react": "^1.4.2",
     "@larksuiteoapi/node-sdk": "^1.58.0",
